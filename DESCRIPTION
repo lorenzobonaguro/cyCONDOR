@@ -1,0 +1,39 @@
+Package: condor
+Type: Package
+Title: Flow Cytometry data analysis
+Version: 0.1.0
+Author: Lorenzo Bonaguro
+Maintainer: Lorenzo Bonaguro <lorenzobonaguro@uni-bonn.de>
+Description: Flow cytometry analysis workflow. The aim of this project if to 
+    provide an intuitive workflow for the analysis of high-dimensionality cytometry data in R.
+License: GPL (>=2)
+Encoding: UTF-8
+LazyData: TRUE
+Imports: 
+    ggplot2, 
+    RColorBrewer,
+    Matrix,
+    pheatmap,
+    reshape2,
+    flowCore,
+    Rtsne,
+    Rphenograph,
+    devtools,
+    umap,
+    ggpubr,
+    readr,
+    readxl,
+    stringr,
+    harmony,
+    ggsci,
+    destiny,
+    SingleCellExperiment,
+    slingshot,
+    Rmisc,
+    ggrastr,
+    igraph
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+Suggests: 
+    rmarkdown,
+    knitr

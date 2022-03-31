@@ -1,0 +1,431 @@
+---
+title: "condor_workflow - v0.1.0"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{condor_workflow}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(condor)
+```
+
+# Loading the data
+
+With this function you import the fcs files in R, the .fcs files should
+be all stored in a single folder *FCSpath*, and the filename should
+match one of the column names of the annotation file.
+
+**Arguments:**
+
+*`FCSpath`*= folder where the .fcs files are stored
+
+*`ceil`*= Number of cells to use for each file (set to a high number if
+you want to use all available events)
+
+*`useCSV`* = flag if the input are .csv files and not .fcs
+(experimental)
+
+*`remove_param`* = Parameters to remove from the transformation,
+"inTime" should be kept
+
+*`anno_table`* = path to the annotation table file "filename_col" = Name
+of the column containing the filename matching with the .fcs files
+
+*`seed`*= seed to be used for the randomization of the events
+
+```{r}
+condor <- prep_fcd(FCSpath = "../.test_files/fcs/", 
+                    ceil = 1000, 
+                    useCSV = FALSE, 
+                    transformation = "a", 
+                    remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile"), 
+                    anno_table = "../.test_files/metadata.csv", 
+                    filename_col = "filename",
+                    seed = 91)
+
+class(condor)
+```
+
+# Batch Correction
+
+Batch correction can be performed with Harmony both at the level of the
+transformed intensities and at level of PCA, we suggest to correct the
+PCA but we give the possibility to correct also at the level of
+intensities.
+
+This function is adding to the flow cytometry dataframe the harmonized
+intensities.
+
+**Arguments:**
+
+*`fcd`*= flow cytometry dataset
+
+*`batch`*= vector of column names to use for correcting the data
+
+*`seed`*= Seed used for the randomization steps
+
+```{r}
+condor <- harmonize_intensities(fcd = condor, batch = c("batch"), seed = 91)
+```
+
+# Dimensionality Reduction
+
+## PCA
+
+Can be calculated on the original data:
+
+**Arguments:**
+
+*`fcd`* = flow cytometry dataset
+
+*`data_slot`* = name of the data slot to use to calculate the PCA,
+original data (orig) or harmonized data (norm)
+
+*`seed`* = Seed used for the randomization steps
+
+```{r}
+condor <- runPCA(fcd = condor, data_slot = "orig", seed = 91)
+```
+
+On this PCA you can run Harmony to remove batch effects, this is the
+preferable method compared to correcting the expression table.
+
+**Arguments:**
+
+*`fcd`* = flow cytometry dataset
+
+*`data_slot`* = name of the PCA data slot to use to harmonize. If no
+prefix was added the, *orig*.
+
+*`seed`* = Seed used for the randomization steps
+
+```{r}
+condor <- harmonize_PCA(fcd = condor, batch = c("batch"), data_slot = "orig", seed = 91)
+```
+
+## UMAP
+
+On the original PCA
+
+**Arguments:**
+
+*`fcd`* = flow cytometry dataset
+
+*`input type`* = data to use for the calculation of the UMAP, e.g.
+"expr" or "pca"
+
+*`data_slot`* = name of the PCA data slot to use to harmonize. If no
+prefix was added the, *orig*.
+
+*`seed`* = Seed used for the randomization steps
+
+```{r}
+condor <- runUMAP(fcd = condor, input_type = "pca", data_slot = "orig", seed = 91)
+```
+
+On the harmonized PCA
+
+```{r}
+condor <- runUMAP(fcd = condor, input_type = "pca", data_slot = "norm", seed = 91)
+```
+
+## Diffusion Map
+
+**Arguments:**
+
+*`fcd`* = flow cytometry dataset
+
+*`input type`* = data to use for the calculation of the UMAP, e.g. "pca"
+(suggested option)
+
+*`data_slot`* = name of the PCA data slot to use to harmonize. If no
+prefix was added the, *orig*.
+
+*`seed`* = Seed used for the randomization steps
+
+```{r}
+condor <- runDM(fcd = condor, input_type = "pca", data_slot = "norm", k = 10, seed = 91)
+```
+
+# Clustering
+
+## Phenograph
+
+**Arguments:**
+
+*`fcd`* = flow cytometry dataset.
+
+*`input type`* = data to use for the calculation of the UMAP, e.g. "pca"
+(suggested option).
+
+*`data_slot`* = name of the PCA data slot to use to harmonize. If no
+prefix was added the, *orig*.
+
+*`k`* = K value used for clustering.
+
+*`seed`* = Seed used for the randomization steps.
+
+```{r}
+condor <- runPhenograph(fcd = condor, input_type = "pca", data_slot = "norm", k = 60, seed = 91)
+```
+
+## Metaclustering
+
+According to the cluster often you want to give a name or merge them
+according to the marker expression. This is a function to help in this
+task.
+
+**Arguments:**
+
+*`fcd`* = flow cytometry dataset.
+
+*`clustering`* = Name of the clustering to match for the metaclustering.
+
+*`name_col`* = Column containing the original cluster
+
+*`name_out`* = Name of the output column
+
+*`metaclusters`* = Vector of the new clusters names, this should be of
+the same length of the levels of the original clustering.
+
+As sanity check the function outputs a table with the matching between
+the original clusters and the metaclusters to make it easy to check.
+
+```{r}
+condor <- metaclustering(fcd = condor, 
+                         clustering = "pca_norm_k60", 
+                         name_col = "Phenograph", 
+                         name_out = "metaclusters", 
+                         metaclusters = c( "CD4 T", 
+                                           "B cells", 
+                                           "Monocytes", 
+                                           "CD8 T", 
+                                           "CD8 T", 
+                                           "CD4 T", 
+                                           "Monocytes", 
+                                           "CD4 T", 
+                                           "Monocytes", 
+                                           "CD4 T", 
+                                           "NK cells", 
+                                           "Monocytes", 
+                                           "CD8 T", 
+                                           "Monocytes"))
+```
+
+# Data visualization and statistics
+
+## Dimensionality reduction visualization
+
+Here a few examples, the function should be quite versatile.
+
+**Arguments:**
+
+*`data`* = This is the input dataframe for the visualization, this part
+of the code can still be improved but for the moment you have to cbind
+the dataframe with the information you want to plot.
+
+*`param`* = Parameter to visualize in the plot, this can be either a
+continuous variable or a categorical one, the function will react
+differently according.
+
+*`order`* = Logical if you want to order the dots in the plot, by
+expression for example. This can help to find small populations of
+positive cells.
+
+*`title`* = Title of the plot.
+
+*`dim_red`* = Dimensionality reduction to use for the visualization.
+
+*`facet_by_variable`* = Logical if the plot should be split by the
+categorical variable used.
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_norm, condor$clustering$pca_norm_k60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_norm, condor$clustering$pca_norm_k60), 
+            param = "metaclusters", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", facet_by_variable = FALSE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_norm, condor$expr$orig), 
+            param = "CD8", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", facet_by_variable = FALSE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$diffmap$pca_norm, condor$expr$orig), 
+            param = "CD8", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "DM", facet_by_variable = FALSE)
+```
+
+## Confusion Matrix
+
+**Arguments:**
+
+*`variable`* = Variable to by used to calculate the confusion.
+
+*`group`* = Grouping to calculate the relative contribution to the
+variable.
+
+*`title`* = Title for the plot.
+
+```{r}
+confusion_HM(variables = condor$clustering$pca_norm_k60$Phenograph, 
+             group = condor$anno$cell_anno$group, size = 30, 
+             title = "Confusion Matrix - Phenograph K60")
+```
+
+```{r}
+confusion_HM(variables = condor$clustering$pca_norm_k60$metaclusters, 
+             group = condor$anno$cell_anno$group, size = 30, 
+             title = "Confusion Matrix - Metaclusters")
+```
+
+## Barplot Frequencies
+
+**Arguments:**
+
+*`x_axes`* = Grouping of the x axes.
+
+*`color`* = Stratification to use on the stacked barplot.
+
+*`title`* = Title for the plot.
+
+*`legend_title`* = Title for the legend.
+
+```{r}
+barplot_frequency(x_axes = condor$anno$cell_anno$group, 
+                  colour = condor$clustering$pca_norm_k60$Phenograph, 
+                  title = "Stacked barplot of cluster frequencies", 
+                  legend_title = "Phenograph Cluster - k60")
+```
+
+```{r}
+barplot_frequency(x_axes = condor$anno$cell_anno$group, 
+                  colour = condor$clustering$pca_norm_k60$metaclusters, 
+                  title = "Stacked barplot of metaclusters frequencies", 
+                  legend_title = "Phenograph Cluster - Metaclusters")
+```
+
+## Expression HM
+
+**Arguments:**
+
+*`input`* = cbind of the expression table to be used the the grouping
+(eg. clustering).
+
+*`group`* = column name to be used for the grouping (eg. "Phenograph" or
+"group")
+
+*`maxvalue`* = Max scaled expression to be used for the color coding.
+
+*`title`* = Title for the plot.
+
+```{r, fig.height=7}
+HM_markers(input = cbind(condor$expr$orig, condor$clustering$pca_norm_k60), 
+           group = "Phenograph",
+           maxvalue = 2, 
+           title = "Marker expression in the clusters")
+```
+
+```{r, fig.height=7}
+HM_markers(input = cbind(condor$expr$orig, condor$clustering$pca_norm_k60), group = "metaclusters",
+                         maxvalue = 2, 
+                         title = "Marker expression in metaclusters")
+```
+
+## Boxplot and statistics
+
+**Arguments:**
+
+*`annotation`* = Sample annotation to be used for the plot.
+
+*`sample_var`* = Column name containing the sample IDs.
+
+*`group_var`* = Column name defining the grouping for plotting.
+
+*`variable`* = Variable used to stratify the plotting.
+
+*`numeric`* = Logical if the grouping is numeric.
+
+*`test.type`* = Test to be performed. (see need some development here)
+
+```{r}
+box_stat <- boxplot_and_stats(annotation = condor$anno$cell_anno, 
+                              sample_var = "sample_ID", 
+                              group_var = "group", 
+                              variable = condor$clustering$pca_norm_k60$metaclusters, 
+                              numeric = FALSE, 
+                              test.type = "t.test")
+
+box_stat
+```
+
+## Extra functions
+
+### Check integrity of the flow cytometry dataframe
+
+**Arguments:**
+
+*`fcd`* = Flow cytometry dataset to be checked
+
+```{r}
+# This function checks the integrity of the  
+check_IDs(condor)
+```
+
+### Subset the flow cytometry dataset
+
+**Arguments:**
+
+*`fcdataset`* = Flow cytometry dataset to be filtered.
+
+*`cell_ids`* = Row names of the cells to be filtered, should be provided
+as vector.
+
+```{r}
+condor_filter <- filter_fcd(fcdataset = condor, 
+                            cell_ids = rownames(condor$clustering$pca_norm_k60[condor$clustering$pca_norm_k60$metaclusters == "CD4 T", ]))
+```
+
+```{r}
+plot_marker(data = cbind(condor_filter$umap$pca_norm, condor_filter$clustering$pca_norm_k60), 
+            param = "metaclusters", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", facet_by_variable = FALSE)
+```
+
+# Session Info
+
+```{r}
+info <- sessionInfo()
+
+info
+```

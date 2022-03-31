@@ -1,0 +1,5 @@
+.Rbuildignore
+condor.Rproj
+.Rproj.user/
+inst/doc
+.test_files
