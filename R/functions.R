@@ -1023,7 +1023,7 @@ runFlowSOM <- function(fcd, input_type, data_slot, num_clusters, seed, prefix = 
 
   out <- FlowSOM::ReadInput(fcd[[input_type]][[data_slot]], transform = FALSE, scale = FALSE)
 
-  out <- FlowSOM::BuildSOM(out, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]])-1))
+  out <- FlowSOM::BuildSOM(out, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]]))
 
   out <- FlowSOM::BuildMST(out)
 

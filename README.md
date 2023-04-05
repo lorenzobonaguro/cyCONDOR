@@ -54,6 +54,7 @@ cytometry dataset, subset it or annotate metaclusters.
 - Correct the FlowSOM - LB
 - Function for random subsetting
 - PC loadings and variance explained by PC - Charlotte has some code
+- Possibility to select the number of PC for clustering or DR or the features 
 
 **Data Visualization** 
 - Density Map 
