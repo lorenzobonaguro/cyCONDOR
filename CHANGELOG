@@ -1,0 +1,9 @@
+v.010 -> Initial release
+
+v.011 -> Add function to merge condor objects
+      -> Updated LoadFCS function to be fully compatible with .csv files
+      -> Updated UMAP function to run on multiple cores
+      -> Updated RPhenograph function to run on multiple cores
+      -> Added function to run FlowSOM clustering
+      -> Fix issues with UMAP parametes selections
+      -> Added option to specifiy the delimiter for the csv files

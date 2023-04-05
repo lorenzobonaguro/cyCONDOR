@@ -13,7 +13,8 @@ runUMAP(
   min_dist = 0.2,
   metric = "euclidean",
   seed,
-  prefix = NULL
+  prefix = NULL,
+  n_threads = 32
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ runUMAP(
 \item{seed}{Seed used for the randomization steps}
 
 \item{prefix}{Prefix for the output.}
+
+\item{n_threads}{Number of threads to be used in the UMAP calculation.}
 }
 \value{
 runUMAP

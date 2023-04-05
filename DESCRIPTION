@@ -1,7 +1,7 @@
 Package: condor
 Type: Package
 Title: Flow Cytometry data analysis
-Version: 0.1.0
+Version: 0.1.1
 Author: Lorenzo Bonaguro
 Maintainer: Lorenzo Bonaguro <lorenzobonaguro@uni-bonn.de>
 Description: Flow cytometry analysis workflow. The aim of this project if to 
@@ -31,7 +31,10 @@ Imports:
     slingshot,
     Rmisc,
     ggrastr,
-    igraph
+    igraph,
+    uwot,
+    FlowSOM,
+    Rphenoannoy
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Suggests: 

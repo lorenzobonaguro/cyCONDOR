@@ -4,7 +4,7 @@
 \alias{prepFcsFolderData}
 \title{prepFcsFolderData}
 \usage{
-prepFcsFolderData(LoaderPATH = LoaderPATH, ceil = ceil, useCSV = useCSV)
+prepFcsFolderData(LoaderPATH, ceil, useCSV, separator)
 }
 \arguments{
 \item{LoaderPATH}{Path to the .fcs files}
@@ -12,6 +12,8 @@ prepFcsFolderData(LoaderPATH = LoaderPATH, ceil = ceil, useCSV = useCSV)
 \item{ceil}{number of cells to subset}
 
 \item{useCSV}{Logical, if input is .csv and not .fcs}
+
+\item{separator}{Separato used the flow csv files (if loading from csv)}
 }
 \value{
 load flow cytometry dataset

@@ -94,11 +94,12 @@ nfTransform <- function(transTypeTable, dataA, dataB){
 #' @param LoaderPATH Path to the .fcs files
 #' @param ceil number of cells to subset
 #' @param useCSV Logical, if input is .csv and not .fcs
+#' @param separator Separato used the flow csv files (if loading from csv)
 #' @import flowCore
 #' @return load flow cytometry dataset
 #'
 #' @export
-prepFcsFolderData <- function(LoaderPATH=LoaderPATH, ceil = ceil, useCSV = useCSV){
+prepFcsFolderData <- function(LoaderPATH, ceil, useCSV, separator){
   if(!useCSV){
 
 
@@ -138,8 +139,8 @@ prepFcsFolderData <- function(LoaderPATH=LoaderPATH, ceil = ceil, useCSV = useCS
     }} else {  #load csv files instead of fcs
 
       csvfilenames <- list.files(path = LoaderPATH, pattern="*.csv")
-      filenames <- csvfilenames
-      csvdata <- lapply(paste0(LoaderPATH,"//",csvfilenames),function(x) read.csv(x, check.names = F))
+      FcsFileNames <- csvfilenames
+      csvdata <- lapply(paste0(LoaderPATH,"//",csvfilenames),function(x) read.delim(x, check.names = F, sep = separator_fc_csv))
       NumBC <- length(csvdata)
       FFdata<-NULL
       for (FFs in 1:NumBC){
@@ -154,8 +155,16 @@ prepFcsFolderData <- function(LoaderPATH=LoaderPATH, ceil = ceil, useCSV = useCS
         colnames(FFa)[dim(FFa)[2]] <- "InFile"
         #Concatenate
         FFdata <- rbind(FFdata,FFa)
-      }}
-  return(list(FFdata=FFdata, OrigNames=OrigNames, forNewFF=fs[[1]], NumBC=NumBC, FcsFileNames = FcsFileNames))
+      }
+    }
+  if(!useCSV){
+
+    return(list(FFdata=FFdata, OrigNames=OrigNames, forNewFF=fs[[1]], NumBC=NumBC, FcsFileNames = FcsFileNames))
+
+  }else{
+
+    return(list(FFdata=FFdata, NumBC=NumBC, FcsFileNames = FcsFileNames))
+  }
 }
 
 #' plot_marker
@@ -638,6 +647,8 @@ barplot_frequency <- function(x_axes,
 #' @param anno_table path to the annotation table file.
 #' @param filename_col Name of the column containing the filename matching with the .fcs files.
 #' @param seed seed to be used for the randomization of the events.
+#' @param separator_anno separator used in the annotation file
+#' @param separator_fc_csv separator used in the fc csv files
 #' @import readr
 #' @import readxl
 #' @import stringr
@@ -652,13 +663,15 @@ prep_fcd <- function(FCSpath,
                      remove_param,
                      anno_table,
                      filename_col,
-                     seed) {
+                     seed,
+                     separator_anno = ",",
+                     separator_fc_csv = ",") {
 
   # Set seed for reproducibility
   set.seed(seed)
 
   ## Load the data
-  prepData <- prepFcsFolderData(LoaderPATH = FCSpath, ceil = ceil, useCSV = useCSV)
+  prepData <- prepFcsFolderData(LoaderPATH = FCSpath, ceil = ceil, useCSV = useCSV, separator = separator_fc_csv)
 
   FFdata<- as.matrix(prepData$FFdata) # Take the dataframe with the intensity values
 
@@ -680,7 +693,7 @@ prep_fcd <- function(FCSpath,
   df$expfcs_filename <- factor(df$expfcs_filename, labels = prepData$FcsFileNames)
 
   ## Now add the annotation (as csv file)
-  anno <- read.csv(anno_table)
+  anno <- read.delim(anno_table, sep = separator_anno)
 
   df <- merge(df, anno, by.x = "expfcs_filename", by.y = filename_col)
 
@@ -803,46 +816,44 @@ harmonize_PCA <- function(fcd, data_slot = "orig", batch, seed, prefix = NULL) {
 #' @param metric metric
 #' @param seed Seed used for the randomization steps
 #' @param prefix Prefix for the output.
+#' @param n_threads Number of threads to be used in the UMAP calculation.
 #' @import umap
 #' @import Rtsne
 #' @return runUMAP
 #'
 #' @export
-runUMAP <- function(fcd,
-                    input_type,
-                    data_slot,
-                    n_neighbors = 15,
-                    n_components = 2,
-                    min_dist = 0.2,
-                    metric = "euclidean",
-                    seed,
-                    prefix = NULL) {
-
-  umap_conf <- umap.defaults
-  umap_conf$n_neighbors <- 15
-  umap_conf$n_components <- 2
-  umap_conf$min_dist <- 0.2
-  umap_conf$metric <- "euclidean"
+runUMAP <- function (fcd,
+                     input_type,
+                     data_slot,
+                     n_neighbors = 15,
+                     n_components = 2,
+                     min_dist = 0.2,
+                     metric = "euclidean",
+                     seed,
+                     prefix = NULL,
+                     n_threads = 32) {
 
   set.seed(seed)
 
-  umapMat <- umap(d = fcd[[input_type]][[data_slot]], config = umap_conf)$layout
-  colnames(umapMat) <- c("UMAP1","UMAP2")
+  umapMat <- uwot::umap(X = fcd[[input_type]][[data_slot]],
+                        n_neighbors = n_neighbors,
+                        n_components = n_components,
+                        min_dist = min_dist,
+                        metric = metric,
+                        n_threads = n_threads)
+
+  colnames(umapMat) <- c("UMAP1", "UMAP2")
 
   if (is.null(prefix)) {
 
     fcd[["umap"]][[paste(input_type, data_slot, sep = "_")]] <- umapMat
 
-  } else {
+  }else {
 
     fcd[["umap"]][[paste(prefix, input_type, data_slot, sep = "_")]] <- umapMat
-
   }
 
-
-
   return(fcd)
-
 }
 
 #' runPhenograph
@@ -864,7 +875,7 @@ runPhenograph <- function(fcd, input_type, data_slot, k, seed, prefix = NULL) {
 
   set.seed(seed)
 
-  Rphenograph_out <- Rphenograph(fcd[[input_type]][[data_slot]], k = k)
+  Rphenograph_out <- Rphenoannoy::Rphenoannoy(fcd[[input_type]][[data_slot]], k = k)
   Rphenograph_out <- as.matrix(membership(Rphenograph_out[[2]]))
   Rphenograph_out <- as.data.frame(matrix(ncol=1,data=Rphenograph_out,dimnames=list(rownames(fcd$expr$orig),"Phenograph")))
 
@@ -873,11 +884,11 @@ runPhenograph <- function(fcd, input_type, data_slot, k, seed, prefix = NULL) {
 
   if (is.null(prefix)) {
 
-    fcd[["clustering"]][[paste(input_type, "_",data_slot, "_k", k, sep = "")]] <- Rphenograph_out
+    fcd[["clustering"]][[paste("Phenograph_", input_type, "_",data_slot, "_k", k, sep = "")]] <- Rphenograph_out
 
   } else {
 
-    fcd[["clustering"]][[paste(prefix, "_",input_type, "_",data_slot, "_k", k, sep = "")]] <- Rphenograph_out
+    fcd[["clustering"]][[paste("Phenograph_", prefix, "_",input_type, "_",data_slot, "_k", k, sep = "")]] <- Rphenograph_out
 
   }
 
@@ -926,6 +937,40 @@ runDM <- function(fcd, input_type, data_slot, k = 10,seed, prefix = NULL) {
 
 }
 
+#' merge_condor
+#'
+#' @title merge_condor
+#' @description Merges two condor objects.
+#' @param data1 Dataset 1 to merge
+#' @param data2 Dataset 2 to merge
+#' @return Condor Object
+#'
+#' @export
+merge_condor <- function(data1, data2) {
+
+  if (identical(colnames(data1$expr$orig), colnames(data2$expr$orig))) {
+    paste("Markers are matching")
+  } else {
+    stop("Markers are not matching")
+  }
+
+  if (identical(colnames(data1$anno$cell_anno), colnames(data2$anno$cell_anno))) {
+    paste("Metadata are matching")
+  } else {
+    stop("Metadata are not matching")
+  }
+
+  new_obj <- list()
+
+  new_obj[["expr"]][["orig"]] <- rbind(data1$expr$orig, data2$expr$orig)
+  new_obj[["anno"]][["cell_anno"]] <- rbind(data1$anno$cell_anno, data2$anno$cell_anno)
+
+  class(new_obj) <- "flow_cytometry_dataframe"
+
+  return(new_obj)
+
+}
+
 #' metaclustering
 #'
 #' @title metaclustering
@@ -954,6 +999,56 @@ metaclustering <- function(fcd,
   fcd$clustering[[clustering]][[name_out]] <- factor(fcd$clustering[[clustering]][[name_col]],
                                                      levels = levels(fcd$clustering[[clustering]][[name_col]]),
                                                      labels = tmp_metaclusters$metacluster)
+
+  return(fcd)
+
+}
+
+#' runFlowSOM
+#'
+#' @title runFlowSOM
+#' @description Run FlowSOM based clustering.
+#' @param fcd flow cytometry dataset.
+#' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca".
+#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
+#' @param num_clusters number of final clusters.
+#' @param seed Seed used for the randomization steps.
+#' @param prefix Prefic for the output.
+#' @return metaclustering
+#'
+#' @export
+runFlowSOM <- function(fcd, input_type, data_slot, num_clusters, seed, prefix = NULL) {
+
+  set.seed(seed)
+
+  out <- FlowSOM::ReadInput(fcd[[input_type]][[data_slot]], transform = FALSE, scale = FALSE)
+
+  out <- FlowSOM::BuildSOM(out, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]])-1))
+
+  out <- FlowSOM::BuildMST(out)
+
+  labels_pre <- out$map$mapping[, 1]
+
+  out <- FlowSOM::metaClustering_consensus(out$map$codes, k = num_clusters, seed = seed)
+
+  labels <- out[labels_pre]
+
+  labels <- as.factor(labels)
+  Description <- paste(input_type, "_",data_slot, "_k", num_clusters, sep = "")
+
+  flSOM <- data.frame("FlowSOM" = labels, "Description" = Description)
+
+  rownames(flSOM) <- rownames(fcd$expr$orig)
+
+  if (is.null(prefix)) {
+
+    fcd[["clustering"]][[paste("FlowSOM_", input_type, "_",data_slot, "_k", num_clusters, sep = "")]] <- flSOM
+
+  } else {
+
+    fcd[["clustering"]][[paste("FlowSOM_", prefix, "_",input_type, "_",data_slot, "_k", num_clusters, sep = "")]] <- flSOM
+
+  }
 
   return(fcd)
 

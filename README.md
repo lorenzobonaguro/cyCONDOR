@@ -46,16 +46,31 @@ cytometry dataset, subset it or annotate metaclusters.
 
 ## Coming soon:
 
-**Data analysis** - Pseudo-time Analysis - FlowSOM clustering - Astir
-for automated cell type annotation
+**Data analysis** 
+- Pseudo-time Analysis - Have some code
+- Astir for automated cell type annotation - Have some code 
+- Differential frequencies (boxplot of frequencies for more than two groups)
+- Differential marker expression
+- Correct the FlowSOM - LB
+- Function for random subsetting
+- PC loadings and variance explained by PC - Charlotte has some code
 
-**Data Visualization** - Density Map - Violin plot marker visualization
+**Data Visualization** 
+- Density Map 
+- Violin plot marker visualization
+- Cluster marker heatmap: option without column clustering (Charlotte)
+- Option to show cluster numbers on UMAP (Charlotte)
+- Violin plots of expression per cluster (sometimes I think this visualization is more helpful than the heatmap) - Charlotte has some code
+- Split UMAP by one variable and color by another
 
+**On hold**
+- Import of biexponential values to recreate FlowJo visualization
+- I personally find the way how names are added to the cluster numbers in the metaclustering function not so nice. I would prefer a way, where you have the number next to the label in your code.
 
 ## Contact or follow us
 
-For any problem of question regrding the *condor* package or this
-repositoy or you just want to be up to date on what is coming next
+For any problem of question regarding the *condor* package or this
+repository or you just want to be up to date on what is coming next
 follow me:
 
 <img src="./.logo/twitter.png" width="12%" style="float: left;"/>
