@@ -436,7 +436,9 @@ HM_markers <- function(input,
                        maxvalue = NULL,
                        size = 10,
                        title = "Choose a good title for the plot",
-                       exclusion = c("SSC-A", "FSC-A")) {
+                       exclusion = c("SSC-A", "FSC-A"),
+                       cluster_rows = FALSE,
+                       cluster_cols = FALSE) {
 
   tmp <- suppressMessages(melt(input))
 
@@ -455,7 +457,8 @@ HM_markers <- function(input,
   pheatmap::pheatmap(tmp, scale = "none",
                      breaks = scaleColors(data = tmp, maxvalue = maxvalue)[["breaks"]],
                      color = scaleColors(data = tmp, maxvalue = maxvalue)[["color"]],
-                     main = title, cellwidth = size, cellheight = size)
+                     main = title, cellwidth = size, cellheight = size,
+                     cluster_rows = cluster_row, cluster_cols = cluster_cols)
 
 }
 
@@ -1023,7 +1026,7 @@ runFlowSOM <- function(fcd, input_type, data_slot, num_clusters, seed, prefix = 
 
   out <- FlowSOM::ReadInput(fcd[[input_type]][[data_slot]], transform = FALSE, scale = FALSE)
 
-  out <- FlowSOM::BuildSOM(out, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]]))
+  out <- FlowSOM::BuildSOM(out, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]])))
 
   out <- FlowSOM::BuildMST(out)
 

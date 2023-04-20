@@ -4,7 +4,7 @@
 
 ## Overview
 
-Flow cytometry analysis workflow. The aim of this project if to provide
+Flow cytometry analysis workflow. The aim of this project is to provide
 an intuitive workflow for the analysis of high-dimensionality cytometry
 data in R. This project is far from complete, any suggestion is well
 accepted!
@@ -48,25 +48,29 @@ cytometry dataset, subset it or annotate metaclusters.
 
 **Data analysis** 
 - Pseudo-time Analysis - Have some code
-- Astir for automated cell type annotation - Have some code 
 - Differential frequencies (boxplot of frequencies for more than two groups)
 - Differential marker expression
-- Correct the FlowSOM - LB
-- Function for random subsetting
-- PC loadings and variance explained by PC - Charlotte has some code
+- ~~Correct the FlowSOM~~
+- ~~Function for random subsetting~~
+- ~~PC loadings and variance explained by PC - Charlotte has some code~~
 - Possibility to select the number of PC for clustering or DR or the features 
+- ~~Pseudobulk PCA analysis~~
+- Function to change param names
+- Function specific to export cell frequencies
 
 **Data Visualization** 
-- Density Map 
-- Violin plot marker visualization
-- Cluster marker heatmap: option without column clustering (Charlotte)
+- ~~Density Map~~
+- ~~Violin plot marker visualization~~
+- ~~Cluster marker heatmap: option without column clustering~~
 - Option to show cluster numbers on UMAP (Charlotte)
-- Violin plots of expression per cluster (sometimes I think this visualization is more helpful than the heatmap) - Charlotte has some code
-- Split UMAP by one variable and color by another
+- ~~Violin plots of expression per cluster (sometimes I think this visualization is more helpful than the heatmap) - Charlotte has some code~~
+- ~~Split UMAP by one variable and color by another~~ - Done but need further testing
 
 **On hold**
 - Import of biexponential values to recreate FlowJo visualization
 - I personally find the way how names are added to the cluster numbers in the metaclustering function not so nice. I would prefer a way, where you have the number next to the label in your code.
+- Update to the latest version of R 4XX
+- Astir for automated cell type annotation - Have some code 
 
 ## Contact or follow us
 

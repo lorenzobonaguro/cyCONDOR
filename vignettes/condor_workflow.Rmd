@@ -267,8 +267,7 @@ condor <- metaclustering(fcd = condor,
                                            "CD4 T", 
                                            "CD4 T", 
                                            "NK cells", 
-                                           "CD4 T", 
-                                           "Monocytes"))
+                                           "CD4 T"))
 ```
 
 ```{r}
@@ -334,6 +333,30 @@ plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", facet_by_variable = FALSE)
+
+library(ggplot2)
+
+plot_marker_2(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60, condor$anno$cell_anno), 
+            param = "metaclusters", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", facet_by_variable = "group")
+
+plot_marker_2(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60, condor$anno$cell_anno), 
+            param = "metaclusters", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", facet_by_variable = NULL)
+```
+
+
+```{r, fig.width=15}
+plot_density(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60, condor$anno$cell_anno), 
+             param = "group", 
+             title = "test", 
+             dim_red = "UMAP", 
+             dot_size = 0.2, 
+             apha = 0.2)
 ```
 
 ```{r}
@@ -429,7 +452,7 @@ HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig
 ```{r, fig.height=7}
 HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k60), 
            group = "metaclusters",
-           maxvalue = 2, 
+           maxvalue = NULL, 
            title = "Marker expression in metaclusters")
 ```
 
