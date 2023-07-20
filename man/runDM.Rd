@@ -4,7 +4,15 @@
 \alias{runDM}
 \title{runDM}
 \usage{
-runDM(fcd, input_type, data_slot, k = 10, seed, prefix = NULL)
+runDM(
+  fcd,
+  input_type,
+  data_slot,
+  k = 10,
+  seed,
+  prefix = NULL,
+  top_PCA = ncol(fcd[[input_type]][[data_slot]])
+)
 }
 \arguments{
 \item{fcd}{flow cytometry dataset}

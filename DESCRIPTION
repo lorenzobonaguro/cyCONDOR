@@ -34,7 +34,10 @@ Imports:
     igraph,
     uwot,
     FlowSOM,
-    Rphenoannoy
+    Rphenoannoy,
+    ggrepel,
+    caret,
+    randomForest
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Suggests: 

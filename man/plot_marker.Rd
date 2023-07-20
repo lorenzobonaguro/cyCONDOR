@@ -17,7 +17,10 @@ plot_marker(
   color_discrete = cluster_palette,
   color_gradient = colors,
   remove_guide = FALSE,
-  facet_by_variable = FALSE
+  facet_by_variable = NULL,
+  label_clusters = FALSE,
+  label_size = 3.5,
+  label_color = "black"
 )
 }
 \arguments{
@@ -46,6 +49,12 @@ plot_marker(
 \item{remove_guide}{Logical, if you want to remove the guide.}
 
 \item{facet_by_variable}{Logical if the plot should be splitted by the categorical variable used.}
+
+\item{label_clusters}{XX}
+
+\item{label_size}{XX}
+
+\item{label_color}{XX}
 }
 \value{
 plot marker or list of markers

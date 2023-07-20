@@ -4,7 +4,15 @@
 \alias{runPhenograph}
 \title{runPhenograph}
 \usage{
-runPhenograph(fcd, input_type, data_slot, k, seed, prefix = NULL)
+runPhenograph(
+  fcd,
+  input_type,
+  data_slot,
+  k,
+  seed,
+  prefix = NULL,
+  top_PCA = ncol(fcd[[input_type]][[data_slot]])
+)
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}

@@ -7,3 +7,20 @@ v.011 -> Add function to merge condor objects
       -> Added function to run FlowSOM clustering
       -> Fix issues with UMAP parametes selections
       -> Added option to specifiy the delimiter for the csv files
+
+v.012 -> Several bug fixes
+      -> Added function to calculate tSNE dimensionality reduction
+      -> Possibility to limit the number of PC used for clustering and non-linear dimensionality reduction
+      -> Added function to calculate Pseudotime (slignshot)
+      -> Included an easy-to-export differential frequency table
+      -> Added a function for random subsetting of the dataset
+      -> Added visualization of PC loadings
+      -> Added Pseudobulk PCA Analysis
+      -> Added function to easily export cellular frequency
+      -> Added function to change the parameter names (of the fcs files)
+      -> Added function to visualize DRs as density plot
+      -> Added Violin plot visualization of marker expression
+      -> Included option to not cluster rows and columns in heatmaps
+      -> Included option to show cluster numbers in the dotplot
+      -> Add multicore support to tSNE
+      -> Added workflow for UMAP projection and label transfer

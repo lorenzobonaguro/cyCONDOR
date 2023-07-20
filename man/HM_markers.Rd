@@ -10,7 +10,9 @@ HM_markers(
   maxvalue = NULL,
   size = 10,
   title = "Choose a good title for the plot",
-  exclusion = c("SSC-A", "FSC-A")
+  exclusion = c("SSC-A", "FSC-A"),
+  cluster_rows = FALSE,
+  cluster_cols = FALSE
 )
 }
 \arguments{

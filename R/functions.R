@@ -184,12 +184,16 @@ prepFcsFolderData <- function(LoaderPATH, ceil, useCSV, separator){
 #' @param color_gradient Colors for continous parameters.
 #' @param remove_guide Logical, if you want to remove the guide.
 #' @param facet_by_variable Logical if the plot should be splitted by the categorical variable used.
+#' @param label_clusters XX
+#' @param label_size XX
+#' @param label_color XX
 #' @import ggplot2
 #' @import RColorBrewer
 #' @import devtools
 #' @import ggpubr
 #' @import ggsci
 #' @import ggrastr
+#' @import ggrepel
 #' @return plot marker or list of markers
 #'
 #' @export
@@ -205,7 +209,10 @@ plot_marker <- function(data,
                         color_discrete = cluster_palette,
                         color_gradient = colors,
                         remove_guide = FALSE,
-                        facet_by_variable = FALSE) {
+                        facet_by_variable = NULL,
+                        label_clusters = FALSE,
+                        label_size = 3.5,
+                        label_color = "black") {
 
   if(is.numeric(data[[param]]) == TRUE){
 
@@ -228,6 +235,16 @@ plot_marker <- function(data,
     if (dim_red == "DM") {
 
       p1 <- ggplot(data, aes(x = DC_1, y = DC_2, color = poi)) +
+        geom_point(alpha = apha, size = dot_size) +
+        theme_bw() +
+        theme(aspect.ratio = 1, panel.grid = element_blank()) +
+        ggtitle(title) + scale_color_gradientn(colours = color_gradient) + labs(color = param)
+
+    }
+
+    if (dim_red == "tSNE") {
+
+      p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2, color = poi)) +
         geom_point(alpha = apha, size = dot_size) +
         theme_bw() +
         theme(aspect.ratio = 1, panel.grid = element_blank()) +
@@ -260,9 +277,28 @@ plot_marker <- function(data,
 
     }
 
-    if (facet_by_variable == TRUE) {
+    if (dim_red == "tSNE") {
 
-      p1 <- p1 + facet_wrap(~poi)
+      p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2, color = poi)) +
+        geom_point(alpha = apha, size = dot_size) +
+        theme_bw() +
+        theme(aspect.ratio = 1, panel.grid = element_blank()) +
+        ggtitle(title) + scale_colour_manual(values = color_discrete) +
+        guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) + labs(color = param)
+
+    }
+
+    if (is.null(facet_by_variable) == FALSE) {
+
+      if(facet_by_variable == TRUE) {
+
+        p1 <- p1 + facet_wrap(c(data["poi"]))
+
+      } else {
+
+        p1 <- p1 + facet_wrap(c(data[facet_by_variable]))
+
+      }
 
     }
 
@@ -285,6 +321,16 @@ plot_marker <- function(data,
   if (remove_guide == TRUE) {
 
     p1 <- p1 + theme(legend.position = "none")
+
+  }
+
+  if (label_clusters == TRUE) {
+
+    data$poi_lab <- data$poi
+
+    data$poi_lab <- ifelse(duplicated(data$poi_lab) == TRUE, NA, as.character(data$poi_lab))
+
+    p1 <- p1 + geom_label_repel(aes(label = data$poi_lab), size = label_size, color = label_color, force = 10)
 
   }
 
@@ -458,7 +504,7 @@ HM_markers <- function(input,
                      breaks = scaleColors(data = tmp, maxvalue = maxvalue)[["breaks"]],
                      color = scaleColors(data = tmp, maxvalue = maxvalue)[["color"]],
                      main = title, cellwidth = size, cellheight = size,
-                     cluster_rows = cluster_row, cluster_cols = cluster_cols)
+                     cluster_rows = cluster_rows, cluster_cols = cluster_cols)
 
 }
 
@@ -510,23 +556,25 @@ confusion_HM <- function(variables, group, size = 15, title = "Choose a good tit
 #' @param annotation Sample annotation to be used for the plot.
 #' @param sample_var Column name containing the sample IDs.
 #' @param group_var Column name defining the groupping for plotting.
+#' @param which_groups XX
 #' @param variable Variable used to stratify the plotting.
 #' @param numeric Logical if the groupping is numeric.
 #' @param test.type Test to be performed. (see need some development here)
+#' @param paired.test XX
 #' @return boxplot_and_stats
 #'
 #' @export
 boxplot_and_stats <- function(annotation,
-                              sample_var,
-                              group_var,
-                              variable,
-                              numeric = TRUE,
-                              test.type = "t.test") {
+                                   sample_var,
+                                   group_var,
+                                   which_groups = NULL,
+                                   variable,
+                                   numeric = TRUE,
+                                   test.type,
+                                   paired.test = FALSE) {
 
-  # Container
   container <- list()
 
-  # quantify cells of each sample per cluster
   tmp <- confusionMatrix(paste0(annotation[[sample_var]]),
                          paste0(variable))
 
@@ -534,33 +582,39 @@ boxplot_and_stats <- function(annotation,
 
   if (numeric == TRUE) {
 
-    tmp <- tmp[order(rownames(tmp)),order(as.numeric(colnames(tmp)))]
+    tmp <- tmp[order(rownames(tmp)), order(as.numeric(colnames(tmp)))]
 
   }
 
   if (numeric == FALSE) {
 
-    tmp <- tmp[order(rownames(tmp)),order(colnames(tmp))]
+    tmp <- tmp[order(rownames(tmp)), order(colnames(tmp))]
 
   }
 
-  # Give a more complete naming to the columns
   colnames(tmp) <- paste("Cluster_", colnames(tmp), sep = "")
 
-  # calculate the percentage
   tmp <- tmp/rowSums(tmp)*100
 
   tmp <- as.data.frame(tmp)
 
-  # Merging with the annotation
   tmp[[sample_var]] <- rownames(tmp)
 
   tmp <- merge(tmp, unique(annotation), by = sample_var)
 
+  #needs to be deleted, fakes data to create three different groups
+  #levels(tmp$group)[3] <- 'healed'
+  #tmp[2:4, "group"] <- 'healed'
+
   container[["per_data"]] <- tmp
 
-  # Plotting
   colnames(tmp)[colnames(tmp) == group_var] <- "groups"
+
+  if (!is.null(which_groups)) {
+
+    tmp <- subset(tmp, groups %in% which_groups)
+
+  }
 
   for (variable in colnames(tmp)[grep("Cluster_", colnames(tmp))]) {
 
@@ -568,15 +622,19 @@ boxplot_and_stats <- function(annotation,
 
     colnames(data)[colnames(data) == variable] <- "poi"
 
-    p1 <- ggplot(data, aes(x = groups, y = poi, fill = groups)) +
-      geom_boxplot(outlier.colour = NA) +
-      geom_point(shape = 21, fill = "white", color = "black", size = 4, position = position_dodge(0.4)) +
-      theme_bw() + theme(aspect.ratio = 2, panel.grid = element_blank()) +
-      scale_fill_manual(values = cluster_palette) +
-      ggtitle(variable) +
-      expand_limits(y = 0) +
-      xlab("") +
-      stat_compare_means(method = test.type, paired = FALSE, label = "p.signif", label.x.npc = 0.5)
+    p1 <- ggplot(data, aes(x = groups, y = poi, fill = groups))+
+      geom_boxplot(outlier.colour = NA)+
+      geom_point(shape = 21, fill = "white", color = "black",
+                 size = 4, position = position_dodge(0.4))+
+      theme_bw()+ theme(aspect.ratio = 2, panel.grid = element_blank())+
+      #scale_fill_manual(values = cluster_palette)+
+      ggtitle(variable)+
+      expand_limits(y = 0)+
+      xlab("")+
+      stat_compare_means(method = test.type,
+                         paired = paired.test,
+                         label = "p.signif",
+                         label.x.npc = 0.5)
 
     container[["plot"]][[variable]] <- p1
 
@@ -588,14 +646,12 @@ boxplot_and_stats <- function(annotation,
 
   stat <- compare_means(formula = value~groups,
                         data = tmp2,
-                        paired = TRUE,
+                        paired = paired.test,
                         method = test.type,
                         group.by = "variable",
                         p.adjust.method = "none")
 
   container[["stats"]] <- stat
-
-
 
   return(container)
 
@@ -820,6 +876,8 @@ harmonize_PCA <- function(fcd, data_slot = "orig", batch, seed, prefix = NULL) {
 #' @param seed Seed used for the randomization steps
 #' @param prefix Prefix for the output.
 #' @param n_threads Number of threads to be used in the UMAP calculation.
+#' @param top_PCA Number of PCA used in the UMAP calculation
+#' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data
 #' @import umap
 #' @import Rtsne
 #' @return runUMAP
@@ -834,29 +892,51 @@ runUMAP <- function (fcd,
                      metric = "euclidean",
                      seed,
                      prefix = NULL,
-                     n_threads = 32) {
+                     n_threads = 32,
+                     top_PCA = ncol(fcd[[input_type]][[data_slot]]),
+                     ret_model = FALSE) {
 
   set.seed(seed)
 
-  umapMat <- uwot::umap(X = fcd[[input_type]][[data_slot]],
-                        n_neighbors = n_neighbors,
-                        n_components = n_components,
-                        min_dist = min_dist,
-                        metric = metric,
-                        n_threads = n_threads)
+  umap_model <- uwot::umap(X = fcd[[input_type]][[data_slot]][,1:top_PCA],
+                           n_neighbors = n_neighbors,
+                           n_components = n_components,
+                           min_dist = min_dist,
+                           metric = metric,
+                           n_threads = n_threads,
+                           ret_model = ret_model)
+
+  if (ret_model == FALSE) {
+
+    umapMat <- umap_model
+
+  } else {
+
+    umapMat <- umap_model$embedding
+
+  }
 
   colnames(umapMat) <- c("UMAP1", "UMAP2")
 
-  if (is.null(prefix)) {
+  umap_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
 
-    fcd[["umap"]][[paste(input_type, data_slot, sep = "_")]] <- umapMat
+  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
 
-  }else {
+    suffix <- paste0("top", top_PCA)
 
-    fcd[["umap"]][[paste(prefix, input_type, data_slot, sep = "_")]] <- umapMat
+    umap_name <- paste(umap_name, suffix, sep = "_")
+  }
+
+  fcd[["umap"]][[umap_name]] <- umapMat
+
+  if (ret_model == TRUE) {
+
+    fcd[["extras"]][["umap_model"]] <- umap_model
+
   }
 
   return(fcd)
+
 }
 
 #' runPhenograph
@@ -874,26 +954,33 @@ runUMAP <- function (fcd,
 #' @return runPhenograph
 #'
 #' @export
-runPhenograph <- function(fcd, input_type, data_slot, k, seed, prefix = NULL) {
+runPhenograph <- function(fcd,
+                          input_type,
+                          data_slot,
+                          k,
+                          seed,
+                          prefix = NULL,
+                          top_PCA = ncol(fcd[[input_type]][[data_slot]])) {
 
   set.seed(seed)
 
-  Rphenograph_out <- Rphenoannoy::Rphenoannoy(fcd[[input_type]][[data_slot]], k = k)
+  Rphenograph_out <- Rphenoannoy::Rphenoannoy(fcd[[input_type]][[data_slot]][,1:top_PCA], k = k)
   Rphenograph_out <- as.matrix(membership(Rphenograph_out[[2]]))
   Rphenograph_out <- as.data.frame(matrix(ncol=1,data=Rphenograph_out,dimnames=list(rownames(fcd$expr$orig),"Phenograph")))
 
   Rphenograph_out$Phenograph <- as.factor(Rphenograph_out$Phenograph)
   Rphenograph_out$Description <- paste(input_type, "_",data_slot, "_k", k, sep = "")
 
-  if (is.null(prefix)) {
+  phe_name <- paste("Phenograph", sub("^_", "" , paste(prefix, input_type, data_slot, "k", k, sep = "_")), sep = "_")
 
-    fcd[["clustering"]][[paste("Phenograph_", input_type, "_",data_slot, "_k", k, sep = "")]] <- Rphenograph_out
+  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
 
-  } else {
+    suffix <- paste0("top", top_PCA)
 
-    fcd[["clustering"]][[paste("Phenograph_", prefix, "_",input_type, "_",data_slot, "_k", k, sep = "")]] <- Rphenograph_out
-
+    phe_name <- paste(phe_name, suffix, sep = "_")
   }
+
+  fcd[["clustering"]][[phe_name]] <- Rphenograph_out
 
   return(fcd)
 
@@ -915,26 +1002,33 @@ runPhenograph <- function(fcd, input_type, data_slot, k, seed, prefix = NULL) {
 #' @return runDM
 #'
 #' @export
-runDM <- function(fcd, input_type, data_slot, k = 10,seed, prefix = NULL) {
+runDM <- function(fcd,
+                  input_type,
+                  data_slot,
+                  k = 10,
+                  seed,
+                  prefix = NULL,
+                  top_PCA = ncol(fcd[[input_type]][[data_slot]])) {
 
   set.seed(91)
 
-  dm <- DiffusionMap(fcd[[input_type]][[data_slot]],
+  dm <- DiffusionMap(fcd[[input_type]][[data_slot]][,1:top_PCA],
                      vars = NULL,
                      k=k, suppress_dpt = TRUE, verbose=TRUE, n_pcs = NA)
 
   dm <- cbind(dm$DC1, dm$DC2, dm$DC3)
   colnames(dm) <- c("DC_1", "DC_2", "DC_3")
 
-  if (is.null(prefix)) {
+  dm_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
 
-    fcd[["diffmap"]][[paste(input_type, data_slot, sep = "_")]] <- dm
+  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
 
-  } else {
+    suffix <- paste0("top", top_PCA)
 
-    fcd[["diffmap"]][[paste(prefix, input_type, data_slot, sep = "_")]] <- dm
-
+    dm_name <- paste(umap_name, suffix, sep = "_")
   }
+
+  fcd[["diffmap"]][[dm_name]] <- dm
 
   return(fcd)
 
@@ -994,16 +1088,27 @@ metaclustering <- function(fcd,
 
   ### Assign the metacluster
   #### To make it easier when the number of cluster is high
-  tmp_metaclusters <- data.frame(cluster = levels(fcd$clustering[[clustering]][[name_col]]),
-                                 metacluster = c(metaclusters))
 
-  print(tmp_metaclusters)
+  if (identical(as.character(data.frame(cluster = levels(fcd$clustering[[clustering]][[name_col]]))$cluster), names(metaclusters))) {
 
-  fcd$clustering[[clustering]][[name_out]] <- factor(fcd$clustering[[clustering]][[name_col]],
-                                                     levels = levels(fcd$clustering[[clustering]][[name_col]]),
-                                                     labels = tmp_metaclusters$metacluster)
+    tmp_metaclusters <- data.frame(cluster = levels(fcd$clustering[[clustering]][[name_col]]),
+                                   metacluster = c(metaclusters))
 
-  return(fcd)
+    print(tmp_metaclusters)
+
+    fcd$clustering[[clustering]][[name_out]] <- factor(fcd$clustering[[clustering]][[name_col]],
+                                                       levels = levels(fcd$clustering[[clustering]][[name_col]]),
+                                                       labels = tmp_metaclusters$metacluster)
+
+    return(fcd)
+
+  }else {
+
+    print("Names in the metacluster vector do not match the clusters names")
+
+    return(fcd)
+
+  }
 
 }
 
@@ -1020,11 +1125,17 @@ metaclustering <- function(fcd,
 #' @return metaclustering
 #'
 #' @export
-runFlowSOM <- function(fcd, input_type, data_slot, num_clusters, seed, prefix = NULL) {
+runFlowSOM <- function(fcd,
+                       input_type,
+                       data_slot,
+                       num_clusters,
+                       seed,
+                       prefix = NULLt,
+                       top_PCA = ncol(fcd[[input_type]][[data_slot]])) {
 
   set.seed(seed)
 
-  out <- FlowSOM::ReadInput(fcd[[input_type]][[data_slot]], transform = FALSE, scale = FALSE)
+  out <- FlowSOM::ReadInput(fcd[[input_type]][[data_slot]][,1:top_PCA], transform = FALSE, scale = FALSE)
 
   out <- FlowSOM::BuildSOM(out, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]])))
 
@@ -1043,15 +1154,567 @@ runFlowSOM <- function(fcd, input_type, data_slot, num_clusters, seed, prefix = 
 
   rownames(flSOM) <- rownames(fcd$expr$orig)
 
-  if (is.null(prefix)) {
+  SOM_name <- paste("FlowSOM", sub("^_", "" , paste(prefix, input_type, data_slot, "k", num_clusters, sep = "_")), sep = "_")
 
-    fcd[["clustering"]][[paste("FlowSOM_", input_type, "_",data_slot, "_k", num_clusters, sep = "")]] <- flSOM
+  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
 
-  } else {
+    suffix <- paste0("top", top_PCA)
 
-    fcd[["clustering"]][[paste("FlowSOM_", prefix, "_",input_type, "_",data_slot, "_k", num_clusters, sep = "")]] <- flSOM
+    SOM_name <- paste(SOM_name, suffix, sep = "_")
+  }
+
+  fcd[["clustering"]][[SOM_name]] <- flSOM
+
+  return(fcd)
+
+}
+
+#' plot_density
+#'
+#' @title plot_density
+#' @description Density Plot of dimensionality reduction.
+#' @param data XX
+#' @param param XX
+#' @param title XX
+#' @param dim_red XX
+#' @param dot_size XX
+#' @param alpha XX
+#' @param color_density XX
+#' @return Density Plot
+#'
+#' @export
+plot_density <- function(data,
+                         param,
+                         title = "adjust the title",
+                         dim_red,
+                         dot_size = 0.1,
+                         apha = 0.2,
+                         color_density = c("Blues", "Oranges", "Reds")) {
+
+  group_density <- list()
+
+  colnames(data)[colnames(data) == param] <- "poi"
+
+  sequence <- unique(data$poi)
+
+  sequence <- sequence[order(sequence)]
+
+  names(color_density) <- sequence
+
+  if (dim_red == "UMAP"){
+    p0 <- ggplot(data = data, aes(x = UMAP1, y = UMAP2))
+  }
+
+  if (dim_red == "DM"){
+    p0 <- ggplot(data = data, aes(x = DM_1, y = DM_2))
+  }
+
+  for (i in sequence) {
+
+    p <- p0 +
+      geom_point_rast(fill="grey",color="grey",size=dot_size,alpha=apha) +
+      theme_bw() +
+      theme(aspect.ratio = 1, panel.grid = element_blank()) +
+      stat_density_2d(data = data[data$poi == i,],
+                      aes(x = UMAP1, y = UMAP2, fill = ..level..),
+                      geom = "polygon", contour = T, h = .5) +
+      scale_fill_distiller(palette = color_density[i], direction = 1) +
+      ggtitle(paste(dim_red, i, sep = "_"))
+
+    group_density[[i]] <- p
 
   }
+
+  out <- ggarrange(plotlist = group_density, legend = "right", ncol = 3, common.legend = FALSE)
+
+  out <- annotate_figure(out, top = text_grob(title))
+
+  return(out)
+
+}
+
+#' runtSNE
+#'
+#' @title runtSNE
+#' @description Calvulate tSNE dimensionality reduction
+#' @param fcd XX
+#' @param input_type XX
+#' @param data_slot XX
+#' @param perplexity XX
+#' @param seed XX
+#' @param prefix XX
+#' @return tSNE cohordinates
+#'
+#' @export
+runtSNE <- function(fcd,
+                    input_type,
+                    data_slot,
+                    perplexity,
+                    seed,
+                    prefix = NULL,
+                    n_threads = 1,
+                    top_PCA = ncol(fcd[[input_type]][[data_slot]])) {
+
+  set.seed(seed)
+
+  tSNE_df <- Rtsne(X = fcd[[input_type]][[data_slot]][,1:top_PCA],
+                   dims = 2,
+                   perplexity = perplexity,
+                   check_duplicates = F,
+                   verbose = T,
+                   num_threads = n_threads,
+                   pca = FALSE)
+
+  tSNE_df <- tSNE_df$Y
+
+  colnames(tSNE_df) <- c("tSNE1", "tSNE2")
+
+  rownames(tSNE_df) <- rownames(fcd[[input_type]][[data_slot]])
+
+  tSNE_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
+
+  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
+
+    suffix <- paste0("top", top_PCA)
+
+    tSNE_name <- paste(tSNE_name, suffix, sep = "_")
+  }
+
+  fcd[["tSNE"]][[tSNE_name]] <- tSNE_df
+
+  return(fcd)
+}
+
+#' change_param_name
+#'
+#' @title change_param
+#' @description  change parameter names
+#' @param fcd flowframe object (condor)
+#' @param old_names vector of names that should be changed
+#' @param new_names vector of new names in the same order
+#' @return change_param
+#'
+#' @export
+change_param_name <- function(fcd,
+                              old_names,
+                              new_names){
+
+  if (length(old_names) == length(new_names)) {
+
+    for (i in 1:length(old_names)) {
+
+      old = old_names[i]
+      new = new_names[i]
+
+      for (subfolder in names(fcd$expr)) {
+
+        if (old %in% names(fcd$expr[[subfolder]])) {
+
+          names(fcd$expr[[subfolder]])[which(names(fcd$expr[[subfolder]]) == old)] <- new
+
+          if (new %in% names(fcd$expr[[subfolder]])){
+
+            print(paste0("Changed parameter '", old, "' to '", new, "' in ", subfolder, "."))
+
+          }
+          else {
+            print("Something must have went wrong ;)")
+          }
+        }
+        else {
+          print(paste0("The parameter '", old , "' is not existing in fcd$expr$", subfolder, "."))
+        }
+
+      }
+    }
+  }
+  else {
+    print("ERROR: Both vectors have to be the same length.")
+  }
+
+  return(fcd)
+}
+
+#' df_frequency
+#'
+#' @title df_frequency
+#' @description function to get dataframe of frequencies
+#' @param classification classification parameters
+#' @param classification_header **optional** chosen header for classification parameters, default = "classification"
+#' @param vertical logical, if FALSE frequency on level of classification, default = TRUE
+#' @param groups ** optional ** vector of selected groups to display, default = all
+#' @return df_frequency
+#'
+#' @export
+df_frequency <- function(classification,      #condor$clustering$Phenograph_pca_norm_k60$Phenograph
+                         classification_header = "classification",
+                         condition,            #condor$anno$cell_anno$group
+                         vertical = TRUE,
+                         groups = NULL) {
+
+  require(reshape2)
+
+  table_occurance <- table(classification, condition)
+
+  i=2
+
+  if (!vertical){
+
+    i=1
+  }
+
+  tmp_df_frequencies <- as.data.frame(round(100 * prop.table(table_occurance, i),2))
+
+  result <- dcast(tmp_df_frequencies, classification ~ condition, value = "Freq")
+
+  if (!is.null(groups)){
+
+    keep = append(c("classification"),groups)
+
+    result <- result[,(colnames(result) %in% keep), drop = FALSE]
+  }
+
+  colnames(result)[1] <- classification_header
+
+  return(result)
+}
+
+#' subset_fcd
+#'
+#' @title subset_fcd
+#' @description Performs a random subset of the fcd
+#' @param fcd XX
+#' @param size XX
+#' @return df_frequency
+#'
+#' @export
+subset_fcd <- function(fcd, size) {
+
+  random_cells <- sample(rownames(fcd[["expr"]][["orig"]]), size = size)
+
+  condor_filter <- filter_fcd(fcdataset = fcd,
+                              cell_ids = random_cells)
+}
+
+#' runPseudotime
+#'
+#' @title runPseudotime
+#' @description Calculate speudotime or flow data
+#' @param subset_fcd XX
+#' @param cluster_methods XX
+#' @param pca_data_slot XX
+#' @return df_frequency
+#'
+#' @export
+runPseudotime <- function(subset_fcd,
+                          cluster_method,
+                          pca_data_slot = "norm") {
+
+  slingshot_object <- SingleCellExperiment(assays = List(norm = as.matrix(t(subset_fcd$expr$norm))))
+
+  reducedDims(slingshot_object) <- SimpleList(dm = subset_fcd$pca[[pca_data_slot]])
+
+  colData(slingshot_object)$clusters <- subset_fcd$clustering[[cluster_method]][["metaclusters"]]
+
+  lin <- getLineages(reducedDims(slingshot_object)$dm, colData(slingshot_object)$clusters)
+
+  #original code: approx_points = 100, but does not work for subsetted data (because number of values in the subset needs to be a multiple of the input number?)
+  lin <- getCurves(lin, approx_points = FALSE)
+
+  curve <- as.data.frame(slingPseudotime(lin), row.names = FALSE)
+
+  rownames(curve) <- rownames(subset_fcd$anno$cell_anno)
+
+  subset_fcd[["pseudotime"]][["slingshot_pca"]] <- curve
+
+  return(subset_fcd)
+
+}
+
+#' HM_differential_marker
+#'
+#' @title HM_differential_marker
+#' @description Calculate speudotime or flow data
+#' @param fcd XX
+#' @param data_slot XX
+#' @param cluster_method XX
+#' @param cluster_type XX
+#' @param maxvalue XX
+#' @param size XX
+#' @param title XX
+#' @param exclusion XX
+#' @param pca_data_slot XX
+#' @return df_frequency
+#'
+#' @export
+HM_differential_marker <- function(fcd,
+                                   data_slot = "orig",
+                                   cluster_method, #"Phenograph_pca_norm_k60", "FlowSOM_pca_orig_k5" or others
+                                   cluster_type, #"Phenograph", "FlowSOM", "metaclusters"
+                                   maxvalue = NULL,
+                                   size = 10,
+                                   title = "Choose a good title for the plot",
+                                   exclusion = c("SSC-A", "FSC-A")) {
+
+  tmp <- suppressMessages(melt(cbind(fcd$expr[[data_slot]],
+                                     fcd$clustering[[cluster_method]],
+                                     fcd$anno$cell_anno[colnames(fcd$anno$cell_anno) == "group"])))
+
+  #summarySE function from Rmisc package
+  tmp <- summarySE(data = tmp, measurevar = "value", groupvars = c(cluster_type, "variable", "group"))
+
+  colnames(tmp)[colnames(tmp) == cluster_type] <- "cluster"
+
+  ngroups <- length(unique(tmp$group))
+
+  tmp <- dcast(tmp[, c(1,2,3,5)], variable ~ cluster + group)
+
+  rownames(tmp) <- tmp$variable #change rownames to marker names
+  tmp$variable <- NULL #remove column "variable" with marker names
+  tmp <- tmp[!rownames(tmp) %in% exclusion,] #exclude marker from df/plot
+
+  tmp <- t(scale(t(tmp)))
+
+  pheatmap::pheatmap(tmp, scale = "none", cluster_rows = FALSE, cluster_cols = FALSE,
+                     breaks = scaleColors(data = tmp, maxvalue = maxvalue)[["breaks"]],
+                     color = scaleColors(data = tmp, maxvalue = maxvalue)[["color"]],
+                     main = title, cellwidth = size, cellheight = size,
+                     gaps_col = seq(0, ncol(tmp), ngroups)) #creates gap between clusters, not sure if needed but might be helpful for a big heatmap
+
+}
+
+#' PC_loading
+#'
+#' @title PC_loading
+#' @description Calculate speudotime or flow data
+#' @param fcd XX
+#' @param data_slot XX
+#' @param number XX
+#' @return PC loadings
+#'
+#' @export
+PC_loadings <- function(fcd, data_slot = "orig", number) {
+
+  pca_result <- prcomp(fcd[["expr"]][[data_slot]])
+
+  pca_rotations <- as.matrix(pca_result$rotation)
+
+  plot.list <- list()
+
+  for (i in colnames(pca_rotations)){
+
+    tmp <- as.data.frame(pca_rotations)
+    tmp$marker <- rownames(pca_rotations)
+    tmp <- tmp[,c(i,"marker")]
+    colnames(tmp) <- c("loadings", "marker")
+    tmp <- tmp %>% dplyr::arrange(loadings)
+    tmp$marker <- factor(tmp$marker, levels=tmp$marker)
+
+    plot.list[[i]] <- ggplot(tmp,aes(x=loadings,y=marker))+
+      geom_point()+
+      theme_linedraw()+
+      ggtitle(i)
+  }
+
+  cowplot::plot_grid(plotlist = plot.list[1:number], ncol = 3)
+
+}
+
+#' violinplot_marker
+#'
+#' @title violinplot_marker
+#' @description violinplot_marker
+#' @param fcd XX
+#' @param data_slot XX
+#' @param cluster_method XX
+#' @param cluster_type XX
+#' @param marker XX
+#' @return violinplot_marker
+#'
+#' @export
+violinplot_marker <- function(fcd,
+                              data_slot = "orig",
+                              cluster_method,
+                              cluster_type,
+                              marker = colnames(df[,-which(names(df) %in% c("metaclusters", "Description",
+                                                                            "Phenograph", "FlowSOM"))])) {
+
+  df <- cbind(fcd$clustering[[cluster_method]], fcd$expr[[data_slot]])
+
+  plot.list <- list()
+
+  for (i in intersect(colnames(df), marker)) {
+
+    df.short <- df[, c(cluster_type, i)]
+    colnames(df.short) <- c("cluster_type", "marker")
+
+    plot.list[[i]] <- ggplot(df.short, aes(x = cluster_type, y = marker))+
+      geom_violin()+
+      xlab("Cluster")+
+      ylab(i)+
+      theme_linedraw()+
+      stat_summary(fun.data = mean_sdl, size = 0.2,
+                   geom = "pointrange", color = "red")+
+      ggtitle(i)
+  }
+
+  cowplot::plot_grid(plotlist = plot.list, ncol = 1)
+}
+
+#' runPCA_pseudobulk
+#'
+#' @title runPCA_pseudobulk
+#' @description runPCA_pseudobulk
+#' @param fcd XX
+#' @return runPCA_pseudobulk
+#'
+#' @export
+runPCA_pseudobulk <- function(fcd) {
+
+  data <- fcd[["expr"]][["orig"]]
+
+  index <- fcd[["anno"]][["cell_anno"]]
+
+  container <- list()
+
+  for (sample in unique(index$expfcs_filename)) {
+
+    data_f <- data[rownames(index[index$expfcs_filename == sample,]), ]
+
+    container[[sample]] <- colMeans(data_f)
+  }
+
+  data_pca <- do.call(rbind, container)
+
+  pca <- as.data.frame(prcomp(data_pca)$x)
+
+  pca$expfcs_filename <- rownames(pca)
+
+  index <- index[!duplicated(index$expfcs_filename),]
+
+  pca <- merge(pca, index, by = "expfcs_filename")
+
+  output <- list(pca = pca, data = data_pca)
+
+  return(output)
+
+}
+
+#' learnUMAP
+#'
+#' @title learnUMAP
+#' @description learnUMAP
+#' @param fcd XX
+#' @param input_type XX
+#' @param data_slot XX
+#' @param model XX
+#' @param n_epochs XX
+#' @param prefix XX
+#' @param n_threads XX
+#' @param seed XX
+#' @return learnUMAP
+#'
+#' @export
+learnUMAP <- function(fcd,
+                      input_type,
+                      data_slot,
+                      model,
+                      n_epochs = 100,
+                      prefix = NULL,
+                      n_threads = 32,
+                      seed) {
+
+  set.seed(seed)
+
+  umapMat <- uwot::umap_transform(X = fcd[[input_type]][[data_slot]],
+                                  model = model,
+                                  n_epochs = n_epochs,
+                                  n_threads = n_threads)
+
+  colnames(umapMat) <- c("UMAP1", "UMAP2")
+
+  umap_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
+
+  fcd[["umap"]][[umap_name]] <- umapMat
+
+  return(fcd)
+
+}
+
+#' train_transfer_model
+#'
+#' @title train_transfer_model
+#' @description train_transfer_model
+#' @param fcd XX
+#' @param input_type XX
+#' @param data_slot XX
+#' @param label XX
+#' @param method XX
+#' @param tuneLenght XX
+#' @param trControl XX
+#' @param seed XX
+#' @return train_transfer_model
+#'
+#' @export
+train_transfer_model <- function(fcd,
+                                 input_type,
+                                 data_slot,
+                                 label,
+                                 method = "knn",
+                                 tuneLength = 5,
+                                 trControl = trainControl(method = "cv"),
+                                 seed) {
+
+  container <- list()
+
+  set.seed(seed)
+
+  model <- train(x = fcd[[input_type]][[data_slot]],
+                 y = factor(label),
+                 method = method,
+                 tuneLength = tuneLength,
+                 trControl = trControl)
+
+  performance <- ggplot(model) +
+    geom_errorbar(data = model$results, aes(ymin = Accuracy - AccuracySD, ymax = Accuracy + AccuracySD), width = 0.4) +
+    theme_classic(base_size = 15)
+
+  features <- plot(varImp(model))
+
+  container[["lt_model"]] <- model
+  container[["performace_plot"]] <- performance
+  container[["features_plot"]] <- features
+
+  fcd[["extras"]][["lt_model"]] <- container
+
+  return(fcd)
+}
+
+#' predict_labels
+#'
+#' @title predict_labels
+#' @description predict_labels
+#' @param fcd XX
+#' @param input_type XX
+#' @param data_slot XX
+#' @param model_object XX
+#' @param label XX
+#' @param seed XX
+#' @return predict_labels
+#'
+#' @export
+predict_labels <- function(fcd,
+                           input_type,
+                           data_slot,
+                           model_object,
+                           label = "predicted_labels",
+                           seed) {
+
+  set.seed(seed)
+
+  fcd[["clustering"]][[label]] <- data.frame(Description = "predicted",
+                                             predicted_label = predict(model_object$extras$lt_model$lt_model,
+                                                                       newdata = fcd[[input_type]][[data_slot]]))
 
   return(fcd)
 

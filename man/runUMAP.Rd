@@ -14,7 +14,9 @@ runUMAP(
   metric = "euclidean",
   seed,
   prefix = NULL,
-  n_threads = 32
+  n_threads = 32,
+  top_PCA = ncol(fcd[[input_type]][[data_slot]]),
+  ret_model = FALSE
 )
 }
 \arguments{
@@ -37,6 +39,10 @@ runUMAP(
 \item{prefix}{Prefix for the output.}
 
 \item{n_threads}{Number of threads to be used in the UMAP calculation.}
+
+\item{top_PCA}{Number of PCA used in the UMAP calculation}
+
+\item{ret_model}{LOGICAL if the UMAP model should be saved for future projection of the data}
 }
 \value{
 runUMAP

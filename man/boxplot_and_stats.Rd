@@ -8,9 +8,11 @@ boxplot_and_stats(
   annotation,
   sample_var,
   group_var,
+  which_groups = NULL,
   variable,
   numeric = TRUE,
-  test.type = "t.test"
+  test.type,
+  paired.test = FALSE
 )
 }
 \arguments{
@@ -20,11 +22,15 @@ boxplot_and_stats(
 
 \item{group_var}{Column name defining the groupping for plotting.}
 
+\item{which_groups}{XX}
+
 \item{variable}{Variable used to stratify the plotting.}
 
 \item{numeric}{Logical if the groupping is numeric.}
 
 \item{test.type}{Test to be performed. (see need some development here)}
+
+\item{paired.test}{XX}
 }
 \value{
 boxplot_and_stats

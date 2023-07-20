@@ -4,7 +4,15 @@
 \alias{runFlowSOM}
 \title{runFlowSOM}
 \usage{
-runFlowSOM(fcd, input_type, data_slot, num_clusters, seed, prefix = NULL)
+runFlowSOM(
+  fcd,
+  input_type,
+  data_slot,
+  num_clusters,
+  seed,
+  prefix = NULLt,
+  top_PCA = ncol(fcd[[input_type]][[data_slot]])
+)
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}

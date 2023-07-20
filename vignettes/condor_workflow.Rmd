@@ -152,7 +152,22 @@ condor <- runUMAP(fcd = condor,
                   input_type = "pca", 
                   data_slot = "norm", 
                   seed = 91)
+
+condor <- runUMAP(fcd = condor, 
+                  input_type = "pca", 
+                  data_slot = "norm", 
+                  seed = 91, top_PCA = 3)
 ```
+
+## tSNE
+```{r}
+condor <- runtSNE(fcd = condor, 
+                  input_type = "pca", 
+                  data_slot = "orig", 
+                  seed = 91, 
+                  perplexity = 30)
+```
+
 
 ## Diffusion Map
 
@@ -252,34 +267,34 @@ the original clusters and the metaclusters to make it easy to check.
 
 ```{r}
 condor <- metaclustering(fcd = condor, 
-                         clustering = "Phenograph_pca_orig_k60", 
+                         clustering = "Phenograph_pca_orig_k_60", 
                          name_col = "Phenograph", 
                          name_out = "metaclusters", 
-                         metaclusters = c( "CD4 T", 
-                                           "B cells", 
-                                           "CD8 T", 
-                                           "Monocytes", 
-                                           "CD8 T", 
-                                           "CD8 T", 
-                                           "Monocytes", 
-                                           "Monocytes", 
-                                           "Monocytes", 
-                                           "CD4 T", 
-                                           "CD4 T", 
-                                           "NK cells", 
-                                           "CD4 T"))
+                         metaclusters = c("1" = "CD4 T", 
+                                          "2" = "B cells", 
+                                          "3" = "CD8 T", 
+                                          "4" = "Monocytes", 
+                                          "5" = "CD8 T", 
+                                          "6" = "CD8 T", 
+                                          "7" = "Monocytes", 
+                                          "8" = "Monocytes", 
+                                          "9" = "Monocytes", 
+                                          "10" = "CD4 T", 
+                                          "11" = "CD4 T", 
+                                          "12" = "NK cells", 
+                                          "13" = "CD4 T"))
 ```
 
 ```{r}
 condor <- metaclustering(fcd = condor, 
-                         clustering = "FlowSOM_pca_orig_k5", 
+                         clustering = "FlowSOM_pca_orig_k_5", 
                          name_col = "FlowSOM", 
                          name_out = "metaclusters", 
-                         metaclusters = c("CD4 T", 
-                                          "NK cells", 
-                                          "B cells", 
-                                          "CD8 T", 
-                                          "Monocytes"))
+                         metaclusters = c("1" = "CD4 T", 
+                                          "2" = "NK cells", 
+                                          "3" = "B cells", 
+                                          "4" = "CD8 T", 
+                                          "5" = "Monocytes"))
 ```
 
 # Data visualization and statistics
@@ -310,16 +325,56 @@ positive cells.
 categorical variable used.
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
             param = "Phenograph", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", 
-            facet_by_variable = FALSE)
+            facet_by_variable = NULL)
+
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", 
+            facet_by_variable = "metaclusters")
+
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", 
+            facet_by_variable = TRUE)
+```
+
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_norm_top3, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", 
+            facet_by_variable = NULL)
+
+plot_marker(data = cbind(condor$tSNE$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "tSNE", 
+            facet_by_variable = NULL, dot_size = 2)
 ```
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_pca_orig_k5), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", 
+            facet_by_variable = NULL)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_pca_orig_k_5), 
             param = "FlowSOM", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
@@ -328,30 +383,34 @@ plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_pca_ori
 ```
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
             param = "metaclusters", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", facet_by_variable = FALSE)
 
-library(ggplot2)
-
-plot_marker_2(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60, condor$anno$cell_anno), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
             param = "metaclusters", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", facet_by_variable = "group")
 
-plot_marker_2(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60, condor$anno$cell_anno), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
             param = "metaclusters", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", facet_by_variable = NULL)
+
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Phenograph Clustering on Normalized expression", 
+            dim_red = "UMAP", facet_by_variable = NULL, label_clusters = TRUE)
 ```
 
 
 ```{r, fig.width=15}
-plot_density(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k60, condor$anno$cell_anno), 
+plot_density(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
              param = "group", 
              title = "test", 
              dim_red = "UMAP", 
@@ -360,11 +419,11 @@ plot_density(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca
 ```
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_pca_orig_k5), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_pca_orig_k_5), 
             param = "metaclusters", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
-            dim_red = "UMAP", facet_by_variable = FALSE)
+            dim_red = "UMAP", facet_by_variable = NULL, label_clusters = TRUE)
 ```
 
 ```{r}
@@ -391,13 +450,13 @@ variable.
 *`title`* = Title for the plot.
 
 ```{r}
-confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k60$Phenograph, 
+confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k_60$Phenograph, 
              group = condor$anno$cell_anno$group, size = 30, 
              title = "Confusion Matrix - Phenograph K60")
 ```
 
 ```{r}
-confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k60$metaclusters, 
+confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
              group = condor$anno$cell_anno$group, size = 30, 
              title = "Confusion Matrix - Metaclusters")
 ```
@@ -416,14 +475,14 @@ confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k60$metaclusters,
 
 ```{r}
 barplot_frequency(x_axes = condor$anno$cell_anno$group, 
-                  colour = condor$clustering$Phenograph_pca_orig_k60$Phenograph, 
+                  colour = condor$clustering$Phenograph_pca_orig_k_60$Phenograph, 
                   title = "Stacked barplot of cluster frequencies", 
                   legend_title = "Phenograph Cluster - k60")
 ```
 
 ```{r}
 barplot_frequency(x_axes = condor$anno$cell_anno$group, 
-                  colour = condor$clustering$Phenograph_pca_orig_k60$metaclusters, 
+                  colour = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
                   title = "Stacked barplot of metaclusters frequencies", 
                   legend_title = "Phenograph Cluster - Metaclusters")
 ```
@@ -443,14 +502,15 @@ barplot_frequency(x_axes = condor$anno$cell_anno$group,
 *`title`* = Title for the plot.
 
 ```{r, fig.height=7}
-HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k60), 
+HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
            group = "Phenograph",
            maxvalue = 2, 
-           title = "Marker expression in the clusters")
+           title = "Marker expression in the clusters", 
+           cluster_rows = TRUE)
 ```
 
 ```{r, fig.height=7}
-HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k60), 
+HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
            group = "metaclusters",
            maxvalue = NULL, 
            title = "Marker expression in metaclusters")
@@ -476,7 +536,7 @@ HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig
 box_stat <- boxplot_and_stats(annotation = condor$anno$cell_anno, 
                               sample_var = "sample_ID", 
                               group_var = "group", 
-                              variable = condor$clustering$Phenograph_pca_orig_k60$metaclusters, 
+                              variable = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
                               numeric = FALSE, 
                               test.type = "t.test")
 
@@ -506,15 +566,15 @@ check_IDs(condor)
 as vector.
 
 ```{r}
-condor_filter <- filter_fcd(fcdataset = condor, 
-                            cell_ids = rownames(condor$clustering$Phenograph_pca_orig_k60[condor$clustering$Phenograph_pca_orig_k60$metaclusters == "CD4 T", ]))
+condor_filter <- filter_fcd(fcdataset = condor,
+                            cell_ids = rownames(condor$clustering$Phenograph_pca_orig_k_60[condor$clustering$Phenograph_pca_orig_k_60$metaclusters == "CD4 T", ]))
 ```
 
 ```{r}
-plot_marker(data = cbind(condor_filter$umap$pca_norm, condor_filter$clustering$Phenograph_pca_orig_k60), 
-            param = "metaclusters", 
-            order = T, 
-            title = "Phenograph Clustering on Normalized expression", 
+plot_marker(data = cbind(condor_filter$umap$pca_norm, condor_filter$clustering$Phenograph_pca_orig_k_60),
+            param = "metaclusters",
+            order = T,
+            title = "Phenograph Clustering on Normalized expression",
             dim_red = "UMAP", facet_by_variable = FALSE)
 ```
 
