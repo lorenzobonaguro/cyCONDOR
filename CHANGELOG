@@ -24,3 +24,6 @@ v.012 -> Several bug fixes
       -> Included option to show cluster numbers in the dotplot
       -> Add multicore support to tSNE
       -> Added workflow for UMAP projection and label transfer
+
+v.012 -> FlowSOM function can retain the model to plot the SOM tree afterwards
+      -> **Added Function to read flowjo workspaces**

@@ -19,41 +19,53 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(condor)
+library(flowWorkspace)
+library(CytoML)
 ```
 
-# Loading the data
+## Read the .wsp file
+```{r}
+ws <- open_flowjo_xml("../.test_files/flowjo_workspace.wsp", path = "../.test_files/fcs_flowjo_ws/")
 
-With this function you import the fcs files in R, the .fcs files should
-be all stored in a single folder *FCSpath*, and the filename should
-match one of the column names of the annotation file.
+ws <- open_flowjo_xml("../.test_files/flowjo_workspace.wsp")
 
-**Arguments:**
+ws
+```
 
-*`FCSpath`*= folder where the .fcs files are stored
+## Transformation into **gatingset** object
+```{r}
+gs <- flowjo_to_gatingset(ws, name = "samples", path = "../.test_files/fcs_flowjo_ws/")
 
-*`ceil`*= Number of cells to use for each file (set to a high number if
-you want to use all available events)
+gs
+```
 
-*`useCSV`* = flag if the input are .csv files and not .fcs
-(experimental)
+### Visualization of the gating strategy
+```{r}
+plot(gs, bool = TRUE)
+```
 
-*`remove_param`* = Parameters to remove from the transformation,
-"inTime" should be kept
-
-*`anno_table`* = path to the annotation table file "filename_col" = Name
-of the column containing the filename matching with the .fcs files
-
-*`seed`*= seed to be used for the randomization of the events
+### Get unique gate names
+```{r}
+gs_pop_get_stats(gs)
+```
 
 ```{r}
-condor <- prep_fcd(FCSpath = "../.test_files/fcs/", 
-                    ceil = 1000, 
-                    useCSV = FALSE, 
-                    transformation = "a", 
-                    remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile"), 
-                    anno_table = "../.test_files/metadata.csv", 
-                    filename_col = "filename",
-                    seed = 91)
+nodelist <- gs_get_pop_paths(gs, path = "auto")
+nodelist
+```
+
+## Prepare the data
+```{r}
+fc_data <- prep_data_fjw(data_gs = gs, 
+                         pop = "root", 
+                         gate_list = nodelist, 
+                         inverse.transform = FALSE)
+
+str(fc_data) # The structure of this list is compatible with my other analysis pipeline and can be directly used for downstream analysis
+```
+
+```{r}
+condor <- prep_data_fjw()
 
 class(condor)
 ```

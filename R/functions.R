@@ -1130,20 +1130,21 @@ runFlowSOM <- function(fcd,
                        data_slot,
                        num_clusters,
                        seed,
-                       prefix = NULLt,
+                       prefix = NULL,
+                       ret_model = FALSE,
                        top_PCA = ncol(fcd[[input_type]][[data_slot]])) {
 
   set.seed(seed)
 
-  out <- FlowSOM::ReadInput(fcd[[input_type]][[data_slot]][,1:top_PCA], transform = FALSE, scale = FALSE)
+  som <- FlowSOM::ReadInput(as.matrix(fcd[[input_type]][[data_slot]][,1:top_PCA]), transform = FALSE, scale = FALSE)
 
-  out <- FlowSOM::BuildSOM(out, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]])))
+  som <- FlowSOM::BuildSOM(som, colsToUse = 1:(ncol(fcd[[input_type]][[data_slot]])))
 
-  out <- FlowSOM::BuildMST(out)
+  som <- FlowSOM::BuildMST(som)
 
-  labels_pre <- out$map$mapping[, 1]
+  labels_pre <- som$map$mapping[, 1]
 
-  out <- FlowSOM::metaClustering_consensus(out$map$codes, k = num_clusters, seed = seed)
+  out <- FlowSOM::metaClustering_consensus(som$map$codes, k = num_clusters, seed = seed)
 
   labels <- out[labels_pre]
 
@@ -1161,6 +1162,12 @@ runFlowSOM <- function(fcd,
     suffix <- paste0("top", top_PCA)
 
     SOM_name <- paste(SOM_name, suffix, sep = "_")
+  }
+
+  if (ret_model == TRUE) {
+
+    fcd[["extras"]][["FlowSOM_model"]] <- som
+
   }
 
   fcd[["clustering"]][[SOM_name]] <- flSOM
@@ -1452,13 +1459,16 @@ HM_differential_marker <- function(fcd,
                                    cluster_method, #"Phenograph_pca_norm_k60", "FlowSOM_pca_orig_k5" or others
                                    cluster_type, #"Phenograph", "FlowSOM", "metaclusters"
                                    maxvalue = NULL,
+                                   group_by, #"group"
                                    size = 10,
                                    title = "Choose a good title for the plot",
                                    exclusion = c("SSC-A", "FSC-A")) {
 
   tmp <- suppressMessages(melt(cbind(fcd$expr[[data_slot]],
                                      fcd$clustering[[cluster_method]],
-                                     fcd$anno$cell_anno[colnames(fcd$anno$cell_anno) == "group"])))
+                                     fcd$anno$cell_anno[colnames(fcd$anno$cell_anno) == group_by])))
+
+  colnames(tmp)[colnames(tmp) == group_by] <- "group"
 
   #summarySE function from Rmisc package
   tmp <- summarySE(data = tmp, measurevar = "value", groupvars = c(cluster_type, "variable", "group"))
@@ -1718,4 +1728,67 @@ predict_labels <- function(fcd,
 
   return(fcd)
 
+}
+
+#' Read FlowJo workspace
+#'
+#' @title read_flowjo_workspace
+#' @description read_flowjo_workspace
+#' @param data_gs XX
+#' @param pop XX
+#' @param gate_list XX
+#' @param inverse.transform XX
+#' @return read_flowjo_workspace
+#'
+#' @export
+prep_data_fjw <- function(data_gs, pop = "root", gate_list = nodelist, inverse.transform = FALSE) {
+
+  fs <- flowWorkspace::gs_pop_get_data(obj = data_gs, y = "root", inverse.transform = inverse.transform) %>% flowWorkspace::cytoset_to_flowSet()
+
+  filenames <- rownames(fs@phenoData)
+
+  NumBC <- length(fs)
+
+  FFdata <- NULL
+
+  OrigNames <-fs[[1]]@parameters$name
+
+  for (FFs in 1:NumBC){
+    FFa <- exprs(fs[[FFs]])
+
+    #Fixup column names
+    colnames(FFa) <- fs[[FFs]]@parameters$desc
+    empties <- which(is.na(colnames(FFa)) | colnames(FFa)== " ")
+    colnames(FFa)[empties] <- fs[[FFs]]@parameters$name[empties]
+    fs[[FFs]]@parameters$desc <- colnames(FFa)
+
+    #Add file label
+    FFa <- cbind(FFa,rep(FFs,dim(FFa)[1]))
+    colnames(FFa)[dim(FFa)[2]] <- "InFile"
+
+    # Add the gating info
+    for (gate in gate_list) {
+
+      FFa <- cbind(FFa, gh_pop_get_indices(gs[[FFs]], y = gate))
+      colnames(FFa)[dim(FFa)[2]] <- gate
+
+    }
+
+    #Concatenate
+    FFdata <- rbind(FFdata,FFa)
+  }
+
+  FFdata <- as.data.frame(FFdata)
+
+  FFdata$InFile <- factor(FFdata$InFile, labels = filenames) # To check what happens with 10+ samples but should be fine
+
+  rownames(FFdata) <- paste(FFdata$InFile, rownames(FFdata), sep = "_")
+
+  # Separate expression table from the metadata
+  fcd <- list()
+  #
+  fcd[["expr"]][["orig"]] <-FFdata[,1:length(OrigNames)]
+  fcd[["anno"]][["cell_anno"]] <- FFdata[, -(1:length(OrigNames))]
+
+  return(fcd)
 }
