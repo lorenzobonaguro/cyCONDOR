@@ -352,7 +352,7 @@ filter_fcd <- function(fcdataset, cell_ids) {
 
   new_fcd <- list()
 
-  for (level_1 in names(fcdataset)) {
+  for (level_1 in names(fcdataset)[names(fcdataset) != "extras"]) {
 
     int_cont <- fcdataset[[level_1]]
 
@@ -364,6 +364,12 @@ filter_fcd <- function(fcdataset, cell_ids) {
     }
 
     new_fcd[[level_1]] <- int_collector
+
+  }
+
+  if (length(names(fcdataset)[names(fcdataset) == "extras"]) == 1) {
+
+    new_fcd[["extras"]] <- fcdataset[["extras"]]
 
   }
 
@@ -1738,12 +1744,23 @@ predict_labels <- function(fcd,
 #' @param pop XX
 #' @param gate_list XX
 #' @param inverse.transform XX
+#' @import flowWorkspace
+#' @import Biobase
+#' @import CytoML
 #' @return read_flowjo_workspace
 #'
 #' @export
-prep_data_fjw <- function(data_gs, pop = "root", gate_list = nodelist, inverse.transform = FALSE) {
+prep_fjw <- function(data_gs,
+                     pop = "root",
+                     gate_list = nodelist,
+                     inverse.transform = FALSE,
+                     transformation = 'a',
+                     remove_param,
+                     merge_anno = FALSE,
+                     anno_table,
+                     separator_anno) {
 
-  fs <- flowWorkspace::gs_pop_get_data(obj = data_gs, y = "root", inverse.transform = inverse.transform) %>% flowWorkspace::cytoset_to_flowSet()
+  fs <- flowWorkspace::gs_pop_get_data(obj = data_gs, y = "root", inverse.transform = inverse.transform)
 
   filenames <- rownames(fs@phenoData)
 
@@ -1780,15 +1797,55 @@ prep_data_fjw <- function(data_gs, pop = "root", gate_list = nodelist, inverse.t
 
   FFdata <- as.data.frame(FFdata)
 
-  FFdata$InFile <- factor(FFdata$InFile, labels = filenames) # To check what happens with 10+ samples but should be fine
+  if (inverse.transform == TRUE) {
 
-  rownames(FFdata) <- paste(FFdata$InFile, rownames(FFdata), sep = "_")
+    ## Data Transformation
+    keeptable <- data.frame(Param = fs[[1]]@parameters$desc)
+    keeptable$Trans <- transformation
+    keeptable <- keeptable[!keeptable$Param %in% remove_param, ]
 
-  # Separate expression table from the metadata
+    data1 <- FFdata[,which(colnames(FFdata) %in% keeptable[,1])]
+
+    nfTransOut <- nfTransform(keeptable, data1, data1)
+
+    data1 <- nfTransOut$dataA1
+
+    ## Clean the dataframe
+    df <- cbind(data1, FFdata[, !colnames(FFdata) %in% fs[[1]]@parameters$desc])
+    df <- as.data.frame(df)
+    colnames(df)[colnames(df) == "InFile"] <- "expfcs_filename"
+    df$expfcs_filename <- as.factor(df$expfcs_filename)
+    df$expfcs_filename <- factor(df$expfcs_filename, labels = filenames)
+
+  } else {
+
+    df <- FFdata
+    colnames(df)[colnames(df) == "InFile"] <- "expfcs_filename"
+    df$expfcs_filename <- as.factor(df$expfcs_filename)
+    df$expfcs_filename <- factor(df$expfcs_filename, labels = filenames)
+
+  }
+
+  if (merge_anno == TRUE) {c
+
+    ## Now add the annotation (as csv file)
+    anno <- read.delim(anno_table, sep = separator_anno)
+
+    df <- merge(df, anno, by.x = "expfcs_filename", by.y = filename_col)
+
+  }
+
+  ## Give the unique rownames
+  rownames(df) <- paste(df$expfcs_filename, rownames(df), sep = "_")
+
+  ## Prepare the final object
   fcd <- list()
-  #
-  fcd[["expr"]][["orig"]] <-FFdata[,1:length(OrigNames)]
-  fcd[["anno"]][["cell_anno"]] <- FFdata[, -(1:length(OrigNames))]
+
+  fcd[["expr"]][["orig"]] <- df[ ,colnames(df) %in% fs[[1]]@parameters$desc]
+  fcd[["anno"]][["cell_anno"]] <- df[ ,!colnames(df) %in% fs[[1]]@parameters$desc]
+
+  class(fcd) <- "flow_cytometry_dataframe"
 
   return(fcd)
+
 }

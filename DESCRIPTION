@@ -37,7 +37,10 @@ Imports:
     Rphenoannoy,
     ggrepel,
     caret,
-    randomForest
+    randomForest,
+    flowWorkspace,
+    Biobase,
+    CytoML
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Suggests: 

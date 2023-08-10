@@ -10,6 +10,7 @@ HM_differential_marker(
   cluster_method,
   cluster_type,
   maxvalue = NULL,
+  group_by,
   size = 10,
   title = "Choose a good title for the plot",
   exclusion = c("SSC-A", "FSC-A")

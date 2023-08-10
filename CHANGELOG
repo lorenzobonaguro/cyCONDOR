@@ -25,5 +25,7 @@ v.012 -> Several bug fixes
       -> Add multicore support to tSNE
       -> Added workflow for UMAP projection and label transfer
 
-v.012 -> FlowSOM function can retain the model to plot the SOM tree afterwards
-      -> **Added Function to read flowjo workspaces**
+v.013 -> FlowSOM function can retain the model to plot the SOM tree afterwards
+      -> Added Function to read flowjo workspaces to a condor campatible format
+      -> Fixed filter function when the 'extra' slot is occupied
+      -> *Add ML classifier with CytoML

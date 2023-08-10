@@ -1,5 +1,5 @@
 ---
-title: "condor_workflow - v0.1.1"
+title: "condor_workflow - v0.1.3"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{condor_workflow}
@@ -297,7 +297,7 @@ condor <- metaclustering(fcd = condor,
 
 ```{r}
 condor <- metaclustering(fcd = condor, 
-                         clustering = "FlowSOM_pca_orig_k_5", 
+                         clustering = "FlowSOM_expr_orig_k_5", 
                          name_col = "FlowSOM", 
                          name_out = "metaclusters", 
                          metaclusters = c("1" = "CD4 T", 
@@ -384,7 +384,7 @@ plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_
 ```
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_pca_orig_k_5), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_expr_orig_k_5), 
             param = "FlowSOM", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
@@ -429,7 +429,7 @@ plot_density(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca
 ```
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_pca_orig_k_5), 
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_expr_orig_k_5), 
             param = "metaclusters", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
@@ -575,7 +575,11 @@ check_IDs(condor)
 *`cell_ids`* = Row names of the cells to be filtered, should be provided
 as vector.
 
+
+* This need to be fixed*
 ```{r}
+debug(filter_fcd)
+
 condor_filter <- filter_fcd(fcdataset = condor,
                             cell_ids = rownames(condor$clustering$Phenograph_pca_orig_k_60[condor$clustering$Phenograph_pca_orig_k_60$metaclusters == "CD4 T", ]))
 ```

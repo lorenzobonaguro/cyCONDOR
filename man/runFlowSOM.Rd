@@ -10,7 +10,8 @@ runFlowSOM(
   data_slot,
   num_clusters,
   seed,
-  prefix = NULLt,
+  prefix = NULL,
+  ret_model = FALSE,
   top_PCA = ncol(fcd[[input_type]][[data_slot]])
 )
 }
