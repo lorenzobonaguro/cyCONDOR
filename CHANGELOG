@@ -28,4 +28,8 @@ v.012 -> Several bug fixes
 v.013 -> FlowSOM function can retain the model to plot the SOM tree afterwards
       -> Added Function to read flowjo workspaces to a condor campatible format
       -> Fixed filter function when the 'extra' slot is occupied
-      -> *Add ML classifier with CytoML
+
+v.014 -> Add ML classifier with CytoML
+      -> Included Hmisc as requirment for Violin plto marker function
+      -> *Fix bug with UMAP plotting function when faceting
+

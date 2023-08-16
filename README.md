@@ -23,7 +23,7 @@ dataset* which is the structure needed for all the downstream functions.
 
 **Data Transformation:** Data are transformed to be suitable for the
 downstream analysis, different transformation methods are provided for
-different data types (e.g. MCFC, CyTOF, spectral Flow).
+different data types (e.g. MCFC, CyTOF, spectral Flow). *condor* can also directly read a FlowJo workspace and apply the same biex trasfromation to the data.
 
 **Dimensionality Reduction:** Several dimensionality reductions
 algorithms are provided with the *condor* package: **PCA, UMAP, DM**.
@@ -49,16 +49,7 @@ boxplot*.
 **Misc:** *condor* includes functions to check the integrity of the flow
 cytometry dataset, subset it or annotate metaclusters. Also includes several visualization tools to help in the interpretation of the data.
 
-
-## Coming soon:
-
-**Data analysis** 
-- Differential marker expression
-
-**Data Visualization** 
-
 **On hold**
-- Import of biexponential values to recreate FlowJo visualization
 - Update to the latest version of R 4XX
 - Astir for automated cell type annotation - Have some code 
 - ShinyApp (student project)
