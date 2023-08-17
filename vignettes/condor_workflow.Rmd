@@ -399,23 +399,23 @@ plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", facet_by_variable = FALSE)
 
-# plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
-#             param = "metaclusters", 
-#             order = T, 
-#             title = "Phenograph Clustering on Normalized expression", 
-#             dim_red = "UMAP", facet_by_variable = "group")
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno),
+            param = "metaclusters",
+            order = T,
+            title = "Phenograph Clustering on Normalized expression",
+            dim_red = "UMAP", facet_by_variable = "group")
 
 plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
             param = "metaclusters", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
-            dim_red = "UMAP", facet_by_variable = NULL)
+            dim_red = "UMAP", facet_by_variable = FALSE)
 
 plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
             param = "Phenograph", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
-            dim_red = "UMAP", facet_by_variable = NULL, label_clusters = TRUE)
+            dim_red = "UMAP", facet_by_variable = FALSE, label_clusters = TRUE)
 ```
 
 

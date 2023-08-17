@@ -209,7 +209,7 @@ plot_marker <- function(data,
                         color_discrete = cluster_palette,
                         color_gradient = colors,
                         remove_guide = FALSE,
-                        facet_by_variable = NULL,
+                        facet_by_variable = FALSE,
                         label_clusters = FALSE,
                         label_size = 3.5,
                         label_color = "black") {
@@ -221,6 +221,13 @@ plot_marker <- function(data,
     }
 
     colnames(data)[colnames(data) == param] <- "poi"
+
+    # This if statement if to fix the faceting by selected variable issue with R4
+    if (facet_by_variable != TRUE & facet_by_variable != FALSE) {
+
+      colnames(data)[colnames(data) == facet_by_variable] <- "facet"
+
+    }
 
     if (dim_red == "UMAP") {
 
@@ -255,6 +262,13 @@ plot_marker <- function(data,
   }else {
     colnames(data)[colnames(data) == param] <- "poi"
 
+    # This if statement if to fix the faceting by selected variable issue with R4
+    if (facet_by_variable != TRUE & facet_by_variable != FALSE) {
+
+      colnames(data)[colnames(data) == facet_by_variable] <- "facet"
+
+    }
+
     if (dim_red == "UMAP") {
 
       p1 <- ggplot(data, aes(x = UMAP1, y = UMAP2, color = poi)) +
@@ -288,15 +302,15 @@ plot_marker <- function(data,
 
     }
 
-    if (is.null(facet_by_variable) == FALSE) {
+    if (facet_by_variable != FALSE) {
 
       if(facet_by_variable == TRUE) {
 
-        p1 <- p1 + facet_wrap(c(data["poi"]))
+        p1 <- p1 + facet_wrap(~poi)
 
       } else {
 
-        p1 <- p1 + facet_wrap(c(data[facet_by_variable]))
+        p1 <- p1 + facet_wrap(~facet)
 
       }
 

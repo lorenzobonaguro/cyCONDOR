@@ -31,5 +31,6 @@ v.013 -> FlowSOM function can retain the model to plot the SOM tree afterwards
 
 v.014 -> Add ML classifier with CytoML
       -> Included Hmisc as requirment for Violin plto marker function
-      -> *Fix bug with UMAP plotting function when faceting
+      -> Fix bug with UMAP plotting function when faceting
+      -> *Tested diffusion map and
 
