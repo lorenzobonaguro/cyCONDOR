@@ -1,3 +1,10 @@
+#' Print Welcome Message and ASCII Art upon Loading `ggvolc`
+#'
+#' This function is executed when the `condor` package is attached to the R session.
+#' It prints a welcome message and an ASCII representation related to the package.
+#'
+#' @name condor-onAttach
+#' @keywords internal
 #' @importFrom utils packageDescription
 .onAttach <- function(libname, pkgname) {
   welcome_msg <- paste("Welcome to", packageDescription("condor")$Package, "version", packageDescription("condor")$Version, "!")
@@ -33,21 +40,15 @@ c:::::::cccccc:::::co:::::ooooo:::::o  n::::n    n::::nd::::::ddddd::::::ddo::::
 
 }
 
-#' Print Welcome Message and ASCII Art upon Loading `ggvolc`
-#'
-#' This function is executed when the `ggvolc` package is attached to the R session.
-#' It prints a welcome message and an ASCII representation related to the package.
-#'
-#' @name ggvolc-onAttach
-#' @keywords internal
-#' @seealso \code{\link[base]{library}}
-#' @examples
-#' # The function is automatically called when you use:
-#' # library(ggvolc)
-#` This function was inspired by loukesio/ggvolc
-
 # This code is to inform R that the listed names are intentionally global variables
 # to prevent 'no visible binding for global variable' warnings during R CMD check
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("log2FoldChange", "pvalue", "threshold","size_aes","genes" ,"x.start","x.end","y.start","y.end")) # Add other variables as needed
+  utils::globalVariables(c("prcomp", "loadings", "marker", "Freq", "groups", "poi",
+                           "quantile", "IQR", "UMAP1", "UMAP2", "DM_1", "DM_2",
+                           "...level...", "poi", "tSNE1", "tSNE2", "model.matrix",
+                           "read.delim", "separator_fc_csv", "read.delim", "nodelist",
+                           "gs", "filename_col", "umap_name", "prcomp", "input_scale",
+                           "colorRampPalette", "model.matrix", "trainControl",
+                           "train", "Accuracy", "AccuracySD", "varImp", "..level..",
+                           "DC_1", "DC_2")) # Add other variables as needed
 }

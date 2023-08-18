@@ -31,6 +31,9 @@ v.013 -> FlowSOM function can retain the model to plot the SOM tree afterwards
 
 v.014 -> Add ML classifier with CytoML
       -> Included Hmisc as requirment for Violin plto marker function
-      -> Fix bug with UMAP plotting function when faceting
-      -> *Tested diffusion map and
+      -> Fix bug with UMAP plotting function when faceting (default for facet_by_fariable set to FALSE not NULL)
+      -> Fixed package loading message
+      -> Tested diffusion map and imporoved function
+      -> Tested pseutodime and improved function
+      -> Splittied functions in multiple files to make them easier to find
 

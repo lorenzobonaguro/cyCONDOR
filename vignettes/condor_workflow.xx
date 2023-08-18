@@ -340,7 +340,7 @@ plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", 
-            facet_by_variable = NULL)
+            facet_by_variable = FALSE)
 
 plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
             param = "Phenograph", 
@@ -364,14 +364,14 @@ plot_marker(data = cbind(condor$umap$pca_norm_top3, condor$clustering$Phenograph
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", 
-            facet_by_variable = NULL)
+            facet_by_variable = FALSE)
 
 plot_marker(data = cbind(condor$tSNE$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
             param = "Phenograph", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "tSNE", 
-            facet_by_variable = NULL, dot_size = 2)
+            facet_by_variable = FALSE, dot_size = 2)
 ```
 
 ```{r}
@@ -380,7 +380,7 @@ plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
             dim_red = "UMAP", 
-            facet_by_variable = NULL)
+            facet_by_variable = FALSE)
 ```
 
 ```{r}
@@ -433,7 +433,7 @@ plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_expr_or
             param = "metaclusters", 
             order = T, 
             title = "Phenograph Clustering on Normalized expression", 
-            dim_red = "UMAP", facet_by_variable = NULL, label_clusters = TRUE)
+            dim_red = "UMAP", facet_by_variable = FALSE, label_clusters = TRUE)
 ```
 
 ```{r}
