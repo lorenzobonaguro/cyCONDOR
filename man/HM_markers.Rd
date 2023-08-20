@@ -28,9 +28,9 @@ HM_markers(
 
 \item{exclusion}{Marker to exclude from the visualization.}
 
-\item{cluster_rows}{XX}
+\item{cluster_rows}{Logical: If heatmap rows should be clustered.}
 
-\item{cluster_cols}{XX}
+\item{cluster_cols}{Logical: If heatmap columns should be clustered.}
 }
 \value{
 HM_markers

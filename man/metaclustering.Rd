@@ -17,9 +17,9 @@ metaclustering(
 
 \item{clustering}{Name of the clustering to match for the metaclustering.}
 
-\item{name_col}{Column containing the original cluster}
+\item{name_col}{Column containing the original cluster.}
 
-\item{name_out}{Name of the output column}
+\item{name_out}{Name of the output column.}
 
 \item{metaclusters}{Vector of the new clusters names, this should be of the same length of the levels of the original clustering.}
 }
@@ -27,7 +27,7 @@ metaclustering(
 metaclustering
 }
 \description{
-Assignment of a metacluster.
+Assignment of a metaclusters name.
 }
 \details{
 metaclustering

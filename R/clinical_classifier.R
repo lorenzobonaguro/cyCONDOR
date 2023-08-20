@@ -1,18 +1,18 @@
 #' Train Clinical Classifier
 #'
 #' @title train_classifier_model
-#' @description train_classifier_model
-#' @param fcd XX
-#' @param input_type XX
-#' @param data_slot XX
-#' @param sample_names XX
-#' @param classification_variable XX
-#' @param family XX
-#' @param type1 XX
-#' @param type2 XX
-#' @param parallelCore XX
-#' @param reg XX
-#' @param seed XX
+#' @description This function trains a classifier for a clinical feature of the data.
+#' @param fcd flowframe object.
+#' @param input_type data to use for the calculation, e.g. "pca" (suggested option).
+#' @param data_slot name to use. If no prefix was added the, *orig*.
+#' @param sample_names Column name of the metadata table containing the file names.
+#' @param classification_variable Vector (same length as number of cells) with the classes to classify (e.g. ctrl/dis).
+#' @param family Response type. Must be one of the following: "gaussian","binomial","poisson","multinomial","cox","mgaussian".
+#' @param type1 Type of first level prediction. Type of prediction required. Type "link" gives the linear predictors for "binomial", "multinomial", "poisson" or "cox" models; for "gaussian" models it gives the fitted values. Type "response" gives the fitted probabilities for "binomial" or "multinomial", fitted mean for "poisson" and the fitted relative-risk for "cox"; for "gaussian" type "response" is equivalent to type "link".
+#' @param type2 Type of second level prediction.
+#' @param parallelCore Number of cores to be used.
+#' @param reg If elestic net regularization will be used (Default: FALSE).
+#' @param seed seed to be used.
 #' @import CytoDx
 #' @return train_classifier_model
 #'
@@ -57,13 +57,13 @@ train_classifier_model <- function(fcd,
 #' Predict Clinical Classifier
 #'
 #' @title predict_classifier
-#' @description predict_classifier
-#' @param fcd XX
-#' @param input_type XX
-#' @param data_slot XX
-#' @param sample_names XX
-#' @param model_object XX
-#' @param seed XX
+#' @description This function uses the model trained with *train_classifier_model* to predict new samples.
+#' @param fcd flowframe object.
+#' @param input_type data to use.
+#' @param data_slot name of the data slot to use.
+#' @param sample_names Column name of the metadata table containing the file names.
+#' @param model_object flowframe object with the stored classifier model.
+#' @param seed seed to be used for the analysis.
 #' @import CytoDx
 #' @return predict_classifier
 #'

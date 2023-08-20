@@ -2,8 +2,8 @@
 #'
 #' @title scaleColors
 #' @description Defines the color coding for an heatmap.
-#' @param data data to use
-#' @param maxvalue value at which the color is fully red / blue
+#' @param data data to use.
+#' @param maxvalue value at which the color is fully red / blue.
 #' @return Defines the color coding for an heatmap.
 #'
 #' @export
@@ -58,7 +58,7 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' plot_marker
 #'
 #' @title plot_marker
-#' @description Function to visualize a selected parameter.
+#' @description Function to visualize a selected parameter on a dimensionality reduction.
 #' @param data This is the input dataframe for the visualization, this part of the code can still be improved but for the moment you have to cbind the dataframe with the informations you want to plot.
 #' @param param Parameter to visualize in the plot, this can be either a continous variable or a categorical one, the function will react differently according.
 #' @param order Logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells.
@@ -72,9 +72,9 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param color_gradient Colors for continous parameters.
 #' @param remove_guide Logical, if you want to remove the guide.
 #' @param facet_by_variable Logical if the plot should be splitted by the categorical variable used.
-#' @param label_clusters XX
-#' @param label_size XX
-#' @param label_color XX
+#' @param label_clusters Logical: If clusters should be labeled with a text box.
+#' @param label_size Size of the labels.
+#' @param label_color Color of the labels.
 #' @import ggplot2
 #' @import RColorBrewer
 #' @import devtools
@@ -251,8 +251,8 @@ plot_marker <- function(data,
 #' @param size Size of the cells of the heatmap.
 #' @param title Title for the plot.
 #' @param exclusion Marker to exclude from the visualization.
-#' @param cluster_rows XX
-#' @param cluster_cols XX
+#' @param cluster_rows Logical: If heatmap rows should be clustered.
+#' @param cluster_cols Logical: If heatmap columns should be clustered.
 #' @import reshape2
 #' @return HM_markers
 #'
@@ -336,11 +336,11 @@ confusion_HM <- function(variables, group, size = 15, title = "Choose a good tit
 #' @param annotation Sample annotation to be used for the plot.
 #' @param sample_var Column name containing the sample IDs.
 #' @param group_var Column name defining the groupping for plotting.
-#' @param which_groups XX
+#' @param which_groups Grouping to be used.
 #' @param variable Variable used to stratify the plotting.
 #' @param numeric Logical if the groupping is numeric.
-#' @param test.type Test to be performed. (see need some development here)
-#' @param paired.test XX
+#' @param test.type Test to be performed. (see need some development here).
+#' @param paired.test Logicle: If the test should be paired.
 #' @return boxplot_and_stats
 #'
 #' @export
@@ -381,10 +381,6 @@ boxplot_and_stats <- function(annotation,
   tmp[[sample_var]] <- rownames(tmp)
 
   tmp <- merge(tmp, unique(annotation), by = sample_var)
-
-  #needs to be deleted, fakes data to create three different groups
-  #levels(tmp$group)[3] <- 'healed'
-  #tmp[2:4, "group"] <- 'healed'
 
   container[["per_data"]] <- tmp
 
@@ -440,10 +436,10 @@ boxplot_and_stats <- function(annotation,
 #' barplot_frequency
 #'
 #' @title barplot_frequency
-#' @description The function get_expr_huva provides the expression table resulting from reference huva experiment data.frame.
+#' @description This function output a stacked barplot for the cellular frequencies.
 #' @param x_axes Groupping of the x axes.
 #' @param colour Stratification to use on the stacked barplot.
-#' @param color_palette color_palette
+#' @param color_palette color_palette.
 #' @param title Title for the plot.
 #' @param legend_title Title for the legend.
 #' @return barplot_frequency
@@ -478,13 +474,13 @@ barplot_frequency <- function(x_axes,
 #'
 #' @title plot_density
 #' @description Density Plot of dimensionality reduction.
-#' @param data XX
-#' @param param XX
-#' @param title XX
-#' @param dim_red XX
-#' @param dot_size XX
-#' @param alpha XX
-#' @param color_density XX
+#' @param data data to be used for plotting.
+#' @param param Parameter to be used for the density splitting.
+#' @param title Title of the plot.
+#' @param dim_red Dimensionality reduction to be used.
+#' @param dot_size Size of the background dots.
+#' @param alpha Transparency of the background dots.
+#' @param color_density Colors of the density maps.
 #' @return Density Plot
 #'
 #' @export
@@ -541,16 +537,16 @@ plot_density <- function(data,
 #' HM_differential_marker
 #'
 #' @title HM_differential_marker
-#' @description Calculate speudotime or flow data
-#' @param fcd XX
-#' @param data_slot XX
-#' @param cluster_method XX
-#' @param cluster_type XX
-#' @param maxvalue XX
-#' @param size XX
-#' @param title XX
-#' @param exclusion XX
-#' @param group_by XX
+#' @description Calculate HM to compare marker expression in different groups.
+#' @param fcd flow cytometry dataset.
+#' @param data_slot data to use for the calculation of the UMAP, e.g. "expr" or "pca".
+#' @param cluster_method Name of the clustering result to be used.
+#' @param cluster_type Type of the clustering.
+#' @param maxvalue Max value for the coloring (Default: NULL, automatically defined).
+#' @param size Size of the individual squares.
+#' @param title Title for the plot.
+#' @param exclusion Vector with markers to exclude from the plot.
+#' @param group_by Grouping variable for visualization.
 #' @return df_frequency
 #'
 #' @export
@@ -596,10 +592,10 @@ HM_differential_marker <- function(fcd,
 #' PC_loading
 #'
 #' @title PC_loading
-#' @description Calculate speudotime or flow data
-#' @param fcd XX
-#' @param data_slot XX
-#' @param number XX
+#' @description Calculate PCA loading.
+#' @param fcd flow cytometry dataset.
+#' @param data_slot data to use for the calculation of the UMAP, e.g. "expr" or "pca".
+#' @param number Number of principal components to plot.
 #' @return PC loadings
 #'
 #' @export
@@ -633,12 +629,12 @@ PC_loadings <- function(fcd, data_slot = "orig", number) {
 #' violinplot_marker
 #'
 #' @title violinplot_marker
-#' @description violinplot_marker
-#' @param fcd XX
-#' @param data_slot XX
-#' @param cluster_method XX
-#' @param cluster_type XX
-#' @param marker XX
+#' @description Calculate a violin plot for the expression of selected markers.
+#' @param fcd flow cytometry dataset.
+#' @param data_slot data to use for the calculation, e.g. "expr" or "pca".
+#' @param cluster_method methods for the clustering to use.
+#' @param cluster_type type of clustering (slot name).
+#' @param marker marker to plot.
 #' @import Hmisc
 #' @return violinplot_marker
 #'

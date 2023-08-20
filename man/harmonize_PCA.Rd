@@ -7,13 +7,13 @@
 harmonize_PCA(fcd, data_slot = "orig", batch, seed, prefix = NULL)
 }
 \arguments{
-\item{fcd}{flow cytometry dataset}
+\item{fcd}{flow cytometry dataset.}
 
 \item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
 
-\item{batch}{vector of column names to use for correcting the data}
+\item{batch}{vector of column names to use for correcting the data.}
 
-\item{seed}{Seed used for the randomization steps}
+\item{seed}{Seed used for the randomization steps.}
 
 \item{prefix}{Prefix for the output.}
 }

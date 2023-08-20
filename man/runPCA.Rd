@@ -7,9 +7,9 @@
 runPCA(fcd, data_slot = "orig", seed, prefix = NULL)
 }
 \arguments{
-\item{fcd}{flow cytometry dataset}
+\item{fcd}{flow cytometry dataset.}
 
-\item{data_slot}{name of the data slot to use to calculate the PCA, original data (orig) or harmonized data (norm)}
+\item{data_slot}{name of the data slot to use to calculate the PCA, original data (orig) or harmonized data (norm).}
 
 \item{seed}{Seed used for the randomization steps.}
 

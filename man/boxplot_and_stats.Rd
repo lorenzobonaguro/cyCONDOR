@@ -22,15 +22,15 @@ boxplot_and_stats(
 
 \item{group_var}{Column name defining the groupping for plotting.}
 
-\item{which_groups}{XX}
+\item{which_groups}{Grouping to be used.}
 
 \item{variable}{Variable used to stratify the plotting.}
 
 \item{numeric}{Logical if the groupping is numeric.}
 
-\item{test.type}{Test to be performed. (see need some development here)}
+\item{test.type}{Test to be performed. (see need some development here).}
 
-\item{paired.test}{XX}
+\item{paired.test}{Logicle: If the test should be paired.}
 }
 \value{
 boxplot_and_stats

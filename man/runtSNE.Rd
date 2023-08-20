@@ -16,27 +16,27 @@ runtSNE(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{XX}
+\item{input_type}{data to use for the calculation, e.g. "pca" (suggested option).}
 
-\item{data_slot}{XX}
+\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
 
-\item{perplexity}{XX}
+\item{perplexity}{Perplexity used for tSNE calculation (see Rtsne documentation for details).}
 
-\item{seed}{XX}
+\item{seed}{Seed used for the randomization steps.}
 
-\item{prefix}{XX}
+\item{prefix}{Prefix of the output.}
 
-\item{n_threads}{XX}
+\item{n_threads}{Number of threads to be used in the tSNE calculation.}
 
-\item{top_PCA}{XX}
+\item{top_PCA}{Number of principal components to use for the analysis.}
 }
 \value{
 tSNE cohordinates
 }
 \description{
-Calvulate tSNE dimensionality reduction
+Calculate tSNE dimensionality reduction..
 }
 \details{
 runtSNE

@@ -1,10 +1,10 @@
 #' nfTransform
 #'
 #' @title nfTransform
-#' @description Data transformation.
-#' @param transTypeTable Table with the transformation parameters
-#' @param dataA dataA
-#' @param dataB dataB
+#' @description Data transformation, this function run within the prep_fcd wrapper.
+#' @param transTypeTable Table with the transformation parameters.
+#' @param dataA dataA.
+#' @param dataB dataB, same as dataA.
 #' @return transformed flow cytometry dataset
 #'
 #' @export
@@ -90,11 +90,11 @@ nfTransform <- function(transTypeTable, dataA, dataB){
 #' prepFcsFolderData
 #'
 #' @title prepFcsFolderData
-#' @description Load the .fcs files into a dataframe
-#' @param LoaderPATH Path to the .fcs files
-#' @param ceil number of cells to subset
-#' @param useCSV Logical, if input is .csv and not .fcs
-#' @param separator Separato used the flow csv files (if loading from csv)
+#' @description Load .fcs or .csv files into a dataframe and prepare the condor object.
+#' @param LoaderPATH Path to the .fcs files.
+#' @param ceil number of cells to subset.
+#' @param useCSV Logical, if input is .csv and not .fcs.
+#' @param separator Separator used the flow csv files (if loading from csv).
 #' @import flowCore
 #' @import reshape2
 #' @import dplyr
@@ -172,17 +172,17 @@ prepFcsFolderData <- function(LoaderPATH, ceil, useCSV, separator){
 
 #' Read FlowJo workspace
 #'
-#' @title read_flowjo_workspace
-#' @description read_flowjo_workspace
-#' @param data_gs XX
-#' @param pop XX
-#' @param gate_list XX
-#' @param inverse.transform XX
-#' @param transformation XX
-#' @param remove_param XX
-#' @param merge_anno XX
-#' @param anno_table XX
-#' @param separator_anno XX
+#' @title Read FlowJo Workspace
+#' @description read_flowjo_workspace and prepare the condor object
+#' @param data_gs Gate Set object from flowWorkspace Package.
+#' @param pop Gate to keep for downstream analysis (default: 'root').
+#' @param gate_list Gate List of the FlowJo Workspace.
+#' @param inverse.transform Logical: if the data should be reverse transformed of kept with FlowJo transformation (default = FALSE).
+#' @param transformation If inverse.transform = TRUE, type of new transformation to perform (see nfTransform).
+#' @param remove_param Parameters to be removed from the condor object.
+#' @param merge_anno Logical: If sample anno should be merged to the condor object.
+#' @param anno_table Path to annotation table.
+#' @param separator_anno Separator of the .csv annotation table.
 #' @import flowWorkspace
 #' @import Biobase
 #' @import CytoML
@@ -294,15 +294,15 @@ prep_fjw <- function(data_gs,
 #' @title prep_fcd
 #' @description Wrapping function to prepare a flow cytometry dataset
 #' @param FCSpath Folder where the .fcs files are stored.
-#' @param ceil Number of cells to use for each file (set to a high number if you want to use all available events)
+#' @param ceil Number of cells to use for each file (set to a high number if you want to use all available events).
 #' @param useCSV Flag if the input are .csv files and not .fcs (experimental).
 #' @param transformation Transformation to perform.
-#' @param remove_param Parameters to remove from the trasfomration, "inTime" should be kept.
+#' @param remove_param Parameters to remove from the transformation, "inTime" should be kept.
 #' @param anno_table path to the annotation table file.
 #' @param filename_col Name of the column containing the filename matching with the .fcs files.
 #' @param seed seed to be used for the randomization of the events.
-#' @param separator_anno separator used in the annotation file
-#' @param separator_fc_csv separator used in the fc csv files
+#' @param separator_anno separator used in the annotation file.
+#' @param separator_fc_csv separator used in the fc csv files.
 #' @import readr
 #' @import readxl
 #' @import stringr

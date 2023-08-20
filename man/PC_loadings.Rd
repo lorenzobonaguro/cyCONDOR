@@ -7,17 +7,17 @@
 PC_loadings(fcd, data_slot = "orig", number)
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 
-\item{data_slot}{XX}
+\item{data_slot}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
 
-\item{number}{XX}
+\item{number}{Number of principal components to plot.}
 }
 \value{
 PC loadings
 }
 \description{
-Calculate speudotime or flow data
+Calculate PCA loading.
 }
 \details{
 PC_loading

@@ -7,19 +7,19 @@
 prepFcsFolderData(LoaderPATH, ceil, useCSV, separator)
 }
 \arguments{
-\item{LoaderPATH}{Path to the .fcs files}
+\item{LoaderPATH}{Path to the .fcs files.}
 
-\item{ceil}{number of cells to subset}
+\item{ceil}{number of cells to subset.}
 
-\item{useCSV}{Logical, if input is .csv and not .fcs}
+\item{useCSV}{Logical, if input is .csv and not .fcs.}
 
-\item{separator}{Separato used the flow csv files (if loading from csv)}
+\item{separator}{Separator used the flow csv files (if loading from csv).}
 }
 \value{
 load flow cytometry dataset
 }
 \description{
-Load the .fcs files into a dataframe
+Load .fcs or .csv files into a dataframe and prepare the condor object.
 }
 \details{
 prepFcsFolderData

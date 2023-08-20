@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_load_and_transform.R
 \name{prep_fjw}
 \alias{prep_fjw}
-\title{read_flowjo_workspace}
+\title{Read FlowJo Workspace}
 \usage{
 prep_fjw(
   data_gs,
@@ -17,29 +17,29 @@ prep_fjw(
 )
 }
 \arguments{
-\item{data_gs}{XX}
+\item{data_gs}{Gate Set object from flowWorkspace Package.}
 
-\item{pop}{XX}
+\item{pop}{Gate to keep for downstream analysis (default: 'root').}
 
-\item{gate_list}{XX}
+\item{gate_list}{Gate List of the FlowJo Workspace.}
 
-\item{inverse.transform}{XX}
+\item{inverse.transform}{Logical: if the data should be reverse transformed of kept with FlowJo transformation (default = FALSE).}
 
-\item{transformation}{XX}
+\item{transformation}{If inverse.transform = TRUE, type of new transformation to perform (see nfTransform).}
 
-\item{remove_param}{XX}
+\item{remove_param}{Parameters to be removed from the condor object.}
 
-\item{merge_anno}{XX}
+\item{merge_anno}{Logical: If sample anno should be merged to the condor object.}
 
-\item{anno_table}{XX}
+\item{anno_table}{Path to annotation table.}
 
-\item{separator_anno}{XX}
+\item{separator_anno}{Separator of the .csv annotation table.}
 }
 \value{
 read_flowjo_workspace
 }
 \description{
-read_flowjo_workspace
+read_flowjo_workspace and prepare the condor object
 }
 \details{
 Read FlowJo workspace

@@ -1,11 +1,11 @@
 #' metaclustering
 #'
 #' @title metaclustering
-#' @description Assignment of a metacluster.
+#' @description Assignment of a metaclusters name.
 #' @param fcd flow cytometry dataset.
 #' @param clustering Name of the clustering to match for the metaclustering.
-#' @param name_col Column containing the original cluster
-#' @param name_out Name of the output column
+#' @param name_col Column containing the original cluster.
+#' @param name_out Name of the output column.
 #' @param metaclusters Vector of the new clusters names, this should be of the same length of the levels of the original clustering.
 #' @return metaclustering
 #'
@@ -52,7 +52,7 @@ metaclustering <- function(fcd,
 #' @param k K value used for clustering.
 #' @param seed Seed used for the randomization steps.
 #' @param prefix Prefix for the output.
-#' @param top_PCA XX
+#' @param top_PCA Number of principal components to use for the analysis.
 #' @import Rphenograph
 #' @importFrom igraph membership
 #' @return runPhenograph
@@ -100,8 +100,8 @@ runPhenograph <- function(fcd,
 #' @param num_clusters number of final clusters.
 #' @param seed Seed used for the randomization steps.
 #' @param prefix Prefic for the output.
-#' @param ret_model XX
-#' @param top_PCA XX
+#' @param ret_model Logical: if the FlowSOM model should be kept for further visualization.
+#' @param top_PCA Number of principal components to use for the analysis.
 #' @return metaclustering
 #'
 #' @export

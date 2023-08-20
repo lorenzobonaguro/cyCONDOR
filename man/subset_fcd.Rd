@@ -7,9 +7,9 @@
 subset_fcd(fcd, size)
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flowframe object.}
 
-\item{size}{XX}
+\item{size}{Numeric: size of the sub-sampling.}
 }
 \value{
 df_frequency

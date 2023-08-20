@@ -27,7 +27,7 @@ runPhenograph(
 
 \item{prefix}{Prefix for the output.}
 
-\item{top_PCA}{XX}
+\item{top_PCA}{Number of principal components to use for the analysis.}
 }
 \value{
 runPhenograph

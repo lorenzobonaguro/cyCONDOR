@@ -2,18 +2,18 @@
 #'
 #' @title runUMAP
 #' @description Run a UMAP dimensionality reduction.
-#' @param fcd flow cytometry dataset
-#' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca"
+#' @param fcd flow cytometry dataset.
+#' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca".
 #' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param n_neighbors n_neighbors
-#' @param n_components n_components
-#' @param min_dist min_dist
-#' @param metric metric
-#' @param seed Seed used for the randomization steps
+#' @param n_neighbors n_neighbors.
+#' @param n_components n_components.
+#' @param min_dist min_dist.
+#' @param metric metric.
+#' @param seed Seed used for the randomization steps.
 #' @param prefix Prefix for the output.
 #' @param n_threads Number of threads to be used in the UMAP calculation.
-#' @param top_PCA Number of PCA used in the UMAP calculation
-#' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data
+#' @param top_PCA Number of PCA used in the UMAP calculation.
+#' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data.
 #' @import umap
 #' @import Rtsne
 #' @return runUMAP
@@ -79,13 +79,13 @@ runUMAP <- function (fcd,
 #'
 #' @title runDM
 #' @description Run Diffusion Map dimensionality reduction.
-#' @param fcd flow cytometry dataset
-#' @param input_type data to use for the calculation of the UMAP, e.g. "pca" (suggested option)
+#' @param fcd flow cytometry dataset.
+#' @param input_type data to use for the calculation of the UMAP, e.g. "pca" (suggested option).
 #' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
 #' @param k K used for the analysis.
-#' @param seed Seed used for the randomization steps
+#' @param seed Seed used for the randomization steps.
 #' @param prefix Prefix of the output.
-#' @param top_PCA XX
+#' @param top_PCA Number of principal components to use for the analysis.
 #' @import destiny
 #' @import SingleCellExperiment
 #' @import slingshot
@@ -127,15 +127,15 @@ runDM <- function(fcd,
 #' runtSNE
 #'
 #' @title runtSNE
-#' @description Calvulate tSNE dimensionality reduction
-#' @param fcd XX
-#' @param input_type XX
-#' @param data_slot XX
-#' @param perplexity XX
-#' @param seed XX
-#' @param prefix XX
-#' @param n_threads XX
-#' @param top_PCA XX
+#' @description Calculate tSNE dimensionality reduction..
+#' @param fcd flow cytometry dataset.
+#' @param input_type data to use for the calculation, e.g. "pca" (suggested option).
+#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
+#' @param perplexity Perplexity used for tSNE calculation (see Rtsne documentation for details).
+#' @param seed Seed used for the randomization steps.
+#' @param prefix Prefix of the output.
+#' @param n_threads Number of threads to be used in the tSNE calculation.
+#' @param top_PCA Number of principal components to use for the analysis.
 #' @return tSNE cohordinates
 #'
 #' @export
@@ -181,8 +181,8 @@ runtSNE <- function(fcd,
 #' runPCA_pseudobulk
 #'
 #' @title runPCA_pseudobulk
-#' @description runPCA_pseudobulk
-#' @param fcd XX
+#' @description run a Pricipal component analysis on pseudobulk samples
+#' @param fcd flow cytometry dataset.
 #' @return runPCA_pseudobulk
 #'
 #' @export

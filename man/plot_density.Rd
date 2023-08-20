@@ -15,19 +15,19 @@ plot_density(
 )
 }
 \arguments{
-\item{data}{XX}
+\item{data}{data to be used for plotting.}
 
-\item{param}{XX}
+\item{param}{Parameter to be used for the density splitting.}
 
-\item{title}{XX}
+\item{title}{Title of the plot.}
 
-\item{dim_red}{XX}
+\item{dim_red}{Dimensionality reduction to be used.}
 
-\item{dot_size}{XX}
+\item{dot_size}{Size of the background dots.}
 
-\item{alpha}{XX}
+\item{alpha}{Transparency of the background dots.}
 
-\item{color_density}{XX}
+\item{color_density}{Colors of the density maps.}
 }
 \value{
 Density Plot

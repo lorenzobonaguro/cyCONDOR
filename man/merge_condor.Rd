@@ -7,9 +7,9 @@
 merge_condor(data1, data2)
 }
 \arguments{
-\item{data1}{Dataset 1 to merge}
+\item{data1}{Dataset 1 to merge.}
 
-\item{data2}{Dataset 2 to merge}
+\item{data2}{Dataset 2 to merge.}
 }
 \value{
 Condor Object

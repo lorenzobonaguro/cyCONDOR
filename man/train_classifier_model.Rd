@@ -19,33 +19,33 @@ train_classifier_model(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flowframe object.}
 
-\item{input_type}{XX}
+\item{input_type}{data to use for the calculation, e.g. "pca" (suggested option).}
 
-\item{data_slot}{XX}
+\item{data_slot}{name to use. If no prefix was added the, *orig*.}
 
-\item{sample_names}{XX}
+\item{sample_names}{Column name of the metadata table containing the file names.}
 
-\item{classification_variable}{XX}
+\item{classification_variable}{Vector (same length as number of cells) with the classes to classify (e.g. ctrl/dis).}
 
-\item{family}{XX}
+\item{family}{Response type. Must be one of the following: "gaussian","binomial","poisson","multinomial","cox","mgaussian".}
 
-\item{type1}{XX}
+\item{type1}{Type of first level prediction. Type of prediction required. Type "link" gives the linear predictors for "binomial", "multinomial", "poisson" or "cox" models; for "gaussian" models it gives the fitted values. Type "response" gives the fitted probabilities for "binomial" or "multinomial", fitted mean for "poisson" and the fitted relative-risk for "cox"; for "gaussian" type "response" is equivalent to type "link".}
 
-\item{type2}{XX}
+\item{type2}{Type of second level prediction.}
 
-\item{parallelCore}{XX}
+\item{parallelCore}{Number of cores to be used.}
 
-\item{reg}{XX}
+\item{reg}{If elestic net regularization will be used (Default: FALSE).}
 
-\item{seed}{XX}
+\item{seed}{seed to be used.}
 }
 \value{
 train_classifier_model
 }
 \description{
-train_classifier_model
+This function trains a classifier for a clinical feature of the data.
 }
 \details{
 Train Clinical Classifier

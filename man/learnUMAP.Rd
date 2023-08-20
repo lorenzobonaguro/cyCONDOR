@@ -16,27 +16,27 @@ learnUMAP(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{XX}
+\item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
 
-\item{data_slot}{XX}
+\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
 
-\item{model}{XX}
+\item{model}{Data associated with an existing embedding.}
 
-\item{n_epochs}{XX}
+\item{n_epochs}{Number of epochs to use during the optimization of the embedded coordinates. A value between 30 - 100 is a reasonable trade off between speed and thoroughness. By default, this value is set to one third the number of epochs used to build the model.}
 
-\item{prefix}{XX}
+\item{prefix}{Prefix for the name of the dimensionality reduction.}
 
-\item{n_threads}{XX}
+\item{n_threads}{Number of threads to use, (except during stochastic gradient descent). Default is half the number of concurrent threads supported by the system.}
 
-\item{seed}{XX}
+\item{seed}{Seed to be used.}
 }
 \value{
 learnUMAP
 }
 \description{
-learnUMAP
+Uses the model calculated with *runUMAP* to project new samples
 }
 \details{
 learnUMAP

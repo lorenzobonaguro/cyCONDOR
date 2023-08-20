@@ -10,10 +10,10 @@ check_IDs(fcdataset)
 \item{fcdataset}{Flow cytometry dataset to be checked.}
 }
 \value{
-check the integrity and the correctnes of a flow cytometry dataset
+check the integrity and the correctness of a flow cytometry dataset
 }
 \description{
-CHeck the integrity and the correctness of a flow cytometry dataset
+Check the integrity and the correctness of a flow cytometry dataset
 }
 \details{
 check_IDs

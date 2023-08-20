@@ -7,17 +7,17 @@
 nfTransform(transTypeTable, dataA, dataB)
 }
 \arguments{
-\item{transTypeTable}{Table with the transformation parameters}
+\item{transTypeTable}{Table with the transformation parameters.}
 
-\item{dataA}{dataA}
+\item{dataA}{dataA.}
 
-\item{dataB}{dataB}
+\item{dataB}{dataB, same as dataA.}
 }
 \value{
 transformed flow cytometry dataset
 }
 \description{
-Data transformation.
+Data transformation, this function run within the prep_fcd wrapper.
 }
 \details{
 nfTransform

@@ -138,6 +138,8 @@ prefix was added the, *orig*.
 
 *`seed`* = Seed used for the randomization steps
 
+*`top_PCA`* = Select the number of PC to use.
+
 ```{r}
 condor <- runUMAP(fcd = condor, 
                   input_type = "pca", 
@@ -151,15 +153,25 @@ On the harmonized PCA
 condor <- runUMAP(fcd = condor, 
                   input_type = "pca", 
                   data_slot = "norm", 
-                  seed = 91)
-
-condor <- runUMAP(fcd = condor, 
-                  input_type = "pca", 
-                  data_slot = "norm", 
                   seed = 91, top_PCA = 3)
 ```
 
 ## tSNE
+
+**Arguments:**
+
+*`fcd`* = flow cytometry dataset
+
+*`input type`* = data to use for the calculation of the UMAP, e.g.
+"expr" or "pca"
+
+*`data_slot`* = name of the PCA data slot to use to harmonize. If no
+prefix was added the, *orig*.
+
+*`seed`* = Seed used for the randomization steps
+
+*`perplexity`* = Perplexity parameter for the calculation.
+
 ```{r}
 condor <- runtSNE(fcd = condor, 
                   input_type = "pca", 
@@ -242,6 +254,8 @@ condor <- runFlowSOM(fcd = condor,
                      prefix = NULL, 
                      ret_model = TRUE)
 ```
+
+### Specific visulaization for the FlowSOM model
 
 ```{r}
 FlowSOM::PlotStars(condor$extras$FlowSOM_model)
@@ -425,7 +439,7 @@ plot_density(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca
              title = "test", 
              dim_red = "UMAP", 
              dot_size = 0.2, 
-             apha = 0.2)
+             alpha = 0.2)
 ```
 
 ```{r}
@@ -578,8 +592,10 @@ as vector.
 
 * This need to be fixed*
 ```{r}
+selections <- rownames(condor$clustering$Phenograph_pca_orig_k_60[condor$clustering$Phenograph_pca_orig_k_60$metaclusters == "CD4 T", ])
+
 condor_filter <- filter_fcd(fcdataset = condor,
-                            cell_ids = rownames(condor$clustering$Phenograph_pca_orig_k_60[condor$clustering$Phenograph_pca_orig_k_60$metaclusters == "CD4 T", ]))
+                            cell_ids = selections)
 ```
 
 ```{r}

@@ -28,9 +28,9 @@ runFlowSOM(
 
 \item{prefix}{Prefic for the output.}
 
-\item{ret_model}{XX}
+\item{ret_model}{Logical: if the FlowSOM model should be kept for further visualization.}
 
-\item{top_PCA}{XX}
+\item{top_PCA}{Number of principal components to use for the analysis.}
 }
 \value{
 metaclustering

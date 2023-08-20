@@ -31,57 +31,57 @@ runPseudotime(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 
-\item{dim_red_type}{XX}
+\item{dim_red_type}{Type of dimensionality reduction to calculate the speudotime.}
 
-\item{dim_red_name}{XX}
+\item{dim_red_name}{Name of the dimensionality reduction slot to be used.}
 
-\item{start.clus}{XX}
+\item{start.clus}{(optional) character, indicates the starting cluster(s) from which lineages will be drawn.}
 
-\item{end.clus}{XX}
+\item{end.clus}{(optional) character, indicates which cluster(s) will be forced to be leaf nodes in the graph.}
 
-\item{clustering}{XX}
+\item{clustering}{Label of the clustering for each cell.}
 
-\item{dist.method}{XX}
+\item{dist.method}{(optional) character, specifies the method for calculating distances between clusters. Default is "slingshot", see createClusterMST for details.}
 
-\item{use.median}{XX}
+\item{use.median}{logical, whether to use the median (instead of mean) when calculating cluster centroid coordinates.}
 
-\item{omega}{XX}
+\item{omega}{(optional) numeric or logical, this granularity parameter determines the distance between every real cluster and the artificial cluster, .OMEGA. In practice, this makes omega the maximum allowable distance between two connected clusters. By default, omega = Inf. If omega = TRUE, the maximum edge length will be set to the median edge length of the unsupervised MST times a scaling factor (omega_scale, default = 1.5). This value is provided as a potentially useful rule of thumb for datasets with outlying clusters or multiple, distinct trajectories. See outgroup in createClusterMST.}
 
-\item{omega_scale}{XX}
+\item{omega_scale}{(optional) numeric, scaling factor to use when omega = TRUE. The maximum edge length will be set to the median edge length of the unsupervised MST times omega_scale (default = 3). See outscale in createClusterMST.}
 
-\item{times}{XX}
+\item{times}{numeric, vector of external times associated with either clusters or cells. See defineMSTPaths for details.}
 
-\item{shrink}{XX}
+\item{shrink}{logical or numeric between 0 and 1, determines whether and how much to shrink branching lineages toward their average prior to the split (default = TRUE).}
 
-\item{extend}{XX}
+\item{extend}{character, how to handle root and leaf clusters of lineages when constructing the initial, piece-wise linear curve. Accepted values are 'y' (default), 'n', and 'pc1'. See 'Details' for more.}
 
-\item{reweight}{XX}
+\item{reweight}{logical, whether to allow cells shared between lineages to be reweighted during curve fitting. If TRUE (default), cells shared between lineages will be iteratively reweighted based on the quantiles of their projection distances to each curve. See 'Details' for more.}
 
-\item{reassign}{XX}
+\item{reassign}{logical, whether to reassign cells to lineages at each iteration. If TRUE (default), cells will be added to a lineage when their projection distance to the curve is less than the median distance for all cells currently assigned to the lineage. Additionally, shared cells will be removed from a lineage if their projection distance to the curve is above the 90th percentile and their weight along the curve is less than 0.1.}
 
-\item{thresh}{XX}
+\item{thresh}{numeric, determines the convergence criterion. Percent change in the total distance from cells to their projections along curves must be less than thresh. Default is 0.001, similar to principal_curve.}
 
-\item{maxit}{XX}
+\item{maxit}{numeric, maximum number of iterations (default = 15), see principal_curve.}
 
-\item{stretch}{XX}
+\item{stretch}{numeric factor by which curves can be extrapolated beyond endpoints. Default is 2, see principal_curve.}
 
-\item{approx_points}{XX}
+\item{approx_points}{numeric, whether curves should be approximated by a fixed number of points. If FALSE (or 0), no approximation will be performed and curves will contain as many points as the input data. If numeric, curves will be approximated by this number of points (default = 150 or #cells, whichever is smaller). See 'Details' and principal_curve for more.}
 
-\item{smoother}{XX}
+\item{smoother}{choice of scatter plot smoother. Same as principal_curve, but "lowess" option is replaced with "loess" for additional flexibility.}
 
-\item{shrink.method}{XX}
+\item{shrink.method}{character denoting how to determine the appropriate amount of shrinkage for a branching lineage. Accepted values are the same as for kernel in density (default is "cosine"), as well as "tricube" and "density". See 'Details' for more.}
 
-\item{allow.breaks}{XX}
+\item{allow.breaks}{logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.}
 
-\item{seed}{XX}
+\item{seed}{seed to be used}
 }
 \value{
 runPseudotime
 }
 \description{
-Calculate speudotime or flow data
+Calculate pseudotime of flow data
 }
 \details{
 runPseudotime

@@ -17,7 +17,7 @@ barplot_frequency(
 
 \item{colour}{Stratification to use on the stacked barplot.}
 
-\item{color_palette}{color_palette}
+\item{color_palette}{color_palette.}
 
 \item{title}{Title for the plot.}
 
@@ -27,7 +27,7 @@ barplot_frequency(
 barplot_frequency
 }
 \description{
-The function get_expr_huva provides the expression table resulting from reference huva experiment data.frame.
+This function output a stacked barplot for the cellular frequencies.
 }
 \details{
 barplot_frequency

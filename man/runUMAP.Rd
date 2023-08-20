@@ -20,29 +20,29 @@ runUMAP(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry dataset}
+\item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca"}
+\item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
 
 \item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
 
-\item{n_neighbors}{n_neighbors}
+\item{n_neighbors}{n_neighbors.}
 
-\item{n_components}{n_components}
+\item{n_components}{n_components.}
 
-\item{min_dist}{min_dist}
+\item{min_dist}{min_dist.}
 
-\item{metric}{metric}
+\item{metric}{metric.}
 
-\item{seed}{Seed used for the randomization steps}
+\item{seed}{Seed used for the randomization steps.}
 
 \item{prefix}{Prefix for the output.}
 
 \item{n_threads}{Number of threads to be used in the UMAP calculation.}
 
-\item{top_PCA}{Number of PCA used in the UMAP calculation}
+\item{top_PCA}{Number of PCA used in the UMAP calculation.}
 
-\item{ret_model}{LOGICAL if the UMAP model should be saved for future projection of the data}
+\item{ret_model}{LOGICAL if the UMAP model should be saved for future projection of the data.}
 }
 \value{
 runUMAP

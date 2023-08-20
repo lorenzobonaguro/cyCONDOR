@@ -13,15 +13,15 @@ df_frequency(
 )
 }
 \arguments{
-\item{classification}{classification parameters}
+\item{classification}{classification parameters.}
 
-\item{classification_header}{**optional** chosen header for classification parameters, default = "classification"}
+\item{classification_header}{**optional** chosen header for classification parameters, default = "classification".}
 
-\item{condition}{XX}
+\item{condition}{grouping to be used.}
 
-\item{vertical}{logical, if FALSE frequency on level of classification, default = TRUE}
+\item{vertical}{logical, if FALSE frequency on level of classification, default = TRUE.}
 
-\item{groups}{** optional ** vector of selected groups to display, default = all}
+\item{groups}{** optional ** vector of selected groups to display, default = all.}
 }
 \value{
 df_frequency

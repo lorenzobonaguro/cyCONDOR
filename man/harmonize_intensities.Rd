@@ -7,11 +7,11 @@
 harmonize_intensities(fcd, batch, seed)
 }
 \arguments{
-\item{fcd}{flow cytometry dataset}
+\item{fcd}{flow cytometry dataset.}
 
-\item{batch}{vector of column names to use for correcting the data}
+\item{batch}{vector of column names to use for correcting the data.}
 
-\item{seed}{Seed used for the randomization steps}
+\item{seed}{Seed used for the randomization steps.}
 }
 \value{
 harmonize_intensities

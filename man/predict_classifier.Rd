@@ -14,23 +14,23 @@ predict_classifier(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flowframe object.}
 
-\item{input_type}{XX}
+\item{input_type}{data to use.}
 
-\item{data_slot}{XX}
+\item{data_slot}{name of the data slot to use.}
 
-\item{sample_names}{XX}
+\item{sample_names}{Column name of the metadata table containing the file names.}
 
-\item{model_object}{XX}
+\item{model_object}{flowframe object with the stored classifier model.}
 
-\item{seed}{XX}
+\item{seed}{seed to be used for the analysis.}
 }
 \value{
 predict_classifier
 }
 \description{
-predict_classifier
+This function uses the model trained with *train_classifier_model* to predict new samples.
 }
 \details{
 Predict Clinical Classifier

@@ -20,13 +20,13 @@ prep_fcd(
 \arguments{
 \item{FCSpath}{Folder where the .fcs files are stored.}
 
-\item{ceil}{Number of cells to use for each file (set to a high number if you want to use all available events)}
+\item{ceil}{Number of cells to use for each file (set to a high number if you want to use all available events).}
 
 \item{useCSV}{Flag if the input are .csv files and not .fcs (experimental).}
 
 \item{transformation}{Transformation to perform.}
 
-\item{remove_param}{Parameters to remove from the trasfomration, "inTime" should be kept.}
+\item{remove_param}{Parameters to remove from the transformation, "inTime" should be kept.}
 
 \item{anno_table}{path to the annotation table file.}
 
@@ -34,9 +34,9 @@ prep_fcd(
 
 \item{seed}{seed to be used for the randomization of the events.}
 
-\item{separator_anno}{separator used in the annotation file}
+\item{separator_anno}{separator used in the annotation file.}
 
-\item{separator_fc_csv}{separator used in the fc csv files}
+\item{separator_fc_csv}{separator used in the fc csv files.}
 }
 \value{
 prep_fcd

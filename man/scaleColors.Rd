@@ -7,9 +7,9 @@
 scaleColors(data = input_scale, maxvalue = NULL)
 }
 \arguments{
-\item{data}{data to use}
+\item{data}{data to use.}
 
-\item{maxvalue}{value at which the color is fully red / blue}
+\item{maxvalue}{value at which the color is fully red / blue.}
 }
 \value{
 Defines the color coding for an heatmap.

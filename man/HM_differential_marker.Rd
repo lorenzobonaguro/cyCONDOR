@@ -17,29 +17,29 @@ HM_differential_marker(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 
-\item{data_slot}{XX}
+\item{data_slot}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
 
-\item{cluster_method}{XX}
+\item{cluster_method}{Name of the clustering result to be used.}
 
-\item{cluster_type}{XX}
+\item{cluster_type}{Type of the clustering.}
 
-\item{maxvalue}{XX}
+\item{maxvalue}{Max value for the coloring (Default: NULL, automatically defined).}
 
-\item{group_by}{XX}
+\item{group_by}{Grouping variable for visualization.}
 
-\item{size}{XX}
+\item{size}{Size of the individual squares.}
 
-\item{title}{XX}
+\item{title}{Title for the plot.}
 
-\item{exclusion}{XX}
+\item{exclusion}{Vector with markers to exclude from the plot.}
 }
 \value{
 df_frequency
 }
 \description{
-Calculate speudotime or flow data
+Calculate HM to compare marker expression in different groups.
 }
 \details{
 HM_differential_marker

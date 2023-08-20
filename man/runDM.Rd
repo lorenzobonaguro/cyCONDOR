@@ -15,19 +15,19 @@ runDM(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry dataset}
+\item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{data to use for the calculation of the UMAP, e.g. "pca" (suggested option)}
+\item{input_type}{data to use for the calculation of the UMAP, e.g. "pca" (suggested option).}
 
 \item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
 
 \item{k}{K used for the analysis.}
 
-\item{seed}{Seed used for the randomization steps}
+\item{seed}{Seed used for the randomization steps.}
 
 \item{prefix}{Prefix of the output.}
 
-\item{top_PCA}{XX}
+\item{top_PCA}{Number of principal components to use for the analysis.}
 }
 \value{
 runDM

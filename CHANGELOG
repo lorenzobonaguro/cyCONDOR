@@ -36,4 +36,6 @@ v.014 -> Add ML classifier with CytoML
       -> Tested diffusion map and imporoved function
       -> Tested pseutodime and improved function
       -> Splittied functions in multiple files to make them easier to find
+      -> Improved package documentation
+      -> Improved package vignette
 

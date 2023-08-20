@@ -14,21 +14,21 @@ violinplot_marker(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 
-\item{data_slot}{XX}
+\item{data_slot}{data to use for the calculation, e.g. "expr" or "pca".}
 
-\item{cluster_method}{XX}
+\item{cluster_method}{methods for the clustering to use.}
 
-\item{cluster_type}{XX}
+\item{cluster_type}{type of clustering (slot name).}
 
-\item{marker}{XX}
+\item{marker}{marker to plot.}
 }
 \value{
 violinplot_marker
 }
 \description{
-violinplot_marker
+Calculate a violin plot for the expression of selected markers.
 }
 \details{
 violinplot_marker

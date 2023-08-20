@@ -14,23 +14,23 @@ predict_labels(
 )
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{XX}
+\item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
 
-\item{data_slot}{XX}
+\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
 
-\item{model_object}{XX}
+\item{model_object}{Caret model to the used for the label transfer.}
 
-\item{label}{XX}
+\item{label}{Label for the output column of the condor object.}
 
-\item{seed}{XX}
+\item{seed}{Seed to be used.}
 }
 \value{
 predict_labels
 }
 \description{
-predict_labels
+Uses the model generated with *train_transfer_model* to predict the labels of new samples
 }
 \details{
 predict_labels

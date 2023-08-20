@@ -2,9 +2,9 @@
 #'
 #' @title harmonize_intensities
 #' @description Harmonize the expression values.
-#' @param fcd flow cytometry dataset
-#' @param batch vector of column names to use for correcting the data
-#' @param seed Seed used for the randomization steps
+#' @param fcd flow cytometry dataset.
+#' @param batch vector of column names to use for correcting the data.
+#' @param seed Seed used for the randomization steps.
 #' @import harmony
 #' @return harmonize_intensities
 #'
@@ -28,8 +28,8 @@ harmonize_intensities <- function(fcd, batch, seed) {
 #'
 #' @title runPCA
 #' @description Run a Principal Component Analysis.
-#' @param fcd flow cytometry dataset
-#' @param data_slot name of the data slot to use to calculate the PCA, original data (orig) or harmonized data (norm)
+#' @param fcd flow cytometry dataset.
+#' @param data_slot name of the data slot to use to calculate the PCA, original data (orig) or harmonized data (norm).
 #' @param seed Seed used for the randomization steps.
 #' @param prefix Prefix for the output.
 #' @return runPCA
@@ -57,10 +57,10 @@ runPCA <- function(fcd, data_slot = "orig", seed, prefix = NULL) {
 #'
 #' @title harmonize_PCA
 #' @description Harmonize the Principal Component Analysis.
-#' @param fcd flow cytometry dataset
+#' @param fcd flow cytometry dataset.
 #' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param batch vector of column names to use for correcting the data
-#' @param seed Seed used for the randomization steps
+#' @param batch vector of column names to use for correcting the data.
+#' @param seed Seed used for the randomization steps.
 #' @param prefix Prefix for the output.
 #' @return harmonize_PCA
 #'

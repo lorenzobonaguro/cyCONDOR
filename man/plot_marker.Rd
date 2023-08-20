@@ -50,17 +50,17 @@ plot_marker(
 
 \item{facet_by_variable}{Logical if the plot should be splitted by the categorical variable used.}
 
-\item{label_clusters}{XX}
+\item{label_clusters}{Logical: If clusters should be labeled with a text box.}
 
-\item{label_size}{XX}
+\item{label_size}{Size of the labels.}
 
-\item{label_color}{XX}
+\item{label_color}{Color of the labels.}
 }
 \value{
 plot marker or list of markers
 }
 \description{
-Function to visualize a selected parameter.
+Function to visualize a selected parameter on a dimensionality reduction.
 }
 \details{
 plot_marker

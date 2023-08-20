@@ -39,9 +39,9 @@ filter_fcd <- function(fcdataset, cell_ids) {
 #' check_IDs
 #'
 #' @title check_IDs
-#' @description CHeck the integrity and the correctness of a flow cytometry dataset
+#' @description Check the integrity and the correctness of a flow cytometry dataset
 #' @param fcdataset Flow cytometry dataset to be checked.
-#' @return check the integrity and the correctnes of a flow cytometry dataset
+#' @return check the integrity and the correctness of a flow cytometry dataset
 #'
 #' @export
 check_IDs <- function(fcdataset) {
@@ -75,8 +75,8 @@ check_IDs <- function(fcdataset) {
 #'
 #' @title merge_condor
 #' @description Merges two condor objects.
-#' @param data1 Dataset 1 to merge
-#' @param data2 Dataset 2 to merge
+#' @param data1 Dataset 1 to merge.
+#' @param data2 Dataset 2 to merge.
 #' @return Condor Object
 #'
 #' @export
@@ -109,9 +109,9 @@ merge_condor <- function(data1, data2) {
 #'
 #' @title change_param
 #' @description  change parameter names
-#' @param fcd flowframe object (condor)
-#' @param old_names vector of names that should be changed
-#' @param new_names vector of new names in the same order
+#' @param fcd flowframe object (condor).
+#' @param old_names vector of names that should be changed.
+#' @param new_names vector of new names in the same order.
 #' @return change_param
 #'
 #' @export
@@ -159,11 +159,11 @@ change_param_name <- function(fcd,
 #'
 #' @title df_frequency
 #' @description function to get dataframe of frequencies
-#' @param classification classification parameters
-#' @param classification_header **optional** chosen header for classification parameters, default = "classification"
-#' @param vertical logical, if FALSE frequency on level of classification, default = TRUE
-#' @param groups ** optional ** vector of selected groups to display, default = all
-#' @param condition XX
+#' @param classification classification parameters.
+#' @param classification_header **optional** chosen header for classification parameters, default = "classification".
+#' @param vertical logical, if FALSE frequency on level of classification, default = TRUE.
+#' @param groups ** optional ** vector of selected groups to display, default = all.
+#' @param condition grouping to be used.
 #' @import reshape2
 #' @return df_frequency
 #'
@@ -203,8 +203,8 @@ df_frequency <- function(classification,      #condor$clustering$Phenograph_pca_
 #'
 #' @title subset_fcd
 #' @description Performs a random subset of the fcd
-#' @param fcd XX
-#' @param size XX
+#' @param fcd flowframe object.
+#' @param size Numeric: size of the sub-sampling.
 #' @return df_frequency
 #'
 #' @export

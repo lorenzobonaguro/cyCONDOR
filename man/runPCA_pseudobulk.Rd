@@ -7,13 +7,13 @@
 runPCA_pseudobulk(fcd)
 }
 \arguments{
-\item{fcd}{XX}
+\item{fcd}{flow cytometry dataset.}
 }
 \value{
 runPCA_pseudobulk
 }
 \description{
-runPCA_pseudobulk
+run a Pricipal component analysis on pseudobulk samples
 }
 \details{
 runPCA_pseudobulk
