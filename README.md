@@ -9,8 +9,7 @@ an intuitive workflow for the analysis of high-dimensionality cytometry
 data in R. This project is far from complete, any suggestion is well
 accepted!
 
-The tools is running on R v3.6.2, newer version are not yet fully
-supported due to some problems with harmony in R v4.
+The tools is running on R v4.3
 
 An easy way to use *condor* is with the pre-built docker image
 [lorenzobonaguro/condor](https://hub.docker.com/r/lorenzobonaguro/condor)
@@ -50,7 +49,6 @@ boxplot*.
 cytometry dataset, subset it or annotate metaclusters. Also includes several visualization tools to help in the interpretation of the data.
 
 **On hold**
-- Update to the latest version of R 4XX
 - Astir for automated cell type annotation - Have some code 
 - ShinyApp (student project)
 
