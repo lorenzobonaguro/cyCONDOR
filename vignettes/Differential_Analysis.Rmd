@@ -1,0 +1,79 @@
+---
+title: "Differential Analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Differential Analysis}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+library(ggpubr)
+```
+
+# Load an example dataset
+```{r}
+condor <- readRDS("../.test_files/condor_diff.rds")
+```
+
+`cyCONDOR` provides several ways to investigate the difference in cellular frequencies or marker expression.
+
+# Cell Frqeuency
+
+## Export Perfecntage table
+If you prefer to generate your own plots, `cyCONDOR` can easily export a percentage table for downstream analysis.
+```{r}
+df_frequency(classification = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
+             condition = condor$anno$cell_anno$group)
+```
+
+## Confusion Matrix
+```{r, fig.width=15, fig.height=5}
+confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
+             group = condor$anno$cell_anno$group, size = 40, 
+             title = "Confusion Matrix")
+```
+
+# Stacked barplot
+```{r}
+barplot_frequency(x_axes = condor$anno$cell_anno$group, 
+                  colour = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
+                  title = "Stacked barplot of cluster frequencies", 
+                  legend_title = "Metaclusters") + theme(aspect.ratio = 2)
+```
+
+## Percentages Boxplot 
+```{r, fig.width=20, fig.height=20}
+box_stat <- boxplot_and_stats(annotation = condor$anno$cell_anno, 
+                              sample_var = "sample_ID", 
+                              group_var = "group", 
+                              variable = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
+                              numeric = FALSE, 
+                              test.type = "t.test")
+
+ggarrange(plotlist = box_stat$plot, legend = "none")
+```
+
+# Differential expression
+
+## Splitted heatmap by group
+```{r, fig.width=20, fig.height=20}
+HM_differential_marker(fcd = condor, 
+                       data_slot = "orig", 
+                       cluster_method = "Phenograph_pca_orig_k_60", 
+                       cluster_type = "metaclusters", 
+                       group_by = "group",
+                       title = "Figure 5f - Marker expression per cluster and group", size = 40)
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```
+

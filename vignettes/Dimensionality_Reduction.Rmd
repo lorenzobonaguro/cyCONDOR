@@ -1,0 +1,63 @@
+---
+title: "Dimensionality Reduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dimensionality Reduction}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+```
+
+In this vignette we showcase some `cyCONDOR` functions for dimensionality reduction. Here we exemplify the how to run PCA, UMAP. tSNE and DM. All functions take as input the `fcd` and the data slot to be used for the calculation. The `runPCA` function always use the `expr` slot for the calculation, for non linear dimensionality reduction (UMAP, tSNE, DM) the used can decide to use the `expr` data or the `pca` result as input.
+
+# Load example cyCONDOR object
+```{r}
+condor <- readRDS("../.test_files/condor_example.rds")
+```
+
+# Principal Component Analysis
+```{r}
+condor <- runPCA(fcd = condor, 
+                 data_slot = "orig", 
+                 seed = 91)
+```
+
+# tSNE
+```{r}
+condor <- runtSNE(fcd = condor, 
+                  input_type = "pca", 
+                  data_slot = "orig", 
+                  seed = 91, 
+                  perplexity = 30)
+```
+
+# UMAP
+```{r}
+condor <- runUMAP(fcd = condor, 
+                  input_type = "pca", 
+                  data_slot = "orig", 
+                  seed = 91)
+```
+
+# Diffusion Map
+```{r}
+condor <- runDM(fcd = subset_fcd(condor, 5000), 
+                input_type = "pca", 
+                data_slot = "orig", 
+                k = 10, 
+                seed = 91)
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```
+

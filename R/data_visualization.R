@@ -75,6 +75,7 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param label_clusters Logical: If clusters should be labeled with a text box.
 #' @param label_size Size of the labels.
 #' @param label_color Color of the labels.
+#' @param raster TRUE or FALSE, if plot should be returned as raster image
 #' @import ggplot2
 #' @import RColorBrewer
 #' @import devtools
@@ -100,7 +101,46 @@ plot_marker <- function(data,
                         facet_by_variable = FALSE,
                         label_clusters = FALSE,
                         label_size = 3.5,
-                        label_color = "black") {
+                        label_color = "black",
+                        raster = FALSE) {
+
+  # Selection of raster plot or standard
+  if (raster == FALSE) {
+
+    core_numeric <- list(geom_point(aes(color = poi), alpha = apha, size = dot_size),
+                         theme_bw(),
+                         theme(aspect.ratio = 1, panel.grid = element_blank()),
+                         ggtitle(title),
+                         scale_color_gradientn(colours = color_gradient),
+                         labs(color = param))
+
+    core_discrete <- list(geom_point(aes(color = poi), alpha = apha, size = dot_size),
+                          theme_bw(),
+                          theme(aspect.ratio = 1, panel.grid = element_blank()),
+                          ggtitle(title),
+                          scale_colour_manual(values = color_discrete),
+                          guides(color = guide_legend(override.aes = list(size=5, alpha = 1))),
+                          labs(color = param))
+
+  } else {
+
+    core_numeric <- list(geom_point_rast(aes(color = poi), alpha = apha, size = dot_size),
+                         theme_bw(),
+                         theme(aspect.ratio = 1, panel.grid = element_blank()),
+                         ggtitle(title),
+                         scale_color_gradientn(colours = color_gradient),
+                         labs(color = param))
+
+    core_discrete <- list(geom_point_rast(aes(color = poi), alpha = apha, size = dot_size),
+                          theme_bw(),
+                          theme(aspect.ratio = 1, panel.grid = element_blank()),
+                          ggtitle(title),
+                          scale_colour_manual(values = color_discrete),
+                          guides(color = guide_legend(override.aes = list(size=5, alpha = 1))),
+                          labs(color = param))
+
+  }
+
 
   if(is.numeric(data[[param]]) == TRUE){
 
@@ -119,38 +159,32 @@ plot_marker <- function(data,
 
     if (dim_red == "UMAP") {
 
-      p1 <- ggplot(data, aes(x = UMAP1, y = UMAP2)) +
-        geom_point(aes(color = poi), alpha = apha, size = dot_size) +
-        theme_bw() +
-        theme(aspect.ratio = 1, panel.grid = element_blank()) +
-        ggtitle(title) + scale_color_gradientn(colours = color_gradient) + labs(color = param)
+      p1 <- ggplot(data, aes(x = UMAP1, y = UMAP2)) + core_numeric
 
     }
 
     if (dim_red == "DM") {
 
-      p1 <- ggplot(data, aes(x = DC_1, y = DC_2)) +
-        geom_point(aes(color = poi), alpha = apha, size = dot_size) +
-        theme_bw() +
-        theme(aspect.ratio = 1, panel.grid = element_blank()) +
-        ggtitle(title) + scale_color_gradientn(colours = color_gradient) + labs(color = param)
+      p1 <- ggplot(data, aes(x = DC_1, y = DC_2)) + core_numeric
 
     }
 
     if (dim_red == "tSNE") {
 
-      p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2)) +
-        geom_point(aes(color = poi), alpha = apha, size = dot_size) +
-        theme_bw() +
-        theme(aspect.ratio = 1, panel.grid = element_blank()) +
-        ggtitle(title) + scale_color_gradientn(colours = color_gradient) + labs(color = param)
+      p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2)) + core_numeric
+
+    }
+
+    if (dim_red == "PCA") {
+
+      p1 <- ggplot(data, aes(x = PC1, y = PC2)) + core_numeric
 
     }
 
   }else {
     colnames(data)[colnames(data) == param] <- "poi"
 
-    # This if statement if to fix the faceting by selected variable issue with R4
+    # This if statement is to fix the faceting by selected variable issue with R4
     if (facet_by_variable != TRUE & facet_by_variable != FALSE) {
 
       colnames(data)[colnames(data) == facet_by_variable] <- "facet"
@@ -159,34 +193,25 @@ plot_marker <- function(data,
 
     if (dim_red == "UMAP") {
 
-      p1 <- ggplot(data, aes(x = UMAP1, y = UMAP2)) +
-        geom_point(aes(color = poi), alpha = apha, size = dot_size) +
-        theme_bw() +
-        theme(aspect.ratio = 1, panel.grid = element_blank()) +
-        ggtitle(title) + scale_colour_manual(values = color_discrete) +
-        guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) + labs(color = param)
+      p1 <- ggplot(data, aes(x = UMAP1, y = UMAP2)) + core_discrete
 
     }
 
     if (dim_red == "DM") {
 
-      p1 <- ggplot(data, aes(x = DC_1, y = DC_2)) +
-        geom_point(aes(color = poi), alpha = apha, size = dot_size) +
-        theme_bw() +
-        theme(aspect.ratio = 1, panel.grid = element_blank()) +
-        ggtitle(title) + scale_colour_manual(values = color_discrete) +
-        guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) + labs(color = param)
+      p1 <- ggplot(data, aes(x = DC_1, y = DC_2)) + core_discrete
 
     }
 
     if (dim_red == "tSNE") {
 
-      p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2)) +
-        geom_point(aes(color = poi), alpha = apha, size = dot_size) +
-        theme_bw() +
-        theme(aspect.ratio = 1, panel.grid = element_blank()) +
-        ggtitle(title) + scale_colour_manual(values = color_discrete) +
-        guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) + labs(color = param)
+      p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2)) + core_discrete
+
+    }
+
+    if (dim_red == "PCA") {
+
+      p1 <- ggplot(data, aes(x = PC1, y = PC2)) + core_discrete
 
     }
 
@@ -296,10 +321,17 @@ HM_markers <- function(input,
 #' @param group Groupping to calculate the relative contribution to the variable.
 #' @param size Size of the heatmap blocks.
 #' @param title Title of the plot.
+#' @param cluster_cols TRUE or FALSE if columns should be clustered
+#' @param cluster_rows TRUE or FALSE if rows should be clustered
 #' @return confusion_HM
 #'
 #' @export
-confusion_HM <- function(variables, group, size = 15, title = "Choose a good title for the plot") {
+confusion_HM <- function(variables,
+                         group,
+                         size = 15,
+                         title = "Choose a good title for the plot",
+                         cluster_cols = FALSE,
+                         cluster_rows = FALSE) {
 
   # quantify cells of each sample per cluster
   cells_cluster <- confusionMatrix(paste0(variables),
@@ -319,8 +351,8 @@ confusion_HM <- function(variables, group, size = 15, title = "Choose a good tit
   pheatmap::pheatmap(
     mat = t(scaled_cM),
     border_color = "black",display_numbers = TRUE,
-    cluster_rows = FALSE,
-    cluster_cols = FALSE,
+    cluster_rows = cluster_rows,
+    cluster_cols = cluster_cols,
     cellwidth = size,
     cellheight = size,
     # breaks = c(seq(0, maxvalue, length.out = 100), 100),
@@ -666,4 +698,114 @@ violinplot_marker <- function(fcd,
   }
 
   cowplot::plot_grid(plotlist = plot.list, ncol = 1)
+}
+
+#' dotplot_cyto
+#'
+#' @title dotplot_cyto
+#' @description Plot a classical dotplot such as normally seen in FC analysis (e.g. FlowJo).
+#' @param data data to use for the plot.
+#' @param subset LOGICLE, if TRUE the data will be subsetted for selected population(s).
+#' @param annotation Vector of the same lenght at data containing the variable to subset.
+#' @param color_by Parameter to be used to define the plot colors.
+#' @param subset_char Vector of variables to keep in the plot (e.g. c("CD4T, "CD8T")).
+#' @param color_discrete Color palette to use (default: cluster palette).
+#' @param x Parameter to display in the X axes.
+#' @param y Parameter to display in the Y axes.
+#' @param title Plot title.
+#' @return 2D dotplot.
+#'
+#' @export
+dotplot_cyto <- function(data,
+                         subset = FALSE,
+                         annotation,
+                         color_by,
+                         subset_char,
+                         color_discrete = cluster_palette,
+                         x,
+                         y,
+                         title) {
+
+  if (subset == TRUE) {
+
+    data <- data[annotation %in% subset_char,]
+
+    color_by <- color_by[annotation %in% subset_char]
+
+  }
+
+  colnames(data)[colnames(data) == x] <- "X"
+
+  colnames(data)[colnames(data) == y] <- "Y"
+
+  p1 <- ggplot(data, aes(x = X, y = Y)) +
+    geom_point(aes(color = color_by)) +
+    theme_bw()+
+    theme(aspect.ratio = 1, panel.grid = element_blank())+
+    ggtitle(title) +
+    scale_colour_manual(values = color_discrete) +
+    guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) +
+    xlab(x) +
+    ylab(y)
+
+  return(p1)
+
+}
+
+#' densityplot_marker
+#'
+#' @title dotplot_cyto
+#' @description Plot the distribution of the expression of selected markers, similar to FlowJo Histogram.
+#' @param data Data to use for the plot.
+#' @param marker Marker to be visualized.
+#' @param split_by Variable used to split the plot.
+#' @param color_by Variable used to color the plot.
+#' @param color_discrete Color palette (default: cluster_palette)
+#' @param title Plot title.
+#' @return densityplot marker.
+#'
+#' @export
+densityplot_marker <- function(data,
+                               marker,
+                               split_by = NULL,
+                               color_by = NULL,
+                               color_discrete = cluster_palette,
+                               title) {
+
+  colnames(data)[colnames(data) == marker] <- "poi"
+
+  core <- list(geom_density(),
+               theme_bw(),
+               theme(aspect.ratio = 1, panel.grid = element_blank()),
+               ggtitle(title))
+
+  if (!is.null(color_by)) {
+
+    colnames(data)[colnames(data) == color_by] <- "color"
+
+    core <- list(geom_density(aes(color = color)),
+                 theme_bw(),
+                 scale_colour_manual(values = color_discrete),
+                 theme(aspect.ratio = 1, panel.grid = element_blank()),
+                 labs(color = color_by),
+                 ggtitle(title),
+                 xlab(marker))
+
+  }
+
+  if (!is.null(split_by)) {
+
+    colnames(data)[colnames(data) == split_by] <- "split"
+  }
+
+  p1 <- ggplot(data, aes(x = poi)) + core
+
+  if (!is.null(split_by)) {
+
+    p1 <- p1 + facet_wrap(~split)
+
+  }
+
+  return(p1)
+
 }

@@ -1,0 +1,172 @@
+---
+title: "Pseudotime analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pseudotime analysis}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+library(pheatmap)
+library(ggplot2)
+library(dplyr)
+```
+
+With `cyCONDOR` we implemented `slingshot` for pseudotome analysis, following a workflow to calculate trajectories and speudotime.
+
+## Load the cyCONDOR object
+
+We start here by loading an example `condor` object already annotated.
+
+```{r}
+condor <- readRDS("../.test_files/condor_pseudotime.rds")
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_filter_pca_orig_k_10), 
+            param = "metaclusters", 
+            order = T, 
+            title = "Figure 4c - UMAP by Phenograph", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE, dot_size = 1, apha = 1)
+```
+
+```{r, fig.height=7}
+HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_filter_pca_orig_k_10), 
+           group = "Phenograph",
+           maxvalue = 2, 
+           title = "Fig S5e - Marker expression Phenograph clustering", 
+           cluster_rows = TRUE, cluster_cols = TRUE)
+```
+
+# Pseudotime analysis
+
+We can now calculate the pseudotime with different settings:
+
+## With no constrains on the stat of the trajectory
+
+```{r}
+condor <- runPseudotime(fcd = condor, 
+                        dim_red_type = "umap", 
+                        dim_red_name = "pca_orig",
+                        clustering = condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters, 
+                        approx_points = 5, 
+                        seed = 91)
+```
+
+## With a specific starting cluster
+
+```{r}
+condor <- runPseudotime(fcd = condor, 
+                        dim_red_type = "umap", 
+                        dim_red_name = "pca_orig",
+                        clustering = condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters, 
+                        approx_points = 5,
+                        start.clus =  "CMPs",
+                        seed = 91)
+```
+
+## Testing all clusters as starting point
+
+```{r}
+for (i in unique(condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters)[1:5]) {
+  
+  condor <- runPseudotime(fcd = condor, 
+                        dim_red_type = "umap", 
+                        dim_red_name = "pca_orig",
+                        clustering = condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters, 
+                        approx_points = 5,
+                        start.clus =  i,
+                        seed = 91)
+  
+}
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_filter_pca_orig_k_10, condor$pseudotime$slingshot_umap_pca_orig), 
+                   param = "mean", 
+                   order = T, 
+                   title = "Figure 4e - UMAP mean pseudotime", 
+                   dim_red = "UMAP", 
+                   facet_by_variable = FALSE, dot_size = 1, apha = 1) + 
+  geom_path(data = condor$extras$slingshot_umap_pca_orig$lineages %>% arrange(Order), aes(group = Lineage), size = 0.5)
+```
+
+# Heatmap visualization of trajectory
+
+## DCs
+```{r}
+selections <- rownames(condor$clustering$Phenograph_filter_pca_orig_k_10[condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters %in% c("HSCs", "Pre-DC", "pDCs"), ])
+
+condor_dcs <- filter_fcd(fcdataset = condor,
+                            cell_ids = selections)
+```
+
+```{r}
+expression <- condor_dcs$expr$orig
+
+anno <- cbind(condor_dcs$clustering$Phenograph_filter_pca_orig_k_10[, c("Phenograph", "metaclusters")], condor_dcs$pseudotime$slingshot_umap_pca_orig)
+
+anno <- anno[order(anno$Lineage2, decreasing = TRUE),]
+
+expression <- expression[rownames(anno), c("174-HLADR", "151-CD123", "148-CD34")]
+
+my_colour = list(metaclusters = c(HSCs = "#689030", pDCs = "#CD9BCD", `Pre-DC` = "#2B3990"))
+```
+
+```{r}
+pheatmap(mat = expression, 
+         scale = "column", 
+         show_rownames = FALSE, 
+         cluster_rows = F, 
+         cluster_cols = F, 
+         annotation_row = anno[, c("metaclusters", "Lineage2")], 
+         annotation_colors = my_colour, 
+         breaks = scaleColors(expression, maxvalue = 2)[["breaks"]], 
+         color = scaleColors(expression, maxvalue = 2)[["color"]], 
+         main = "Figure S6b - Heatmap pDCs trajectory")
+```
+
+## Monocytes
+```{r}
+selections <- rownames(condor$clustering$Phenograph_filter_pca_orig_k_10[condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters %in% c("HSCs", "CMPs", "Myeloblast", "Monocytes"), ])
+
+condor_mono <- filter_fcd(fcdataset = condor,
+                            cell_ids = selections)
+```
+
+```{r}
+expression <- condor_mono$expr$orig
+
+anno <- cbind(condor_mono$clustering$Phenograph_filter_pca_orig_k_10[, c("Phenograph", "metaclusters")], condor_mono$pseudotime$slingshot_umap_pca_orig)
+
+anno <- anno[order(anno$Lineage2, decreasing = FALSE),]
+
+expression <- expression[rownames(anno), c("148-CD34", "160-CD14", "144-CD11b")]
+
+my_colour = list(metaclusters = c(Monocytes = "#CBD588", HSCs = "#689030", Myeloblast = "#DA5724", CMPs = "#F7941D"))
+```
+
+```{r}
+pheatmap(mat = expression, 
+         scale = "column", 
+         show_rownames = FALSE, 
+         cluster_rows = F, 
+         cluster_cols = F, 
+         annotation_row = anno[, c("metaclusters", "Lineage2")], 
+         annotation_colors = my_colour, 
+         breaks = scaleColors(expression, maxvalue = 2)[["breaks"]], 
+         color = scaleColors(expression, maxvalue = 2)[["color"]], main = "Figure 4f - Heatmap Monocytes pseudotime")
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```

@@ -8,7 +8,9 @@ confusion_HM(
   variables,
   group,
   size = 15,
-  title = "Choose a good title for the plot"
+  title = "Choose a good title for the plot",
+  cluster_cols = FALSE,
+  cluster_rows = FALSE
 )
 }
 \arguments{
@@ -19,6 +21,10 @@ confusion_HM(
 \item{size}{Size of the heatmap blocks.}
 
 \item{title}{Title of the plot.}
+
+\item{cluster_cols}{TRUE or FALSE if columns should be clustered}
+
+\item{cluster_rows}{TRUE or FALSE if rows should be clustered}
 }
 \value{
 confusion_HM

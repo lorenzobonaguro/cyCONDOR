@@ -1,8 +1,8 @@
 ---
-title: "condor_flowjo_workflow - v0.1.3"
+title: "Load a FlowJo workspace"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{condor_flowjo_workflow}
+  %\VignetteIndexEntry{Load a FlowJo workspace}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -10,22 +10,20 @@ editor_options:
     wrap: 72
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-```{r setup}
-library(condor)
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
 library(flowWorkspace)
 library(CytoML)
 library(Biobase)
 library(ggplot2)
 ```
 
+With the `cyCONDOR` ecosystem is possible to load a FlowJo work space. This gives the advantage of having the gating hierarchy in the `condor` object.
+
 ## Read the .wsp file
+
+First we use the `flowWrokspace` package to load the `.wsp` file.
+
 ```{r}
 ws <- open_flowjo_xml("../.test_files/flowjo_workspace.wsp")
 
@@ -33,6 +31,9 @@ ws
 ```
 
 ## Transformation into **gatingset** object
+
+We then transform the object to an `getingset`.
+
 ```{r}
 gs <- flowjo_to_gatingset(ws, name = "samples", path = "../.test_files/fcs_flowjo_ws/")
 
@@ -40,6 +41,9 @@ gs
 ```
 
 ### Visualization of the gating strategy
+
+We can now visualize the gating herarchy.
+
 ```{r}
 plot(gs, bool = TRUE)
 ```
@@ -55,29 +59,32 @@ nodelist
 ```
 
 ## Prepare the data
+
+From the `gatingset` object we can now prepare the `condor` object. 
+
 ```{r}
-fc_data <- prep_fjw(data_gs = gs, 
+condor <- prep_fjw(data_gs = gs, 
                    pop = "root", 
                    gate_list = nodelist, 
                    inverse.transform = TRUE,
                    transformation = "a",
-                   remove_param = "FSC-A")
+                   remove_param = c("Time"))
 
-class(fc_data) # The structure of this list is compatible with my other analysis pipeline and can be directly used for downstream analysis
+class(condor)
 ```
 
-### Does it work
-I will subset the sample to see if the gating gets translated correctly in this new dataframe
+### Simple visualization of the dataset with FlowJo gating
+
 ```{r}
 set.seed(91)
 
-tmp <- cbind(fc_data$expr$orig, fc_data$anno$cell_anno)
+tmp <- cbind(condor$expr$orig, condor$anno$cell_anno)
 
 tmp <- tmp[sample(1:dim(tmp)[1], 100000), ]
 ```
 
 ```{r}
-ggplot(tmp[tmp$`CD45+` == 1,], aes(x= `CD19`, y = `CD3`, color = as.factor(`CD19+`))) +
+ggplot(tmp[tmp$`CD45+` == 1,], aes(x= `CD19`, y = `CD3`, color = as.factor(`CD3+`))) +
   geom_point() + 
   theme_bw() + 
   theme(aspect.ratio = 1) + 
@@ -94,3 +101,4 @@ info <- sessionInfo()
 
 info
 ```
+

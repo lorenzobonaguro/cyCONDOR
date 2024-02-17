@@ -99,9 +99,21 @@ runPseudotime <- function(fcd,
 
   pseudotime_extra <- list(lineages = lin_df, curves = cur_df)
 
-  fcd[["extras"]][[paste("slingshot", dim_red_type, dim_red_name, sep = "_")]] <- pseudotime_extra
+  if (is.null(start.clus)) {
 
-  fcd[["pseudotime"]][[paste("slingshot", dim_red_type, dim_red_name, sep = "_")]] <- curve
+    fcd[["extras"]][[paste("slingshot", dim_red_type, dim_red_name, sep = "_")]] <- pseudotime_extra
+
+    fcd[["pseudotime"]][[paste("slingshot", dim_red_type, dim_red_name, sep = "_")]] <- curve
+
+  } else {
+
+    fcd[["extras"]][[paste("slingshot", dim_red_type, dim_red_name, start.clus, sep = "_")]] <- pseudotime_extra
+
+    fcd[["pseudotime"]][[paste("slingshot", dim_red_type, dim_red_name, start.clus, sep = "_")]] <- curve
+
+  }
+
+
 
   return(fcd)
 

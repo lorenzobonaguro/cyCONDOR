@@ -1,0 +1,192 @@
+---
+title: "Machine learning classifier"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Machine learning classifier}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+library(ggplot2)
+library(CytoDx)
+```
+
+With `cyCONDOR` we developed a set of functions allowing the user to easily train a classifier for the sample labels. For example we can train the model on a dataset of control and leukemia sample. The trained model can then be used to predict the label of and external sample. This workflow is based on the `CytoDX` package
+
+# Loading the data - Training Set
+
+We start by importing the training dataset:
+
+```{r}
+condor <- prep_fcd(FCSpath = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+                    ceil = 10000000, 
+                    useCSV = FALSE, 
+                    transformation = "a", 
+                    remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
+                    anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv", 
+                    filename_col = "fcsName",
+                    seed = 91)
+```
+
+## Build the classifier model
+
+We now train the classifier on the sample label, this step does not require any other pre-analysis on the dataset, nevertheless, if you are not familiar with the data you are using from training we recommend an exploratory data analysis firts.
+
+```{r}
+# Re order variables
+
+condor$anno$cell_anno$Label <- factor(condor$anno$cell_anno$Label, levels = c("normal", "aml"), labels = c("1_normal", "2_aml"))
+```
+
+```{r}
+condor <- train_classifier_model(fcd = condor, 
+                                 input_type = "expr", 
+                                 data_slot = "orig", 
+                                 sample_names = "expfcs_filename", 
+                                 classification_variable = condor$anno$cell_anno$Label, 
+                                 family = "binomial", 
+                                 type1 = "response", 
+                                 parallelCore = 1, 
+                                 reg = FALSE, 
+                                 seed = 91)
+```
+
+### Explore the model
+
+We can now explore the results of the model at sample level
+
+```{r}
+condor$extras$classifier_model$train.Data.sample
+```
+
+And at cellular level
+
+```{r}
+condor$extras$classifier_model$train.Data.cell
+```
+
+
+# Load the data - test Set
+
+To now validate the performance of the trained model we will test it on a test dataset with no overlap with the training data.
+
+```{r}
+condor_test <- prep_fcd(FCSpath = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+                    ceil = 10000000, 
+                    useCSV = FALSE, 
+                    transformation = "a", 
+                    remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
+                    anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv", 
+                    filename_col = "fcsName",
+                    seed = 91)
+```
+
+## Predict classification
+
+We can now predict the label using the trained model
+
+```{r}
+# Re order variables
+
+condor_test$anno$cell_anno$Label <- factor(condor_test$anno$cell_anno$Label, 
+                                           levels = c("normal", "aml"), labels = c("1_normal", "2_aml"))
+```
+
+```{r}
+condor_test <- predict_classifier(fcd = condor_test, 
+                                  input_type = "expr", 
+                                  data_slot = "orig", 
+                                  sample_names = "expfcs_filename", 
+                                  model_object = condor$extras$classifier_model, 
+                                  seed = 91)
+```
+
+### Explore Prediction
+
+Also here we can explore the results at sample level
+
+```{r}
+condor_test$extras$classifier_prediction$xNew.Pred.sample
+```
+
+And at cellular level
+
+```{r}
+condor_test$extras$classifier_prediction$xNew.Pred.cell
+```
+
+# Visualize the results
+
+## Training Data
+```{r}
+anno <- read.csv("../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv")
+
+tmp <- merge(x = condor$extras$classifier_model$train.Data.cell, y = anno, by.x = "sample", by.y = "fcsName")
+
+ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
+  geom_jitter() + 
+  geom_violin() +
+  scale_color_manual(values = c("#92278F", "#F15A29")) +
+  theme_bw() + 
+  theme(aspect.ratio = 1) + 
+  ggtitle("Figure S12b - Training prediction cell")
+```
+
+```{r}
+tmp <- merge(x = condor$extras$classifier_model$train.Data.sample, y = anno, by.x = "sample", by.y = "fcsName")
+
+ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
+  geom_point(size = 4) +
+  scale_color_manual(values = c("#92278F", "#F15A29")) +
+  theme_bw() + 
+  theme(aspect.ratio = 2) + 
+  ggtitle("Figure S12c - Training prediction sample")
+```
+
+## Test Data
+```{r}
+anno <- read.csv("../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv")
+
+tmp <- merge(x = condor_test$extras$classifier_prediction$xNew.Pred.cell, y = anno, by.x = "sample", by.y = "fcsName")
+
+tmp$sample <- factor(tmp$sample, levels = c("sample1.fcs", "sample2.fcs", "sample3.fcs",  "sample4.fcs",  "sample5.fcs",  "sample6.fcs",  "sample7.fcs",  "sample8.fcs",  "sample9.fcs", "sample10.fcs"))
+
+ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
+  geom_jitter() +
+  geom_violin() +
+  scale_color_manual(values = c("#92278F", "#F15A29")) +
+  theme_bw() + 
+  theme(aspect.ratio = 1) + 
+  ggtitle("Figure 7c - Test prediction cell")
+```
+
+```{r}
+tmp <- merge(x = condor_test$extras$classifier_prediction$xNew.Pred.sample, y = anno, by.x = "sample", by.y = "fcsName")
+
+tmp$sample <- factor(tmp$sample, levels = c("sample1.fcs", "sample2.fcs", "sample3.fcs",  "sample4.fcs",  "sample5.fcs",  "sample6.fcs",  "sample7.fcs",  "sample8.fcs",  "sample9.fcs", "sample10.fcs"))
+
+ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
+  geom_point(size = 4) +
+  scale_color_manual(values = c("#92278F", "#F15A29")) +
+  theme_bw() + 
+  theme(aspect.ratio = 2) + 
+  ggtitle("Figure 7d - Test prediction sample")
+```
+
+# Visualization of the decision three
+```{r}
+treeGate(P = condor$extras$classifier_model$train.Data.cell$y.Pred.s0,
+         x= condor$expr$orig)
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```

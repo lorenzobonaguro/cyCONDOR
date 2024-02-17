@@ -20,7 +20,8 @@ plot_marker(
   facet_by_variable = FALSE,
   label_clusters = FALSE,
   label_size = 3.5,
-  label_color = "black"
+  label_color = "black",
+  raster = FALSE
 )
 }
 \arguments{
@@ -55,6 +56,8 @@ plot_marker(
 \item{label_size}{Size of the labels.}
 
 \item{label_color}{Color of the labels.}
+
+\item{raster}{TRUE or FALSE, if plot should be returned as raster image}
 }
 \value{
 plot marker or list of markers

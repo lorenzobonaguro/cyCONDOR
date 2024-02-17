@@ -1,0 +1,95 @@
+url: https://lorenzobonaguro.github.io/cyCONDOR
+template:
+  bootstrap: 5
+
+reference:
+- title: Data Loading
+  desc:  Functions to load data to a condor object.
+  contents:
+  - prep_fcd
+  - prep_fjw
+  - nfTransform
+  - clr
+  - prepFcsFolderData
+
+- title: Dimensionality Reduction
+  desc:  Dimensionality recution functions.
+  contents:
+  - runPCA_pseudobulk
+  - runPCA
+  - runUMAP
+  - runtSNE
+  - runDM
+  - learnUMAP
+
+- title: Clustering
+  desc:  Clustering functions.
+  contents:
+  - runPhenograph
+  - runFlowSOM
+  - metaclustering
+
+- title: Batch Correction
+  desc:  Implementation of Harmony.
+  contents:
+  - harmonize_PCA
+  - harmonize_intensities
+
+- title: Pseudotime
+  desc:  Implementation of slingshot.
+  contents:
+  - runPseudotime
+
+- title: Classifier
+  desc:  Machine learning classifier.
+  contents:
+  - train_classifier_model
+  - train_transfer_model
+  - predict_classifier
+  - predict_labels
+  - runAstir_cellstates
+  - runAstir_celltype
+
+- title: Data Visualization
+  desc:  Collection of functions to visualize the results.
+  contents:
+  - barplot_frequency
+  - boxplot_and_stats
+  - confusion_HM
+  - confusionMatrix
+  - densityplot_marker
+  - dotplot_cyto
+  - HM_differential_marker
+  - HM_markers
+  - PC_loadings
+  - plot_density
+  - plot_marker
+  - violinplot_marker
+
+- title: Utilities
+  desc:  Collection of misc functions.
+  contents:
+  - change_param_name
+  - check_IDs
+  - df_frequency
+  - filter_fcd
+  - merge_condor
+  - scaleColors
+  - subset_fcd
+
+articles:
+- title: Detailed cyCONDOR workflows
+  navbar: ~
+  contents:
+  - Data_Loading_and_Transformation
+  - Load_a_FlowJo_workspace
+  - Dimensionality_Reduction
+  - Clustering_and_cell_annotation
+  - Batch_correction
+  - Data_Visualization
+  - Differential_Analysis
+  - Pseudotime_analysis
+  - Data_Projection
+  - Machine_learning_classifier
+  - Cell_type_prediction
+  - Other_utilities

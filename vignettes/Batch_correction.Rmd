@@ -1,0 +1,111 @@
+---
+title: "Batch correction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Batch correction}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+```
+
+With the `cyCONDOR` ecosystem we implemented `harmony` for batch correction. The correction can be applied to both the expression values and principal components. In this vignette we exemplify a workflow to correct for experimental data in the dataset.
+
+# Loading the data
+
+We stat by loading the data.
+
+```{r}
+condor <- prep_fcd(FCSpath = "../../../Figure 3 - Batch Correction/data/CureDem/all/", 
+                   ceil = 500, 
+                   useCSV = FALSE, 
+                   transformation = "a", 
+                   remove_param = c("InFile", "Time"), 
+                   anno_table = "../../../Figure 3 - Batch Correction/data/CureDem/all.csv", 
+                   filename_col = "filename",
+                   seed = 91)
+
+# Set the data as factor
+condor$anno$cell_anno$exp <- as.factor(condor$anno$cell_anno$exp)
+```
+
+# Dimensionality Reduction
+
+## PCA
+```{r}
+condor <- runPCA(fcd = condor, 
+                 data_slot = "orig", 
+                 seed = 91)
+```
+
+## UMAP
+```{r}
+condor <- runUMAP(fcd = condor, 
+                  input_type = "pca", 
+                  data_slot = "orig", 
+                  seed = 91)
+```
+
+We can now visualize the batch by plotting the UMAP coordinates coloring the plot by experimental date.
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "exp", 
+            order = T, 
+            title = "Original UMAP", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE, 
+            color_discrete = c("#1C75BC", "#BE1E2D", "#8DC63F", "#92278F", "#F15A29"))
+```
+
+# Batch correction
+
+We can now correct the fluorescence intensities or the principal components. Correction directly on the fluorescence intensities should be performed carefully if you plan to compare the expression in different groups downstream.
+
+## Correct Intensities
+```{r, warning=FALSE}
+condor <- harmonize_intensities(fcd = condor, 
+                                batch = c("exp"), 
+                                seed = 91)
+```
+
+## Correct Principal Components
+```{r, warning=FALSE}
+condor <- harmonize_PCA(fcd = condor, 
+                        batch = c("exp"), 
+                        data_slot = "orig", 
+                        seed = 91)
+```
+
+## Repeat dimensionality reduction
+
+With the corrected PC coordinates we can not run again the UMAP function.
+
+```{r}
+condor <- runUMAP(fcd = condor, 
+                  input_type = "pca", 
+                  data_slot = "norm", 
+                  seed = 91)
+```
+
+### Visualize the results
+```{r}
+plot_marker(data = cbind(condor$umap$pca_norm, condor$anno$cell_anno), 
+            param = "exp", 
+            order = T, 
+            title = "Harmonized UMAP", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE, color_discrete = c("#1C75BC", "#BE1E2D", "#8DC63F", "#92278F", "#F15A29"))
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```

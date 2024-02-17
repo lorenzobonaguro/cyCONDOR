@@ -1,14 +1,16 @@
-Package: condor
+Package: cyCONDOR
 Type: Package
 Title: Flow Cytometry data analysis toolbox
-Version: 0.1.4
+Version: 0.1.5
 Author: Lorenzo Bonaguro
 Maintainer: Lorenzo Bonaguro <lorenzobonaguro@uni-bonn.de>
 Description: Flow cytometry analysis workflow. The aim of this project if to 
     provide an intuitive workflow for the analysis of high-dimensionality cytometry data in R.
+URL: https://github.com/lorenzobonaguro/condor
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: FALSE
+biocViews:
 Imports: 
     ggplot2, 
     RColorBrewer,
@@ -45,7 +47,8 @@ Imports:
     Hmisc,
     DelayedMatrixStats,
     cowplot,
-    dplyr
+    dplyr,
+    reticulate
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Suggests: 

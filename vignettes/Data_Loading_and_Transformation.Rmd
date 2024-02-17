@@ -1,0 +1,48 @@
+---
+title: "Data Loading and Transformation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Loading and Transformation}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+```
+
+# How to load data
+
+`cyCONDOR` provide an integrated function to prepare a `condor` object starting from `.fcs` files or `.csv` files. All files should be saved in a single directory `FCSpath`, the user now also define the number of events to process from each file with the setting 'ceil'. To load `.csv` files instead of `.fcs` the `useCSV` setting should be set to `TRUE`.
+
+For data transformation `cyCONDOR` provide different options inherited form the `Cytofkit` package (**Chen et al. 2016**). Here the transformation can be set to:
+- `y`: For CyTOF data
+- `f`: For FlowCytometry data (fixed logicle transform)
+- `c`: For CITE-seq data (clr transformtation)
+- `a`: For FlowCytometry data (recommended, auto-logicle transformation)
+
+The used can also decide at this step to remove unwanted parameters not important for the downstream analysis (e.g. Time).
+
+Last important piece to build a `condor` object is a metadata table. This should be supplied as .csv file with one column matching the name of the .fcs or .csv files. The column matching the file names should be stated as 'filename_col'.
+
+```{r}
+condor <- prep_fcd(FCSpath = "../.test_files/fcs/", 
+                    ceil = 1000, 
+                    useCSV = FALSE, 
+                    transformation = "a", 
+                    remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile"), 
+                    anno_table = "../.test_files/metadata.csv", 
+                    filename_col = "filename",
+                    seed = 91)
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```
+

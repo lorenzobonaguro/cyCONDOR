@@ -1,0 +1,66 @@
+---
+title: "Other utilities"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Other utilities}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+```
+
+In this vignette we showcase some `cyCONDOR` utilities
+
+# Load example cyCONDOR object
+```{r}
+condor <- readRDS("../.test_files/condor_example.rds")
+```
+
+# Check the integrity of the condor object
+This function can be useful to make sure the condor objet has the right structure for all downstream analysis
+```{r}
+check_IDs(condor)
+```
+
+# Change parameter names
+This function can be used to change the name or the parameters in the condor object. In this example we chane the name from PD-1 to PD1
+```{r}
+old_names <- colnames(condor$expr$orig)
+
+new_names <- old_names
+
+new_names[22] <- "PD1"
+
+condor_changed <- change_param_name(condor, old_names, new_names)
+```
+
+# Merge two condor object
+With this function you can merge two `condor` objects, the two objects need to have the same parameters. This function will merge only expression table and annotation as all the downstream analysis will need to be repeated.
+```{r}
+condor_merged <- merge_condor(condor, condor)
+```
+
+# Subset a condor object
+With this function you can subset a `condor` object to a specific number of cells.
+```{r}
+condor_subset <- subset_fcd(condor, 5000)
+```
+
+# Filter a condor object to create a specific subset
+This function can be useful to created a specific subset of a `condor` object
+```{r}
+condor_filter <- filter_fcd(condor, 
+                            cell_ids = rownames(condor$expr$orig)[condor$clustering$Phenograph_pca_orig_k_60$metaclusters == "Classical Monocytes"])
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```

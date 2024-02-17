@@ -1,16 +1,26 @@
+#' crt_transform
+#'
+#' @title crt_transform
+#' @description Data transformation, this function run within the prep_fcd wrapper.
+#' @param x matrix to transform
+#' @return crt_transform
+#'
+#' @export
+clr <- function(x) {
+  return(log1p(x = x/(exp(x = sum(log1p(x = x[x > 0]), na.rm = TRUE)/length(x = x)))))
+  }
+
 #' nfTransform
 #'
 #' @title nfTransform
 #' @description Data transformation, this function run within the prep_fcd wrapper.
 #' @param transTypeTable Table with the transformation parameters.
 #' @param dataA dataA.
-#' @param dataB dataB, same as dataA.
 #' @return transformed flow cytometry dataset
 #'
 #' @export
-nfTransform <- function(transTypeTable, dataA, dataB){
+nfTransform <- function(transTypeTable, dataA){
   dataA1<-dataA
-  dataB1<-dataB
   CyTOFlgcl <- logicleTransform(w=0.25, t=16409, m=4.5, a=0)
   ilgcl <- inverseLogicleTransform(trans = CyTOFlgcl)
   Fluorlgcl <- logicleTransform(w=0.1, t=500000, m=4.5, a=0)
@@ -21,11 +31,11 @@ nfTransform <- function(transTypeTable, dataA, dataB){
   {
     ttParamNum <- which(as.character(transTypeTable[,1])==paramName)
     ttParamType <- as.character(transTypeTable[ttParamNum,2])
+
     if(ttParamType == "y" || ttParamType == "c"){
       dataNum <- which(colnames(dataA)==paramName)
       temp <- apply(dataA[,dataNum,drop=F],2, CyTOFlgcl)
       dataA1[,dataNum] <- temp
-      dataB1[,dataNum] <- temp
       #print(paste(paramName," CyTOFlgcl"))
     }
 
@@ -33,21 +43,14 @@ nfTransform <- function(transTypeTable, dataA, dataB){
       dataNum <- which(colnames(dataA)==paramName)
       temp <- apply(dataA[,dataNum,drop=F],2, Fluorlgcl)
       dataA1[,dataNum] <- temp
-      dataB1[,dataNum] <- temp
     }
-    if(ttParamType == "l" ){
-      dataNum <- which(colnames(dataA)==paramName)
-      temp <- (dataA[,dataNum]/max(dataA[,dataNum]))*4.5
-      dataA1[,dataNum] <- temp
-      dataB1[,dataNum] <- temp
-    }
-    if(ttParamType == "n" ){
-      dataNum <- which(colnames(dataA)==paramName)
-      temp <- ((dataA[,dataNum]-min(dataA[,dataNum]))/(max(dataA[,dataNum])-min(dataA[,dataNum])))*4.5
-      dataA1[,dataNum] <- temp
-      dataB1[,dataNum] <- temp
 
+    if(ttParamType == "c" ){
+      dataNum <- which(colnames(dataA)==paramName)
+      temp <- apply(dataA[,dataNum,drop=F],2, clr)
+      dataA1[,dataNum] <- temp
     }
+
     if(ttParamType == "a"){
       q<-0.05
       m<-4.5
@@ -78,13 +81,12 @@ nfTransform <- function(transTypeTable, dataA, dataB){
       dataNum <- which(colnames(dataA)==paramName)
       temp <- apply(dataA[,dataNum,drop=F],2, templgcl)
       dataA1[,dataNum] <- temp
-      dataB1[,dataNum] <- temp
       print(paste0(paramName, " w= ",w," t= ",t))
       #hist(temp, main=paramName,breaks=100)
     }
 
   }
-  return(list(dataA1=dataA1, dataB1=dataB1))
+  return(list(dataA1=dataA1))
 }
 
 #' prepFcsFolderData
@@ -104,8 +106,6 @@ nfTransform <- function(transTypeTable, dataA, dataB){
 #' @export
 prepFcsFolderData <- function(LoaderPATH, ceil, useCSV, separator){
   if(!useCSV){
-
-
 
     FcsFileNames <- list.files(path = LoaderPATH, pattern = ".fcs")
     fs = list()
@@ -143,7 +143,7 @@ prepFcsFolderData <- function(LoaderPATH, ceil, useCSV, separator){
 
       csvfilenames <- list.files(path = LoaderPATH, pattern="*.csv")
       FcsFileNames <- csvfilenames
-      csvdata <- lapply(paste0(LoaderPATH,"//",csvfilenames),function(x) read.delim(x, check.names = F, sep = separator_fc_csv))
+      csvdata <- lapply(paste0(LoaderPATH,"//",csvfilenames),function(x) read.delim(x, check.names = F, sep = separator))
       NumBC <- length(csvdata)
       FFdata<-NULL
       for (FFs in 1:NumBC){
@@ -245,7 +245,7 @@ prep_fjw <- function(data_gs,
 
     data1 <- FFdata[,which(colnames(FFdata) %in% keeptable[,1])]
 
-    nfTransOut <- nfTransform(keeptable, data1, data1)
+    nfTransOut <- nfTransform(keeptable, data1)
 
     data1 <- nfTransOut$dataA1
 
@@ -336,7 +336,7 @@ prep_fcd <- function(FCSpath,
 
   data1 <- FFdata[,which(colnames(FFdata) %in% keeptable[,1])]
 
-  nfTransOut <- nfTransform(keeptable, data1, data1)
+  nfTransOut <- nfTransform(keeptable, data1)
 
   data1 <- nfTransOut$dataA1
 

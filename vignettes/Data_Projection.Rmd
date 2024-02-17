@@ -1,0 +1,197 @@
+---
+title: "Data Projection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Projection}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+```
+
+Considering the high nunber of samples that can be generated with modern HDC instruments and the number of cells acquired we developed a data projection workflow in `cyCONDOR`. With this approach an initial model it trained including a UMAP dimensionality reduction and a cell classifier of the cell labels. We can then project any new sample into the pre-trained model, this operation is much faster and allows to analyse millions of cell in few minutes. 
+
+# Loading the data for training
+
+We start by loading the data for the training.
+
+```{r}
+condor_train <- prep_fcd(FCSpath = "../.test_files/fcs/", 
+                        ceil = 5000, 
+                        useCSV = FALSE, 
+                        transformation = "a", 
+                        remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"), 
+                        anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_train.csv", 
+                        filename_col = "filename",
+                        seed = 91)
+```
+```{r}
+condor_train$anno$cell_anno$group <- "train"
+```
+
+# Loading the data for projection
+
+We also load the data to later project.
+
+```{r}
+condor_test <- prep_fcd(FCSpath = "../.test_files/fcs/", 
+                        ceil = 5000, 
+                        useCSV = FALSE, 
+                        transformation = "a", 
+                        remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"), 
+                        anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_test.csv", 
+                        filename_col = "filename",
+                        seed = 91)
+```
+
+```{r}
+condor_test$anno$cell_anno$group <- "test"
+```
+
+# UMAP Projection
+
+We start now by running a UMAP, in this case we set the `ret_model` variable to `TRUE` to keep the UMAP model in the `condor`  object.
+
+## Run UMAP keeping the model
+```{r}
+condor_train <- runUMAP(fcd = condor_train, 
+                        input_type = "expr", 
+                        data_slot = "orig", 
+                        seed = 91, 
+                        n_threads = 4, 
+                        ret_model = TRUE)
+```
+
+## Add data to the embedding
+
+We can now predict the UMAP coordinates of the projected data.
+
+```{r}
+condor_test <- learnUMAP(fcd = condor_test, 
+                         input_type = "expr", 
+                         data_slot = "orig", 
+                         model = condor_train$extras$umap_model, 
+                         n_epochs = 100, 
+                         seed = 91, 
+                         n_threads = 4)
+```
+
+# Train a classifier for the label transfer
+
+To transfer also the labels from the reference to the projected data we need to train a cell classifier. We start by clustering the training data.
+
+```{r}
+condor_train <- runPhenograph(fcd = condor_train, 
+                              input_type = "expr", 
+                              data_slot = "orig", 
+                              k = 300, 
+                              seed = 91)
+```
+
+## Visualization
+```{r}
+plot_marker(data = cbind(condor_train$umap$expr_orig, condor_train$clustering$Phenograph_expr_orig_k_300), 
+            param = "Phenograph", 
+            order = T, 
+            title = "Figure S9b -UMAP on the training dataset, Phenograph clusters", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE, 
+            label_clusters = FALSE)
+```
+
+# Label transfer
+
+And we now train the classifier on the clustering labels. If you assigned a metacluster label, this can also be used to train the classifier.
+
+## Train label transfer kNN classifier
+```{r}
+condor_train_fine <- train_transfer_model(fcd = condor_train, 
+                                          data_slot = "orig", 
+                                          input_type = "expr", 
+                                          label = condor_train$clustering$Phenograph_expr_orig_k_300$Phenograph, 
+                                          method = "knn", 
+                                          tuneLength = 5, 
+                                          trControl = caret::trainControl(method = "cv"), 
+                                          seed = 91)
+```
+
+```{r}
+condor_train_fine$extras$lt_model$performace_plot
+```
+
+```{r, fig.height=10, fig.width=10}
+# Figure S10b - kNN importance
+
+condor_train_fine$extras$lt_model$features_plot
+```
+
+## Predict the labels
+
+```{r}
+condor_test <- predict_labels(fcd = condor_test, 
+                              data_slot = "orig", 
+                              input_type = "expr", 
+                              model_object = condor_train_fine, 
+                              label = "label_pred_fine", 
+                              seed = 91)
+```
+
+# Visualize the results
+
+## Prepare the dataframe
+```{r}
+train <- as.data.frame(cbind(condor_train$umap$expr_orig, Phenograph = condor_train$clustering$Phenograph_expr_orig_k_300[, 1]))
+
+train$type <- "train"
+
+test <- cbind(condor_test$umap$expr_orig, 
+              condor_test$clustering$label_pred_fine)
+
+test$Description <- NULL
+test$Description <- NULL
+
+colnames(test) <- c("UMAP1", "UMAP2", "Phenograph")
+
+test$type <- "test"
+
+vis_data <- rbind(train, test)
+```
+
+# Overlap UMAP
+```{r}
+vis_data$type <- factor(vis_data$type, levels = c("train", "test"))
+```
+
+```{r}
+ggplot(data = vis_data, aes(x = UMAP1, y = UMAP2, color = type, alpha = type, size = type)) +
+  geom_point() +
+  scale_color_manual(values = c("gray", "#92278F")) +
+  scale_alpha_manual(values = c(0.5, 1)) +
+  scale_size_manual(values = c(0.1, 0.5)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, panel.grid = element_blank()) + 
+  ggtitle("Figure 6c - UMAP projected")
+```
+
+```{r}
+ggplot(data = vis_data, aes(x = UMAP1, y = UMAP2, color = Phenograph, alpha = type, size = type)) +
+  geom_point() +
+  scale_alpha_manual(values = c(0.1, 1)) +
+  scale_size_manual(values = c(0.1, 0.5)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, panel.grid = element_blank()) + 
+  ggtitle("Figure S9c - Predicted cluster")
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```
+

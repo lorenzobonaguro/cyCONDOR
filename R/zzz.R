@@ -7,7 +7,7 @@
 #' @keywords internal
 #' @importFrom utils packageDescription
 .onAttach <- function(libname, pkgname) {
-  welcome_msg <- paste("Welcome to", packageDescription("condor")$Package, "version", packageDescription("condor")$Version, "!")
+  welcome_msg <- paste("Welcome to", packageDescription("cyCONDOR")$Package, "version", packageDescription("cyCONDOR")$Version, "!")
   ascii_art <- "
 
                                                                    dddddddd
@@ -50,5 +50,5 @@ if (getRversion() >= "2.15.1") {
                            "gs", "filename_col", "umap_name", "prcomp", "input_scale",
                            "colorRampPalette", "model.matrix", "trainControl",
                            "train", "Accuracy", "AccuracySD", "varImp", "..level..",
-                           "DC_1", "DC_2")) # Add other variables as needed
+                           "DC_1", "DC_2", "PC1", "PC2", "X", "Y", "color")) # Add other variables as needed
 }

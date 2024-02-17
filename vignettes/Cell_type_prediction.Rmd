@@ -1,0 +1,18 @@
+---
+title: "Cell type prediction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cell type prediction}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+```
+
+# WORK IN PROGRESS
+We are currently developing the implementation of `Astir` in the `cyCONDOR` ecosystem to allow the automated cell classification.

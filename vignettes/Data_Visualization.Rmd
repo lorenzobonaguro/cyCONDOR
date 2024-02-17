@@ -1,0 +1,173 @@
+---
+title: "Data Visualization"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Visualization}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, warning=FALSE, message=FALSE}
+library(cyCONDOR)
+```
+
+cyCONDOR provides several function to visualize the result of the analysis, following some examples on how to use them.
+
+# Load an example dataset
+```{r}
+condor <- readRDS("../.test_files/condor_example.rds")
+```
+
+# Plot the results of dimensionality reduction and clustering
+
+## PCA
+```{r}
+plot_marker(data = cbind(condor$pca$orig, condor$anno$cell_anno), 
+            param = "group", 
+            order = T, 
+            title = "UMAP colored by group", 
+            dim_red = "PCA", 
+            facet_by_variable = FALSE)
+```
+
+## tSNE
+```{r}
+plot_marker(data = cbind(condor$tSNE$pca_orig, condor$anno$cell_anno), 
+            param = "group", 
+            order = T, 
+            title = "tSNE colored by group", 
+            dim_red = "tSNE", 
+            facet_by_variable = FALSE)
+```
+
+## UMAP
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "group", 
+            order = T, 
+            title = "UMAP colored by group", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+```
+
+## Colored by Phenograph, FlowSOM clustering or metaclusters
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "UMAP colored by Phenograph clusters", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$FlowSOM_pca_orig_k_15), 
+            param = "FlowSOM", 
+            order = T, 
+            title = "UMAP colored by FlowSOM clusters", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "metaclusters", 
+            order = T, 
+            title = "UMAP colored by metaclusters", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+```
+
+## Export the plot as raster image
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "metaclusters", 
+            order = T, 
+            title = "UMAP colored by metaclusters", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE, 
+            raster = TRUE)
+```
+
+## Split plot by a variable
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "group", 
+            order = T, 
+            title = "UMAP colored by group", 
+            dim_red = "UMAP", 
+            facet_by_variable = TRUE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "metaclusters", 
+            order = T, 
+            title = "UMAP colored by metaclusters", 
+            dim_red = "UMAP", 
+            facet_by_variable = "group")
+```
+
+# Density plot
+```{r, fig.width=15}
+plot_density(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+             param = "group", 
+             title = "Figure S2d - Density Map", 
+             dim_red = "UMAP", 
+             dot_size = 0.2, 
+             alpha = 0.2, color_density = c("Greys", "Reds"))
+```
+
+
+# Heatmap of marker expression
+```{r, fig.width=7, fig.height=7}
+HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
+           group = "metaclusters",
+           maxvalue = NULL, 
+           title = "Marker expression in metaclusters")
+```
+
+# Visualize the loadings of the PCs
+```{r}
+PC_loadings(fcd = condor, data_slot = "orig", number = 1)
+```
+
+# Violinplot of marker expression
+```{r}
+violinplot_marker(fcd = condor, 
+                  data_slot = "orig", 
+                  cluster_method = "Phenograph_pca_orig_k_60", 
+                  cluster_type = "metaclusters", marker = "CD56")
+```
+
+# Classical cytometry dotplot
+```{r}
+dotplot_cyto(data = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
+             subset = TRUE,
+             annotation = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
+             subset_char = c("NK bright", "NK dim"), 
+             color_by = condor$clustering$Phenograph_pca_orig_k_60$metacluster, 
+             x = "CD16", 
+             y = "CD56", 
+             title = "NK cells Dotplot")
+```
+
+# Densityplot marker
+```{r}
+densityplot_marker(data = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
+                   marker = "CD3", 
+                   split_by = NULL, 
+                   color_by = "metaclusters", 
+                   title = "CD3 expression")
+```
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```
+
