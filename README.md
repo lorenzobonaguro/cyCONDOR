@@ -7,6 +7,8 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 ## How to use
 
+**You can find the detailed documentation of cyCONDOR [here](https://lorenzobonaguro.github.io/cyCONDOR/)**
+
 We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/condor](https://hub.docker.com/r/lorenzobonaguro/condor), the latest version of the image can be pulled with:
 ```
 docker pull lorenzobonaguro/cycondor:latest
@@ -30,8 +32,7 @@ The tools was tested with `R v4.3.X`, older version should be compatible but wer
 
 To install `cyCONDOR` locally first you need to install all the dependencies, from R execute the following. This script will install add dependencies from Bioconductor, CRAN and GitHub. For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)
 ```
-download.file(url = "https://github.com/lorenzobonaguro/cyCONDOR/blob/master/inst/install_locally_script.R", 
-              destfile = "install_locally_script.R")
+download.file(url = "https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R", destfile = "install_locally_script.R")
               
 source(install_locally_script.R)
 ``` 
