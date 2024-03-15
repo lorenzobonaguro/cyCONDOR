@@ -22,4 +22,4 @@ devtools::install_github("JinmiaoChenLab/Rphenograph")
 
 devtools::install_github("stuchly/Rphenoannoy")
 
-devtools::install_url("https://github.com/lorenzobonaguro/condor/releases/download/v014/condor_0.1.4.tar.gz")
+devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v015/cyCONDOR_0.1.5.tar.gz")
