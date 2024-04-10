@@ -101,6 +101,7 @@ nfTransform <- function(transTypeTable, dataA){
 #' @import reshape2
 #' @import dplyr
 #' @import cowplot
+#' @import data.table
 #' @return load flow cytometry dataset
 #'
 #' @export
@@ -143,7 +144,7 @@ prepFcsFolderData <- function(LoaderPATH, ceil, useCSV, separator){
 
       csvfilenames <- list.files(path = LoaderPATH, pattern="*.csv")
       FcsFileNames <- csvfilenames
-      csvdata <- lapply(paste0(LoaderPATH,"//",csvfilenames),function(x) read.delim(x, check.names = F, sep = separator))
+      csvdata <- lapply(paste0(LoaderPATH,"//",csvfilenames),function(x) data.table::fread(x,check.names = F))
       NumBC <- length(csvdata)
       FFdata<-NULL
       for (FFs in 1:NumBC){
