@@ -21,26 +21,52 @@ docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:latest
+lorenzobonaguro/cycondor:v015
+```
+You can then access RStudio from your web browser at the address
+
+```
+http://localhost:[YOURPORT]/
 ```
 
-If you plan to run the image on `Singularity` instead of `Docker` feel free to contact us for support in the configuration.
+If you are starting the Docker container from a remote server exchange the `localhost` with the IP address or domain name of the server as exemplified below:
+
+```
+http://[SERVERNAME]:[YOURPORT]/
+```
+
+A detailed guide on how to get started with Docker and how to run cyCONDOR as `Singulariy` container are provided in the vignette: `vignette("How_to_run_cyCONDOR_as_container")`.
 
 ## How to install locally
 
 The tools was tested with `R v4.3.X`, older version should be compatible but were not tested
 
-To install `cyCONDOR` locally first you need to install all the dependencies, from R execute the following. This script will install add dependencies from Bioconductor, CRAN and GitHub. For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)
+To install `cyCONDOR` you can follow few steps describe here below. 
+
+**IMPORTANT:** For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)
+
+First install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
+```
+BiocManager::install(update = T, ask = F, version = "3.17")
+``` 
+
+Next we install two dependencies which are only available on GitHub
+```
+devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy"))
+```
+
+Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.
+```
+devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v015/cyCONDOR_0.1.5.tar.gz",
+                      repos = BiocManager::repositories())
+```
+
+Alternatively those steps could be automated with the following code
 ```
 download.file(url = "https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R", destfile = "install_locally_script.R")
               
 source(install_locally_script.R)
 ``` 
-
-Then install the latest release of `cyCONDOR` with:
-```
-devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v015/cyCONDOR_0.1.5.tar.gz")
-```
 
 ## Key cyCONDOR features include:
 

@@ -61,13 +61,13 @@ condor <- train_classifier_model(fcd = condor,
 We can now explore the results of the model at sample level
 
 ```{r}
-condor$extras$classifier_model$train.Data.sample
+head(condor$extras$classifier_model$train.Data.sample)
 ```
 
 And at cellular level
 
 ```{r}
-condor$extras$classifier_model$train.Data.cell
+head(condor$extras$classifier_model$train.Data.cell)
 ```
 
 
@@ -111,13 +111,13 @@ condor_test <- predict_classifier(fcd = condor_test,
 Also here we can explore the results at sample level
 
 ```{r}
-condor_test$extras$classifier_prediction$xNew.Pred.sample
+head(condor_test$extras$classifier_prediction$xNew.Pred.sample)
 ```
 
 And at cellular level
 
 ```{r}
-condor_test$extras$classifier_prediction$xNew.Pred.cell
+head(condor_test$extras$classifier_prediction$xNew.Pred.cell)
 ```
 
 # Visualize the results
