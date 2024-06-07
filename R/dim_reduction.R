@@ -1,3 +1,33 @@
+#' runPCA
+#'
+#' @title runPCA
+#' @description Run a Principal Component Analysis.
+#' @param fcd flow cytometry dataset.
+#' @param data_slot name of the data slot to use to calculate the PCA, original data (orig) or harmonized/normalized data (norm).
+#' @param seed Seed used for the randomization steps.
+#' @param prefix Prefix for the output.
+#' @return runPCA
+#'
+#' @export
+runPCA <- function(fcd, data_slot = "orig", seed, prefix = NULL) {
+
+  set.seed(seed)
+
+  if (is.null(prefix)) {
+
+    fcd[["pca"]][[data_slot]] <- prcomp(fcd$expr[[data_slot]])$x
+
+  } else {
+
+    fcd[["pca"]][[paste(prefix, data_slot, sep = "_")]] <- prcomp(fcd$expr[[data_slot]])$x
+
+  }
+
+  return(fcd)
+
+}
+
+
 #' runUMAP
 #'
 #' @title runUMAP
