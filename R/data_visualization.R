@@ -61,7 +61,7 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @description Function to visualize a selected parameter on a dimensionality reduction.
 #' @param data This is the input dataframe for the visualization, this part of the code can still be improved but for the moment you have to cbind the dataframe with the informations you want to plot.
 #' @param param Parameter to visualize in the plot, this can be either a continous variable or a categorical one, the function will react differently according.
-#' @param order Logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells.
+#' @param order Logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells. If set to FALSE, the plotting order of the cells is randomized.
 #' @param title Title of the plot.
 #' @param limX Limits of the x axes.
 #' @param limY Limits of the y axes.
@@ -76,6 +76,7 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param label_size Size of the labels.
 #' @param label_color Color of the labels.
 #' @param raster TRUE or FALSE, if plot should be returned as raster image
+#' @param seed A seed is set for reproducibility of the plotting result.
 #' @import ggplot2
 #' @import RColorBrewer
 #' @import devtools
@@ -86,23 +87,24 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @return plot marker or list of markers
 #'
 #' @export
-plot_marker <- function(data,
-                        param,
-                        order = FALSE,
-                        title = "adjust the title",
-                        limX = NULL,
-                        limY = NULL,
-                        dim_red,
-                        dot_size = 0.1,
-                        apha = 0.2,
-                        color_discrete = cluster_palette,
-                        color_gradient = colors,
-                        remove_guide = FALSE,
-                        facet_by_variable = FALSE,
-                        label_clusters = FALSE,
-                        label_size = 3.5,
-                        label_color = "black",
-                        raster = FALSE) {
+plot_marker_new <- function(data,
+                            param,
+                            order = FALSE,
+                            title = "adjust the title",
+                            limX = NULL,
+                            limY = NULL,
+                            dim_red,
+                            dot_size = 0.1,
+                            apha = 0.2,
+                            color_discrete = cluster_palette,
+                            color_gradient = colors,
+                            remove_guide = FALSE,
+                            facet_by_variable = FALSE,
+                            label_clusters = FALSE,
+                            label_size = 3.5,
+                            label_color = "black",
+                            raster = FALSE,
+                            seed= 42) {
 
   # Selection of raster plot or standard
   if (raster == FALSE) {
@@ -146,6 +148,11 @@ plot_marker <- function(data,
 
     if(order == TRUE){
       data <- data[order(data[[param]], decreasing = F), ]
+    }else if(order == FALSE){
+      # order rows randomly for plotting
+      set.seed(seed= seed)
+      cells <- sample(x = rownames(data))
+      data <- data[cells,]
     }
 
     colnames(data)[colnames(data) == param] <- "poi"
@@ -182,6 +189,12 @@ plot_marker <- function(data,
     }
 
   }else {
+    if(order == FALSE){
+      # order rows randomly for plotting
+      set.seed(seed= seed)
+      cells <- sample(x = rownames(data))
+      data <- data[cells,]
+    }
     colnames(data)[colnames(data) == param] <- "poi"
 
     # This if statement is to fix the faceting by selected variable issue with R4
@@ -265,6 +278,7 @@ plot_marker <- function(data,
   return(p1)
 
 }
+
 
 #' HM_markers
 #'
