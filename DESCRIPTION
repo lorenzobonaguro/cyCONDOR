@@ -48,7 +48,8 @@ Imports:
     DelayedMatrixStats,
     cowplot,
     dplyr,
-    reticulate
+    reticulate,
+    data.table
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Suggests: 
