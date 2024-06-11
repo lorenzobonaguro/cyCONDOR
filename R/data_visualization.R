@@ -1,3 +1,46 @@
+#' PC_loadings
+#'
+#' @title PC_loadings
+#' @description Function to visualize the effect each marker has on the principle component.
+#' @param fcd flow cytometry dataset.
+#' @param prefix Prefix for the output.
+#' @param data_slot data slot to use for the calculation of the PCA, e.g. "orig" or "norm".
+#' @param nPC Number of principle components to show.
+#' @return Figure of PC loadings
+#'
+#' @import dplyr
+#' @import cowplot
+#' @import ggplot2
+#'
+#' @export
+
+
+PC_loadings <- function(fcd,
+                        prefix = NULL,
+                        data_slot = "orig",
+                        nPC = 3) {
+  # select markers for PC_loading accordng to prefix (default -> all markers)
+  markers <- used_markers(fcd = fcd, data_slot = data_slot, method = "pca", prefix = prefix, mute = T)
+
+  pca_result <- prcomp(fcd$expr[[data_slot]][, colnames(fcd$expr[[data_slot]]) %in% markers, drop = F])
+  pca_rotations <- as.matrix(pca_result$rotation)
+  plot.list <- list()
+  for (i in colnames(pca_rotations)) {
+    tmp <- as.data.frame(pca_rotations)
+    tmp$marker <- rownames(pca_rotations)
+    tmp <- tmp[, c(i, "marker")]
+    colnames(tmp) <- c("loadings", "marker")
+    tmp <- tmp %>% dplyr::arrange(loadings)
+    tmp$marker <- factor(tmp$marker, levels = tmp$marker)
+    plot.list[[i]] <- ggplot(tmp, aes(x = loadings, y = marker)) +
+      geom_point() +
+      theme_linedraw() +
+      ggtitle(paste(i,prefix))
+  }
+  cowplot::plot_grid(plotlist = plot.list[1:nPC], ncol = 3)
+}
+
+
 #' scaleColors
 #'
 #' @title scaleColors
