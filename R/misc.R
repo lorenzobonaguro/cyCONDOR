@@ -1,3 +1,51 @@
+#' used_markers
+#'
+#' @title used_markers
+#' @description returns a vector of markers for given input_type and data slot.
+#'
+#' @param fcd flow cytometry dataset.
+#' @param input_type Data for marker extraction, e.g. "pca", "umap", "phenograph", "FlowSOM"
+#' @param data_slot Data slot for marker extraction, e.g. "orig" or "norm".
+#' @param prefix Prefix of the specific data_slot, if used.
+#' @param mute LOGICAL, if output of funtion is wanted (F) or not (T). Default = F.
+#'
+#' @return marker vector.
+#'
+#' @export
+
+
+used_markers <- function(fcd,
+                         input_type,
+                         prefix = NULL,
+                         data_slot,
+                         mute = F){
+  markers <- fcd$extras$markers[[paste(input_type, sub("^_", "", paste(prefix, data_slot,"markers", sep = "_")), sep = "_")]]
+  if (mute == F){
+
+    print(paste("number of measured markers:",length(markers)))
+    print(markers)
+    return(markers)
+  }else{
+    return(markers)}
+}
+
+
+#' measured_markers
+#'
+#' @title measured_markers
+#' @description returns a vector of markers for orig condor expr.
+#' @param fcd flow cytometry dataset.
+#' @return marker vector.
+#'
+#' @export
+
+measured_markers <- function(fcd){
+  markers <- colnames(fcd$expr$orig)
+  print(paste("number of measured markers:",length(markers)))
+  print(markers)
+}
+
+
 #' filter_fcd
 #'
 #' @title filter_fcd
