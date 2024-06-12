@@ -157,6 +157,8 @@ runPhenograph <- function (fcd,
 #' @param input_type data to use for the calculation, e.g. "expr" or "pca".
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
 #' @param nClusters Number of final clusters.
+#' @param grid_xdim x-axis size of the FlowSOM grid. Default = 10.
+#' @param grid_ydim y-axis size of the FlowSOM grid. Default = 10.
 #' @param seed Seed used for the randomization steps. Needed for reproducability.
 #' @param prefix Prefix of the output.
 #' @param ret_model LOGICAL if the model should be saved for future projection of the data. Default = F.
@@ -177,6 +179,8 @@ runFlowSOM <-  function (fcd,
                          input_type,
                          data_slot,
                          nClusters,
+                         grid_xdim= 10,
+                         grid_ydim= 10,
                          seed,
                          prefix = NULL,
                          ret_model = FALSE,
@@ -235,7 +239,7 @@ runFlowSOM <-  function (fcd,
 
 
 
-  som <- FlowSOM::BuildSOM(som, colsToUse = 1:(ncol(data1)))  # Question: colsToUse from PCA filtered object?
+  som <- FlowSOM::BuildSOM(som, colsToUse = 1:(ncol(data1)), xdim= grid_xdim, ydim=grid_ydim)  # Question: colsToUse from PCA filtered object?
   som <- FlowSOM::BuildMST(som)
   labels_pre <- som$map$mapping[, 1]
 
