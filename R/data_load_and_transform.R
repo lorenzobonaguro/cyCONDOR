@@ -299,7 +299,7 @@ prep_fjw <- function(data_gs,
 #' @param transformation Transformation to perform.
 #' @param remove_param Parameters to remove from the transformation, "inTime" should be kept.
 #' @param anno_table path to the annotation table file.
-#' @param filename_col Name of the column containing the filename matching with the .fcs files.
+#' @param filename_col Name of the column containing the file name matching with the .fcs files.
 #' @param seed seed to be used for the randomization of the events.
 #' @param separator_anno separator used in the annotation file.
 #' @param separator_fc_csv separator used in the fc csv files.
@@ -359,6 +359,17 @@ prep_fcd <- function(FCSpath,
 
   fcd[["expr"]][["orig"]] <- df[ ,colnames(df) %in% keeptable$Param]
   fcd[["anno"]][["cell_anno"]] <- df[ ,!colnames(df) %in% keeptable$Param]
+
+  #save import parameters
+  fcd[["extras"]][["prep_fcd_param"]] <- list(FCSpath= FCSpath,
+                                              ceil = ceil,
+                                              transformation = transformation,
+                                              remove_param= remove_param,
+                                              anno_table = anno_table,
+                                              filename_col= filename_col,
+                                              seed= seed,
+                                              separator_anno = separator_anno,
+                                              separator_fc_csv = separator_fc_csv)
 
   class(fcd) <- "flow_cytometry_dataframe"
 

@@ -66,47 +66,70 @@ harmonize_PCA <- function(fcd, data_slot = "orig", batch, seed, prefix = NULL) {
 #'
 #'@title train_cytonorm
 #'@description
-#'wrapper function around CytoNorm.train from the CytoNorm package.
+#'Wrapper function around 'CytoNorm.train' from the CytoNorm package.
 #'@param fcd flow cytometry dataset
-#'@param files Vector of fcs file names of reference samples which are used for training the model. If files == NULL, all files contained in the flow cytometry dataset are used.
-#'@param FCSpath File path to folder where .fcs files contained in the fcd are stored.
-#'@param batch_var Column name of batch variable from fcd$anno$cell_anno
-#'@param remove_param Parameters which should be excluded for normalization
-#'@param FlowSOM_param nClus is important to set, refer to help function
-#'@returns The function returns a fcd with the trained model saved as extras.
+#'@param batch_var Column name of batch variable from \code{fcd$anno$cell_anno}.
+#'@param remove_param Parameters/markers which should be excluded for learning the batch effect and training the model.
+#'@param seed A seed is set for reproducibility.
+#'@param files Vector of FCS file names of reference samples which are used for training the model. If files == NULL, all files contained in the fcd are used.
+#'@param FCSpath File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.
+#'@param FlowSOM_param A list of parameters to pass to the FlowSOM algorithm. Default= list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale= FALSE)
+#'@returns The function returns a fcd with the trained model saved in extras.
 #'@details
-#'train_cytonorm' takes a fcd as an input and learns the batch effect of a given batch variable across reference samples provided by the user using CytoNorm. This function returns a fcd with the trained model which can then be used as input for the 'run_cytonorm' function to normalize samples with the trained model.
+#'train_cytonorm' takes a fcd as an input and learns the batch effect of a given batch variable across reference samples provided by the user using the CytoNorm algorithm. This function returns a fcd with the trained model which can be used as input for the \code{\link{run_cytonorm}} function to normalize samples with the trained model.
 #'See https://doi.org/10.1002/cyto.a.23904 for more details.
 #'@import CytoNorm
-#'@import flowCore
+
 
 
 train_cytonorm <- function(fcd,
-                           files = NULL,
-                           FCSpath,
                            batch_var,
                            remove_param = NULL,
+                           seed,
+                           files = NULL,
+                           FCSpath = NULL,
                            FlowSOM_param = list(
                              nCells = 5000,
                              xdim = 5,
                              ydim = 5,
                              nClus = 10,
                              scale = FALSE
-                           ),
-                           seed) {
+                           )) {
 
-  # all files are used for training, if no files names are provided
+  # all files are used for training, if no file names are provided
   if(is.null(files)){
     files <-   unique(fcd$anno$cell_anno$expfcs_filename)
   }
 
-  #check if FCS path exists
-  if (!dir.exists(FCSpath)) {
-    stop("FCSpath does not exist")
+  # check FCSpath
+  if(is.null(FCSpath)){
+    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]])){
+      #extract fcs_path from extras slot in fcd
+      FCSpath <- fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]]
+    } else{
+      stop(paste0("There is no FCSpath saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'FCSpath' parameter."))
+    }
   }
+  #check if FCSpath exists
+  if (!dir.exists(FCSpath)) {
+    stop(paste0("FCSpath ", FCSpath,  "does not exist"))
+  }
+
   #check if batch variable exists
   if(!batch_var %in% colnames(fcd$anno$cell_anno)){
     stop(paste0(batch_var, " is no column name of fcd$anno$cell_anno"))
+  }
+
+  #parameters to remove
+  if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["remove_param"]])){
+    #extract remove_param from extras slot in fcd
+    remove_param_fcd <- fcd[["extras"]][["prep_fcd_param"]][["remove_param"]]
+  } else{
+    stop("fcd$extras$prep_fcd_param$remove_param is required but is missing in your fcd")
+  }
+
+  if(!is.null(remove_param)){
+    remove_param <- unique(remove_param, remove_param_fcd)
   }
 
   # Set seed for reproducibility
@@ -133,6 +156,7 @@ train_cytonorm <- function(fcd,
   }
   transformList <- flowCore::transformList(channels, cytofTransform)
   message("start CytoNorm.train")
+
   # train model
   model <- CytoNorm::CytoNorm.train(
     files = train_data$path,
@@ -155,6 +179,7 @@ train_cytonorm <- function(fcd,
   )
   #add model to fcd
   fcd[["extras"]][["cytonorm_model"]] <- model
+
   return(fcd)
 }
 
@@ -163,43 +188,47 @@ train_cytonorm <- function(fcd,
 #'
 #'@title run_cytonorm
 #'@description
+#'Wrapper function around CytoNorm.normalize from the CytoNorm package.
 #'@param fcd flow cytometry dataset
+#'@param batch_var Column name of batch variable from \code{fcd$anno$cell_anno}.
+#'@param keep_fcs Boolean whether to keep the normalized FCS files in \code{output_dir}.
+#'@param output_dir Directory to save normalized FCS files temporary or permanently, if keep_fcs == TRUE.
 #'@param files Vector of fcs file names of samples which should be normalized. By default all files contained in the flow cytometry dataset are used.
 #'@param FCSpath File path to folder where .fcs files contained in the fcd are stored.
-#'@param batch_var Column name of batch variable from fcd$anno$cell_anno
-#'@param output_dir Directory to save normalized fcs files.
-#'@param prep_fcd_param Parameters for prep_fcd function. The same parameters as for the unnormalized fcd have to be provided.
-#'@param keep_fcs Boolean whether to keep the normalized FCS files in output_dir.
+#'@param anno_table Path to the annotation table file.
 #'@returns fcd with a normalized expression data frame.
 #'@details
-#'to be added
+#'This function assumes that your fcd contains a trained model computed by \code{\link{train.cytonorm}}. The function performs normalization of the samples contained in your fcd. The normalized expression values are added to your fcd and by default FCS files with the normalized values are written to the  \code{output_dir}.
 #'@import CytoNorm
-#'@import flowcore
 run_cytonorm <- function(fcd,
-                         files= NULL,
-                         FCSpath,
                          batch_var,
+                         keep_fcs = TRUE,
                          output_dir = paste0("./CytoNorm_output_", Sys.Date()),
-                         prep_fcd_param= list(ceil,
-                                              transformation,
-                                              remove_param,
-                                              anno_table,
-                                              filename_col,
-                                              seed),
-                         keep_fcs = TRUE){
+                         files= NULL,
+                         FCSpath=NULL,
+                         anno_table= NULL){
 
   # all files are used for normalization, if no files names are provided
   if(is.null(files)){
     files <-   unique(fcd$anno$cell_anno$expfcs_filename)
   }
 
-  #check if FCS path exists
+  # check FCSpath
+  if(is.null(FCSpath)){
+    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]])){
+      #extract fcs_path from extras slot in fcd
+      FCSpath <- fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]]
+    } else{
+      stop(paste0("There is no FCSpath saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'FCSpath' parameter."))
+    }
+  }
+  #check if FCSpath exists
   if (!dir.exists(FCSpath)) {
-    stop("FCSpath does not exist")
+    stop("'FCSpath' does not exist.")
   }
   #check if fcd contains model
   if (!"cytonorm_model" %in% names(fcd[["extras"]])) {
-    stop("fcd does not contain cytonorm_model")
+    stop("Your fcd does not contain the cytonorm_model.")
   }
 
   #select data to normalize
@@ -215,7 +244,7 @@ run_cytonorm <- function(fcd,
 
   message("start normalization")
   # normalize fcs files
-  CytoNorm::CytoNorm.normalize(model = fcd[["extras"]][["cytonorm_model"]], # suppress warning
+  CytoNorm::CytoNorm.normalize(model = fcd[["extras"]][["cytonorm_model"]],
                                files = data$path,
                                labels = data[[batch_var]],
                                transformList = transformList,
@@ -227,7 +256,43 @@ run_cytonorm <- function(fcd,
                                verbose = FALSE,
                                truncate_max_range= FALSE)
 
+  #prep_fcd_params
+  if(!is.null(fcd[["extras"]][["prep_fcd_param"]])){
+    #check if all required parameters are saved in fcd
+    param_names <- c("ceil", "transformation", "remove_param", "filename_col", "seed", "separator_anno")
+    if(sum(param_names %in% names(fcd[["extras"]][["prep_fcd_param"]])) != length(param_names
+    )){
+      stop(paste0(setdiff(param_names, names(fcd[["extras"]][["prep_fcd_param"]])), " is missing in fcd$extras$prep_fcd_param."))
+    }
+    #extract prep_fcd_param from extras slot in fcd
+    prep_fcd_param <- list(ceil = fcd[["extras"]][["prep_fcd_param"]][["ceil"]],
+                           transformation =fcd[["extras"]][["prep_fcd_param"]][["transformation"]],
+                           remove_param= fcd[["extras"]][["prep_fcd_param"]][["remove_param"]],
+                           # anno_table = fcd[["extras"]][["prep_fcd_param"]][["anno_table"]],
+                           filename_col= fcd[["extras"]][["prep_fcd_param"]][["filename_col"]],
+                           seed= fcd[["extras"]][["prep_fcd_param"]][["seed"]],
+                           separator_anno = fcd[["extras"]][["prep_fcd_param"]][["separator_anno"]])
+    #check if anno_table parameter was provided
+    if(!is.null(anno_table)){
+      prep_fcd_param[["anno_table"]] <- anno_table
+    } else{
+      if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["anno_table"]])){
+        prep_fcd_param[["anno_table"]] <-fcd[["extras"]][["prep_fcd_param"]][["anno_table"]]
+      }else{
+        stop(paste0("There is no anno_table parameter saved in your fcd. Please provide the path to the folder where the annotation file using the 'anno_table' parameter."))
+      }
+    }
+    #check if anno table file exists
+    if (!file.exists( prep_fcd_param[["anno_table"]])) {
+      stop(paste0("The annotation file ", prep_fcd_param[["anno_table"]], " cannot be found. Please provide the correct path to the annotation file using the 'anno_table' parameter."))
+    }
+  } else{
+    stop("The fcd$extras$prep_fcd_param is required but cannot be found  your fcd.")
+  }
+
+
   # read in normalized FCS files
+  message("adding normalized expression data to fcd")
   fcd_norm<- prep_fcd(FCSpath = output_dir,
                       ceil = prep_fcd_param[["ceil"]],
                       useCSV = FALSE,
@@ -237,17 +302,19 @@ run_cytonorm <- function(fcd,
                       filename_col = prep_fcd_param[["filename_col"]],
                       seed = prep_fcd_param[["seed"]])
 
+
   #add normalized expression data frame to original fcd
   if(identical(colnames(fcd$expr$orig), colnames(fcd_norm$expr$orig)))
   {if(identical(rownames(fcd$expr$orig), rownames(fcd_norm$expr$orig)))
-    #add cytonorm expression data frame
+    #add normalized expression data frame
   { fcd[["expr"]][["norm"]] <- fcd_norm[["expr"]][["orig"]]
   }else{
-    stop("The rownames of the original and the normalized expression data frame are not identical")
+    stop("The rownames of the original and the normalized expression data frame are not identical.")
   }
   } else{
-    stop("The normalized expression table cannot be added to fcd because the colnames of the original and normalized expression data frame are not identical")
+    stop("The normalized expression table cannot be added to the fcd because the colnames of the original and normalized expression data frame are not identical.")
   }
+
 
   #cleaning
   if(keep_fcs== FALSE){
