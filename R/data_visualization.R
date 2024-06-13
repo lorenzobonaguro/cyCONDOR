@@ -130,7 +130,7 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @return plot marker or list of markers
 #'
 #' @export
-plot_marker_new <- function(data,
+plot_marker <- function(data,
                             param,
                             order = FALSE,
                             title = "adjust the title",
