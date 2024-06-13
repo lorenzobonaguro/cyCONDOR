@@ -152,7 +152,7 @@ runUMAP <- function(fcd,
 
     #define fcd subset for UMAP calculations and get used markers of PCA analysis
     data1 <- fcd$pca[[data_slot]][,1:nPC]
-    UMAP_markers <- used_markers(fcd,  method = "pca", data_slot = data_slot, mute = T)
+    UMAP_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
   }
   # calculate UMAP (changed reference to x)
   umap_model <- uwot::umap(X = data1,
@@ -274,7 +274,7 @@ runDM <- function (fcd,
 
     #define fcd subset for DM calculations and get used markers of PCA analysis
     data1 <- fcd$pca[[data_slot]][,1:nPC]
-    DM_markers <- used_markers(fcd,  method = "pca", data_slot = data_slot, mute = T)
+    DM_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
   }
 
   # calculate DM (changes to fcd (now data1))
@@ -383,7 +383,7 @@ runtSNE_new <- function (fcd,
     #define fcd subset for tSNE calculations and get used markers of PCA analysis
 
     data1 <- fcd$pca[[data_slot]][,1:nPC]
-    tSNE_markers <- used_markers(fcd,  method = "pca", data_slot = data_slot, mute = T)
+    tSNE_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
   }
 
   tSNE_df <- Rtsne(X = data1,
