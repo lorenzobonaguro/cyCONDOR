@@ -413,52 +413,76 @@ plot_marker_HM <- function(fcd,
 }
 
 
-#' confusion_HM
+#' plot_confusion_HM
 #'
-#' @title confusion_HM
-#' @description Visualize the confusion heatmap.
-#' @param variables Variable to by used to calculate the confusion.
-#' @param group Groupping to calculate the relative contribution to the variable.
-#' @param size Size of the heatmap blocks.
-#' @param title Title of the plot.
-#' @param cluster_cols TRUE or FALSE if columns should be clustered
-#' @param cluster_rows TRUE or FALSE if rows should be clustered
-#' @return confusion_HM
+#' @title plot_confusion_HM
+#' @description `plot_confusion_HM()` generates a heatmap showing the contribution of each group_var to a cell population after normalizing all levels in group_var to the same cell numbers.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used to calculate the confusion.
+#' @param group_var string indicating variable name in cell_anno that should be used to calculate the relative contribution to the variable specified in cluster_var.
+#' @param numeric logical, indicating if levels in cluster_var should be ordered in ascending numerical order.
+#' @param size size of the individual squares and font
+#' @param title character string, title of the plot.
+#' @param cluster_cols logical indicating if columns should be clustered (default: FALSE)
+#' @param cluster_rows logical indicating if rows should be clustered (default: FALSE)
+#' @return `plot_confusion_HM()` first calculates cell counts for each combination of group_var and cell population and normalizes the counts to a total of 1000 cells per group_var.
+#' Afterwards the percentage of cells coming from each level in group_var is calculated per cell population. The normalization of counts corrects the visualization for differences in total cells (events) measured per group_var.
 #'
 #' @export
-confusion_HM <- function(variables,
-                         group,
-                         size = 15,
-                         title = "Choose a good title for the plot",
-                         cluster_cols = FALSE,
-                         cluster_rows = FALSE) {
+plot_confusion_HM <- function(fcd,
+                              cluster_slot,
+                              cluster_var,
+                              group_var,
+                              numeric = FALSE,
+                              size = 15,
+                              title = "Confusion matrix",
+                              cluster_cols = FALSE,
+                              cluster_rows = FALSE) {
 
-  # quantify cells of each sample per cluster
-  cells_cluster <- confusionMatrix(paste0(variables),
-                                   paste0(group))
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var)
 
-  cells_cluster <- cells_cluster[order(factor(rownames(cells_cluster),levels=c(0:nrow(cells_cluster)))),]
 
-  cells_cluster <- cells_cluster[, order(colnames(cells_cluster))]
+  #### prepare data
+  data <- data.frame(cellID = rownames(fcd$clustering[[cluster_slot]]),
+                     cluster = fcd$clustering[[cluster_slot]][[cluster_var]],
+                     group_var = fcd$anno$cell_anno[[group_var]])
+
+
+  ## cell counts per cluster-group_var combination
+  cells_cluster <- cyCONDOR::confusionMatrix(paste0(data$cluster),
+                                             paste0(data$group_var))
+
+
+  if (numeric == TRUE) {
+    cells_cluster <- cells_cluster[order(as.numeric(rownames(cells_cluster))),order(colnames(cells_cluster))]
+  }else{
+    cells_cluster <- cells_cluster[,order(colnames(cells_cluster))]
+  }
 
   cells_cluster <- as.matrix(cells_cluster)
 
-  # normalize to 1000 cells per sample
+  ## normalize to 1000 cells per group_var
   tmp <- round(t(t(cells_cluster)/colSums(cells_cluster))*1000,3)
-  # calculate percentage of cells from sample per cluster
+  ## calculate percentage of cells from group_var per cluster
   scaled_cM <- round((tmp / Matrix::rowSums(tmp))*100,2)
 
-  pheatmap::pheatmap(
+  p <- pheatmap::pheatmap(
     mat = t(scaled_cM),
     border_color = "black",display_numbers = TRUE,
     cluster_rows = cluster_rows,
     cluster_cols = cluster_cols,
     cellwidth = size,
     cellheight = size,
-    # breaks = c(seq(0, maxvalue, length.out = 100), 100),
-    #color = c(colorRampPalette(rev(brewer.pal(n = 7, name ="RdYlBu")))(100), "#4575B4"),
     main = title)
 
+  return(p)
 }
 
 #' boxplot_and_stats
