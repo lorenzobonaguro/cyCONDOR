@@ -285,7 +285,7 @@ subset_fcd <- function(fcd, size) {
 #' @param cluster_slot set to NULL (default) if cluster_slot is not needed in parent function, set equal to cluster_slot if cluster_slot string should be checked
 #' @param cluster_var set to NULL (default) if cluster_var is not needed in parent function, set equal to cluster_var if cluster_var string should be checked
 #' @param reduction_method set to NULL (default) if reduction_method is not needed in parent function, set equal to reduction_method if reduction_method string should be checked
-#' @param reduction_type set to NULL (default) if reduction_type is not needed in parent function, set equal to reduction_type if reduction_type string should be checked
+#' @param reduction_slot set to NULL (default) if reduction_slot is not needed in parent function, set equal to reduction_slot if reduction_slot string should be checked
 #' @param group_var set to NULL (default) if group_var is not needed in parent function, set equal to group_var if group_var string should be checked
 #' @param sample_var set to NULL (default) if sample_var is not needed in parent function, set equal to sample_var if sample_var string should be checked
 #' @param pair_var set to NULL (default) if pair_var is not needed in parent function, set equal to pair_var if pair_var string should be checked
@@ -302,7 +302,7 @@ checkInput<-function(fcd,
                      cluster_slot = NULL,
                      cluster_var = NULL,
                      reduction_method = NULL,
-                     reduction_type = NULL,
+                     reduction_slot = NULL,
                      group_var = NULL,
                      sample_var = NULL,
                      pair_var = NULL
@@ -365,15 +365,15 @@ checkInput<-function(fcd,
       stop('Dimensionality reduction "',reduction_method,'" is not available in fcd object.')
     }
 
-    ##check if reduction_type is present
-    if(is.null(reduction_type)){
-      stop('reduction_type needs to be specified to run this function.')
+    ##check if reduction_slot is present
+    if(is.null(reduction_slot)){
+      stop('reduction_slot needs to be specified to run this function.')
     }
-    if(is.logical(reduction_type)){
-      stop('reduction_type needs to be a string.')
+    if(is.logical(reduction_slot)){
+      stop('reduction_slot needs to be a string.')
     }
-    if(!reduction_type %in% names(fcd[[reduction_method]])){
-      stop('reduction_type "',reduction_type,'" is not available for reduction_method ',reduction_method)
+    if(!reduction_slot %in% names(fcd[[reduction_method]])){
+      stop('reduction_slot "',reduction_slot,'" is not available for reduction_method ',reduction_method)
     }
   }
 
@@ -392,7 +392,7 @@ checkInput<-function(fcd,
       ID_list[["check_cell_anno"]] <- rownames(fcd$anno$cell_anno)
     }
     if(check_reduction == T){
-      ID_list[["check_reduction"]] <- rownames(fcd[[reduction_method]][[reduction_type]])
+      ID_list[["check_reduction"]] <- rownames(fcd[[reduction_method]][[reduction_slot]])
     }
 
     ##check IDs
