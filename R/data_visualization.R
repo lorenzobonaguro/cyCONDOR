@@ -626,65 +626,89 @@ barplot_frequency <- function(x_axes,
 
 }
 
-#' plot_density
+#' plot_dim_density
 #'
-#' @title plot_density
-#' @description Density Plot of dimensionality reduction.
-#' @param data data to be used for plotting.
-#' @param param Parameter to be used for the density splitting.
-#' @param title Title of the plot.
-#' @param dim_red Dimensionality reduction to be used.
-#' @param dot_size Size of the background dots.
-#' @param alpha Transparency of the background dots.
-#' @param color_density Colors of the density maps.
+#' @title dimensionality reduction plot with density distribution
+#' @description `plot_dim_density` plots the density distribution of each level of a grouping variable on top of dimensionality reduction plot. At the moment, only UMAP visualization is supported
+#' @param fcd flow cytometry data set comprising dimensionality reduction calculated with *cyCONDOR*.
+#' @param reduction_method string specifying which dimensionality reduction method to use. At the moment, only "umap" is supported.
+#' @param reduction_slot string specifying reduction name in reduction_method to use for visualization, e.g. "pca_orig".
+#' @param group_var string indicating variable name in cell_anno for which density distribution will be plotted for each level in group_var.
+#' @param title character string, title of the plot
+#' @param dot_size size of the background dots.
+#' @param alpha transparency of the background dots.
+#' @param color_density vector of strings indicating the color palette from *RColorBrewer" to be used for the density gradient. A names vector using levels in group_var allows the assignment of a specific color to a group level. If vector is not names, entries will be assigned to groups in alphabetic order and color palettes will be reused if vector has less colors than levels in group_var
+#' @import ggrastr
+#' @import ggpubr
+#' @import ggplot2
+#'
 #' @return Density Plot
+
 #'
 #' @export
-plot_density <- function(data,
-                         param,
-                         title = "adjust the title",
-                         dim_red,
-                         dot_size = 0.1,
-                         alpha = 0.2,
-                         color_density = c("Blues", "Oranges", "Reds")) {
+plot_dim_density <- function(fcd,
+                             reduction_method = "umap",
+                             reduction_slot,
+                             group_var,
+                             title = "",
+                             dot_size = 0.1,
+                             alpha = 0.2,
+                             color_density = c("Blues", "Oranges", "Reds")) {
 
-  group_density <- list()
 
-  colnames(data)[colnames(data) == param] <- "poi"
 
-  sequence <- unique(data$poi)
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_cell_anno = T,
+             check_reduction = T,
+             reduction_method = reduction_method,
+             reduction_slot = reduction_slot,
+             group_var = group_var)
 
-  sequence <- sequence[order(sequence)]
 
-  names(color_density) <- sequence
+  #### prepare data
+  data <- as.data.frame(fcd[[reduction_method]][[reduction_slot]])
+  data$group_var <- fcd$anno$cell_anno[[group_var]]
 
-  if (dim_red == "UMAP"){
-    p0 <- ggplot(data = data, aes(x = UMAP1, y = UMAP2))
+  groups <- unique(data$group_var)
+  groups <- groups[order(groups)]
+
+  #### assign colors, if vector is not named or adjusted
+  if(is.null(names(color_density))){
+
+    if(length(color_density) < length(groups)){
+      color_density<-rep_len(color_density,length(groups))
+    }
+    names(color_density) <- groups
   }
 
-  if (dim_red == "DM"){
-    p0 <- ggplot(data = data, aes(x = DM_1, y = DM_2))
-  }
 
-  for (i in sequence) {
+  #### plotting
+  if (reduction_method == "umap"){
 
-    p <- p0 +
-      geom_point_rast(fill="grey",color="grey",size=dot_size,alpha=alpha) +
+    p0 <- ggplot(data = data, aes(x = UMAP1, y = UMAP2)) +
+      ggrastr::geom_point_rast(fill="grey",color="grey",size=dot_size,alpha=alpha) +
       theme_bw() +
-      theme(aspect.ratio = 1, panel.grid = element_blank()) +
-      stat_density_2d(data = data[data$poi == i,],
-                      aes(x = UMAP1, y = UMAP2, fill = ..level..),
-                      geom = "polygon", contour = T, h = .5) +
-      scale_fill_distiller(palette = color_density[i], direction = 1) +
-      ggtitle(paste(dim_red, i, sep = "_"))
+      theme(aspect.ratio = 1, panel.grid = element_blank())
 
-    group_density[[i]] <- p
+    plot.list <- list()
+    for (i in groups) {
 
+      p <- p0 +
+        stat_density_2d(data = data[data$group_var == i,],
+                        #aes(x = UMAP1, y = UMAP2, fill = ..level..),
+                        aes(x = UMAP1, y = UMAP2, fill = after_stat(level)),
+                        geom = "polygon", contour = T, h = .5) +
+        scale_fill_distiller(palette = color_density[i], direction = 1) +
+        ggtitle(i)
+
+      plot.list[[i]] <- p
+    }
   }
 
-  out <- ggarrange(plotlist = group_density, legend = "right", ncol = 3, common.legend = FALSE)
 
-  out <- annotate_figure(out, top = text_grob(title))
+  out <- ggpubr::ggarrange(plotlist = plot.list, legend = "right", ncol = 3, common.legend = FALSE)
+  out <- ggpubr::annotate_figure(out, top = ggpubr::text_grob(title))
 
   return(out)
 
