@@ -13,7 +13,7 @@
 metaclustering <- function(fcd,
                            clustering,
                            name_col,
-                           name_out = "metacluster",
+                           cluster_var = "metacluster",
                            metaclusters) {
 
   ### Assign the metacluster
@@ -26,7 +26,7 @@ metaclustering <- function(fcd,
 
     print(tmp_metaclusters)
 
-    fcd$clustering[[clustering]][[name_out]] <- factor(fcd$clustering[[clustering]][[name_col]],
+    fcd$clustering[[clustering]][[cluster_var]] <- factor(fcd$clustering[[clustering]][[name_col]],
                                                        levels = levels(fcd$clustering[[clustering]][[name_col]]),
                                                        labels = tmp_metaclusters$metacluster)
 
@@ -105,7 +105,7 @@ runPhenograph <- function (fcd,
       }
     }
 
-    #define fcd subset for tSNE calculation
+    #define fcd subset for calculation
     data1 <- fcd$expr[[data_slot]][, colnames(fcd$expr[[data_slot]]) %in% phe_markers, drop = F]
 
 
@@ -113,10 +113,10 @@ runPhenograph <- function (fcd,
   }
   if (input_type == "pca"){
 
-    #define fcd subset for tSNE calculations and get used markers of PCA analysis
+    #define fcd subset for calculations and get used markers of PCA analysis
 
     data1 <- fcd$pca[[data_slot]][,1:nPC]
-    phe_markers <- used_markers(fcd,  method = "pca", data_slot = data_slot, mute = T)
+    phe_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
   }
 
 
@@ -229,7 +229,7 @@ runFlowSOM <-  function (fcd,
     #define fcd subset for FlowSOM calculations and get used markers of PCA analysis
 
     data1 <- fcd$pca[[data_slot]][,1:nPC]
-    som_markers <- used_markers(fcd,  method = "pca", data_slot = data_slot, mute = T)
+    som_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
   }
 
 

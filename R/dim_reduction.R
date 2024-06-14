@@ -329,7 +329,7 @@ runDM <- function (fcd,
 #'
 #' @export
 
-runtSNE_new <- function (fcd,
+runtSNE <- function (fcd,
                          input_type, # expr o. pca
                          data_slot,  # orig, norm or "prefix"-orig/nrom
                          perplexity,
