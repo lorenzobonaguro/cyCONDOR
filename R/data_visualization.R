@@ -323,52 +323,95 @@ plot_marker <- function(data,
 }
 
 
-#' HM_markers
+#' plot_marker_HM
 #'
-#' @title HM_markers
-#' @description Visualize the heatmap of marker expression groupped by a variable of interest.
-#' @param input cbind of the expression table to be used the the groupping (eg. clustering).
-#' @param group column name to be used for the groupping (eg. "Phenograph" or "group")
-#' @param maxvalue -Max scaled expression to be used for the color coding.
-#' @param size Size of the cells of the heatmap.
-#' @param title Title for the plot.
-#' @param exclusion Marker to exclude from the visualization.
-#' @param cluster_rows Logical: If heatmap rows should be clustered.
-#' @param cluster_cols Logical: If heatmap columns should be clustered.
+#' @title Heatmap of scaled expression by cell population
+#' @description
+#' `plot_marker_HM()` generates a heatmap of scaled mean marker expression for each cell population.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param marker_to_exclude (optional) vector of characters indicating which features in expression matrix should not be included in the heatmap.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param cluster_rows logical indicating if heatmap rows should be clustered (default: FALSE).
+#' @param cluster_cols logical indicating if heatmap columns should be clustered (default: FALSE).
+#' @param maxvalue max value for the coloring (default: NULL, automatically defined).
+#' @param size size of the individual squares and font.
+#' @param title character string, title of the plot
 #' @import reshape2
-#' @return HM_markers
+#' @import Rmisc
+#' @import pheatmap
+#'
+#' @returns
+#' A heatmap of scaled mean expression, depicting markers in rows and cell populations in columns.
 #'
 #' @export
-HM_markers <- function(input,
-                       group,
-                       maxvalue = NULL,
-                       size = 10,
-                       title = "Choose a good title for the plot",
-                       exclusion = c("SSC-A", "FSC-A"),
-                       cluster_rows = FALSE,
-                       cluster_cols = FALSE) {
+plot_marker_HM <- function(fcd,
+                           expr_slot = "orig",
+                           marker_to_exclude = NULL,
+                           cluster_slot,
+                           cluster_var,
+                           cluster_rows = FALSE,
+                           cluster_cols = FALSE,
+                           maxvalue = NULL,
+                           size = 10,
+                           title = "Heatmap of scaled expression"
+){
 
-  tmp <- suppressMessages(melt(input))
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_expr_slot = T,
+             check_cluster_slot = T,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var)
 
-  tmp <- summarySE(data = tmp, measurevar = "value", groupvars = c(group, "variable"))
 
-  colnames(tmp)[colnames(tmp) == group] <- "group"
+  #### prepare data
+  data <- fcd$expr[[expr_slot]]
+  data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
 
-  tmp <- dcast(tmp[, c(1,2,4)], variable ~ group)
+  #### check if markers are present in expr slot
+  if(!is.null(marker_to_exclude)){
 
+    marker <- unique(marker_to_exclude)
+    marker_present <- marker[marker %in% colnames(fcd$expr[[expr_slot]])]
+
+    if(length(marker_present) < length(marker)){
+      warning('The following markers could not be found in expr slot ',expr_slot,': ',
+              paste(marker[!marker %in% marker_present], collapse = ","))
+    }
+
+    ## remove markers to exclude from data
+    if(length(marker_present) > 0){
+      data <- data[,!colnames(data) %in% marker_present]
+    }
+
+  }
+
+
+  ## calculate mean
+  tmp <- reshape2::melt(data, id.vars = c("cluster"))
+  tmp <- Rmisc::summarySE(data = tmp, measurevar = "value", groupvars = c("cluster", "variable"))
+
+  tmp <- reshape2::dcast(tmp[, c("cluster","variable","value")], variable ~ cluster)
   rownames(tmp) <- tmp$variable
   tmp$variable <- NULL
-  tmp <- tmp[!rownames(tmp) %in% exclusion,]
 
-  tmp <- t(scale(t(tmp)))
+  ## scale values
+  tmp <- t(base::scale(t(tmp)))
 
-  pheatmap::pheatmap(tmp, scale = "none",
-                     breaks = scaleColors(data = tmp, maxvalue = maxvalue)[["breaks"]],
-                     color = scaleColors(data = tmp, maxvalue = maxvalue)[["color"]],
-                     main = title, cellwidth = size, cellheight = size,
-                     cluster_rows = cluster_rows, cluster_cols = cluster_cols)
+  #### plot
+  p <- pheatmap::pheatmap(tmp, scale = "none",
+                          breaks = cyCONDOR::scaleColors(data = tmp, maxvalue = maxvalue)[["breaks"]],
+                          color = cyCONDOR::scaleColors(data = tmp, maxvalue = maxvalue)[["color"]],
+                          main = title, cellwidth = size, cellheight = size,
+                          cluster_rows = cluster_rows, cluster_cols = cluster_cols)
 
+  return(p)
 }
+
 
 #' confusion_HM
 #'
