@@ -690,59 +690,93 @@ plot_density <- function(data,
 
 }
 
-#' HM_differential_marker
+#' plot_marker_group_HM
 #'
-#' @title HM_differential_marker
-#' @description Calculate HM to compare marker expression in different groups.
-#' @param fcd flow cytometry dataset.
-#' @param data_slot data to use for the calculation of the UMAP, e.g. "expr" or "pca".
-#' @param cluster_method Name of the clustering result to be used.
-#' @param cluster_type Type of the clustering.
-#' @param maxvalue Max value for the coloring (Default: NULL, automatically defined).
-#' @param size Size of the individual squares.
-#' @param title Title for the plot.
-#' @param exclusion Vector with markers to exclude from the plot.
-#' @param group_by Grouping variable for visualization.
-#' @return df_frequency
+#' @title Heatmap of scaled expression to compare two groups
+#' @description
+#' `plot_marker_group_HM()` generates a heatmap of scaled mean marker expression for each cell population split by a grouping variable.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param marker_to_exclude (optional) vector of characters indicating which features in expression matrix should not be included in the heatmap.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param group_var string indicating variable name in cell_anno that should be used for subgrouping each cell population.
+#' @param maxvalue max value for the coloring (default: NULL, automatically defined).
+#' @param size size of the individual squares and font.
+#' @param title character string, title of the plot
+#' @returns
+#' A heatmap of scaled mean expression, depicting markers in rows and cell populations grouped by a grouping variable in columns.
 #'
 #' @export
-HM_differential_marker <- function(fcd,
-                                   data_slot = "orig",
-                                   cluster_method, #"Phenograph_pca_norm_k60", "FlowSOM_pca_orig_k5" or others
-                                   cluster_type, #"Phenograph", "FlowSOM", "metaclusters"
-                                   maxvalue = NULL,
-                                   group_by, #"group"
-                                   size = 10,
-                                   title = "Choose a good title for the plot",
-                                   exclusion = c("SSC-A", "FSC-A")) {
+plot_marker_group_HM <- function(fcd,
+                                 expr_slot = "orig",
+                                 marker_to_exclude = NULL,
+                                 cluster_slot,
+                                 cluster_var,
+                                 group_var,
+                                 maxvalue = NULL,
+                                 size = 10,
+                                 title = "Heatmap of scaled expression"
+){
 
-  tmp <- suppressMessages(melt(cbind(fcd$expr[[data_slot]],
-                                     fcd$clustering[[cluster_method]],
-                                     fcd$anno$cell_anno[colnames(fcd$anno$cell_anno) == group_by])))
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_expr_slot = T,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var)
 
-  colnames(tmp)[colnames(tmp) == group_by] <- "group"
 
-  #summarySE function from Rmisc package
-  tmp <- summarySE(data = tmp, measurevar = "value", groupvars = c(cluster_type, "variable", "group"))
+  #### prepare data
+  data <- fcd$expr[[expr_slot]]
+  data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
+  data$group_var <- fcd$anno$cell_anno[[group_var]]
 
-  colnames(tmp)[colnames(tmp) == cluster_type] <- "cluster"
 
-  ngroups <- length(unique(tmp$group))
+  #### check if markers are present in expr slot
+  if(!is.null(marker_to_exclude)){
 
-  tmp <- dcast(tmp[, c(1,2,3,5)], variable ~ cluster + group)
+    marker <- unique(marker_to_exclude)
+    marker_present <- marker[marker %in% colnames(fcd$expr[[expr_slot]])]
 
-  rownames(tmp) <- tmp$variable #change rownames to marker names
-  tmp$variable <- NULL #remove column "variable" with marker names
-  tmp <- tmp[!rownames(tmp) %in% exclusion,] #exclude marker from df/plot
+    if(length(marker_present) < length(marker)){
+      warning('The following markers could not be found in expr slot ',expr_slot,': ',
+              paste(marker[!marker %in% marker_present], collapse = ","))
+    }
 
-  tmp <- t(scale(t(tmp)))
+    ## remove markers to exclude from data
+    if(length(marker_present) > 0){
+      data <- data[,!colnames(data) %in% marker_present]
+    }
+  }
 
-  pheatmap::pheatmap(tmp, scale = "none", cluster_rows = FALSE, cluster_cols = FALSE,
-                     breaks = scaleColors(data = tmp, maxvalue = maxvalue)[["breaks"]],
-                     color = scaleColors(data = tmp, maxvalue = maxvalue)[["color"]],
-                     main = title, cellwidth = size, cellheight = size,
-                     gaps_col = seq(0, ncol(tmp), ngroups)) #creates gap between clusters, not sure if needed but might be helpful for a big heatmap
 
+  ## calculate mean
+  tmp <- reshape2::melt(data, id.vars = c("cluster","group_var"))
+  tmp <- Rmisc::summarySE(data = tmp, measurevar = "value", groupvars = c("cluster", "variable", "group_var"))
+  ngroups <- length(unique(tmp$group_var))
+
+  tmp <- reshape2::dcast(tmp[, c("cluster", "variable", "group_var","value")], variable ~ cluster + group_var)
+  rownames(tmp) <- tmp$variable
+  tmp$variable <- NULL
+
+  ## scale values
+  tmp <- t(base::scale(t(tmp)))
+
+  #### plot
+  p <- pheatmap::pheatmap(tmp, scale = "none",
+                          cluster_rows = FALSE, cluster_cols = FALSE,
+                          breaks = cyCONDOR::scaleColors(data = tmp,maxvalue = maxvalue)[["breaks"]],
+                          color = cyCONDOR::scaleColors(data = tmp, maxvalue = maxvalue)[["color"]],
+                          main = title,
+                          cellwidth = size, cellheight = size, fontsize = size,
+                          gaps_col = seq(0, ncol(tmp), ngroups))
+
+  return(p)
 }
 
 #' violinplot_marker
