@@ -678,43 +678,6 @@ HM_differential_marker <- function(fcd,
 
 }
 
-#' PC_loading
-#'
-#' @title PC_loading
-#' @description Calculate PCA loading.
-#' @param fcd flow cytometry dataset.
-#' @param data_slot data to use for the calculation of the UMAP, e.g. "expr" or "pca".
-#' @param number Number of principal components to plot.
-#' @return PC loadings
-#'
-#' @export
-PC_loadings <- function(fcd, data_slot = "orig", number) {
-
-  pca_result <- prcomp(fcd[["expr"]][[data_slot]])
-
-  pca_rotations <- as.matrix(pca_result$rotation)
-
-  plot.list <- list()
-
-  for (i in colnames(pca_rotations)){
-
-    tmp <- as.data.frame(pca_rotations)
-    tmp$marker <- rownames(pca_rotations)
-    tmp <- tmp[,c(i,"marker")]
-    colnames(tmp) <- c("loadings", "marker")
-    tmp <- tmp %>% dplyr::arrange(loadings)
-    tmp$marker <- factor(tmp$marker, levels=tmp$marker)
-
-    plot.list[[i]] <- ggplot(tmp,aes(x=loadings,y=marker))+
-      geom_point()+
-      theme_linedraw()+
-      ggtitle(i)
-  }
-
-  cowplot::plot_grid(plotlist = plot.list[1:number], ncol = 3)
-
-}
-
 #' violinplot_marker
 #'
 #' @title violinplot_marker
