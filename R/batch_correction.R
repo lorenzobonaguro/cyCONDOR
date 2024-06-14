@@ -3,19 +3,24 @@
 #' @title harmonize_intensities
 #' @description Harmonize the expression values.
 #' @param fcd flow cytometry dataset.
-#' @param batch vector of column names to use for correcting the data.
-#' @param seed Seed used for the randomization steps.
+#' @param batch_var vector of column names from \code{fcd$anno$cell_anno} to use for correcting the data.
+#' @param seed A seed is set for reproducibility.
 #' @import harmony
-#' @return harmonize_intensities
+#' @details
+#' See https://doi.org/10.1038/s41592-019-0619-0 for more details on the Harmony algorithm.
+#'
+#' @returns fcd with a harmonized expression data frame.
 #'
 #' @export
-harmonize_intensities <- function(fcd, batch, seed) {
+harmonize_intensities <- function(fcd,
+                                  batch_var,
+                                  seed = 91) {
 
   set.seed(seed)
 
   harmony_param <- HarmonyMatrix(data_mat = as.matrix(fcd$expr$orig),
                                  meta_data = fcd$anno$cell_anno,
-                                 vars_use = batch,
+                                 vars_use = batch_var,
                                  do_pca = FALSE)
 
   fcd[["expr"]][["norm"]] <- as.data.frame(harmony_param)
@@ -30,14 +35,20 @@ harmonize_intensities <- function(fcd, batch, seed) {
 #' @title harmonize_PCA
 #' @description Harmonize the Principal Component Analysis.
 #' @param fcd flow cytometry dataset.
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param batch vector of column names to use for correcting the data.
-#' @param seed Seed used for the randomization steps.
+#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, \code(orig).
+#' @param batch_var vector of column names from \code{fcd$anno$cell_anno} to use for correcting the data.
+#' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix for the output.
+#' @details
+#' See https://doi.org/10.1038/s41592-019-0619-0 for more details on the Harmony algorithm.
 #' @return harmonize_PCA
 #'
 #' @export
-harmonize_PCA <- function(fcd, data_slot = "orig", batch, seed, prefix = NULL) {
+harmonize_PCA <- function(fcd,
+                          data_slot = "orig",
+                          batch_var,
+                          seed = 91,
+                          prefix = NULL) {
 
   set.seed(seed)
 
@@ -45,14 +56,14 @@ harmonize_PCA <- function(fcd, data_slot = "orig", batch, seed, prefix = NULL) {
 
     fcd[["pca"]][["norm"]] <- HarmonyMatrix(data_mat = as.matrix(fcd$pca[[data_slot]]),
                                             meta_data = fcd$anno$cell_anno,
-                                            vars_use = batch,
+                                            vars_use = batch_var,
                                             do_pca = FALSE)
 
   } else {
 
     fcd[["pca"]][[paste(prefix, "norm", sep = "_")]] <- HarmonyMatrix(data_mat = as.matrix(fcd$pca[[data_slot]]),
                                                                       meta_data = fcd$anno$cell_anno,
-                                                                      vars_use = batch,
+                                                                      vars_use = batch_var,
                                                                       do_pca = FALSE)
 
   }
@@ -62,24 +73,25 @@ harmonize_PCA <- function(fcd, data_slot = "orig", batch, seed, prefix = NULL) {
 }
 
 
-#'train_cytonorm
+# 'train_cytonorm
+# '
+# '@title train_cytonorm
+#' @description
+#' Wrapper function around 'CytoNorm.train' from the CytoNorm package.
+#' @param fcd flow cytometry dataset
+#' @param batch_var Column name of batch variable from \code{fcd$anno$cell_anno}.
+#' @param remove_param Parameters/markers which should be excluded for learning the batch effect and training the model.
+#' @param seed A seed is set for reproducibility.
+#' @param files Vector of FCS file names of reference samples which are used for training the model. If files == NULL, all files contained in the fcd are used.
+#' @param FCSpath File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.
+#' @param FlowSOM_param A list of parameters to pass to the FlowSOM algorithm. Default= list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale= FALSE)
+#' @returns The function returns a fcd with the trained model saved in extras.
+#' @details
+#' train_cytonorm' takes a fcd as an input and learns the batch effect of a given batch variable across reference samples provided by the user using the CytoNorm algorithm. This function returns a fcd with the trained model which can be used as input for the \code{\link{run_cytonorm}} function to normalize samples with the trained model.
+#' See https://doi.org/10.1002/cyto.a.23904 for more details.
+#' @import CytoNorm
+#' @export
 #'
-#'@title train_cytonorm
-#'@description
-#'Wrapper function around 'CytoNorm.train' from the CytoNorm package.
-#'@param fcd flow cytometry dataset
-#'@param batch_var Column name of batch variable from \code{fcd$anno$cell_anno}.
-#'@param remove_param Parameters/markers which should be excluded for learning the batch effect and training the model.
-#'@param seed A seed is set for reproducibility.
-#'@param files Vector of FCS file names of reference samples which are used for training the model. If files == NULL, all files contained in the fcd are used.
-#'@param FCSpath File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.
-#'@param FlowSOM_param A list of parameters to pass to the FlowSOM algorithm. Default= list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale= FALSE)
-#'@returns The function returns a fcd with the trained model saved in extras.
-#'@details
-#'train_cytonorm' takes a fcd as an input and learns the batch effect of a given batch variable across reference samples provided by the user using the CytoNorm algorithm. This function returns a fcd with the trained model which can be used as input for the \code{\link{run_cytonorm}} function to normalize samples with the trained model.
-#'See https://doi.org/10.1002/cyto.a.23904 for more details.
-#'@import CytoNorm
-
 
 
 train_cytonorm <- function(fcd,
@@ -184,22 +196,23 @@ train_cytonorm <- function(fcd,
 }
 
 
-#'run_cytonorm
+#' run_cytonorm
 #'
-#'@title run_cytonorm
-#'@description
-#'Wrapper function around CytoNorm.normalize from the CytoNorm package.
-#'@param fcd flow cytometry dataset
-#'@param batch_var Column name of batch variable from \code{fcd$anno$cell_anno}.
-#'@param keep_fcs Boolean whether to keep the normalized FCS files in \code{output_dir}.
-#'@param output_dir Directory to save normalized FCS files temporary or permanently, if keep_fcs == TRUE.
-#'@param files Vector of fcs file names of samples which should be normalized. By default all files contained in the flow cytometry dataset are used.
-#'@param FCSpath File path to folder where .fcs files contained in the fcd are stored.
-#'@param anno_table Path to the annotation table file.
-#'@returns fcd with a normalized expression data frame.
-#'@details
-#'This function assumes that your fcd contains a trained model computed by \code{\link{train.cytonorm}}. The function performs normalization of the samples contained in your fcd. The normalized expression values are added to your fcd and by default FCS files with the normalized values are written to the  \code{output_dir}.
-#'@import CytoNorm
+#' @title run_cytonorm
+#' @description
+#' Wrapper function around CytoNorm.normalize from the CytoNorm package.
+#' @param fcd flow cytometry dataset
+#' @param batch_var Column name of batch variable from \code{fcd$anno$cell_anno}.
+#' @param keep_fcs Boolean whether to keep the normalized FCS files in \code{output_dir}.
+#' @param output_dir Directory to save normalized FCS files temporary or permanently, if keep_fcs == TRUE.
+#' @param files Vector of fcs file names of samples which should be normalized. By default all files contained in the flow cytometry dataset are used.
+#' @param FCSpath File path to folder where .fcs files contained in the fcd are stored.
+#' @param anno_table Path to the annotation table file.
+#' @returns fcd with a normalized expression data frame.
+#' @details
+#' This function assumes that your fcd contains a trained model computed by \code{\link{train.cytonorm}}. The function performs normalization of the samples contained in your fcd. The normalized expression values are added to your fcd and by default FCS files with the normalized values are written to the  \code{output_dir}.
+#' @import CytoNorm
+#' @export
 run_cytonorm <- function(fcd,
                          batch_var,
                          keep_fcs = TRUE,
