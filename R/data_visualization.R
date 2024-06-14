@@ -821,56 +821,149 @@ violinplot_marker <- function(fcd,
   cowplot::plot_grid(plotlist = plot.list, ncol = 1)
 }
 
-#' dotplot_cyto
+#' plot_marker_dotplot
 #'
-#' @title dotplot_cyto
-#' @description Plot a classical dotplot such as normally seen in FC analysis (e.g. FlowJo).
-#' @param data data to use for the plot.
-#' @param subset LOGICLE, if TRUE the data will be subsetted for selected population(s).
-#' @param annotation Vector of the same lenght at data containing the variable to subset.
-#' @param color_by Parameter to be used to define the plot colors.
-#' @param subset_char Vector of variables to keep in the plot (e.g. c("CD4T, "CD8T")).
-#' @param color_discrete Color palette to use (default: cluster palette).
-#' @param x Parameter to display in the X axes.
-#' @param y Parameter to display in the Y axes.
-#' @param title Plot title.
-#' @return 2D dotplot.
+#' @title plot_marker_dotplot
+#' @description
+#' `plot_marker_dotplot` generates a classical scatter plot of two markers
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param marker_x marker name in expr slot of which transformed expression is shown on x-axis.
+#' @param marker_y marker name in expr slot of which transformed expression is shown on y-axis.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param cluster_to_show (optional) vector of characters indicating levels in cluster_var that should be included for plotting.
+#' By default all groups are plotted.
+#' @param group_var (optional) string indicating variable name in cell_anno that should be used to color dots in plot. If not used, dots are clustered by cluster_var.
+#' @param order logical if you want to order the dots in the plot by the variable used for coloring (TRUE). If set to FALSE (default), order of the cells is randomized.
+#' @param seed a seed is set for reproducibility of the plotting result.
+#' @param color_palette vector of colors that should be used to color dots.
+#' @param dot_size numeric indicating the size of the dots.
+#' @return
+#' The function returns a scatter plot of two features available in the expression matrix. By default, dots are colored by cell population label provided in cluster_var. If coloring by a metadata is wanted instead, a group_var can be defined. Further, if only a selection of levels available in cluster_var should be included in plotting, a vector of labels of interest can be provided to cluster_to_show argument.
+#'
 #'
 #' @export
-dotplot_cyto <- function(data,
-                         subset = FALSE,
-                         annotation,
-                         color_by,
-                         subset_char,
-                         color_discrete = cluster_palette,
-                         x,
-                         y,
-                         title) {
+plot_marker_dotplot <- function(fcd,
+                                expr_slot = "orig",
+                                marker_x,
+                                marker_y,
+                                cluster_slot,
+                                cluster_var,
+                                cluster_to_show = NULL,
+                                group_var = NULL,
+                                order = F,
+                                seed = 91,
+                                color_palette = cluster_palette,
+                                dot_size=2,
+                                title ="") {
 
-  if (subset == TRUE) {
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_expr_slot = T,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var)
 
-    data <- data[annotation %in% subset_char,]
 
-    color_by <- color_by[annotation %in% subset_char]
-
+  #### check markers
+  if(!marker_x %in% colnames(fcd$expr[[expr_slot]])){
+    stop('marker "',marker_x, '" is not present in expr slot "',expr_slot,'".')
+  }
+  if(!marker_y %in% colnames(fcd$expr[[expr_slot]])){
+    stop('marker "',marker_y, '" is not present in expr slot "',expr_slot,'".')
   }
 
-  colnames(data)[colnames(data) == x] <- "X"
 
-  colnames(data)[colnames(data) == y] <- "Y"
+  #### get cluster of interest
+  if(!is.null(cluster_to_show)){
+    ## remove potential duplicates
+    cluster_to_show <- unique(cluster_to_show)
 
-  p1 <- ggplot(data, aes(x = X, y = Y)) +
-    geom_point(aes(color = color_by)) +
-    theme_bw()+
-    theme(aspect.ratio = 1, panel.grid = element_blank())+
-    ggtitle(title) +
-    scale_colour_manual(values = color_discrete) +
-    guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) +
-    xlab(x) +
-    ylab(y)
+    ## get cluster of interest
+    cluster_present <- cluster_to_show[cluster_to_show %in% unique(fcd$clustering[[cluster_slot]][[cluster_var]])]
+    if(length(cluster_present) == 0){
+      stop('None of the provided clusters are present in selected cluster_var "',cluster_var,'".')
+    }
+    if(length(cluster_present) < length(cluster_to_show)){
+      warning('The following clusters could not be found in cluster_var "',cluster_var,'": ',
+              paste(cluster_to_show[!cluster_to_show %in% cluster_present], collapse = ","))
+    }
+  }else{
+    ## default
+    cluster_present <- unique(fcd$clustering[[cluster_slot]][[cluster_var]])
+  }
 
-  return(p1)
 
+  #### prepare data
+  data <- fcd$expr[[expr_slot]]
+  data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
+
+  if(!is.null(group_var)){
+    data$group_var <- fcd$anno$cell_anno[[group_var]]
+  }
+
+  ## select marker of interest
+  colnames(data)[colnames(data) == marker_x] <- "X"
+  colnames(data)[colnames(data) == marker_y] <- "Y"
+
+  ## subset to cluster of interest
+  data <- data[data$cluster %in% cluster_present,]
+
+
+  #### plot
+
+  if(!is.null(group_var)){
+
+    ## order of dots
+    if(order == T){
+      data <- data[order(data$group_var, decreasing = F), ]
+    }else if(order == F){
+      # order rows randomly for plotting
+      set.seed(seed= seed)
+      cells <- sample(x = rownames(data))
+      data <- data[cells,]
+    }else{
+      stop('argument order needs to be FALSE or TRUE.')
+    }
+
+    p <- ggplot(data, aes(x = X, y = Y)) +
+      geom_point(aes(color = group_var), size = dot_size) +
+      theme_bw()+
+      theme(aspect.ratio = 1, panel.grid = element_blank())+
+      ggtitle(title) +
+      scale_colour_manual(values = color_palette) +
+      guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) +
+      expand_limits(y = 0) + xlab(marker_x) + ylab(marker_y) + labs(fill = group_var)
+  }else{
+
+    ## order of dots
+    if(order == T){
+      data <- data[order(data$cluster, decreasing = F), ]
+    }else if(order == F){
+      # order rows randomly for plotting
+      set.seed(seed= seed)
+      cells <- sample(x = rownames(data))
+      data <- data[cells,]
+    }else{
+      stop('argument order needs to be FALSE or TRUE.')
+    }
+
+    p <- ggplot(data, aes(x = X, y = Y)) +
+      geom_point(aes(color = cluster), size = dot_size) +
+      theme_bw()+
+      theme(aspect.ratio = 1, panel.grid = element_blank())+
+      ggtitle(title) +
+      scale_colour_manual(values = color_palette) +
+      guides(color = guide_legend(override.aes = list(size=5, alpha = 1))) +
+      expand_limits(y = 0) + xlab(marker_x) + ylab(marker_y) + labs(fill = cluster_var)
+  }
+
+  return(p)
 }
 
 #' densityplot_marker
