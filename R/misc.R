@@ -265,3 +265,168 @@ subset_fcd <- function(fcd, size) {
 
   return(condor_filter)
 }
+
+#' checkInput
+#'
+#' @title Helper function within cyCONDOR
+#' @description
+#' `checkInput()` is a helper function within several cyCONDOR functions for visualization and differential testing.
+#' It checks availability if selected 1st level elements (clustering) and 2nd level elements (expr_slot, cluster_slot, cell_anno),
+#' and 3rd level variable names in cluster_slot and cell_anno are present.
+#' In order to ensure proper functioning, all arguments that are strictly necessary in the parent function and
+#' for which no default can be given, should NOT be set to NULL. Please not that it might be necessary to check that no necessary
+#' argument was set to NULL.
+#' @param fcd flow cytometry dataset
+#' @param check_expr_slot logical indicating if expr_slot should be checked
+#' @param check_cluster_slot logical indicating if cluster_slot should be checked
+#' @param check_cell_anno logical indicating if cell_anno should be checked
+#' @param check_reduction logical indicating if reduction_method should be checked
+#' @param expr_slot set to NULL (default) if expr_slot is not needed in parent function, set equal to expr_slot if expr_slot string should be checked
+#' @param cluster_slot set to NULL (default) if cluster_slot is not needed in parent function, set equal to cluster_slot if cluster_slot string should be checked
+#' @param cluster_var set to NULL (default) if cluster_var is not needed in parent function, set equal to cluster_var if cluster_var string should be checked
+#' @param reduction_method set to NULL (default) if reduction_method is not needed in parent function, set equal to reduction_method if reduction_method string should be checked
+#' @param reduction_type set to NULL (default) if reduction_type is not needed in parent function, set equal to reduction_type if reduction_type string should be checked
+#' @param group_var set to NULL (default) if group_var is not needed in parent function, set equal to group_var if group_var string should be checked
+#' @param sample_var set to NULL (default) if sample_var is not needed in parent function, set equal to sample_var if sample_var string should be checked
+#' @param pair_var set to NULL (default) if pair_var is not needed in parent function, set equal to pair_var if pair_var string should be checked
+#' @returns
+#' `checkInput()` returns an stop message if one of the checks fails.
+#'
+#'@export
+checkInput<-function(fcd,
+                     check_expr_slot = F,
+                     check_cluster_slot = F,
+                     check_cell_anno = F,
+                     check_reduction = F,
+                     expr_slot = NULL,
+                     cluster_slot = NULL,
+                     cluster_var = NULL,
+                     reduction_method = NULL,
+                     reduction_type = NULL,
+                     group_var = NULL,
+                     sample_var = NULL,
+                     pair_var = NULL
+){
+
+  ##check if clustering slot is present
+  if(check_cluster_slot == T){
+    if(is.null(fcd$clustering)){
+      stop('no clustering or cell label prediction was performed on this condor object.')
+    }
+    if(is.null(cluster_slot)){
+      stop('cluster_slot needs to be specified to run this function.')
+    }
+    if(is.logical(cluster_slot)){
+      stop('cluster_slot needs to be a string.')
+    }
+    # if(is.null(fcd$clustering[[cluster_slot]])){
+    #   stop('clustering slot "',cluster_slot,'" is not present in clustering')
+    # }
+    if(!cluster_slot %in% names(fcd$clustering)){
+      stop('clustering slot "',cluster_slot,'" is not present in clustering')
+    }
+  }
+
+  ##check if expr slot is present
+  if(check_expr_slot == T){
+    if(is.null(expr_slot)){
+      stop('expr_slot needs to be specified to run this function.')
+    }
+    if(is.logical(expr_slot)){
+      stop('expr_slot needs to be a string.')
+    }
+    # if(is.null(fcd$expr[[expr_slot]])){
+    #   stop('expr slot "',expr_slot,'" is not present in expr')
+    # }
+    if(!expr_slot %in% names(fcd$expr)){
+      stop('expr slot "',expr_slot,'" is not present in expr')
+    }
+  }
+
+  ##check if cell_anno slot is present
+  if(check_cell_anno == T){
+    if(is.null(fcd$anno$cell_anno)){
+      stop('"cell_anno" is not present in anno')
+    }
+  }
+
+  ##check if reduction slot is present
+  if(check_reduction == T){
+    if(is.null(reduction_method)){
+      stop('reduction_method needs to be specified to run this function.')
+    }
+    if(is.logical(reduction_method)){
+      stop('reduction_method needs to be a string.')
+    }
+    # if(is.null(fcd[[reduction_method]])){
+    #   stop('Dimensionality reduction "',reduction_method,'" is not available in fcd object.')
+    # }
+    if(!reduction_method %in% names(fcd)){
+      stop('Dimensionality reduction "',reduction_method,'" is not available in fcd object.')
+    }
+
+    ##check if reduction_type is present
+    if(is.null(reduction_type)){
+      stop('reduction_type needs to be specified to run this function.')
+    }
+    if(is.logical(reduction_type)){
+      stop('reduction_type needs to be a string.')
+    }
+    if(!reduction_type %in% names(fcd[[reduction_method]])){
+      stop('reduction_type "',reduction_type,'" is not available for reduction_method ',reduction_method)
+    }
+  }
+
+
+  ##check if cell IDs are in right order
+  check <- c(check_expr_slot,check_cluster_slot,check_cell_anno)
+  if(sum(check) > 1){
+    ID_list <- list()
+    if(check_expr_slot == T){
+      ID_list[["check_expr_slot"]] <- rownames(fcd$expr[[expr_slot]])
+    }
+    if(check_cluster_slot == T){
+      ID_list[["check_cluster_slot"]] <- rownames(fcd$clustering[[cluster_slot]])
+    }
+    if(check_cell_anno == T){
+      ID_list[["check_cell_anno"]] <- rownames(fcd$anno$cell_anno)
+    }
+    if(check_reduction == T){
+      ID_list[["check_reduction"]] <- rownames(fcd[[reduction_method]][[reduction_type]])
+    }
+
+    ##check IDs
+    result <- all(sapply(ID_list, FUN = identical, ID_list[[1]]))
+    if (result == FALSE) {
+      stop("cell IDs of required input data frames do not match.")
+    }
+  }
+
+
+  ##check if cluster_var is present
+  if(!is.null(cluster_var)){
+    if(!cluster_var %in% colnames(fcd$clustering[[cluster_slot]])){
+      stop('cluster_var: column "',cluster_var,'" is not available in specified clustering slot')
+    }
+  }
+
+
+
+  ## check if group_var, sample_var, pair_var are present
+  if(!is.null(group_var)){
+    if(!group_var %in% colnames(fcd$anno$cell_anno)){
+      stop('column "',group_var,'" is not available in cell_anno')
+    }}
+
+  if(!is.null(sample_var)){
+    if(!sample_var %in% colnames(fcd$anno$cell_anno)){
+      stop('sample_var: column "',sample_var,'" is not available in cell_anno')
+    }}
+
+  if(!is.null(pair_var)){
+    if(!pair_var %in% colnames(fcd$anno$cell_anno)){
+      stop('pair_var: column "',pair_var,'" is not available in cell_anno')
+    }}
+
+  #print("all good.")
+}
