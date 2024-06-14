@@ -50,7 +50,7 @@ metaclustering <- function(fcd,
 #' @param input_type data to use for the calculation, e.g. "expr" or "pca" (suggested: "pca").
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
 #' @param k K value used for clustering.
-#' @param seed Seed used for the randomization steps. Needed for reproducability.
+#' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix of the output.
 #' @param nPC Number of principal components to use for the analysis.
 #' @param markers vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
@@ -69,7 +69,7 @@ runPhenograph <- function (fcd,
                            input_type,
                            data_slot,
                            k,
-                           seed,
+                           seed = 91,
                            prefix = NULL,
                            nPC = ncol(fcd$pca[[data_slot]]),
                            markers = colnames(fcd$expr[[data_slot]]),
@@ -159,7 +159,7 @@ runPhenograph <- function (fcd,
 #' @param nClusters Number of final clusters.
 #' @param grid_xdim x-axis size of the FlowSOM grid. Default = 10.
 #' @param grid_ydim y-axis size of the FlowSOM grid. Default = 10.
-#' @param seed Seed used for the randomization steps. Needed for reproducability.
+#' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix of the output.
 #' @param ret_model LOGICAL if the model should be saved for future projection of the data. Default = F.
 #' @param nPC Number of principal components to use for the analysis. Default = All.
@@ -181,7 +181,7 @@ runFlowSOM <-  function (fcd,
                          nClusters,
                          grid_xdim= 10,
                          grid_ydim= 10,
-                         seed,
+                         seed = 91,
                          prefix = NULL,
                          ret_model = FALSE,
                          nPC = ncol(fcd[[input_type]][[data_slot]]),

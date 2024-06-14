@@ -119,7 +119,7 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param label_size Size of the labels.
 #' @param label_color Color of the labels.
 #' @param raster TRUE or FALSE, if plot should be returned as raster image
-#' @param seed A seed is set for reproducibility of the plotting result.
+#' @param seed A seed is set for reproducibility.
 #' @import ggplot2
 #' @import RColorBrewer
 #' @import devtools
@@ -147,7 +147,7 @@ plot_marker <- function(data,
                             label_size = 3.5,
                             label_color = "black",
                             raster = FALSE,
-                            seed= 42) {
+                            seed= 91) {
 
   # Selection of raster plot or standard
   if (raster == FALSE) {

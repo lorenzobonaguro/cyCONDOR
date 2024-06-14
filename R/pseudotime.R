@@ -24,7 +24,7 @@
 #' @param smoother choice of scatter plot smoother. Same as principal_curve, but "lowess" option is replaced with "loess" for additional flexibility.
 #' @param shrink.method character denoting how to determine the appropriate amount of shrinkage for a branching lineage. Accepted values are the same as for kernel in density (default is "cosine"), as well as "tricube" and "density". See 'Details' for more.
 #' @param allow.breaks logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.
-#' @param seed seed to be used
+#' @param seed A seed is set for reproducibility.
 #' @import slingshot
 #' @import DelayedMatrixStats
 #' @return runPseudotime
@@ -52,7 +52,7 @@ runPseudotime <- function(fcd,
                           smoother = "smooth.spline",
                           shrink.method = "cosine",
                           allow.breaks = TRUE,
-                          seed) {
+                          seed = 91) {
 
   set.seed(seed)
 

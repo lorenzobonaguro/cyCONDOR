@@ -300,7 +300,7 @@ prep_fjw <- function(data_gs,
 #' @param remove_param Parameters to remove from the transformation, "inTime" should be kept.
 #' @param anno_table path to the annotation table file.
 #' @param filename_col Name of the column containing the file name matching with the .fcs files.
-#' @param seed seed to be used for the randomization of the events.
+#' @param seed A seed is set for reproducibility.
 #' @param separator_anno separator used in the annotation file.
 #' @param separator_fc_csv separator used in the fc csv files.
 #' @import readr
@@ -317,7 +317,7 @@ prep_fcd <- function(FCSpath,
                      remove_param,
                      anno_table,
                      filename_col,
-                     seed,
+                     seed = 91,
                      separator_anno = ",",
                      separator_fc_csv = ",") {
 

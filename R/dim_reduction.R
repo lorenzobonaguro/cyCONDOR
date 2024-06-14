@@ -4,7 +4,7 @@
 #' @description Run a Principal Component Analysis.
 #' @param fcd flow cytometry dataset.
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
-#' @param seed Seed used for the randomization steps. Needed for reproducability.
+#' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix of the output.
 #' @param markers vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
 #' @param discard LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.
@@ -21,7 +21,7 @@
 
 runPCA <- function(fcd,
                    data_slot = "orig",
-                   seed,
+                   seed = 91,
                    prefix =  NULL,
                    markers = colnames(fcd$expr[["orig"]]),
                    discard = FALSE){
@@ -79,7 +79,7 @@ runPCA <- function(fcd,
 #' @param nComponents Number of components for UMAP calculation. Default = 2.
 #' @param min_dist Min_dist for UMAP calculation. Default = 0.2.
 #' @param metric Metric for UMAP calculation. Default = "euclidian". **(other options?)**
-#' @param seed Seed used for the randomization steps. Needed for reproducability.
+#' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix of the output.
 #' @param nThreads Number of threads to be used in the UMAP calculation. Default = 32.
 #' @param nPC Number of PCs used in the UMAP calculation. Default = All.
@@ -101,7 +101,7 @@ runUMAP <- function(fcd,
                          nComponents = 2,
                          min_dist = 0.2,
                          metric = "euclidean",
-                         seed,
+                         seed = 91,
                          prefix = NULL,
                          nThreads = 32,
                          nPC = ncol(fcd[[input_type]][[data_slot]]),
@@ -206,7 +206,7 @@ runUMAP <- function(fcd,
 #' @param input_type data to use for the calculation, e.g. "expr" or "pca".
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
 #' @param k K used for the analysis. Default = 10.
-#' @param seed Seed used for the randomization steps. Needed for reproducability.
+#' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix of the output.
 #' @param nPC Number of principal components to use for the analysis. Default = All.
 #' @param markers vector of marker names to include or exclude from DM calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
@@ -225,7 +225,7 @@ runDM <- function (fcd,
                    input_type,
                    data_slot,
                    k = 10,
-                   seed,
+                   seed = 91,
                    prefix = NULL,
                    nPC = ncol(fcd[[input_type]][[data_slot]]),
                    markers = colnames(fcd$expr[[data_slot]]),
@@ -318,7 +318,7 @@ runDM <- function (fcd,
 #' @param input_type data to use for the calculation, e.g. "expr" or "pca" (suggested: "pca").
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
 #' @param perplexity Perplexity used for tSNE calculation (see Rtsne documentation for details).
-#' @param seed Seed used for the randomization steps. Needed for reproducability.
+#' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix of the output.
 #' @param nThreads Number of threads to be used in the tSNE calculation.
 #' @param nPC Number of principal components to use for the analysis.
@@ -333,7 +333,7 @@ runtSNE <- function (fcd,
                          input_type, # expr o. pca
                          data_slot,  # orig, norm or "prefix"-orig/nrom
                          perplexity,
-                         seed,
+                         seed = 91,
                          prefix = NULL, # new prefix for tSNE DimRed
                          nThreads = 1,
                          nPC = ncol(fcd$pca[[data_slot]]),

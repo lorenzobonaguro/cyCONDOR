@@ -12,7 +12,7 @@
 #' @param type2 Type of second level prediction.
 #' @param parallelCore Number of cores to be used.
 #' @param reg If elestic net regularization will be used (Default: FALSE).
-#' @param seed seed to be used.
+#' @param seed A seed is set for reproducibility.
 #' @import CytoDx
 #' @return train_classifier_model
 #'
@@ -27,7 +27,7 @@ train_classifier_model <- function(fcd,
                                    type2 = "response",
                                    parallelCore = 1,
                                    reg = FALSE,
-                                   seed) {
+                                   seed = 91) {
 
   set.seed(seed)
 
@@ -63,7 +63,7 @@ train_classifier_model <- function(fcd,
 #' @param data_slot name of the data slot to use.
 #' @param sample_names Column name of the metadata table containing the file names.
 #' @param model_object flowframe object with the stored classifier model.
-#' @param seed seed to be used for the analysis.
+#' @param seed A seed is set for reproducibility.
 #' @import CytoDx
 #' @return predict_classifier
 #'
@@ -73,7 +73,7 @@ predict_classifier <- function(fcd,
                                data_slot,
                                sample_names = "expfcs_filename",
                                model_object,
-                               seed) {
+                               seed = 91) {
 
   set.seed(seed)
 
