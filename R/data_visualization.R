@@ -597,108 +597,109 @@ plot_confusion_HM <- function(fcd,
   return(p)
 }
 
-#' boxplot_and_stats
+#' plot_frequency_boxplot
 #'
-#' @title boxplot_and_stats
-#' @description Calculate boxplot and summary statistics for a wanted comparison.
-#' @param annotation Sample annotation to be used for the plot.
-#' @param sample_var Column name containing the sample IDs.
-#' @param group_var Column name defining the groupping for plotting.
-#' @param which_groups Grouping to be used.
-#' @param variable Variable used to stratify the plotting.
-#' @param numeric Logical if the groupping is numeric.
-#' @param test.type Test to be performed. (see need some development here).
-#' @param paired.test Logicle: If the test should be paired.
-#' @return boxplot_and_stats
+#' @title box plot of cell population frequencies
+#' @description `plot_frequency_boxplot` plots cell population frequencies of samples grouped by group_var as boxplots.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param groups_to_show vector of strings indicating levels in group_var that should be included for plotting. By default all groups are plotted.
+#' @param group_var string indicating variable name in cell_anno that should be used to group samples in sample_var
+#' @param sample_var string indicating variable name in cell_anno that defines sample IDs to be used.
+#' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param color_palette vector of colors to be used to fill box plots
+#' @import dplyr
+#' @import reshape2
+#' @import ggplot2
+#' @returns `plot_frequency_boxplots` returns a list of boxplots, each element of the list contains the plot of one cell population.
 #'
 #' @export
-boxplot_and_stats <- function(annotation,
-                              sample_var,
-                              group_var,
-                              which_groups = NULL,
-                              variable,
-                              numeric = TRUE,
-                              test.type,
-                              paired.test = FALSE) {
+plot_frequency_boxplot<-function(fcd,
+                                 cluster_slot,
+                                 cluster_var,
+                                 sample_var,
+                                 group_var,
+                                 groups_to_show = NULL,
+                                 numeric = F,
+                                 color_palette = cluster_palette,
+                                 dot_size = 2){
 
-  container <- list()
+  #### check slots, cell IDs and variables
+  checkInput(fcd = fcd,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var,
+             sample_var = sample_var)
 
-  tmp <- confusionMatrix(paste0(annotation[[sample_var]]),
-                         paste0(variable))
 
+  #### prepare data
+  data<-data.frame(cellID=rownames(fcd$clustering[[cluster_slot]]),
+                   cluster=fcd$clustering[[cluster_slot]][[cluster_var]],
+                   group_var=fcd$anno$cell_anno[[group_var]],
+                   sample_var=fcd$anno$cell_anno[[sample_var]])
+
+  ## prepare frequency table
+  tmp <- cyCONDOR::confusionMatrix(paste0(data$sample_var), paste0(data$cluster))
   tmp <- as.matrix(tmp)
-
   if (numeric == TRUE) {
-
     tmp <- tmp[order(rownames(tmp)), order(as.numeric(colnames(tmp)))]
-
-  }
-
-  if (numeric == FALSE) {
-
+    colnames(tmp) <- paste0("Cluster_", colnames(tmp))
+  } else if (numeric == FALSE) {
     tmp <- tmp[order(rownames(tmp)), order(colnames(tmp))]
-
+  } else {
+    #tmp <- tmp[order(rownames(tmp)), order(colnames(tmp))]
+    stop('argument "numeric" needs to be set to TRUE or FALSE.')
   }
 
-  colnames(tmp) <- paste("Cluster_", colnames(tmp), sep = "")
-
-  tmp <- tmp/rowSums(tmp)*100
-
+  tmp <- tmp/rowSums(tmp) * 100
   tmp <- as.data.frame(tmp)
+  tmp$sample_var <- rownames(tmp)
+  tmp <- dplyr::left_join(tmp, unique(data[,c("group_var","sample_var")]), by = "sample_var")
 
-  tmp[[sample_var]] <- rownames(tmp)
-
-  tmp <- merge(tmp, unique(annotation), by = sample_var)
-
-  container[["per_data"]] <- tmp
-
-  colnames(tmp)[colnames(tmp) == group_var] <- "groups"
-
-  if (!is.null(which_groups)) {
-
-    tmp <- subset(tmp, groups %in% which_groups)
-
+  ## check if samples are uniquely assigned to one group
+  anno <- unique(data[,c("sample_var","group_var")])
+  if(!nrow(anno) == length(unique(anno$sample_var))){
+    stop("levels in sample_var cannot be uniquely asigned to one group_var. Make sure that each sample_var is unambiguous associated with only one group in group_var.")
   }
 
-  for (variable in colnames(tmp)[grep("Cluster_", colnames(tmp))]) {
 
-    data <- tmp
+  ## select groups to be included in plotting
+  if (!is.null(groups_to_show)) {
+    tmp <- base::subset(tmp, group_var %in% groups_to_show)
 
-    colnames(data)[colnames(data) == variable] <- "poi"
-
-    p1 <- ggplot(data, aes(x = groups, y = poi, fill = groups))+
-      geom_boxplot(outlier.colour = NA)+
-      geom_point(shape = 21, fill = "white", color = "black",
-                 size = 4, position = position_dodge(0.4))+
-      theme_bw()+ theme(aspect.ratio = 2, panel.grid = element_blank())+
-      #scale_fill_manual(values = cluster_palette)+
-      ggtitle(variable)+
-      expand_limits(y = 0)+
-      xlab("")+
-      stat_compare_means(method = test.type,
-                         paired = paired.test,
-                         label = "p.signif",
-                         label.x.npc = 0.5)
-
-    container[["plot"]][[variable]] <- p1
-
-    rm(p1, data)
-
+    if(nrow(tmp)==0){
+      stop('none of groups spedified in "groups_to_show" are present in argument "group_var"')
+    }
   }
 
-  tmp2 <- suppressMessages(melt(tmp[, c(colnames(tmp)[grep("Cluster_", colnames(tmp))], "groups")]))
 
-  stat <- compare_means(formula = value~groups,
-                        data = tmp2,
-                        paired = paired.test,
-                        method = test.type,
-                        group.by = "variable",
-                        p.adjust.method = "none")
+  #### plot
+  tmp<-reshape2::melt(tmp, id.vars = c("group_var", "sample_var"))
 
-  container[["stats"]] <- stat
+  plot.list <- list()
+  for (i in unique(tmp$variable)) {
+    data_cluster <- tmp[tmp$variable ==i,]
 
-  return(container)
+    p <- ggplot(data_cluster, aes(x = group_var, y = value, fill = group_var)) +
+      geom_boxplot(outlier.colour = NA) +
+      geom_point(shape = 21, fill = "white", color = "black", size = dot_size, position = position_dodge(0.4)) +
+      theme_bw() +
+      theme(#aspect.ratio = 2,
+        panel.grid = element_blank(),
+        legend.position = "none",
+        axis.text.x = element_text(angle=90,hjust = 1, vjust = 0.5)) +
+      ggtitle(i) +
+      expand_limits(y = 0) + xlab("") + ylab("percentage") +
+      scale_fill_manual(values = color_palette)
 
+    plot.list[[i]] <- p
+    rm(p, data_cluster)
+  }
+
+  return(plot.list)
 }
 
 #' plot_frequency_barplot
