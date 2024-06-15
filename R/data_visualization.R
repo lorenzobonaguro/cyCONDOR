@@ -763,6 +763,83 @@ plot_frequency_barplot<-function (fcd = condor,
   return(p)
 }
 
+#' plot_counts_barplot
+#'
+#' @title bar chart of cell population counts
+#' @description `plot_counts_barplot` plots cell population counts for each level in group_var as bar plot.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param group_var string indicating variable name in cell_anno that defines grouping variable to be used (x-axis), e.g. group or sample ID.
+#' @param facet_var (optional) string indicating variable name in cell_anno that should be used to group levels in group_var via faceting.
+#' @param facet_by_clustering logical, if set to TRUE, the plot will be faceted by cell populations specified in cluster_var. If set to FALSE not faceting by population will be applied (default). If both, facet_var and facet_by_clustering are used plot will be faceted by both using applying facet_grid.
+#' @param facet_ncol numeric, indicating how many columns faceted plot should have, if either facet_var or Facet_by_clustering is used.
+#' @param color_palette vector of colors to be used to fill bar chart plots
+#' @param title title of the plot, default is "Counts"
+#' @import ggplot2
+#' @returns `plot_counts_barplot` returns a plot showing cell numbers per cell population for each level in group_var. The plot is faceted by another variable, when provided a facet_var and or by the cell population, depending on facet_by_clustering.
+#' @export
+plot_counts_barplot<-function (fcd = condor,
+                               cluster_slot,
+                               cluster_var,
+                               group_var,
+                               facet_var = NULL,
+                               facet_by_clustering = F,
+                               facet_ncol = NULL,
+                               color_palette = NULL,
+                               title = "Counts") {
+
+  #### check slots, cell IDs and variables
+  checkInput(fcd = fcd,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var)
+
+  if(!is.null(facet_var)){
+    if(!facet_var %in% colnames(fcd$anno$cell_anno)){
+      stop('column "',facet_var,'" is not available in cell_anno')
+    }
+  }
+  if(!(isTRUE(facet_by_clustering) || isFALSE(facet_by_clustering))){
+    stop('argument "facet_by_clustering" needs to be TRUE or FALSE.')
+  }
+
+
+  #### prepare data
+  data <- data.frame(cellID=rownames(fcd$clustering[[cluster_slot]]),
+                     cluster=fcd$clustering[[cluster_slot]][[cluster_var]],
+                     group_var=fcd$anno$cell_anno[[group_var]])
+
+  if(!is.null(facet_var)){
+    data$facet_var<-fcd$anno$cell_anno[[facet_var]]
+  }
+
+
+  #### plot
+  p <- ggplot(data, aes(x = group_var, fill = cluster)) +
+    geom_bar(position = "stack", color = "black", linewidth = 0.3) +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    labs(y = "cell count", x = "", fill = cluster_var) + ggtitle(title)
+
+  if(!is.null(facet_var) & isFALSE(facet_by_clustering)){
+    p <- p + facet_wrap(.~facet_var, scales = "free_x", ncol = facet_ncol)
+  }
+  if(is.null(facet_var) & isTRUE(facet_by_clustering)){
+    p <- p + facet_wrap(.~cluster, scales = "free_x", ncol = facet_ncol)
+  }
+  if(!is.null(facet_var) & isTRUE(facet_by_clustering)){
+    p <- p + facet_grid(cluster~facet_var, scales = "free")
+  }
+  if(!is.null(color_palette)){
+    p <- p + scale_fill_manual(values = color_palette)
+  }
+  return(p)
+}
+
 #' plot_dim_density
 #'
 #' @title dimensionality reduction plot with density distribution
