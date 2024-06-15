@@ -1018,46 +1018,137 @@ plot_marker_group_HM <- function(fcd,
   return(p)
 }
 
-#' violinplot_marker
+#' plot_marker_violinplot
 #'
-#' @title violinplot_marker
-#' @description Calculate a violin plot for the expression of selected markers.
-#' @param fcd flow cytometry dataset.
-#' @param data_slot data to use for the calculation, e.g. "expr" or "pca".
-#' @param cluster_method methods for the clustering to use.
-#' @param cluster_type type of clustering (slot name).
-#' @param marker marker to plot.
-#' @import Hmisc
-#' @return violinplot_marker
-#'
+#' @title violin plot of marker expression in cell populations
+#' @description
+#' `plot_marker_violinplot` plots the expression of selected markers as violin plots for cell populations.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param marker vector of characters indicating which features of the expression matrix should be plotted.
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param cluster_to_show vector of strings indicating levels in cluster_var that should be included for plotting.
+#' @param group_var (optional) string indicating variable name in cell_anno that should be used to split violin plots.
+#' @param color_palette vector of colors to be used to fill violin plots, when group_var is used
+#' @import ?
+#' @returns `plot_marker_violinplot` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+#' @details The violin plots are plotted with default parameters of ggplot2's `geom_violin()` and horizontal lines indicate the median.
 #' @export
-violinplot_marker <- function(fcd,
-                              data_slot = "orig",
-                              cluster_method,
-                              cluster_type,
-                              marker = colnames(df[,-which(names(df) %in% c("metaclusters", "Description",
-                                                                            "Phenograph", "FlowSOM"))])) {
+#'
+plot_marker_violinplot<- function(fcd,
+                                  marker,
+                                  expr_slot = "orig",
+                                  cluster_slot,
+                                  cluster_var,
+                                  cluster_to_show = NULL,
+                                  group_var = NULL,
+                                  color_palette = cluster_palette){
 
-  df <- cbind(fcd$clustering[[cluster_method]], fcd$expr[[data_slot]])
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_expr_slot = T,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var)
 
-  plot.list <- list()
 
-  for (i in intersect(colnames(df), marker)) {
-
-    df.short <- df[, c(cluster_type, i)]
-    colnames(df.short) <- c("cluster_type", "marker")
-
-    plot.list[[i]] <- ggplot(df.short, aes(x = cluster_type, y = marker))+
-      geom_violin()+
-      xlab("Cluster")+
-      ylab(i)+
-      theme_linedraw()+
-      stat_summary(fun.data = mean_sdl, size = 0.2,
-                   geom = "pointrange", color = "red")+
-      ggtitle(i)
+  #### check if markers are present in expr slot
+  marker <- unique(marker)
+  marker_present <- marker[marker %in% colnames(fcd$expr[[expr_slot]])]
+  if(length(marker_present) == 0){
+    stop('None of the requested markers is present in expr slot "',expr_slot,'".')
+  }
+  if(length(marker_present) < length(marker)){
+    warning('The following marker could not be found in expr slot ',expr_slot,': ',paste(marker[!marker %in% marker_present], collapse = ", "))
   }
 
-  cowplot::plot_grid(plotlist = plot.list, ncol = 1)
+
+  #### get cluster of interest
+  if(!is.null(cluster_to_show)){
+    ## remove potential duplicates
+    cluster_to_show <- unique(cluster_to_show)
+
+    ## get cluster of interest
+    cluster_present <- cluster_to_show[cluster_to_show %in% unique(fcd$clustering[[cluster_slot]][[cluster_var]])]
+    if(length(cluster_present) == 0){
+      stop('None of the provided clusters are present in selected cluster_var "',cluster_var,'".')
+    }
+    if(length(cluster_present) < length(cluster_to_show)){
+      warning('The following clusters could not be found in cluster_var "',cluster_var,'": ',
+              paste(cluster_to_show[!cluster_to_show %in% cluster_present], collapse = ","))
+    }
+  }else{
+    ## default
+    cluster_present <- unique(fcd$clustering[[cluster_slot]][[cluster_var]])
+  }
+
+
+  #### prepare data
+  data <- fcd$expr[[expr_slot]]
+  data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
+
+  if(!is.null(group_var)){
+    data$group_var <- fcd$anno$cell_anno[[group_var]]
+  }
+
+  ## subset to cluster of interest
+  data <- data[data$cluster %in% cluster_present,]
+
+
+  #### plotting
+  plot.list<-list()
+
+  if(!is.null(group_var)){
+
+    for (i in marker_present){
+      data_sub<-data[,c(as.character(i),"cluster","group_var")]
+      colnames(data_sub)[colnames(data_sub) == as.character(i)] <- "marker"
+
+      p <- ggplot(data_sub, aes(cluster, marker,fill = group_var))+
+        geom_violin(draw_quantiles = 0.5, trim = T, scale = "area")+
+        theme_linedraw()+
+        ggtitle(i)+
+        theme(axis.text.x = element_text(angle=90, hjust = 1, vjust = 0.5))+
+        labs(x = cluster_var, y = "expression", fill = group_var) +
+        scale_fill_manual(values = color_palette)
+
+      plot.list[[i]] <- p
+    }
+
+  }else{
+
+    for (i in marker_present){
+      data_sub <- data[,c(as.character(i),"cluster")]
+      colnames(data_sub)[colnames(data_sub) == as.character(i)] <- "marker"
+
+      p <- ggplot(data_sub, aes(cluster, marker))+
+        geom_violin(draw_quantiles = 0.5, trim = T, scale = "area")+
+        theme_linedraw()+
+        ggtitle(i)+
+        theme(axis.text.x = element_text(angle=90, hjust = 1, vjust = 0.5))+
+        labs(x = cluster_var, y = "expression")
+
+      plot.list[[i]] <- p
+    }
+
+  }
+
+  #### return
+  if(length(plot.list) == 1){
+    p <- plot.list[[1]]
+    return(p)
+
+  }else{
+    # p<-cowplot::plot_grid(plotlist = plot.list, ncol = 1)
+    # return(p)
+    return(plot.list)
+  }
+
 }
 
 #' plot_marker_dotplot
