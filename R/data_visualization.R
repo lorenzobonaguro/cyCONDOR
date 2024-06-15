@@ -1151,6 +1151,169 @@ plot_marker_violinplot<- function(fcd,
 
 }
 
+
+#' plot_marker_boxplot
+#'
+#' @title plot box plots of marker median or mean
+#' @description `plot_marker_boxplot()` generates faceted box plots of aggregated expression per sample grouped by a grouping of interest for each marker-cluster combination.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param marker marker in provided expr_slot that should be included in plotting. By default all features are plotted.
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param cluster_to_show vector of characters indicating levels in cluster_var that should be included for plotting.
+#' By default all groups are plotted.
+#' @param group_var string indicating variable name in cell_anno that should be used to group samples in sample_var
+#' @param sample_var string indicating variable name in cell_anno that defines sample IDs to be used.
+#' @param fun string indicating which aggregation of expression should be performed for each sample. Needs to be one out of "median" (default) or "mean".
+#' @param facet_by_clustering logical indicating how to structure faceting of the plot. If set to FALSE (default) plot will be faceted by markers and clusters (or cell populations) are shown on x-axis. If set to TRUE, it is the other way around.
+#' @param facet_ncol Number of columns to be used for faceting.
+#' @param color_palette vector of colors that should be used to fill box plots.
+#' @param dot_size numeric indicating the size of the dots.
+#' @import dplyr
+#' @import reshape2
+#' @import ggplot2
+#' @returns
+#' A faceted ggplot showing box plots of aggregated expression per sample grouped by group_var.
+#'
+#' @export
+plot_marker_boxplot<- function(fcd,
+                               marker = NULL,
+                               expr_slot ="orig",
+                               cluster_slot = "Phenograph_pca_orig_k_60",
+                               cluster_var = "metaclusters",
+                               cluster_to_show = NULL,
+                               group_var,
+                               sample_var,
+                               fun = "median",
+                               facet_by_clustering = F,
+                               facet_ncol = 5,
+                               color_palette = cluster_palette,
+                               dot_size=2){
+
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_expr_slot = T,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var,
+             sample_var = sample_var)
+
+  if(!(isTRUE(facet_by_clustering) || isFALSE(facet_by_clustering))){
+    stop('argument "facet_by_clustering" needs to be TRUE or FALSE.')
+  }
+
+
+  #### get markers of interest
+  if(!is.null(marker)){
+    # remove potential duplicates
+    marker <- unique(marker)
+
+    ## check if markers are present in expr slot
+    marker_present <- marker[marker %in% colnames(fcd$expr[[expr_slot]])]
+    if(length(marker_present) == 0){
+      stop('None of the provided markers are present in expr slot "',expr_slot,'".')
+    }
+    if(length(marker_present) < length(marker)){
+      warning('The following markers could not be found in expr slot "',expr_slot,'": ',
+              paste(marker[!marker %in% marker_present], collapse = ","))
+    }
+  }else{
+    ## default
+    marker_present <- colnames(fcd$expr[[expr_slot]])
+  }
+
+  #### get cluster of interest
+  if(!is.null(cluster_to_show)){
+    ## remove potential duplicates
+    cluster_to_show <- unique(cluster_to_show)
+
+    ## get cluster of interest
+    cluster_present <- cluster_to_show[cluster_to_show %in% unique(fcd$clustering[[cluster_slot]][[cluster_var]])]
+    if(length(cluster_present) == 0){
+      stop('None of the provided clusters are present in selected cluster_var "',cluster_var,'".')
+    }
+    if(length(cluster_present) < length(cluster_to_show)){
+      warning('The following clusters could not be found in cluster_var "',cluster_var,'": ',
+              paste(cluster_to_show[!cluster_to_show %in% cluster_present], collapse = ","))
+    }
+  }else{
+    ## default
+    cluster_present <- unique(fcd$clustering[[cluster_slot]][[cluster_var]])
+  }
+
+
+  #### prepare data
+  data <- fcd$expr[[expr_slot]]
+  data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
+  data$group_var <- fcd$anno$cell_anno[[group_var]]
+  data$sample_var <- fcd$anno$cell_anno[[sample_var]]
+
+  ## subset to marker of interest
+  data <- as.data.frame(data[,c(marker_present,"cluster","group_var","sample_var")])
+
+  ## subset to cluster of interest
+  data <- data[data$cluster %in% cluster_present,]
+
+  ## check if samples are uniquely assigned to one group
+  anno <- unique(data[,c("sample_var","group_var")])
+  if(!nrow(anno) == length(unique(anno$sample_var))){
+    stop("levels in sample_var cannot be uniquely asigned to one group_var. Make sure that each sample_var is unambiguous associated with only one group in group_var.")
+  }
+
+  #### calculate median or mean per sample for each marker-cluster combination
+  if(fun == "mean"){
+    data_stats <- data %>% dplyr::group_by(sample_var, group_var, cluster, .drop=T) %>%
+      dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+  }else if(fun == "median"){
+    data_stats <- data %>% dplyr::group_by(sample_var, group_var, cluster, .drop=T) %>%
+      dplyr::summarise(dplyr::across(dplyr::everything(), ~ median(.x, na.rm = TRUE)))
+  }else{
+    stop('aggregation function "fun" must be either set to "mean" or to "median".')
+  }
+
+  data_stats <- data_stats %>% reshape2::melt(.,id.vars=c("cluster","group_var","sample_var"))
+  n_groups <- length(unique(data_stats$group_va))
+  #### plot
+  if(facet_by_clustering == F){
+    p <- ggplot(data_stats, aes(x = cluster, y = value, fill = group_var)) +
+      geom_boxplot(outlier.colour = NA,position = position_dodge2(0.85, preserve = "single")) +
+      geom_point(position=position_jitterdodge(jitter.width = 0.05,jitter.height = 0),
+                 shape = 21, color = "black", size = dot_size) +
+      theme_bw() +
+      theme(#aspect.ratio = 2,
+        panel.grid = element_blank(),
+        legend.position = "right",
+        axis.text.x = element_text(angle=90, hjust = 1, vjust = 0.5)) +
+      expand_limits(y = 0) + xlab(cluster_var) + ylab(paste(fun," expression")) + labs(fill = group_var) +
+      facet_wrap(.~variable, scales = "free_y", ncol = facet_ncol) +
+      scale_fill_manual(values = color_palette)
+
+  }else if(facet_by_clustering == T){
+    p <- ggplot(data_stats, aes(x = variable, y = value, fill = group_var)) +
+      geom_boxplot(outlier.colour = NA, position = position_dodge2(0.85, preserve = "single")) +
+      geom_point(position = position_jitterdodge(jitter.width = 0.05, jitter.height = 0),
+                 shape = 21, color = "black", size = dot_size) +
+      theme_bw() +
+      theme(#aspect.ratio = 2,
+        panel.grid = element_blank(),
+        legend.position = "right",
+        axis.text.x = element_text(angle=90,hjust = 1, vjust = 0.5)) +
+      expand_limits(y = 0) + xlab("marker") + ylab(paste(fun," expression")) + labs(fill = group_var) +
+      facet_wrap(.~cluster, scales = "free_y", ncol = facet_ncol)+
+      scale_fill_manual(values = color_palette)
+
+  }else{
+    stop('argument "facet_by_clustering" needs to be a logical.')
+  }
+
+  return(p)
+}
+
 #' plot_marker_dotplot
 #'
 #' @title plot_marker_dotplot
