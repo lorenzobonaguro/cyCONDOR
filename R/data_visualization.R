@@ -701,41 +701,66 @@ boxplot_and_stats <- function(annotation,
 
 }
 
-#' barplot_frequency
+#' plot_frequency_barplot
 #'
-#' @title barplot_frequency
-#' @description This function output a stacked barplot for the cellular frequencies.
-#' @param x_axes Groupping of the x axes.
-#' @param colour Stratification to use on the stacked barplot.
-#' @param color_palette color_palette.
-#' @param title Title for the plot.
-#' @param legend_title Title for the legend.
-#' @return barplot_frequency
-#'
+#' @title bar chart of cell population frequencies
+#' @description `plot_frequency_barplot` plots cell population frequencies for each level in group_var as stacked barplot.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param group_var string indicating variable name in cell_anno that defines grouping variable to be used (x-axis), e.g. group or sample ID.
+#' @param facet_var (optional) string indicating variable name in cell_anno that should be used to group levels in group_var via faceting.
+#' @param color_palette vector of colors to be used to fill bar chart plots
+#' @param title title of the plot, default is "Frequency"
+#' @returns `plot_frequency_barplot` returns a plot showing cell population frequencies for each level in group_var. The plot is faceted by another variable, when provided a facet_var.
 #' @export
-barplot_frequency <- function(x_axes,
-                              colour,
-                              color_palette = cluster_palette,
-                              title = "Choose an appropriate title",
-                              legend_title) {
+plot_frequency_barplot<-function (fcd = condor,
+                                  cluster_slot,
+                                  cluster_var,
+                                  group_var,
+                                  facet_var = NULL,
+                                  color_palette = cluster_palette,
+                                  title = "Frequency") {
 
-  tmp <- table(colour,
-               x_axes)
+  #### check slots, cell IDs and variables
+  checkInput(fcd = fcd,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var)
 
-  tmp <- t(t(tmp)/colSums(tmp))*100
+  if(!is.null(facet_var)){
+    if(!facet_var %in% colnames(fcd$anno$cell_anno)){
+      stop('column "',facet_var,'" is not available in cell_anno')
+    }
+  }
 
-  tmp <- as.data.frame(tmp)
 
-  p1 <- ggplot(tmp, aes(x = x_axes, y = Freq, fill = colour)) +
-    geom_bar(stat="identity", color = "black", size = 0.3) +
-    scale_fill_manual(values = color_palette) +
+  #### prepare data
+  data <- data.frame(cellID=rownames(fcd$clustering[[cluster_slot]]),
+                     cluster=fcd$clustering[[cluster_slot]][[cluster_var]],
+                     group_var=fcd$anno$cell_anno[[group_var]])
+
+  if(!is.null(facet_var)){
+    data$facet_var <- fcd$anno$cell_anno[[facet_var]]
+  }
+
+
+  #### plot
+  p <- ggplot(data, aes(x = group_var, fill = cluster)) +
+    geom_bar(position = "fill", color = "black", linewidth = 0.3) +
     theme_bw() +
-    theme(panel.grid = element_blank(), axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-    labs(y = "Frequency (%)", x = "", fill = legend_title) +
-    ggtitle(title)
+    theme(panel.grid = element_blank(),
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    labs(y = "Frequency (%)", x = "", fill = cluster_var) + ggtitle(title) +
+    scale_fill_manual(values = color_palette)
 
-  return(p1)
+  if(!is.null(facet_var)==T){
+    p <- p + facet_wrap(.~facet_var, scales = "free_x")
+  }
 
+  return(p)
 }
 
 #' plot_dim_density
