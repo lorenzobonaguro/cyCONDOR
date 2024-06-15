@@ -1,3 +1,115 @@
+#' getTable
+#'
+#' @title Get summary values
+#' @description
+#' `getTable()` can be used to generate frequently used parameters on cell populations defined by clustering or prediction, while considering a meta variable for grouping. It can produce cell numbers (counts), cell population frequencies as well as median or mean marker expression for each group to cell population combination.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param output_type type of parameter that should be reported in table. One of the following option needs to be selected:
+#'  * `"counts"`: gives cell numbers per group_var and cell population
+#'  * `"frequency"`: returns proportion of each cell population for each level in group_var (default)
+#'  * `"median"`: calculates median expression for each group_var and cell population combination for each available feature in expression matrix
+#'  * `"mean"`: calculates mean expression for each group_var and cell population combination for each available feature in expression matrix
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param group_var string indicating variable name in cell_anno that should be used to group the output, e.g. group or sample ID.
+#' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @import ?
+#' @returns
+#' `getTable()` returns a data frame with parameters in columns and observations in rows. In case of output_type of "counts" or "frequency", counts and frequencies for each cell population (columns) are reported in one row for each level in group_var. Given an output_type of "mean" or "median", aggregated expression for each feature (columns) is reported for each group_var and cell population combination (cluster).
+#'
+#'@export
+getTable <- function(fcd,
+                     output_type = "frequency", #alternative "counts","mean","median"
+                     expr_slot = "orig",
+                     cluster_slot,
+                     cluster_var,
+                     group_var,
+                     numeric = F) {
+
+
+  if(!output_type %in% c("frequency","counts","mean","median")){
+    stop('output_type must be set to "counts","frequency","mean" or "median".')
+
+  }else if(output_type %in% c("counts","frequency")){
+
+    #### check slots, cell IDs and variables
+    checkInput(fcd = fcd,
+               check_cluster_slot = T,
+               check_cell_anno = T,
+               cluster_slot = cluster_slot,
+               cluster_var = cluster_var,
+               group_var = group_var)
+
+
+    #### prepare data
+    data <- data.frame(cellID = rownames(fcd$clustering[[cluster_slot]]),
+                       cluster = fcd$clustering[[cluster_slot]][[cluster_var]],
+                       group_var = fcd$anno$cell_anno[[group_var]])
+
+
+    #### prepare output
+    counts <- cyCONDOR::confusionMatrix(paste0(data$group_var), paste0(data$cluster))
+    counts <- as.matrix(counts)
+    if (numeric == TRUE) {
+      counts <- counts[order(rownames(counts)), order(as.numeric(colnames(counts)))]
+      colnames(counts) <- paste0("Cluster_", colnames(counts))
+    } else if (numeric == FALSE) {
+      counts <- counts[order(rownames(counts)), order(colnames(counts))]
+    } else {
+      counts <- counts[order(rownames(counts)), order(colnames(counts))]
+    }
+
+    if(output_type == "counts"){
+      counts <- as.data.frame(counts)
+      counts$group_var <- rownames(counts)
+      counts <- counts[,c("group_var", c(colnames(counts)[!colnames(counts) == "group_var"]))]
+      return(counts)
+
+    }else{
+      frequency <- counts/rowSums(counts) * 100
+      frequency <- as.data.frame(frequency)
+      frequency$group_var <- rownames(frequency)
+      frequency <- frequency[,c("group_var",colnames(frequency)[!colnames(frequency)=="group_var"])]
+      return(frequency)
+
+    }
+
+  }else{
+    checkInput(fcd = fcd,
+               check_expr_slot = T,
+               check_cluster_slot = T,
+               check_cell_anno = T,
+               expr_slot = expr_slot,
+               cluster_slot = cluster_slot,
+               cluster_var = cluster_var,
+               group_var = group_var)
+
+    if(is.null(expr_slot)){
+      stop('To calculate mean or median expression, the expr_slot from which to take the expression values needs to be specified.')
+    }
+
+    #### prepare data
+    data <- fcd$expr[[expr_slot]]
+    data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
+    data$group_var <- fcd$anno$cell_anno[[group_var]]
+
+
+    ####calculate means per group x cluster combination
+    if(output_type == "mean"){
+      data_stats <- data %>% dplyr::group_by(group_var, cluster, .drop=T) %>%
+        dplyr::summarise(across(everything(), ~ mean(.x, na.rm = TRUE)))
+    }else{
+      data_stats <- data %>% dplyr::group_by(group_var, cluster, .drop=T) %>%
+        dplyr::summarise(across(everything(), ~ median(.x, na.rm = TRUE)))
+    }
+
+    #data_stats <- data_stats %>% reshape2::melt(.,id.vars=c("cluster","group_var"))
+    return(data_stats)
+  }
+}
+
 #' PC_loadings
 #'
 #' @title PC_loadings
