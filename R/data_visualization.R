@@ -1459,62 +1459,139 @@ plot_marker_dotplot <- function(fcd,
   return(p)
 }
 
-#' densityplot_marker
+#' plot_marker_density
 #'
-#' @title dotplot_cyto
-#' @description Plot the distribution of the expression of selected markers, similar to FlowJo Histogram.
-#' @param data Data to use for the plot.
-#' @param marker Marker to be visualized.
-#' @param split_by Variable used to split the plot.
-#' @param color_by Variable used to color the plot.
-#' @param color_discrete Color palette (default: cluster_palette)
-#' @param title Plot title.
-#' @return densityplot marker.
+#' @title density plot of marker expression in cell populations grouped by a meta variable
+#' @description
+#' `plot_marker_density` plots the density distribution of expression for cell populations. Each line indicates distribution for one level in group_var.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param marker vector of characters indicating which features of the expression matrix should be plotted.
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param cluster_to_show (optionl) vector of strings indicating levels in cluster_var that should be included for plotting.
+#' @param group_var string indicating variable name in cell_anno for which density distributions get calculated.
+#' @param facet_var (optional) string indicating variable name in cell_anno that should be used to facet the plots by a meta variable.
+#' @param facet_ncol numeric, number of columns used for facetting.
+#' @param color_palette vector of colors to be used to color the density lines
+#' @returns `plot_marker_density` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+#' @details The density plots are plotted with default parameters of ggplot2's \code{\link[ggplot2]{geom_density}}.
+#' @import ggplot2
 #'
 #' @export
-densityplot_marker <- function(data,
-                               marker,
-                               split_by = NULL,
-                               color_by = NULL,
-                               color_discrete = cluster_palette,
-                               title) {
+plot_marker_density <- function(fcd,
+                                marker,
+                                expr_slot = "orig",
+                                cluster_slot,
+                                cluster_var,
+                                cluster_to_show = NULL,
+                                group_var,
+                                facet_var = NULL,
+                                facet_ncol = 5,
+                                color_palette = cluster_palette) {
 
-  colnames(data)[colnames(data) == marker] <- "poi"
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_expr_slot = T,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var,
+             group_var = group_var)
 
-  core <- list(geom_density(),
-               theme_bw(),
-               theme(aspect.ratio = 1, panel.grid = element_blank()),
-               ggtitle(title))
 
-  if (!is.null(color_by)) {
-
-    colnames(data)[colnames(data) == color_by] <- "color"
-
-    core <- list(geom_density(aes(color = color)),
-                 theme_bw(),
-                 scale_colour_manual(values = color_discrete),
-                 theme(aspect.ratio = 1, panel.grid = element_blank()),
-                 labs(color = color_by),
-                 ggtitle(title),
-                 xlab(marker))
-
+  #### check if markers are present in expr slot
+  marker <- unique(marker)
+  marker_present <- marker[marker %in% colnames(fcd$expr[[expr_slot]])]
+  if(length(marker_present) == 0){
+    stop('None of the requested markers is present in expr slot "',expr_slot,'".')
+  }
+  if(length(marker_present) < length(marker)){
+    warning('The following marker could not be found in expr slot ',expr_slot,': ',paste(marker[!marker %in% marker_present], collapse = ", "))
   }
 
-  if (!is.null(split_by)) {
 
-    colnames(data)[colnames(data) == split_by] <- "split"
+  #### get cluster of interest
+  if(!is.null(cluster_to_show)){
+
+    ## remove potential duplicates
+    cluster_to_show <- unique(cluster_to_show)
+
+    ## get cluster of interest
+    cluster_present <- cluster_to_show[cluster_to_show %in% unique(fcd$clustering[[cluster_slot]][[cluster_var]])]
+    if(length(cluster_present) == 0){
+      stop('None of the provided clusters are present in selected cluster_var "',cluster_var,'".')
+    }
+    if(length(cluster_present) < length(cluster_to_show)){
+      warning('The following clusters could not be found in cluster_var "',cluster_var,'": ',
+              paste(cluster_to_show[!cluster_to_show %in% cluster_present], collapse = ","))
+    }
+  }else{
+    ## default
+    cluster_present <- unique(fcd$clustering[[cluster_slot]][[cluster_var]])
   }
 
-  p1 <- ggplot(data, aes(x = poi)) + core
 
-  if (!is.null(split_by)) {
+  #### prepare data
+  data <- fcd$expr[[expr_slot]]
+  data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
+  data$group_var <- fcd$anno$cell_anno[[group_var]]
 
-    p1 <- p1 + facet_wrap(~split)
-
+  if (!is.null(facet_var)) {
+    data$facet_var <- fcd$anno$cell_anno[[facet_var]]
   }
 
-  return(p1)
+  ## subset to cluster of interest
+  data <- data[data$cluster %in% cluster_present,]
 
+
+  #### plotting
+  plot.list<-list()
+
+  if(!is.null(facet_var)){
+    for (i in marker_present){
+      data_sub <- data[,c(as.character(i),"cluster","group_var","facet_var")]
+      colnames(data_sub)[colnames(data_sub) == as.character(i)] <- "marker"
+
+      p <- ggplot(data_sub, aes(x = marker)) +
+        geom_density(aes(color = group_var)) +
+        theme_bw() +
+        scale_colour_manual(values = color_palette) +
+        theme(aspect.ratio = 1, panel.grid = element_blank()) +
+        labs(color = group_var) +
+        ggtitle(i) + xlab("expression") +
+        facet_grid(facet_var~cluster)
+
+      plot.list[[i]] <- p
+    }
+  }else{
+    for (i in marker_present){
+      data_sub <- data[,c(as.character(i),"cluster","group_var")]
+      colnames(data_sub)[colnames(data_sub) == as.character(i)] <- "marker"
+
+      p <- ggplot(data_sub, aes(x = marker)) +
+        geom_density(aes(color = group_var)) +
+        theme_bw() +
+        scale_colour_manual(values = color_palette) +
+        theme(aspect.ratio = 1, panel.grid = element_blank()) +
+        labs(color = group_var) +
+        ggtitle(i) + xlab("expression") +
+        facet_wrap(.~cluster, ncol = facet_ncol)
+
+      plot.list[[i]] <- p
+    }
+  }
+
+  #### return
+  if(length(plot.list) == 1){
+    p <- plot.list[[1]]
+    return(p)
+
+  }else{
+    return(plot.list)
+  }
 }
 
 #' plot_marker_ridgeplot
