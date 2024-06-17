@@ -87,36 +87,43 @@ filter_fcd <- function(fcdataset, cell_ids) {
 #' check_IDs
 #'
 #' @title check_IDs
-#' @description Check the integrity and the correctness of a flow cytometry dataset
-#' @param fcdataset Flow cytometry dataset to be checked.
+#' @description Check the integrity and the correctness of a flow cytometry dataset by comparing the cell IDs of all existing slots to the cell IDs of the orig. exprs
+#' @param fcs Flow cytometry dataset to be checked.
 #' @return check the integrity and the correctness of a flow cytometry dataset
 #'
 #' @export
-check_IDs <- function(fcdataset) {
+#'
+check_IDs <- function(fcd){
 
   collector <- list()
+  for (level_1 in names(fcd)) {
+    # exclude extra-slot from comparison
+    if (!level_1 == "extras"){
+      int <- fcd[[level_1]]
+      for (level_2 in names(int)) {
+        if (!is.null(rownames(int[[level_2]]))){
+          # save rownames of levels that are not NULL
+          collector[[paste(level_1, level_2, sep = "$")]] <- rownames(int[[level_2]])
+        }
+        else {
 
-  for (level_1 in names(fcdataset)) {
+          stop(paste0("The cell IDs of ",level_1, "$",level_2, " are not defined."))
 
-    int <- fcdataset[[level_1]]
-
-    for (level_2 in names(int)) {
-
-      collector[[paste(level_1, level_2, sep = "_")]] <- rownames(int[[level_2]])
-
-    }
-
-  }
-
-  result <- all(sapply(collector,
-                       FUN = identical, collector[[1]]))
-
+        }
+      }
+    }}
+  result <- all(sapply(collector, FUN = identical, collector[[1]]))
   if (result == TRUE) {
     print("Everything looks fine")
-  }else {
-    print("Something is not correct with the cell IDs")
-  }
+  } else {
 
+    # If something is wrong: print which cell IDs are different
+    output <- as.data.frame(sapply(collector, FUN = identical, collector[[1]]))
+    colnames(output) <- "comparison_result"
+    faulty_IDs_levels <- rownames(output%>%filter(comparison_result==FALSE))
+    print(paste("Something is not correct with the cell IDs in level:",faulty_IDs_levels))
+
+  }
 }
 
 #' merge_condor
@@ -140,6 +147,14 @@ merge_condor <- function(data1, data2) {
     paste("Metadata are matching")
   } else {
     stop("Metadata are not matching")
+  }
+
+  # check if rownames overlap
+
+  if (length(intersect(rownames(data1$expr$orig), rownames(data2$expr$orig))) == 0 ){
+    print("Cell IDs are unique")
+  } else {
+    stop("Cell IDs are not unique")
   }
 
   new_obj <- list()
@@ -253,10 +268,13 @@ df_frequency <- function(classification,      #condor$clustering$Phenograph_pca_
 #' @description Performs a random subset of the fcd
 #' @param fcd flowframe object.
 #' @param size Numeric: size of the sub-sampling.
+#' @param seed A seed is set for reproducibility.
 #' @return df_frequency
 #'
 #' @export
-subset_fcd <- function(fcd, size) {
+subset_fcd <- function(fcd, size, seed = 91) {
+
+  set.seed(seed)
 
   random_cells <- sample(rownames(fcd[["expr"]][["orig"]]), size = size)
 
