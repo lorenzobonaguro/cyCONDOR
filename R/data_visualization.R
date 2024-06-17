@@ -1516,3 +1516,115 @@ densityplot_marker <- function(data,
   return(p1)
 
 }
+
+#' plot_marker_ridgeplot
+#'
+#' @title ridgeline plot of marker expression in cell populations
+#' @description
+#' `plot_marker_ridgeplot` plots the expression of selected markers as ridgeline plots for cell populations.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @param marker vector of characters indicating which features of the expression matrix should be plotted.
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
+#' @param cluster_to_show (optional) vector of strings indicating levels in cluster_var that should be included for plotting.
+#' @param color_palette vector of colors to be used to fill density distributions.
+#' @param alpha numeric, adjust alpha to be used on fill color of density distributions.
+#' @import ggridges
+#' @returns `plot_marker_ridgeplot` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+#' @details The ridgeline plots are plotted with default parameters of ggridges's \code{\link[ggridges]{geom_density_ridges}}
+#' @export
+#'
+plot_marker_ridgeplot<- function(fcd,
+                                 marker,
+                                 expr_slot = "orig",
+                                 cluster_slot,
+                                 cluster_var,
+                                 cluster_to_show = NULL,
+                                 color_palette = cluster_palette,
+                                 alpha = 1){
+
+  #### check slots, cellIDs und varibles
+  checkInput(fcd = fcd,
+             check_expr_slot = T,
+             check_cluster_slot = T,
+             check_cell_anno = T,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var)
+
+
+  #### check if markers are present in expr slot
+  marker <- unique(marker)
+  marker_present <- marker[marker %in% colnames(fcd$expr[[expr_slot]])]
+  if(length(marker_present) == 0){
+    stop('None of the requested markers is present in expr slot "',expr_slot,'".')
+  }
+  if(length(marker_present) < length(marker)){
+    warning('The following marker could not be found in expr slot ',expr_slot,': ',paste(marker[!marker %in% marker_present], collapse = ", "))
+  }
+
+
+  #### get cluster of interest
+  if(!is.null(cluster_to_show)){
+    ## remove potential duplicates
+    cluster_to_show <- unique(cluster_to_show)
+
+    ## get cluster of interest
+    cluster_present <- cluster_to_show[cluster_to_show %in% unique(fcd$clustering[[cluster_slot]][[cluster_var]])]
+    if(length(cluster_present) == 0){
+      stop('None of the provided clusters are present in selected cluster_var "',cluster_var,'".')
+    }
+    if(length(cluster_present) < length(cluster_to_show)){
+      warning('The following clusters could not be found in cluster_var "',cluster_var,'": ',
+              paste(cluster_to_show[!cluster_to_show %in% cluster_present], collapse = ","))
+    }
+  }else{
+    ## default
+    cluster_present <- unique(fcd$clustering[[cluster_slot]][[cluster_var]])
+  }
+
+
+  #### prepare data
+  data <- fcd$expr[[expr_slot]]
+  data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
+
+  ## subset to cluster of interest
+  data <- data[data$cluster %in% cluster_present,]
+
+
+  #### plotting
+  plot.list<-list()
+
+  for (i in marker_present){
+    data_sub <- data[,c(as.character(i),"cluster")]
+    colnames(data_sub)[colnames(data_sub) == as.character(i)] <- "marker"
+
+    if(is.factor(data_sub$cluster)){
+      data_sub$cluster <- factor(data_sub$cluster, levels = rev(levels(data_sub$cluster)))
+    }
+
+    p <- ggplot(data_sub, aes(x = marker, y = cluster, fill = cluster)) +
+      ggridges::geom_density_ridges(alpha = alpha) +
+      ggridges::theme_ridges(center_axis_labels = T) +
+      scale_x_continuous(expand = c(0, 0)) +
+      scale_y_discrete(expand = expand_scale(mult = c(0.01, 0.2))) +
+      scale_fill_manual(values = color_palette) +
+      theme(legend.position = "none") +
+      xlab("expression") + ylab(cluster_var) + ggtitle(i)
+
+    plot.list[[i]] <- p
+  }
+
+
+  #### return
+  if(length(plot.list) == 1){
+    p <- plot.list[[1]]
+    return(p)
+
+  }else{
+    return(plot.list)
+  }
+
+}
