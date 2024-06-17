@@ -4,30 +4,30 @@
 #' @description Assignment of a metaclusters name.
 #' @param fcd flow cytometry dataset.
 #' @param clustering Name of the clustering to match for the metaclustering.
-#' @param name_col Column containing the original cluster.
-#' @param name_out Name of the output column.
+#' @param cluster_slot Column containing the original cluster.
+#' @param cluster_var Name of the output column.
 #' @param metaclusters Vector of the new clusters names, this should be of the same length of the levels of the original clustering.
 #' @return metaclustering
 #'
 #' @export
 metaclustering <- function(fcd,
                            clustering,
-                           name_col,
+                           cluster_slot,
                            cluster_var = "metacluster",
                            metaclusters) {
 
   ### Assign the metacluster
   #### To make it easier when the number of cluster is high
 
-  if (identical(as.character(data.frame(cluster = levels(fcd$clustering[[clustering]][[name_col]]))$cluster), names(metaclusters))) {
+  if (identical(as.character(data.frame(cluster = levels(fcd$clustering[[clustering]][[cluster_slot]]))$cluster), names(metaclusters))) {
 
-    tmp_metaclusters <- data.frame(cluster = levels(fcd$clustering[[clustering]][[name_col]]),
+    tmp_metaclusters <- data.frame(cluster = levels(fcd$clustering[[clustering]][[cluster_slot]]),
                                    metacluster = c(metaclusters))
 
     print(tmp_metaclusters)
 
-    fcd$clustering[[clustering]][[cluster_var]] <- factor(fcd$clustering[[clustering]][[name_col]],
-                                                       levels = levels(fcd$clustering[[clustering]][[name_col]]),
+    fcd$clustering[[clustering]][[cluster_var]] <- factor(fcd$clustering[[clustering]][[cluster_slot]],
+                                                       levels = levels(fcd$clustering[[clustering]][[cluster_slot]]),
                                                        labels = tmp_metaclusters$metacluster)
 
     return(fcd)
