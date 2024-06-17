@@ -15,7 +15,7 @@
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable name in cell_anno that should be used to group the output, e.g. group or sample ID.
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
-#' @import ?
+#' @import dplyr
 #' @returns
 #' `getTable()` returns a data frame with parameters in columns and observations in rows. In case of output_type of "counts" or "frequency", counts and frequencies for each cell population (columns) are reported in one row for each level in group_var. Given an output_type of "mean" or "median", aggregated expression for each feature (columns) is reported for each group_var and cell population combination (cluster).
 #'
@@ -540,6 +540,7 @@ plot_marker_HM <- function(fcd,
 #' @param cluster_rows logical indicating if rows should be clustered (default: FALSE)
 #' @return `plot_confusion_HM()` first calculates cell counts for each combination of group_var and cell population and normalizes the counts to a total of 1000 cells per group_var.
 #' Afterwards the percentage of cells coming from each level in group_var is calculated per cell population. The normalization of counts corrects the visualization for differences in total cells (events) measured per group_var.
+#' @import pheatmap
 #'
 #' @export
 plot_confusion_HM <- function(fcd,
@@ -713,7 +714,9 @@ plot_frequency_boxplot<-function(fcd,
 #' @param facet_var (optional) string indicating variable name in cell_anno that should be used to group levels in group_var via faceting.
 #' @param color_palette vector of colors to be used to fill bar chart plots
 #' @param title title of the plot, default is "Frequency"
+#' @import ggplot2
 #' @returns `plot_frequency_barplot` returns a plot showing cell population frequencies for each level in group_var. The plot is faceted by another variable, when provided a facet_var.
+#'
 #' @export
 plot_frequency_barplot<-function (fcd = condor,
                                   cluster_slot,
@@ -944,6 +947,10 @@ plot_dim_density <- function(fcd,
 #' @param maxvalue max value for the coloring (default: NULL, automatically defined).
 #' @param size size of the individual squares and font.
 #' @param title character string, title of the plot
+#' @import reshape2
+#' @import Rmisc
+#' @import pheatmap
+#'
 #' @returns
 #' A heatmap of scaled mean expression, depicting markers in rows and cell populations grouped by a grouping variable in columns.
 #'
@@ -1032,9 +1039,10 @@ plot_marker_group_HM <- function(fcd,
 #' @param cluster_to_show vector of strings indicating levels in cluster_var that should be included for plotting.
 #' @param group_var (optional) string indicating variable name in cell_anno that should be used to split violin plots.
 #' @param color_palette vector of colors to be used to fill violin plots, when group_var is used
-#' @import ?
+#' @import ggplot2
 #' @returns `plot_marker_violinplot` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
 #' @details The violin plots are plotted with default parameters of ggplot2's `geom_violin()` and horizontal lines indicate the median.
+#'
 #' @export
 #'
 plot_marker_violinplot<- function(fcd,
@@ -1333,8 +1341,8 @@ plot_marker_boxplot<- function(fcd,
 #' @param seed a seed is set for reproducibility of the plotting result.
 #' @param color_palette vector of colors that should be used to color dots.
 #' @param dot_size numeric indicating the size of the dots.
-#' @return
-#' The function returns a scatter plot of two features available in the expression matrix. By default, dots are colored by cell population label provided in cluster_var. If coloring by a metadata is wanted instead, a group_var can be defined. Further, if only a selection of levels available in cluster_var should be included in plotting, a vector of labels of interest can be provided to cluster_to_show argument.
+#' @import ggplot2
+#' @return The function returns a scatter plot of two features available in the expression matrix. By default, dots are colored by cell population label provided in cluster_var. If coloring by a metadata is wanted instead, a group_var can be defined. Further, if only a selection of levels available in cluster_var should be included in plotting, a vector of labels of interest can be provided to cluster_to_show argument.
 #'
 #'
 #' @export
@@ -1417,7 +1425,7 @@ plot_marker_dotplot <- function(fcd,
       data <- data[order(data$group_var, decreasing = F), ]
     }else if(order == F){
       # order rows randomly for plotting
-      set.seed(seed= seed)
+      set.seed(seed = seed)
       cells <- sample(x = rownames(data))
       data <- data[cells,]
     }else{
