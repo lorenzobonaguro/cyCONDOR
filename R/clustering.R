@@ -132,11 +132,13 @@ runPhenograph <- function (fcd,
 
   phe_name <- paste("phenograph", sub("^_", "", paste(prefix, input_type, data_slot, "k", k, sep = "_")), sep = "_")
 
+  if (input_type == "pca"){
   if (nPC < ncol(fcd[[input_type]][[data_slot]])) {
 
     suffix <- paste0("top", nPC)
 
     phe_name <- paste(phe_name, suffix, sep = "_")
+  }
   }
 
   fcd[["clustering"]][[phe_name]] <- Rphenograph_out
@@ -260,10 +262,12 @@ runFlowSOM <-  function (fcd,
   SOM_name <- paste("FlowSOM", sub("^_", "", paste(prefix, input_type, data_slot, "k", nClusters, sep = "_")), sep = "_")
 
 
+  if (input_type == "pca"){
   if (nPC < ncol(fcd[[input_type]][[data_slot]])) {
 
     suffix <- paste0("top", nPC)
     SOM_name <- paste(SOM_name, suffix, sep = "_")
+  }
   }
 
 
