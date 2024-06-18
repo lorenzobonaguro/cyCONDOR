@@ -83,7 +83,7 @@ runPCA <- function(fcd,
 #' @param prefix Prefix of the output.
 #' @param nThreads Number of threads to be used in the UMAP calculation. Default = 32.
 #' @param nPC Number of PCs used in the UMAP calculation. Default = All.
-#' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data.
+#' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data using \code{\link{learnUMAP}}.
 #' @param markers vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
 #' @param discard LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.
 #'
