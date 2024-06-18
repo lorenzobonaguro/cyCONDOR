@@ -292,8 +292,7 @@ subset_fcd <- function(fcd, size, seed = 91) {
 #' It checks availability if selected 1st level elements (clustering) and 2nd level elements (expr_slot, cluster_slot, cell_anno),
 #' and 3rd level variable names in cluster_slot and cell_anno are present.
 #' In order to ensure proper functioning, all arguments that are strictly necessary in the parent function and
-#' for which no default can be given, should NOT be set to NULL. Please not that it might be necessary to check that no necessary
-#' argument was set to NULL.
+#' for which no default can be given, should NOT be set to NULL. Please note that this function does not give an error, when group_var, sample_var or pair_var were set to NULL by user in parent function, since these arguments are sometimes optional in the functions.
 #' @param fcd flow cytometry dataset
 #' @param check_expr_slot logical indicating if expr_slot should be checked
 #' @param check_cluster_slot logical indicating if cluster_slot should be checked
@@ -342,6 +341,16 @@ checkInput<-function(fcd,
     # }
     if(!cluster_slot %in% names(fcd$clustering)){
       stop('clustering slot "',cluster_slot,'" is not present in clustering')
+    }
+
+    ##check if cluster_var is present
+    if(is.null(cluster_var)){
+      stop('cluster_var needs to be specified to run this function.')
+    }
+    if(!is.null(cluster_var)){
+      if(!cluster_var %in% colnames(fcd$clustering[[cluster_slot]])){
+        stop('cluster_var: column "',cluster_var,'" is not available in specified clustering slot')
+      }
     }
   }
 
@@ -417,14 +426,6 @@ checkInput<-function(fcd,
     result <- all(sapply(ID_list, FUN = identical, ID_list[[1]]))
     if (result == FALSE) {
       stop("cell IDs of required input data frames do not match.")
-    }
-  }
-
-
-  ##check if cluster_var is present
-  if(!is.null(cluster_var)){
-    if(!cluster_var %in% colnames(fcd$clustering[[cluster_slot]])){
-      stop('cluster_var: column "',cluster_var,'" is not available in specified clustering slot')
     }
   }
 
