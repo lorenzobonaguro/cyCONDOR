@@ -1117,6 +1117,10 @@ plot_marker_violinplot<- function(fcd,
   data <- fcd$expr[[expr_slot]]
   data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
 
+
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
   if(!is.null(group_var)){
     data$group_var <- fcd$anno$cell_anno[[group_var]]
 
@@ -1127,10 +1131,6 @@ plot_marker_violinplot<- function(fcd,
 
   ## subset to cluster of interest
   data <- data[data$cluster %in% cluster_present,]
-
-  if(is.numeric(data$cluster)){
-    data$cluster <- as.character(data$cluster)
-  }
 
 
   #### plotting
@@ -1286,13 +1286,6 @@ plot_marker_boxplot<- function(fcd,
   data$group_var <- fcd$anno$cell_anno[[group_var]]
   data$sample_var <- fcd$anno$cell_anno[[sample_var]]
 
-  ## subset to marker of interest
-  data <- as.data.frame(data[,c(marker_present,"cluster","group_var","sample_var")])
-
-  ## subset to cluster of interest
-  data <- data[data$cluster %in% cluster_present,]
-
-  ## convert numerics for plotting
   if(is.numeric(data$cluster)){
     data$cluster <- as.character(data$cluster)
   }
@@ -1300,6 +1293,11 @@ plot_marker_boxplot<- function(fcd,
     data$group_var <- as.character(data$group_var)
   }
 
+  ## subset to marker of interest
+  data <- as.data.frame(data[,c(marker_present,"cluster","group_var","sample_var")])
+
+  ## subset to cluster of interest
+  data <- data[data$cluster %in% cluster_present,]
 
   ## check if samples are uniquely assigned to one group
   anno <- unique(data[,c("sample_var","group_var")])
@@ -1438,6 +1436,9 @@ plot_marker_dotplot <- function(fcd,
   data <- fcd$expr[[expr_slot]]
   data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
 
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
   if(!is.null(group_var)){
     data$group_var <- fcd$anno$cell_anno[[group_var]]
 
@@ -1453,9 +1454,6 @@ plot_marker_dotplot <- function(fcd,
   ## subset to cluster of interest
   data <- data[data$cluster %in% cluster_present,]
 
-  if(is.numeric(data$cluster)){
-    data$cluster <- as.character(data$cluster)
-  }
 
   #### plot
 

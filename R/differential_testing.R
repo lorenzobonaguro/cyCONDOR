@@ -20,7 +20,7 @@
 #' @import reshape2
 #'
 #' @export
-frequency_anova_test<-function(fcd = condor,
+frequency_anova_test<-function(fcd,
                                cluster_slot,
                                cluster_var,
                                sample_var,
@@ -64,6 +64,10 @@ frequency_anova_test<-function(fcd = condor,
                      group_var = fcd$anno$cell_anno[[group_var]],
                      sample_var = fcd$anno$cell_anno[[sample_var]])
 
+  if(is.numeric(data$sample_var)){
+    data$sample_var <- as.character(data$sample_var)}
+  if(is.numeric(data$group_var)){
+    data$group_var <- as.character(data$group_var)}
 
   #### prepare percentage table
   tmp <- cyCONDOR::confusionMatrix(paste0(data$sample_var), paste0(data$cluster))
@@ -182,7 +186,6 @@ frequency_friedman_test<-function(fcd,
              sample_var = sample_var,
              pair_var = pair_var
   )
-
   if(!(isTRUE(post_hoc_test) || isFALSE(post_hoc_test))){
     stop('argument "post_hoc_test needs to be TRUE or FALSE.')
   }
@@ -207,6 +210,10 @@ frequency_friedman_test<-function(fcd,
                      group_var = fcd$anno$cell_anno[[group_var]],
                      sample_var = fcd$anno$cell_anno[[sample_var]],
                      pair_var = fcd$anno$cell_anno[[pair_var]])
+
+
+  if(is.numeric(data$sample_var)){
+    data$sample_var <- as.character(data$sample_var)}
 
   #### make sure that all data pairs are fine.
   pairing<-unique(data[,c("sample_var","pair_var","group_var")])
@@ -341,7 +348,7 @@ frequency_friedman_test<-function(fcd,
 #' @import reshape2
 #'
 #' @export
-frequency_kruskal_test<-function(fcd = condor,
+frequency_kruskal_test<-function(fcd,
                                  cluster_slot,
                                  cluster_var,
                                  sample_var,
@@ -363,6 +370,7 @@ frequency_kruskal_test<-function(fcd = condor,
              group_var = group_var,
              sample_var = sample_var
   )
+
   if(!(isTRUE(post_hoc_test) || isFALSE(post_hoc_test))){
     stop('argument "post_hoc_test needs to be TRUE or FALSE.')
   }
@@ -384,6 +392,8 @@ frequency_kruskal_test<-function(fcd = condor,
                      group_var = fcd$anno$cell_anno[[group_var]],
                      sample_var = fcd$anno$cell_anno[[sample_var]])
 
+  if(is.numeric(data$sample_var)){
+    data$sample_var <- as.character(data$sample_var)}
 
   #### prepare percentage table
   tmp <- cyCONDOR::confusionMatrix(paste0(data$sample_var), paste0(data$cluster))
@@ -489,7 +499,7 @@ frequency_kruskal_test<-function(fcd = condor,
 #' @import reshape2
 #'
 #' @export
-frequency_t_test<-function(fcd = condor,
+frequency_t_test<-function(fcd,
                            cluster_slot,
                            cluster_var,
                            sample_var,
@@ -530,6 +540,9 @@ frequency_t_test<-function(fcd = condor,
                      cluster = fcd$clustering[[cluster_slot]][[cluster_var]],
                      group_var = fcd$anno$cell_anno[[group_var]],
                      sample_var = fcd$anno$cell_anno[[sample_var]])
+
+  if(is.numeric(data$sample_var)){
+    data$sample_var <- as.character(data$sample_var)}
 
   #### take care of pairing
   if(paired_test == F & !is.null(pair_var)){
@@ -660,7 +673,7 @@ frequency_t_test<-function(fcd = condor,
 #' @import reshape2
 #'
 #' @export
-frequency_wilcox_test<-function(fcd = condor,
+frequency_wilcox_test<-function(fcd,
                                 cluster_slot,
                                 cluster_var,
                                 sample_var,
@@ -700,6 +713,9 @@ frequency_wilcox_test<-function(fcd = condor,
                      cluster = fcd$clustering[[cluster_slot]][[cluster_var]],
                      group_var = fcd$anno$cell_anno[[group_var]],
                      sample_var = fcd$anno$cell_anno[[sample_var]])
+
+  if(is.numeric(data$sample_var)){
+    data$sample_var <- as.character(data$sample_var)}
 
   #### take care of pairing
   if(paired_test == F & !is.null(pair_var)){
@@ -1046,6 +1062,9 @@ marker_wilcox_test<-function(fcd,
   data <- fcd$expr[[expr_slot]]
   data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
   data$group_var <- fcd$anno$cell_anno[[group_var]]
+
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)}
 
   ##subset to marker of interest
   data <- as.data.frame(data[,c(marker_present,"cluster","group_var")])
