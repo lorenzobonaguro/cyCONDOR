@@ -930,13 +930,12 @@ prepInputDiffcyt<-function(fcd,
 
   experiment_info<-unique(fcd$anno$cell_anno[,c(sample_var,meta_vars)])
   names(experiment_info)[names(experiment_info) == sample_var] <- "sample_id"
-  rownames(experiment_info)<-experiment_info$sample_id
 
   if(!nrow(experiment_info) == length(unique(experiment_info$sample_id))){
     stop('At least one ID in sample_var is associated with more than one level in at least one variable in meta_vars).
          Please ensure, that variables used in meta_vars have only one value for each sample identifier in sample_var.')
   }
-
+  rownames(experiment_info)<-experiment_info$sample_id
 
   #### prepare n_cells
   n_cells <- table(fcd$anno$cell_anno[[sample_var]])
