@@ -642,6 +642,11 @@ plot_frequency_boxplot<-function(fcd,
                    group_var=fcd$anno$cell_anno[[group_var]],
                    sample_var=fcd$anno$cell_anno[[sample_var]])
 
+  if(is.numeric(data$group_var)){
+    data$group_var <- as.character(data$group_var)}
+  if(is.numeric(data$sample_var)){
+    data$sample_var <- as.character(data$sample_var)}
+
   ## prepare frequency table
   tmp <- cyCONDOR::confusionMatrix(paste0(data$sample_var), paste0(data$cluster))
   tmp <- as.matrix(tmp)
@@ -753,6 +758,9 @@ plot_frequency_barplot<-function (fcd = condor,
   if(is.numeric(data$cluster)){
     data$cluster <- as.character(data$cluster)
   }
+  if(is.numeric(data$group_var)){
+    data$group_var <- as.character(data$group_var)
+  }
 
   #### plot
   p <- ggplot(data, aes(x = group_var, fill = cluster)) +
@@ -825,6 +833,9 @@ plot_counts_barplot<-function (fcd = condor,
 
   if(is.numeric(data$cluster)){
     data$cluster <- as.character(data$cluster)
+  }
+  if(is.numeric(data$group_var)){
+    data$group_var <- as.character(data$group_var)
   }
 
   #### plot
@@ -1108,6 +1119,10 @@ plot_marker_violinplot<- function(fcd,
 
   if(!is.null(group_var)){
     data$group_var <- fcd$anno$cell_anno[[group_var]]
+
+    if(is.numeric(data$group_var)){
+      data$group_var <- as.character(data$group_var)
+    }
   }
 
   ## subset to cluster of interest
@@ -1277,9 +1292,14 @@ plot_marker_boxplot<- function(fcd,
   ## subset to cluster of interest
   data <- data[data$cluster %in% cluster_present,]
 
+  ## convert numerics for plotting
   if(is.numeric(data$cluster)){
     data$cluster <- as.character(data$cluster)
   }
+  if(is.numeric(data$group_var)){
+    data$group_var <- as.character(data$group_var)
+  }
+
 
   ## check if samples are uniquely assigned to one group
   anno <- unique(data[,c("sample_var","group_var")])
@@ -1420,6 +1440,10 @@ plot_marker_dotplot <- function(fcd,
 
   if(!is.null(group_var)){
     data$group_var <- fcd$anno$cell_anno[[group_var]]
+
+    if(is.numeric(data$group_var)){
+      data$group_var <- as.character(data$group_var)
+    }
   }
 
   ## select marker of interest
@@ -1429,6 +1453,9 @@ plot_marker_dotplot <- function(fcd,
   ## subset to cluster of interest
   data <- data[data$cluster %in% cluster_present,]
 
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
 
   #### plot
 
@@ -1561,8 +1588,17 @@ plot_marker_density <- function(fcd,
   data$cluster <- fcd$clustering[[cluster_slot]][[cluster_var]]
   data$group_var <- fcd$anno$cell_anno[[group_var]]
 
+  ## add optional facet_var
   if (!is.null(facet_var)) {
-    data$facet_var <- fcd$anno$cell_anno[[facet_var]]
+    if(facet_var %in% colnames(fcd$anno$cell_anno)){
+      data$facet_var <- fcd$anno$cell_anno[[facet_var]]
+    }else{
+      stop('facet_var: column "',facet_var,'" is not available in cell_anno')
+    }
+  }
+  ## fix numeric group_var
+  if(is.numeric(data$group_var)){
+    data$group_var <- as.character(data$group_var)
   }
 
   ## subset to cluster of interest
