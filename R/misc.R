@@ -121,7 +121,7 @@ check_IDs <- function(fcd){
     output <- as.data.frame(sapply(collector, FUN = identical, collector[[1]]))
     colnames(output) <- "comparison_result"
     faulty_IDs_levels <- rownames(output%>%filter(comparison_result==FALSE))
-    print(paste("Something is not correct with the cell IDs in level:",faulty_IDs_levels))
+    warning(paste("Something is not correct with the cell IDs in level:",faulty_IDs_levels))
 
   }
 }
@@ -201,18 +201,18 @@ change_param_name <- function(fcd,
 
           }
           else {
-            print("Something must have went wrong ;)")
+            stop("Something must have went wrong ;)")
           }
         }
         else {
-          print(paste0("The parameter '", old , "' is not existing in fcd$expr$", subfolder, "."))
+          stop(paste0("The parameter '", old , "' is not existing in fcd$expr$", subfolder, "."))
         }
 
       }
     }
   }
   else {
-    print("ERROR: Both vectors have to be the same length.")
+    stop("ERROR: Both vectors have to be the same length.")
   }
 
   return(fcd)
