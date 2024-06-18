@@ -750,6 +750,9 @@ plot_frequency_barplot<-function (fcd = condor,
     data$facet_var <- fcd$anno$cell_anno[[facet_var]]
   }
 
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
 
   #### plot
   p <- ggplot(data, aes(x = group_var, fill = cluster)) +
@@ -820,6 +823,9 @@ plot_counts_barplot<-function (fcd = condor,
     data$facet_var<-fcd$anno$cell_anno[[facet_var]]
   }
 
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
 
   #### plot
   p <- ggplot(data, aes(x = group_var, fill = cluster)) +
@@ -1107,6 +1113,10 @@ plot_marker_violinplot<- function(fcd,
   ## subset to cluster of interest
   data <- data[data$cluster %in% cluster_present,]
 
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
+
 
   #### plotting
   plot.list<-list()
@@ -1267,6 +1277,10 @@ plot_marker_boxplot<- function(fcd,
   ## subset to cluster of interest
   data <- data[data$cluster %in% cluster_present,]
 
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
+
   ## check if samples are uniquely assigned to one group
   anno <- unique(data[,c("sample_var","group_var")])
   if(!nrow(anno) == length(unique(anno$sample_var))){
@@ -1422,7 +1436,7 @@ plot_marker_dotplot <- function(fcd,
 
     ## order of dots
     if(order == T){
-      data <- data[order(data$group_var, decreasing = F), ]
+      #data <- data[order(data$group_var, decreasing = F), ]
     }else if(order == F){
       # order rows randomly for plotting
       set.seed(seed = seed)
@@ -1444,7 +1458,7 @@ plot_marker_dotplot <- function(fcd,
 
     ## order of dots
     if(order == T){
-      data <- data[order(data$cluster, decreasing = F), ]
+      #data <- data[order(data$cluster, decreasing = F), ]
     }else if(order == F){
       # order rows randomly for plotting
       set.seed(seed= seed)
@@ -1677,6 +1691,10 @@ plot_marker_ridgeplot<- function(fcd,
 
   ## subset to cluster of interest
   data <- data[data$cluster %in% cluster_present,]
+
+  if(is.numeric(data$cluster)){
+    data$cluster <- as.character(data$cluster)
+  }
 
 
   #### plotting
