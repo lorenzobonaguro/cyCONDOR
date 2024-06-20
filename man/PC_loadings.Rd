@@ -2,23 +2,25 @@
 % Please edit documentation in R/data_visualization.R
 \name{PC_loadings}
 \alias{PC_loadings}
-\title{PC_loading}
+\title{PC_loadings}
 \usage{
-PC_loadings(fcd, data_slot = "orig", number)
+PC_loadings(fcd, prefix = NULL, data_slot = "orig", nPC = 3)
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{data_slot}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
+\item{prefix}{Prefix for the output.}
 
-\item{number}{Number of principal components to plot.}
+\item{data_slot}{data slot to use for the calculation of the PCA, e.g. "orig" or "norm".}
+
+\item{nPC}{Number of principle components to show.}
 }
 \value{
-PC loadings
+Figure of PC loadings
 }
 \description{
-Calculate PCA loading.
+Function to visualize the effect each marker has on the principle component.
 }
 \details{
-PC_loading
+PC_loadings
 }

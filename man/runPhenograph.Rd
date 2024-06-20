@@ -9,31 +9,37 @@ runPhenograph(
   input_type,
   data_slot,
   k,
-  seed,
+  seed = 91,
   prefix = NULL,
-  top_PCA = ncol(fcd[[input_type]][[data_slot]])
+  nPC = ncol(fcd$pca[[data_slot]]),
+  markers = colnames(fcd$expr[[data_slot]]),
+  discard = FALSE
 )
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{data to use for the calculation of the UMAP, e.g. "pca" (suggested option).}
+\item{input_type}{data to use for the calculation, e.g. "expr" or "pca" (suggested: "pca").}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{data slot to use for the calculation, e.g. "orig" or "norm".}
 
 \item{k}{K value used for clustering.}
 
-\item{seed}{Seed used for the randomization steps.}
+\item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix for the output.}
+\item{prefix}{Prefix of the output.}
 
-\item{top_PCA}{Number of principal components to use for the analysis.}
+\item{nPC}{Number of principal components to use for the analysis.}
+
+\item{markers}{vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object}
+
+\item{discard}{LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.}
 }
 \value{
 runPhenograph
 }
 \description{
-Run Phenograph clustering.
+Run Phenograph based clustering.
 }
 \details{
 runPhenograph

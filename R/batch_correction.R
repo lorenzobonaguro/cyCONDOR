@@ -35,7 +35,7 @@ harmonize_intensities <- function(fcd,
 #' @title harmonize_PCA
 #' @description Harmonize the Principal Component Analysis.
 #' @param fcd flow cytometry dataset.
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, \code(orig).
+#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, \code{orig}.
 #' @param batch_var vector of column names from \code{fcd$anno$cell_anno} to use for correcting the data.
 #' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix for the output.
@@ -73,11 +73,10 @@ harmonize_PCA <- function(fcd,
 }
 
 
-# 'train_cytonorm
-# '
-# '@title train_cytonorm
-#' @description
-#' Wrapper function around 'CytoNorm.train' from the CytoNorm package.
+#' train_cytonorm
+#'
+#' @title train_cytonorm
+#' @description Wrapper function around 'CytoNorm.train' from the CytoNorm package.
 #' @param fcd flow cytometry dataset
 #' @param batch_var Column name of batch variable from \code{fcd$anno$cell_anno}.
 #' @param remove_param Parameters/markers which should be excluded for learning the batch effect and training the model.
@@ -210,7 +209,7 @@ train_cytonorm <- function(fcd,
 #' @param anno_table Path to the annotation table file.
 #' @returns fcd with a normalized expression data frame.
 #' @details
-#' This function assumes that your fcd contains a trained model computed by \code{\link{train.cytonorm}}. The function performs normalization of the samples contained in your fcd. The normalized expression values are added to your fcd and by default FCS files with the normalized values are written to the  \code{output_dir}.
+#' This function assumes that your fcd contains a trained model computed by \code{\link{train_cytonorm}}. The function performs normalization of the samples contained in your fcd. The normalized expression values are added to your fcd and by default FCS files with the normalized values are written to the  \code{output_dir}.
 #' @import CytoNorm
 #' @export
 run_cytonorm <- function(fcd,

@@ -12,7 +12,7 @@ prep_fcd(
   remove_param,
   anno_table,
   filename_col,
-  seed,
+  seed = 91,
   separator_anno = ",",
   separator_fc_csv = ","
 )
@@ -30,9 +30,9 @@ prep_fcd(
 
 \item{anno_table}{path to the annotation table file.}
 
-\item{filename_col}{Name of the column containing the filename matching with the .fcs files.}
+\item{filename_col}{Name of the column containing the file name matching with the .fcs files.}
 
-\item{seed}{seed to be used for the randomization of the events.}
+\item{seed}{A seed is set for reproducibility.}
 
 \item{separator_anno}{separator used in the annotation file.}
 

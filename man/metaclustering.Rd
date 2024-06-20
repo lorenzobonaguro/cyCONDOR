@@ -7,8 +7,8 @@
 metaclustering(
   fcd,
   clustering,
-  name_col,
-  name_out = "metacluster",
+  cluster_slot,
+  cluster_var = "metacluster",
   metaclusters
 )
 }
@@ -17,9 +17,9 @@ metaclustering(
 
 \item{clustering}{Name of the clustering to match for the metaclustering.}
 
-\item{name_col}{Column containing the original cluster.}
+\item{cluster_slot}{Column containing the original cluster.}
 
-\item{name_out}{Name of the output column.}
+\item{cluster_var}{Name of the output column.}
 
 \item{metaclusters}{Vector of the new clusters names, this should be of the same length of the levels of the original clustering.}
 }

@@ -21,7 +21,8 @@ plot_marker(
   label_clusters = FALSE,
   label_size = 3.5,
   label_color = "black",
-  raster = FALSE
+  raster = FALSE,
+  seed = 91
 )
 }
 \arguments{
@@ -29,7 +30,7 @@ plot_marker(
 
 \item{param}{Parameter to visualize in the plot, this can be either a continous variable or a categorical one, the function will react differently according.}
 
-\item{order}{Logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells.}
+\item{order}{Logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells. If set to FALSE, the plotting order of the cells is randomized.}
 
 \item{title}{Title of the plot.}
 
@@ -58,6 +59,8 @@ plot_marker(
 \item{label_color}{Color of the labels.}
 
 \item{raster}{TRUE or FALSE, if plot should be returned as raster image}
+
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 plot marker or list of markers

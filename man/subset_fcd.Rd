@@ -4,12 +4,14 @@
 \alias{subset_fcd}
 \title{subset_fcd}
 \usage{
-subset_fcd(fcd, size)
+subset_fcd(fcd, size, seed = 91)
 }
 \arguments{
 \item{fcd}{flowframe object.}
 
 \item{size}{Numeric: size of the sub-sampling.}
+
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 df_frequency

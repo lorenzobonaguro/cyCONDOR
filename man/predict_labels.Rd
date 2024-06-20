@@ -8,9 +8,9 @@ predict_labels(
   fcd,
   input_type,
   data_slot,
-  model_object,
+  fcd_model,
   label = "predicted_labels",
-  seed
+  seed = 91
 )
 }
 \arguments{
@@ -20,17 +20,17 @@ predict_labels(
 
 \item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
 
-\item{model_object}{Caret model to the used for the label transfer.}
+\item{fcd_model}{flow cytometry dataset containing Caret model for the label transfer.}
 
 \item{label}{Label for the output column of the condor object.}
 
-\item{seed}{Seed to be used.}
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 predict_labels
 }
 \description{
-Uses the model generated with *train_transfer_model* to predict the labels of new samples
+Uses the model generated with \code{\link{train_transfer_model}} to predict the labels of new samples
 }
 \details{
 predict_labels

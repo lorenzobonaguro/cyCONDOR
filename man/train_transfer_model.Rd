@@ -8,21 +8,24 @@ train_transfer_model(
   fcd,
   input_type,
   data_slot,
-  label,
+  cluster_slot,
+  cluster_var,
   method = "knn",
   tuneLength = 5,
-  trControl = trainControl(method = "cv"),
-  seed
+  trControl = caret::trainControl(method = "cv"),
+  seed = 91
 )
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
+\item{input_type}{Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}.}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added.}
 
-\item{label}{Vector with the labels to be used for the label transfer.}
+\item{cluster_slot}{string specifying which clustering slot to use to find variable specified in \code{cluster_var}.}
+
+\item{cluster_var}{string specifying variable name in \code{cluster_slot} that identifies cell population labels to be used (e.g. clusters or metaclusters).}
 
 \item{method}{A string specifying which classification or regression model to use. Possible values are found using names(getModelInfo()). See http://topepo.github.io/caret/train-models-by-tag.html. A list of functions can also be passed for a custom model function. See http://topepo.github.io/caret/using-your-own-model-in-train.html for details.}
 
@@ -30,13 +33,13 @@ train_transfer_model(
 
 \item{trControl}{A list of values that define how this function acts. See trainControl and http://topepo.github.io/caret/using-your-own-model-in-train.html. (NOTE: If given, this argument must be named.)}
 
-\item{seed}{Seed to be used.}
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 train_transfer_model
 }
 \description{
-Train a machine learning model to transfer cell label (this function implement the *caret* workflow)
+Train a machine learning model to transfer cell label (this function implement the \code{caret} workflow)
 }
 \details{
 train_transfer_model

@@ -8,35 +8,35 @@ learnUMAP(
   fcd,
   input_type,
   data_slot,
-  model,
-  n_epochs = 100,
+  fcd_model,
+  nEpochs = 100,
   prefix = NULL,
-  n_threads = 32,
-  seed
+  nThreads = 32,
+  seed = 91
 )
 }
 \arguments{
-\item{fcd}{flow cytometry dataset.}
+\item{fcd}{Flow cytometry dataset for which the UMAP coordinates should be predicted.}
 
-\item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
+\item{input_type}{Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}. This should be the same which has been used for calculating the UMAP of the reference data set.}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added. This should be the same which has been used for calculating the UMAP of the reference data set.}
 
-\item{model}{Data associated with an existing embedding.}
+\item{fcd_model}{Flow cytometry reference dataset containing data associated with an existing embedding in \code{fcd_model$extras}.}
 
-\item{n_epochs}{Number of epochs to use during the optimization of the embedded coordinates. A value between 30 - 100 is a reasonable trade off between speed and thoroughness. By default, this value is set to one third the number of epochs used to build the model.}
+\item{nEpochs}{Number of epochs to use during the optimization of the embedded coordinates. A value between 30 - 100 is a reasonable trade off between speed and thoroughness. By default, this value is set to one third the number of epochs used to build the model.}
 
 \item{prefix}{Prefix for the name of the dimensionality reduction.}
 
-\item{n_threads}{Number of threads to use, (except during stochastic gradient descent). Default is half the number of concurrent threads supported by the system.}
+\item{nThreads}{Number of threads to use, (except during stochastic gradient descent). Default is half the number of concurrent threads supported by the system.}
 
-\item{seed}{Seed to be used.}
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 learnUMAP
 }
 \description{
-Uses the model calculated with *runUMAP* to project new samples
+Projects new samples on a UMAP calculated previously for a reference data set with the same parameters as the new sample. Before executing this function, \code{\link{runUMAP}} needs to be run with \code{{ret_model = TRUE}} for the reference data set.
 }
 \details{
 learnUMAP

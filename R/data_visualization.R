@@ -132,7 +132,7 @@ PC_loadings <- function(fcd,
                         data_slot = "orig",
                         nPC = 3) {
   # select markers for PC_loading accordng to prefix (default -> all markers)
-  markers <- used_markers(fcd = fcd, data_slot = data_slot, method = "pca", prefix = prefix, mute = T)
+  markers <- used_markers(fcd = fcd, data_slot = data_slot, input_type = "pca", prefix = prefix, mute = T)
 
   pca_result <- prcomp(fcd$expr[[data_slot]][, colnames(fcd$expr[[data_slot]]) %in% markers, drop = F])
   pca_rotations <- as.matrix(pca_result$rotation)
@@ -454,6 +454,7 @@ plot_marker <- function(data,
 #' @import reshape2
 #' @import Rmisc
 #' @import pheatmap
+#' @import Hmisc
 #'
 #' @returns
 #' A heatmap of scaled mean expression, depicting markers in rows and cell populations in columns.
@@ -610,6 +611,7 @@ plot_confusion_HM <- function(fcd,
 #' @param sample_var string indicating variable name in cell_anno that defines sample IDs to be used.
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
 #' @param color_palette vector of colors to be used to fill box plots
+#' @param dot_size Size of the dots.
 #' @import dplyr
 #' @import reshape2
 #' @import ggplot2
@@ -1373,6 +1375,7 @@ plot_marker_boxplot<- function(fcd,
 #' @param seed a seed is set for reproducibility of the plotting result.
 #' @param color_palette vector of colors that should be used to color dots.
 #' @param dot_size numeric indicating the size of the dots.
+#' @param title Title of the plot.
 #' @import ggplot2
 #' @return The function returns a scatter plot of two features available in the expression matrix. By default, dots are colored by cell population label provided in cluster_var. If coloring by a metadata is wanted instead, a group_var can be defined. Further, if only a selection of levels available in cluster_var should be included in plotting, a vector of labels of interest can be provided to cluster_to_show argument.
 #'

@@ -88,7 +88,7 @@ runPCA <- function(fcd,
 #' @param discard LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.
 #'
 #' @import umap
-#' @import Rtsne **(needed?)**
+#' @import Rtsne
 #'
 #' @return runUMAP
 #'

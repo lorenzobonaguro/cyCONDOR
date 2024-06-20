@@ -1,7 +1,7 @@
 #' learnUMAP
 #'
 #' @title learnUMAP
-#' @description Projects new samples on a UMAP calculated previously for a reference data set with the same parameters as the new sample. Before executing this function, \code{\link{runUMAP}} needs to be run with \code{{ret_model = TRUE} for the reference data set.
+#' @description Projects new samples on a UMAP calculated previously for a reference data set with the same parameters as the new sample. Before executing this function, \code{\link{runUMAP}} needs to be run with \code{{ret_model = TRUE}} for the reference data set.
 #' @param fcd Flow cytometry dataset for which the UMAP coordinates should be predicted.
 #' @param input_type Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}. This should be the same which has been used for calculating the UMAP of the reference data set.
 #' @param data_slot Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added. This should be the same which has been used for calculating the UMAP of the reference data set.
@@ -52,7 +52,7 @@ learnUMAP <- function(fcd,
 #' train_transfer_model
 #'
 #' @title train_transfer_model
-#' @description Train a machine learning model to transfer cell label (this function implement the \code{\link{caret}} workflow)
+#' @description Train a machine learning model to transfer cell label (this function implement the \code{caret} workflow)
 #' @param fcd flow cytometry dataset.
 #' @param input_type Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}.
 #' @param data_slot Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added.

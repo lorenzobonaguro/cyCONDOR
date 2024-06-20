@@ -6,11 +6,12 @@
 \usage{
 runPseudotime(
   fcd,
-  dim_red_type,
-  dim_red_name,
+  reduction_method,
+  reduction_slot,
+  cluster_slot,
+  cluster_var,
   start.clus = NULL,
   end.clus = NULL,
-  clustering,
   dist.method = "slingshot",
   use.median = FALSE,
   omega = FALSE,
@@ -27,21 +28,23 @@ runPseudotime(
   smoother = "smooth.spline",
   shrink.method = "cosine",
   allow.breaks = TRUE,
-  seed
+  seed = 91
 )
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{dim_red_type}{Type of dimensionality reduction to calculate the speudotime.}
+\item{reduction_method}{Type of dimensionality reduction to calculate the pseudotime.}
 
-\item{dim_red_name}{Name of the dimensionality reduction slot to be used.}
+\item{reduction_slot}{Name of the dimensionality reduction slot to be used.}
+
+\item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var.}
+
+\item{cluster_var}{string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).}
 
 \item{start.clus}{(optional) character, indicates the starting cluster(s) from which lineages will be drawn.}
 
 \item{end.clus}{(optional) character, indicates which cluster(s) will be forced to be leaf nodes in the graph.}
-
-\item{clustering}{Label of the clustering for each cell.}
 
 \item{dist.method}{(optional) character, specifies the method for calculating distances between clusters. Default is "slingshot", see createClusterMST for details.}
 
@@ -75,7 +78,7 @@ runPseudotime(
 
 \item{allow.breaks}{logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.}
 
-\item{seed}{seed to be used}
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 runPseudotime

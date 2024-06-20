@@ -15,7 +15,7 @@ train_classifier_model(
   type2 = "response",
   parallelCore = 1,
   reg = FALSE,
-  seed
+  seed = 91
 )
 }
 \arguments{
@@ -39,7 +39,7 @@ train_classifier_model(
 
 \item{reg}{If elestic net regularization will be used (Default: FALSE).}
 
-\item{seed}{seed to be used.}
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 train_classifier_model

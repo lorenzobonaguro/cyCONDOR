@@ -10,7 +10,7 @@ predict_classifier(
   data_slot,
   sample_names = "expfcs_filename",
   model_object,
-  seed
+  seed = 91
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ predict_classifier(
 
 \item{model_object}{flowframe object with the stored classifier model.}
 
-\item{seed}{seed to be used for the analysis.}
+\item{seed}{A seed is set for reproducibility.}
 }
 \value{
 predict_classifier

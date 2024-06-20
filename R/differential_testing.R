@@ -8,10 +8,11 @@
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
 #' @param anova_p.adjust.method p-value adjustment method to use for multiple test correction of Anova tests, e.g "bonferroni"(default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
-#' @param post_hoc logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
+#' @param post_hoc_test logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
 #' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
 #' @param anova_sig_threshold significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param color_palette Color Palette (Charlotte check)
 #' @details `frequency_anova_test()` is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package *rstatix*.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
 #' @returns `frequency_anova_test` returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
@@ -152,10 +153,11 @@ frequency_anova_test<-function(fcd,
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
 #' @param friedman_p.adjust.method p-value adjustment method to use for multiple comparisons of Friedman Rank Sum test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
-#' @param post_hoc logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
+#' @param post_hoc_test logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
 #' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
 #' @param friedman_sig_threshold significance threshold Friedman Rank Sum test. For all Friedman Rank Sum comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param pair_var string indicating variable in cell_anno that should be used to pair the samples.
 #' @details `frequency_friedman_test()` is a wrapper function around \code{\link[rstatix]{friedman_test}},  \code{\link[rstatix]{friedman_effsize}} and  \code{\link[rstatix]{wilcox_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Friedman Rank Sum test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with pairwise Wilcoxon Rank Sum Tests and p-value correction is performed for each significant Friedman Rank Sum test comparison.
 #' @returns `frequency_friedman_test` returns a list of two data frames, "friedman_test" and "wilcox_test". "friedman_test" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "wilcox_test" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 #' @import rstatix
@@ -336,11 +338,12 @@ frequency_friedman_test<-function(fcd,
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
-#' @param kruskal_p.adjust.method p-value adjustment method to use for multiple comparisons of Kruskal-Wallis test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}\code} function from the package *rstatix*.
-#' @param post_hoc logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
+#' @param kruskal_p.adjust.method p-value adjustment method to use for multiple comparisons of Kruskal-Wallis test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param post_hoc_test logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
 #' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
 #' @param kruskal_sig_threshold significance threshold for Kruskal-Wallis test. For all Kruskal-Wallis comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param detailed Charlotte
 #' @details `frequency_kruskal_test()` is a wrapper function around \code{\link[rstatix]{kruskal_test}},  \code{\link[rstatix]{kruskal_effsize}} and  \code{\link[rstatix]{dunn_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Kruskal-Wallis rank sum test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with Dunne's Test and p-value correction is performed for each significant Kruskal-Wallis comparison.
 #' @returns `frequency_kruskal_test` returns a list of two data frames, "kruskal_test" and "dunn_test". "kruskal_test" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "dunn_test" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 #' @import rstatix
@@ -828,6 +831,7 @@ frequency_wilcox_test<-function(fcd,
 #' @param fcd flow cytometry dataset, that has been subjected to clustering or cell type label prediction with *condor* before
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
+#' @param sample_var Charlotte
 #' @param meta_vars vector of variables in cell_anno, which contain sample level metadata, which means that each sample ID is associated with exactly one level per variable. All variables that the user wants to use in the test design need to be listed, e.g. group, donor_id. Variables with names "sample_id" and "cluster_id" are not allowed, since these names have designated purposes in diffcyt workflow.
 #' @param marker_state vector of marker names that should get the marker_class "state". If no markers are provided in marker_state and marker_type all available markers and features in expr data will be set as "state".
 #' @param marker_type vector of marker names available in expr data, that should get the marker_class "type". If no markers are provided in marker_state and marker_type all available markers and features in expr data will get the marker_class "state".
@@ -991,7 +995,7 @@ prepInputDiffcyt<-function(fcd,
 #' @param group2 string indicating group level in group_var that should be used to select cells for group 2
 #' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "BH" (Benjamini-Hochberg, default) or "bonferroni". All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*
 #' @param marker (optional) vector of character strings indicating which features in the expression expr_slot should be considered during testing. by default, all features are tested.
-#' @param min_cels_per_group Minimum number of cells per group required to include a cell population for differential testing.
+#' @param min_cells_per_group Minimum number of cells per group required to include a cell population for differential testing.
 #' @returns
 #' A data frame containing test results for each marker and cell population combination - one combination per row.
 #' *`cluster` cell population that was tested

@@ -88,7 +88,7 @@ filter_fcd <- function(fcdataset, cell_ids) {
 #'
 #' @title check_IDs
 #' @description Check the integrity and the correctness of a flow cytometry dataset by comparing the cell IDs of all existing slots to the cell IDs of the orig. exprs
-#' @param fcs Flow cytometry dataset to be checked.
+#' @param fcd Flow cytometry dataset to be checked.
 #' @return check the integrity and the correctness of a flow cytometry dataset
 #'
 #' @export

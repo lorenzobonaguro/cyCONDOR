@@ -50,5 +50,6 @@ if (getRversion() >= "2.15.1") {
                            "gs", "filename_col", "umap_name", "prcomp", "input_scale",
                            "colorRampPalette", "model.matrix", "trainControl",
                            "train", "Accuracy", "AccuracySD", "varImp", "..level..",
-                           "DC_1", "DC_2", "PC1", "PC2", "X", "Y", "color")) # Add other variables as needed
+                           "DC_1", "DC_2", "PC1", "PC2", "X", "Y", "color", "comparison_result",
+                           "variable", "value", "condor", "expfcs_filename", ".", "level")) # Add other variables as needed
 }

@@ -8,32 +8,44 @@ runFlowSOM(
   fcd,
   input_type,
   data_slot,
-  num_clusters,
-  seed,
+  nClusters,
+  grid_xdim = 10,
+  grid_ydim = 10,
+  seed = 91,
   prefix = NULL,
   ret_model = FALSE,
-  top_PCA = ncol(fcd[[input_type]][[data_slot]])
+  nPC = ncol(fcd[[input_type]][[data_slot]]),
+  markers = colnames(fcd$expr[[data_slot]]),
+  discard = FALSE
 )
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
+\item{input_type}{data to use for the calculation, e.g. "expr" or "pca".}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{data slot to use for the calculation, e.g. "orig" or "norm".}
 
-\item{num_clusters}{number of final clusters.}
+\item{nClusters}{Number of final clusters.}
 
-\item{seed}{Seed used for the randomization steps.}
+\item{grid_xdim}{x-axis size of the FlowSOM grid. Default = 10.}
 
-\item{prefix}{Prefic for the output.}
+\item{grid_ydim}{y-axis size of the FlowSOM grid. Default = 10.}
 
-\item{ret_model}{Logical: if the FlowSOM model should be kept for further visualization.}
+\item{seed}{A seed is set for reproducibility.}
 
-\item{top_PCA}{Number of principal components to use for the analysis.}
+\item{prefix}{Prefix of the output.}
+
+\item{ret_model}{LOGICAL if the model should be saved for future projection of the data. Default = F.}
+
+\item{nPC}{Number of principal components to use for the analysis. Default = All.}
+
+\item{markers}{vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object}
+
+\item{discard}{LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.}
 }
 \value{
-metaclustering
+runFlowSOM
 }
 \description{
 Run FlowSOM based clustering.
