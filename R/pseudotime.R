@@ -1,7 +1,7 @@
 #' runPseudotime
 #'
-#' @title runPseudotime
-#' @description Calculate pseudotime of flow data
+#' @title Function of calculate Pseudotime from HDFC data analysed with cyCONDOR
+#' @description Function of calculate Pseudotime from HDFC data analysed with cyCONDOR. This function uses *slingshot* to calculate trajectories and pesudotime for each cell in the 'condor' object.
 #' @param fcd flow cytometry dataset.
 #' @param reduction_method Type of dimensionality reduction to calculate the pseudotime.
 #' @param reduction_slot Name of the dimensionality reduction slot to be used.
@@ -26,9 +26,11 @@
 #' @param shrink.method character denoting how to determine the appropriate amount of shrinkage for a branching lineage. Accepted values are the same as for kernel in density (default is "cosine"), as well as "tricube" and "density". See 'Details' for more.
 #' @param allow.breaks logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.
 #' @param seed A seed is set for reproducibility.
+#' @details `runPseudotime()` is a wrapper function around \code{\link[slingshot]{getLineages}} and \code{\link[slingshot]{getCurves}} implemented in the package *slingshot*.
+#' The function first calculated the linages and then the curves of the pseudotime and converts the result to a format compatible with the structure of the 'condor' object. The user can specify all the parameters available for the \code{\link[slingshot]{getLineages}} and  \code{\link[slingshot]{getCurves}} functions, arguments description were copied from the documentation of the *slingshot* package.
+#' @return runPseudotime
 #' @import slingshot
 #' @import DelayedMatrixStats
-#' @return runPseudotime
 #'
 #' @export
 runPseudotime <- function(fcd,
