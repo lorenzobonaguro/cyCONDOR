@@ -51,7 +51,10 @@ nfTransform <- function(transTypeTable, dataA){
     }
 
     if(ttParamType == "arcsinh" ){
-      dataA1 <- asinh(dataA/5)
+      dataNum <- which(colnames(dataA)==paramName)
+      temp <- dataA[,dataNum,drop=F] / 5
+      temp <- asinh(temp)
+      dataA1[,dataNum] <- temp
     }
 
     if(ttParamType == "auto_logi"){
