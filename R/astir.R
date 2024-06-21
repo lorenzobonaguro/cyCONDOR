@@ -1,15 +1,15 @@
 #' Run Astir cell type prediction
 #'
 #' @title Run Astir cell type prediction
-#' @description Predict cell types using 'Astir'. This package requires the python library `astir` and `reticulate` to work. 
+#' @description Predict cell types using 'Astir'. This package requires the python library `astir` and `reticulate` to work.
 #' The function returns a `condor` object with automatically annotated cell types and QC of the annotation, the results are also saved in a folder specified by the user.
 #' @param fcd Flow cytometry dataset.
 #' @param data_slot Data slot to use for the analysis (e.g. "orig" or "norm").
 #' @param analysis_path Full path to the output folder of astir analysis.
 #' @param manifest_name Filename of the manifest file, this file must be located in the `analysis_path` folder.
-#' @param max_epochs Maximum number of epochs.
+#' @param max_epochs Maximum number of epochs, for details see `Astir` documentation.
 #' @param learning_rate Learning Rate.
-#' @param initial_epochs 
+#' @param initial_epochs initial epochs, for details see `Astir` documentation.
 #' @details Predict cell types using 'Astir'. This package requires the python library `astir` and `reticulate`. This function is still experimental and was not extensively tested in cyCONDOR. In one of the next release we will document it's usage in more details on a dedicated vignette.
 #' For the moment if you want to know more feel free to reach out on our `Slack` channel. For more details on the different parameters refer to `Astir` documentation.
 #' @import reticulate

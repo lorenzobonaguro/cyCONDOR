@@ -2,7 +2,7 @@
 % Please edit documentation in R/clinical_classifier.R
 \name{train_classifier_model}
 \alias{train_classifier_model}
-\title{train_classifier_model}
+\title{Train a machine learning classifier for the clinical classification of HDFC data.}
 \usage{
 train_classifier_model(
   fcd,
@@ -19,13 +19,13 @@ train_classifier_model(
 )
 }
 \arguments{
-\item{fcd}{flowframe object.}
+\item{fcd}{flow cytometry data set.}
 
-\item{input_type}{data to use for the calculation, e.g. "pca" (suggested option).}
+\item{input_type}{data to use for the calculation, e.g. "expr" (suggested option).}
 
-\item{data_slot}{name to use. If no prefix was added the, *orig*.}
+\item{data_slot}{Name of the data slot to use for the classification, suggested options are "orig" or "norm".}
 
-\item{sample_names}{Column name of the metadata table containing the file names.}
+\item{sample_names}{Column name of the metadata table containing the samples names.}
 
 \item{classification_variable}{Vector (same length as number of cells) with the classes to classify (e.g. ctrl/dis).}
 
@@ -45,8 +45,12 @@ train_classifier_model(
 train_classifier_model
 }
 \description{
-This function trains a classifier for a clinical feature of the data.
+This function trains a machine learning classifier for the clinical classification of HDFC data. This function uses the *CytoDx* framework.
 }
 \details{
 Train Clinical Classifier
+
+`train_classifier_model()` is a wrapper function around \code{\link[CytoDx]{CytoDx.fit}} implemented in the package *CytoDx*. 
+The user can specify all the parameters available for the \code{\link[CytoDx]{CytoDx.fit}} functions, arguments description were copied from the documentation of the *CytoDx* package.
+The function output a *condor* object including the machine learning model in the *extras* slot.
 }

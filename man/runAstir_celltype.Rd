@@ -2,7 +2,7 @@
 % Please edit documentation in R/astir.R
 \name{runAstir_celltype}
 \alias{runAstir_celltype}
-\title{runAstir_celltype}
+\title{Run Astir cell type prediction}
 \usage{
 runAstir_celltype(
   fcd,
@@ -23,18 +23,22 @@ runAstir_celltype(
 
 \item{manifest_name}{Filename of the manifest file, this file must be located in the `analysis_path` folder.}
 
-\item{max_epochs}{Maximum number of epochs.}
+\item{max_epochs}{Maximum number of epochs, for details see `Astir` documentation.}
 
 \item{learning_rate}{Learning Rate.}
 
-\item{initial_epochs}{Initial Epochs.}
+\item{initial_epochs}{initial epochs, for details see `Astir` documentation.}
 }
 \value{
 runAstir_celltype
 }
 \description{
-Predict cell types using Astir. This package requires the python library `astir` and `reticulate` to work.
+Predict cell types using 'Astir'. This package requires the python library `astir` and `reticulate` to work.
+The function returns a `condor` object with automatically annotated cell types and QC of the annotation, the results are also saved in a folder specified by the user.
 }
 \details{
-runAstir_celltype
+Run Astir cell type prediction
+
+Predict cell types using 'Astir'. This package requires the python library `astir` and `reticulate`. This function is still experimental and was not extensively tested in cyCONDOR. In one of the next release we will document it's usage in more details on a dedicated vignette.
+For the moment if you want to know more feel free to reach out on our `Slack` channel. For more details on the different parameters refer to `Astir` documentation.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pseudotime.R
 \name{runPseudotime}
 \alias{runPseudotime}
-\title{runPseudotime}
+\title{Function of calculate Pseudotime from HDFC data analysed with cyCONDOR}
 \usage{
 runPseudotime(
   fcd,
@@ -84,8 +84,11 @@ runPseudotime(
 runPseudotime
 }
 \description{
-Calculate pseudotime of flow data
+Function of calculate Pseudotime from HDFC data analysed with cyCONDOR. This function uses *slingshot* to calculate trajectories and pesudotime for each cell in the 'condor' object.
 }
 \details{
 runPseudotime
+
+`runPseudotime()` is a wrapper function around \code{\link[slingshot]{getLineages}} and \code{\link[slingshot]{getCurves}} implemented in the package *slingshot*.
+The function first calculated the linages and then the curves of the pseudotime and converts the result to a format compatible with the structure of the 'condor' object. The user can specify all the parameters available for the \code{\link[slingshot]{getLineages}} and  \code{\link[slingshot]{getCurves}} functions, arguments description were copied from the documentation of the *slingshot* package.
 }

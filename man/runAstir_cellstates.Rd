@@ -34,7 +34,8 @@ runAstir_cellstates
 }
 \description{
 Predict cell states using Astir. This package requires the python library `astir` and `reticulate` to work.
+The function returns a `condor` object with automatically annotated cell states and QC of the annotation, the results are also saved in a folder specified by the user.
 }
 \details{
-runAstir_cellstates
+Run Astir cell state prediction
 }

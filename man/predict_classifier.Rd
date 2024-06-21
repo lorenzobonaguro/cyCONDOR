@@ -2,7 +2,7 @@
 % Please edit documentation in R/clinical_classifier.R
 \name{predict_classifier}
 \alias{predict_classifier}
-\title{predict_classifier}
+\title{Predict clinical classification.}
 \usage{
 predict_classifier(
   fcd,
@@ -14,15 +14,15 @@ predict_classifier(
 )
 }
 \arguments{
-\item{fcd}{flowframe object.}
+\item{fcd}{flow cytometry data set.}
 
-\item{input_type}{data to use.}
+\item{input_type}{data to use for the calculation, e.g. "expr" (suggested option).}
 
-\item{data_slot}{name of the data slot to use.}
+\item{data_slot}{Name of the data slot to use for the classification, suggested options are "orig" or "norm".}
 
 \item{sample_names}{Column name of the metadata table containing the file names.}
 
-\item{model_object}{flowframe object with the stored classifier model.}
+\item{model_object}{flow cytometry data set with the stored classifier model.}
 
 \item{seed}{A seed is set for reproducibility.}
 }
@@ -30,8 +30,12 @@ predict_classifier(
 predict_classifier
 }
 \description{
-This function uses the model trained with *train_classifier_model* to predict new samples.
+This function uses the model trained with *train_classifier_model* to predict the clinical classification of new samples. This function uses the *CytoDx* framework.
 }
 \details{
 Predict Clinical Classifier
+
+`predict_classifier()` is a wrapper function around \code{\link[CytoDx]{CytoDx.pred}} implemented in the package *CytoDx*. 
+The user can specify all the parameters available for the \code{\link[CytoDx]{CytoDx.pred}} functions, arguments description were copied from the documentation of the *CytoDx* package.
+The function output a *condor* object including the predicted labels in the *extras* slot.
 }
