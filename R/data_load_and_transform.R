@@ -32,26 +32,32 @@ nfTransform <- function(transTypeTable, dataA){
     ttParamNum <- which(as.character(transTypeTable[,1])==paramName)
     ttParamType <- as.character(transTypeTable[ttParamNum,2])
 
-    if(ttParamType == "y" || ttParamType == "c"){
+    if(ttParamType == "cytof_logi"){
       dataNum <- which(colnames(dataA)==paramName)
       temp <- apply(dataA[,dataNum,drop=F],2, CyTOFlgcl)
       dataA1[,dataNum] <- temp
-      #print(paste(paramName," CyTOFlgcl"))
     }
 
-    if(ttParamType == "f" ){
+    if(ttParamType == "fluor_logi"){
       dataNum <- which(colnames(dataA)==paramName)
       temp <- apply(dataA[,dataNum,drop=F],2, Fluorlgcl)
       dataA1[,dataNum] <- temp
     }
 
-    if(ttParamType == "c" ){
+    if(ttParamType == "clr" ){
       dataNum <- which(colnames(dataA)==paramName)
       temp <- apply(dataA[,dataNum,drop=F],2, clr)
       dataA1[,dataNum] <- temp
     }
 
-    if(ttParamType == "a"){
+    if(ttParamType == "arcsinh" ){
+      dataNum <- which(colnames(dataA)==paramName)
+      temp <- dataA[,dataNum,drop=F] / 5
+      dataA <- asinh(dataA)
+      dataA1[,dataNum] <- temp
+    }
+
+    if(ttParamType == "auto_logi"){
       q<-0.05
       m<-4.5
       d <- dataA[,paramName]
@@ -82,7 +88,6 @@ nfTransform <- function(transTypeTable, dataA){
       temp <- apply(dataA[,dataNum,drop=F],2, templgcl)
       dataA1[,dataNum] <- temp
       print(paste0(paramName, " w= ",w," t= ",t))
-      #hist(temp, main=paramName,breaks=100)
     }
 
   }
