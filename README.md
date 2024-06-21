@@ -11,7 +11,7 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/condor](https://hub.docker.com/r/lorenzobonaguro/condor), the latest version of the image can be pulled with:
 ```
-docker pull lorenzobonaguro/cycondor:latest
+docker pull lorenzobonaguro/cycondor:v015
 ```
 
 To run the image you can then follow the following script
@@ -52,7 +52,7 @@ BiocManager::install(update = T, ask = F, version = "3.17")
 
 Next we install two dependencies which are only available on GitHub
 ```
-devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy"))
+devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy", "saeyslab/CytoNorm@362ac08"))
 ```
 
 Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.
@@ -99,7 +99,7 @@ cytometry dataset, subset it or annotate metaclusters. Also includes several vis
 
 ## How to cite cyCONDOR
 
-> **Unveiling the Power of High-Dimensional Cytometry Data with condor**, in preparation
+> [**Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR**](https://www.biorxiv.org/content/10.1101/2024.02.29.582727v1)
 
 ## Contact or follow us
 
