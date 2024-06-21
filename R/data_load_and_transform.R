@@ -198,7 +198,7 @@ prep_fjw <- function(data_gs,
                      pop = "root",
                      gate_list = nodelist,
                      inverse.transform = FALSE,
-                     transformation = 'a',
+                     transformation,
                      remove_param,
                      merge_anno = FALSE,
                      anno_table,
@@ -249,6 +249,11 @@ prep_fjw <- function(data_gs,
     keeptable <- keeptable[!keeptable$Param %in% remove_param, ]
 
     data1 <- FFdata[,which(colnames(FFdata) %in% keeptable[,1])]
+
+    ## Check if transformation is a valid value
+    if (!transformation %in% c("cytof_logi", "fluor_logi", "clr", "arcsinh", "auto_logi")) {
+     stop(paste0(transformation, " is not a valid transformation method"))
+    }
 
     nfTransOut <- nfTransform(keeptable, data1)
 
@@ -340,6 +345,11 @@ prep_fcd <- function(FCSpath,
   keeptable <- keeptable[!keeptable$Param %in% remove_param, ]
 
   data1 <- FFdata[,which(colnames(FFdata) %in% keeptable[,1])]
+
+  ## Check if transformation is a valid value
+  if (!transformation %in% c("cytof_logi", "fluor_logi", "clr", "arcsinh", "auto_logi")) {
+     stop(paste0(transformation, " is not a valid transformation method"))
+  }
 
   nfTransOut <- nfTransform(keeptable, data1)
 
