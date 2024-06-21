@@ -406,7 +406,7 @@ checkInput<-function(fcd,
 
 
   ##check if cell IDs are in right order
-  check <- c(check_expr_slot,check_cluster_slot,check_cell_anno)
+  check <- c(check_expr_slot,check_cluster_slot,check_cell_anno,check_reduction)
   if(sum(check) > 1){
     ID_list <- list()
     if(check_expr_slot == T){
