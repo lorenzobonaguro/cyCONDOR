@@ -210,28 +210,32 @@ confusionMatrix <- function (i = NULL, j = NULL)
   m
 }
 
-#' plot_marker
+#' plot_dim_red
 #'
-#' @title plot_marker
-#' @description Function to visualize a selected parameter on a dimensionality reduction.
-#' @param data This is the input dataframe for the visualization, this part of the code can still be improved but for the moment you have to cbind the dataframe with the informations you want to plot.
-#' @param param Parameter to visualize in the plot, this can be either a continous variable or a categorical one, the function will react differently according.
-#' @param order Logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells. If set to FALSE, the plotting order of the cells is randomized.
-#' @param title Title of the plot.
-#' @param limX Limits of the x axes.
-#' @param limY Limits of the y axes.
-#' @param dim_red Dimensionality reduction to use for the visualization.
-#' @param dot_size Size of the dots.
-#' @param apha Alpha of the dots.
-#' @param color_discrete Colors for discrete parameters.
-#' @param color_gradient Colors for continous parameters.
-#' @param remove_guide Logical, if you want to remove the guide.
-#' @param facet_by_variable Logical if the plot should be splitted by the categorical variable used.
-#' @param label_clusters Logical: If clusters should be labeled with a text box.
-#' @param label_size Size of the labels.
-#' @param label_color Color of the labels.
-#' @param raster TRUE or FALSE, if plot should be returned as raster image
-#' @param seed A seed is set for reproducibility.
+#' @title Dimensionality reduction dotplot
+#' @description `plot_dim_red` generates a dotplot of the coordinates of any dimensionality reduction performed on a `condor` object. The plot can be colored by any variable both numeric (e.g. expression) or categorical (e.g. clustering/metadata).
+#' @param fcd flow cytometry data set, that has been subjected to dimensionality reduction with *cyCONDOR*.
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' Corrected input data should be handled cautiously.
+#' @param reduction_method string specifying which dimensionality reduction method to use ("umap", "tSNE", "diffmap", "pca").
+#' @param reduction_slot string specifying reduction name in reduction_method to use for visualization, e.g. "pca_orig".
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param param parameter to visualize in the plot, this can be either a continuous variable or a categorical one, the function will react differently accordingly.
+#' @param order logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells. If set to FALSE, the plotting order of the cells is randomized.
+#' @param title title of the plot.
+#' @param limX limits of the x axes (e.g. c(-1, 7)).
+#' @param limY limits of the y axes (e.g. c(-1, 7)).
+#' @param dot_size size of the dots.
+#' @param apha transparency of the dots.
+#' @param color_discrete colors for discrete parameters, must be provided as vector of the same length as the number of factors of `param`.
+#' @param color_gradient colors for continous parameters.
+#' @param remove_guide logical, if you want to remove the guide.
+#' @param facet_by_variable option to facet the plot by a variable, if `FALSE` the plot is not faceted, if `TRUE` the plot is faceted by the `param` variable. If any other variable is provided (e.g. "group") the plot will be faceted by this variable.
+#' @param label_clusters logical: If clusters should be labeled with a text box.
+#' @param label_size size of the labels.
+#' @param label_color color of the labels.
+#' @param raster TRUE or FALSE, if plot should be returned as raster image, this option lowers the quality of the plot but makes it easier to work with images with high number of cells.
+#' @param seed seed is set for reproducibility.
 #' @import ggplot2
 #' @import RColorBrewer
 #' @import devtools
@@ -242,24 +246,88 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @return plot marker or list of markers
 #'
 #' @export
-plot_marker <- function(data,
-                            param,
-                            order = FALSE,
-                            title = "adjust the title",
-                            limX = NULL,
-                            limY = NULL,
-                            dim_red,
-                            dot_size = 0.1,
-                            apha = 0.2,
-                            color_discrete = cluster_palette,
-                            color_gradient = colors,
-                            remove_guide = FALSE,
-                            facet_by_variable = FALSE,
-                            label_clusters = FALSE,
-                            label_size = 3.5,
-                            label_color = "black",
-                            raster = FALSE,
-                            seed= 91) {
+plot_dim_red <- function(fcd,
+                         expr_slot,
+                         reduction_method,
+                         reduction_slot,
+                         cluster_slot,
+                         param,
+                         order = FALSE,
+                         title = "Dimensionality Reduction Plot",
+                         limX = NULL,
+                         limY = NULL,
+                         dot_size = 0.1,
+                         apha = 0.2,
+                         color_discrete = cluster_palette,
+                         color_gradient = colors,
+                         remove_guide = FALSE,
+                         facet_by_variable = FALSE,
+                         label_clusters = FALSE,
+                         label_size = 3.5,
+                         label_color = "black",
+                         raster = FALSE,
+                         seed= 91) {
+
+  # Preparing the data
+  checkInput(fcd = fcd,
+             check_expr_slot = F,
+             check_cluster_slot = F,
+             check_reduction = T,
+             check_cell_anno = TRUE,
+             expr_slot = expr_slot,
+             cluster_slot = cluster_slot,
+             reduction_method = reduction_method,
+             reduction_slot = reduction_slot)
+
+  data <- cbind(fcd[[reduction_method]][[reduction_slot]], fcd$anno$cell_anno)
+
+  if (is.null(expr_slot) == FALSE) {
+
+    checkInput(fcd = fcd,
+               check_expr_slot = T,
+               check_cluster_slot = F,
+               check_reduction = T,
+               expr_slot = expr_slot,
+               cluster_slot = cluster_slot,
+               reduction_method = reduction_method,
+               reduction_slot = reduction_slot)
+
+    data <- cbind(data, fcd$expr[[expr_slot]])
+
+  }
+
+  if (is.null(cluster_slot) == FALSE) {
+
+    cluster_var <- "Description" # Bug fix, can be done better
+
+    checkInput(fcd = fcd,
+               check_expr_slot = F,
+               check_cluster_slot = T,
+               check_reduction = T,
+               expr_slot = expr_slot,
+               cluster_slot = cluster_slot,
+               cluster_var = cluster_var,
+               reduction_method = reduction_method,
+               reduction_slot = reduction_slot)
+
+    data <- cbind(data, fcd$clustering[[cluster_slot]])
+
+  }
+
+  # Check if `param` exist
+  if(!param %in% colnames(data)){
+    stop('column "',param,'" is not available in the provided data')
+  }
+
+  # Check if `facet_by_variable` exist
+  if (facet_by_variable != FALSE & facet_by_variable != FALSE) {
+
+    if(!facet_by_variable %in% colnames(data)){
+      stop('column "',facet_by_variable,'" is not available in the provided data')
+    }
+
+  }
+
 
   # Selection of raster plot or standard
   if (raster == FALSE) {
@@ -319,27 +387,33 @@ plot_marker <- function(data,
 
     }
 
-    if (dim_red == "UMAP") {
+    if (reduction_method == "umap") {
 
       p1 <- ggplot(data, aes(x = UMAP1, y = UMAP2)) + core_numeric
 
     }
 
-    if (dim_red == "DM") {
+    if (reduction_method == "diffmap") {
 
       p1 <- ggplot(data, aes(x = DC_1, y = DC_2)) + core_numeric
 
     }
 
-    if (dim_red == "tSNE") {
+    if (reduction_method == "tSNE") {
 
       p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2)) + core_numeric
 
     }
 
-    if (dim_red == "PCA") {
+    if (reduction_method == "pca") {
 
       p1 <- ggplot(data, aes(x = PC1, y = PC2)) + core_numeric
+
+    }
+
+    if (facet_by_variable != FALSE) {
+
+      p1 <- p1 + facet_wrap(~facet)
 
     }
 
@@ -359,25 +433,25 @@ plot_marker <- function(data,
 
     }
 
-    if (dim_red == "UMAP") {
+    if (reduction_method == "umap") {
 
       p1 <- ggplot(data, aes(x = UMAP1, y = UMAP2)) + core_discrete
 
     }
 
-    if (dim_red == "DM") {
+    if (reduction_method == "diffmap") {
 
       p1 <- ggplot(data, aes(x = DC_1, y = DC_2)) + core_discrete
 
     }
 
-    if (dim_red == "tSNE") {
+    if (reduction_method == "tSNE") {
 
       p1 <- ggplot(data, aes(x = tSNE1, y = tSNE2)) + core_discrete
 
     }
 
-    if (dim_red == "PCA") {
+    if (reduction_method == "pca") {
 
       p1 <- ggplot(data, aes(x = PC1, y = PC2)) + core_discrete
 
