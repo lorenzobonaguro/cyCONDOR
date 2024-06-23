@@ -82,7 +82,7 @@ harmonize_PCA <- function(fcd,
 #' @param remove_param Parameters/markers which should be excluded for learning the batch effect and training the model.
 #' @param seed A seed is set for reproducibility.
 #' @param files Vector of FCS file names of reference samples which are used for training the model. If files == NULL, all files contained in the fcd are used.
-#' @param FCSpath File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.
+#' @param data_path File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.
 #' @param FlowSOM_param A list of parameters to pass to the FlowSOM algorithm. Default= list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale= FALSE)
 #' @returns The function returns a fcd with the trained model saved in extras.
 #' @details
@@ -98,7 +98,7 @@ train_cytonorm <- function(fcd,
                            remove_param = NULL,
                            seed,
                            files = NULL,
-                           FCSpath = NULL,
+                           data_path = NULL,
                            FlowSOM_param = list(
                              nCells = 5000,
                              xdim = 5,
@@ -112,18 +112,18 @@ train_cytonorm <- function(fcd,
     files <-   unique(fcd$anno$cell_anno$expfcs_filename)
   }
 
-  # check FCSpath
-  if(is.null(FCSpath)){
-    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]])){
+  # check data_path
+  if(is.null(data_path)){
+    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["data_path"]])){
       #extract fcs_path from extras slot in fcd
-      FCSpath <- fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]]
+      data_path <- fcd[["extras"]][["prep_fcd_param"]][["data_path"]]
     } else{
-      stop(paste0("There is no FCSpath saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'FCSpath' parameter."))
+      stop(paste0("There is no data_path saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'data_path' parameter."))
     }
   }
-  #check if FCSpath exists
-  if (!dir.exists(FCSpath)) {
-    stop(paste0("FCSpath ", FCSpath,  "does not exist"))
+  #check if data_path exists
+  if (!dir.exists(data_path)) {
+    stop(paste0("data_path ", data_path,  "does not exist"))
   }
 
   #check if batch variable exists
@@ -152,7 +152,7 @@ train_cytonorm <- function(fcd,
   train_data <-
     train_data %>% distinct(expfcs_filename, .keep_all = TRUE)
   train_data[["path"]] <-
-    file.path(FCSpath, train_data$expfcs_filename)
+    file.path(data_path, train_data$expfcs_filename)
 
   #get channels
   ff <-flowCore::read.FCS(train_data$path[1], transformation = "linearize", truncate_max_range = FALSE)
@@ -205,7 +205,7 @@ train_cytonorm <- function(fcd,
 #' @param keep_fcs Boolean whether to keep the normalized FCS files in \code{output_dir}.
 #' @param output_dir Directory to save normalized FCS files temporary or permanently, if keep_fcs == TRUE.
 #' @param files Vector of fcs file names of samples which should be normalized. By default all files contained in the flow cytometry dataset are used.
-#' @param FCSpath File path to folder where .fcs files contained in the fcd are stored.
+#' @param data_path File path to folder where .fcs files contained in the fcd are stored.
 #' @param anno_table Path to the annotation table file.
 #' @returns fcd with a normalized expression data frame.
 #' @details
@@ -217,7 +217,7 @@ run_cytonorm <- function(fcd,
                          keep_fcs = TRUE,
                          output_dir = paste0("./CytoNorm_output_", Sys.Date()),
                          files= NULL,
-                         FCSpath=NULL,
+                         data_path=NULL,
                          anno_table= NULL){
 
   # all files are used for normalization, if no files names are provided
@@ -225,18 +225,18 @@ run_cytonorm <- function(fcd,
     files <-   unique(fcd$anno$cell_anno$expfcs_filename)
   }
 
-  # check FCSpath
-  if(is.null(FCSpath)){
-    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]])){
+  # check data_path
+  if(is.null(data_path)){
+    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["data_path"]])){
       #extract fcs_path from extras slot in fcd
-      FCSpath <- fcd[["extras"]][["prep_fcd_param"]][["FCSpath"]]
+      data_path <- fcd[["extras"]][["prep_fcd_param"]][["data_path"]]
     } else{
-      stop(paste0("There is no FCSpath saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'FCSpath' parameter."))
+      stop(paste0("There is no data_path saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'data_path' parameter."))
     }
   }
-  #check if FCSpath exists
-  if (!dir.exists(FCSpath)) {
-    stop("'FCSpath' does not exist.")
+  #check if data_path exists
+  if (!dir.exists(data_path)) {
+    stop("'data_path' does not exist.")
   }
   #check if fcd contains model
   if (!"cytonorm_model" %in% names(fcd[["extras"]])) {
@@ -247,7 +247,7 @@ run_cytonorm <- function(fcd,
   data <-
     fcd$anno$cell_anno[fcd$anno$cell_anno$expfcs_filename %in% files, c("expfcs_filename", batch_var)]
   data <- data %>% distinct(expfcs_filename, .keep_all = TRUE)
-  data[["path"]] <-file.path(FCSpath, data$expfcs_filename)
+  data[["path"]] <-file.path(data_path, data$expfcs_filename)
 
   # extract channels used for calculating the model
   channels <- fcd[["extras"]][["cytonorm_model"]][["clusterRes"]][["1"]][["channels"]]
@@ -271,13 +271,13 @@ run_cytonorm <- function(fcd,
   #prep_fcd_params
   if(!is.null(fcd[["extras"]][["prep_fcd_param"]])){
     #check if all required parameters are saved in fcd
-    param_names <- c("ceil", "transformation", "remove_param", "filename_col", "seed", "separator_anno")
+    param_names <- c("max_cell", "transformation", "remove_param", "filename_col", "seed", "separator_anno")
     if(sum(param_names %in% names(fcd[["extras"]][["prep_fcd_param"]])) != length(param_names
     )){
       stop(paste0(setdiff(param_names, names(fcd[["extras"]][["prep_fcd_param"]])), " is missing in fcd$extras$prep_fcd_param."))
     }
     #extract prep_fcd_param from extras slot in fcd
-    prep_fcd_param <- list(ceil = fcd[["extras"]][["prep_fcd_param"]][["ceil"]],
+    prep_fcd_param <- list(max_cell = fcd[["extras"]][["prep_fcd_param"]][["max_cell"]],
                            transformation =fcd[["extras"]][["prep_fcd_param"]][["transformation"]],
                            remove_param= fcd[["extras"]][["prep_fcd_param"]][["remove_param"]],
                            # anno_table = fcd[["extras"]][["prep_fcd_param"]][["anno_table"]],
@@ -305,8 +305,8 @@ run_cytonorm <- function(fcd,
 
   # read in normalized FCS files
   message("adding normalized expression data to fcd")
-  fcd_norm<- prep_fcd(FCSpath = output_dir,
-                      ceil = prep_fcd_param[["ceil"]],
+  fcd_norm<- prep_fcd(data_path = output_dir,
+                      max_cell = prep_fcd_param[["max_cell"]],
                       useCSV = FALSE,
                       transformation = prep_fcd_param[["transformation"]],
                       remove_param = prep_fcd_param[["remove_param"]],

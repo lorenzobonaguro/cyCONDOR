@@ -327,34 +327,29 @@ prep_fjw <- function(data_gs,
   if (inverse.transform == TRUE) {
 
     ## Data Transformation
-    keeptable <- data.frame(Param = fs[[1]]@parameters$desc)
-    keeptable$Trans <- transformation
-    keeptable <- keeptable[!keeptable$Param %in% remove_param, ]
+    keep <- colnames(raw_data)[!colnames(raw_data) %in% remove_param]
 
-    data1 <- FFdata[,which(colnames(FFdata) %in% keeptable[,1])]
+    raw_data <- raw_data[,which(colnames(raw_data) %in% keep)]
 
     ## Check if transformation is a valid value
     if (!transformation %in% c("cytof_logi", "fluor_logi", "clr", "arcsinh", "auto_logi")) {
      stop(paste0(transformation, " is not a valid transformation method"))
     }
 
-    nfTransOut <- nfTransform(keeptable, data1)
-
-    data1 <- nfTransOut$dataA1
+    trans_data <- transform_data(keep = keep, transformation = transformation, original_data = raw_data)
 
     ## Clean the dataframe
-    df <- cbind(data1, FFdata[, !colnames(FFdata) %in% fs[[1]]@parameters$desc])
+    df <- cbind(trans_data, expfcs_filename=data$merged_df[,"InFile"])
     df <- as.data.frame(df)
-    colnames(df)[colnames(df) == "InFile"] <- "expfcs_filename"
     df$expfcs_filename <- as.factor(df$expfcs_filename)
-    df$expfcs_filename <- factor(df$expfcs_filename, labels = filenames)
+    df$expfcs_filename <- factor(df$expfcs_filename, labels = data$FcsFiles)
 
   } else {
 
     df <- FFdata
     colnames(df)[colnames(df) == "InFile"] <- "expfcs_filename"
     df$expfcs_filename <- as.factor(df$expfcs_filename)
-    df$expfcs_filename <- factor(df$expfcs_filename, labels = filenames)
+    df$expfcs_filename <- factor(df$expfcs_filename, labels = data$FcsFiles)
 
   }
 

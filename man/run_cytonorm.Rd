@@ -10,7 +10,7 @@ run_cytonorm(
   keep_fcs = TRUE,
   output_dir = paste0("./CytoNorm_output_", Sys.Date()),
   files = NULL,
-  FCSpath = NULL,
+  data_path = NULL,
   anno_table = NULL
 )
 }
@@ -25,7 +25,7 @@ run_cytonorm(
 
 \item{files}{Vector of fcs file names of samples which should be normalized. By default all files contained in the flow cytometry dataset are used.}
 
-\item{FCSpath}{File path to folder where .fcs files contained in the fcd are stored.}
+\item{data_path}{File path to folder where .fcs files contained in the fcd are stored.}
 
 \item{anno_table}{Path to the annotation table file.}
 }

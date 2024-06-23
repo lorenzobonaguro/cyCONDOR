@@ -10,7 +10,7 @@ train_cytonorm(
   remove_param = NULL,
   seed,
   files = NULL,
-  FCSpath = NULL,
+  data_path = NULL,
   FlowSOM_param = list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale = FALSE)
 )
 }
@@ -25,7 +25,7 @@ train_cytonorm(
 
 \item{files}{Vector of FCS file names of reference samples which are used for training the model. If files == NULL, all files contained in the fcd are used.}
 
-\item{FCSpath}{File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.}
+\item{data_path}{File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.}
 
 \item{FlowSOM_param}{A list of parameters to pass to the FlowSOM algorithm. Default= list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale= FALSE)}
 }
