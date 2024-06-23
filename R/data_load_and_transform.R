@@ -291,43 +291,40 @@ prep_fjw <- function(data_gs,
 
   filenames <- rownames(fs@phenoData)
 
-  NumBC <- length(fs)
+  num_files <- length(fs)
 
-  FFdata <- NULL
+  data <- NULL
 
-  OrigNames <-fs[[1]]@parameters$name
-
-  for (FFs in 1:NumBC){
-    FFa <- exprs(fs[[FFs]])
+  for (single_file in 1:num_files){
+    raw_file <- exprs(fs[[single_file]])
 
     #Fixup column names
-    colnames(FFa) <- fs[[FFs]]@parameters$desc
-    empties <- which(is.na(colnames(FFa)) | colnames(FFa)== " ")
-    colnames(FFa)[empties] <- fs[[FFs]]@parameters$name[empties]
-    fs[[FFs]]@parameters$desc <- colnames(FFa)
+    colnames(raw_file) <- fs[[single_file]]@parameters$desc
+    colnames(raw_file)[which(is.na(colnames(raw_file)) | colnames(raw_file)== " ")] <- fs[[single_file]]@parameters$name[which(is.na(colnames(raw_file)) | colnames(raw_file)== " ")]
+    fs[[single_file]]@parameters$desc <- colnames(raw_file)
 
     #Add file label
-    FFa <- cbind(FFa,rep(FFs,dim(FFa)[1]))
-    colnames(FFa)[dim(FFa)[2]] <- "InFile"
+    raw_file <- cbind(raw_file,rep(single_file,dim(raw_file)[1]))
+    colnames(raw_file)[dim(raw_file)[2]] <- "InFile"
 
     # Add the gating info
     for (gate in gate_list) {
 
-      FFa <- cbind(FFa, gh_pop_get_indices(gs[[FFs]], y = gate))
-      colnames(FFa)[dim(FFa)[2]] <- gate
+      raw_file <- cbind(raw_file, gh_pop_get_indices(gs[[single_file]], y = gate))
+      colnames(raw_file)[dim(raw_file)[2]] <- gate
 
     }
 
     #Concatenate
-    FFdata <- rbind(FFdata,FFa)
+    data <- rbind(data,raw_file)
   }
 
-  FFdata <- as.data.frame(FFdata)
+  raw_data <- as.data.frame(data)
 
   if (inverse.transform == TRUE) {
 
     ## Data Transformation
-    keep <- colnames(raw_data)[!colnames(raw_data) %in% remove_param]
+    keep <- fs[[1]]@parameters$desc[!fs[[1]]@parameters$desc %in% remove_param]
 
     raw_data <- raw_data[,which(colnames(raw_data) %in% keep)]
 
@@ -339,21 +336,22 @@ prep_fjw <- function(data_gs,
     trans_data <- transform_data(keep = keep, transformation = transformation, original_data = raw_data)
 
     ## Clean the dataframe
-    df <- cbind(trans_data, expfcs_filename=data$merged_df[,"InFile"])
+    df <- cbind(trans_data, data[, !colnames(data) %in% fs[[1]]@parameters$desc])
     df <- as.data.frame(df)
+    colnames(df)[colnames(df) == "InFile"] <- "expfcs_filename"
     df$expfcs_filename <- as.factor(df$expfcs_filename)
-    df$expfcs_filename <- factor(df$expfcs_filename, labels = data$FcsFiles)
+    df$expfcs_filename <- factor(df$expfcs_filename, labels = filenames)
 
   } else {
 
-    df <- FFdata
+    df <- data
     colnames(df)[colnames(df) == "InFile"] <- "expfcs_filename"
     df$expfcs_filename <- as.factor(df$expfcs_filename)
-    df$expfcs_filename <- factor(df$expfcs_filename, labels = data$FcsFiles)
+    df$expfcs_filename <- factor(df$expfcs_filename, labels = filenames)
 
   }
 
-  if (merge_anno == TRUE) {c
+  if (merge_anno == TRUE) {
 
     ## Now add the annotation (as csv file)
     anno <- read.delim(anno_table, sep = separator_anno)

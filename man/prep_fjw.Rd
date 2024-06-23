@@ -9,7 +9,7 @@ prep_fjw(
   pop = "root",
   gate_list = nodelist,
   inverse.transform = FALSE,
-  transformation = "a",
+  transformation,
   remove_param,
   merge_anno = FALSE,
   anno_table,
