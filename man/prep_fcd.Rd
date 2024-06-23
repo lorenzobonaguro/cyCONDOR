@@ -5,8 +5,8 @@
 \title{prep_fcd}
 \usage{
 prep_fcd(
-  FCSpath,
-  ceil,
+  data_path,
+  max_cell,
   useCSV = FALSE,
   transformation,
   remove_param,
@@ -18,9 +18,9 @@ prep_fcd(
 )
 }
 \arguments{
-\item{FCSpath}{Folder where the .fcs files are stored.}
+\item{data_path}{Folder where the .fcs files or .csv files are stored.}
 
-\item{ceil}{Number of cells to use for each file (set to a high number if you want to use all available events).}
+\item{max_cell}{Number of cells to use for each file (set to a high number if you want to use all available events).}
 
 \item{useCSV}{Flag if the input are .csv files and not .fcs (experimental).}
 
