@@ -220,6 +220,8 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param reduction_method string specifying which dimensionality reduction method to use ("umap", "tSNE", "diffmap", "pca").
 #' @param reduction_slot string specifying reduction name in reduction_method to use for visualization, e.g. "pca_orig".
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param add_pseudotime Logical, if plot should be colored by pseudotime.
+#' @param pseudotime_slot string specifying pseudotime name to use for visualization.
 #' @param param parameter to visualize in the plot, this can be either a continuous variable or a categorical one, the function will react differently accordingly.
 #' @param order logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells. If set to FALSE, the plotting order of the cells is randomized.
 #' @param title title of the plot.
@@ -247,10 +249,10 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #'
 #' @export
 plot_dim_red <- function(fcd,
-                         expr_slot,
+                         expr_slot = NULL,
                          reduction_method,
                          reduction_slot,
-                         cluster_slot,
+                         cluster_slot = NULL,
                          add_pseudotime = FALSE,
                          pseudotime_slot,
                          param,

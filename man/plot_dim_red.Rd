@@ -10,6 +10,8 @@ plot_dim_red(
   reduction_method,
   reduction_slot,
   cluster_slot,
+  add_pseudotime = FALSE,
+  pseudotime_slot,
   param,
   order = FALSE,
   title = "Dimensionality Reduction Plot",
@@ -39,6 +41,10 @@ Corrected input data should be handled cautiously.}
 \item{reduction_slot}{string specifying reduction name in reduction_method to use for visualization, e.g. "pca_orig".}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var.}
+
+\item{add_pseudotime}{Logical, if plot should be colored by pseudotime.}
+
+\item{pseudotime_slot}{string specifying pseudotime name to use for visualization.}
 
 \item{param}{parameter to visualize in the plot, this can be either a continuous variable or a categorical one, the function will react differently accordingly.}
 
