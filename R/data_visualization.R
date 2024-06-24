@@ -251,6 +251,8 @@ plot_dim_red <- function(fcd,
                          reduction_method,
                          reduction_slot,
                          cluster_slot,
+                         add_pseudotime = FALSE,
+                         pseudotime_slot,
                          param,
                          order = FALSE,
                          title = "Dimensionality Reduction Plot",
@@ -314,13 +316,19 @@ plot_dim_red <- function(fcd,
 
   }
 
+  if (isTRUE(add_pseudotime)) {
+
+    data <- cbind(data, fcd$pseudotime[[pseudotime_slot]])
+
+  }
+
   # Check if `param` exist
   if(!param %in% colnames(data)){
     stop('column "',param,'" is not available in the provided data')
   }
 
   # Check if `facet_by_variable` exist
-  if (facet_by_variable != FALSE & facet_by_variable != FALSE) {
+  if (facet_by_variable != FALSE & facet_by_variable != TRUE) {
 
     if(!facet_by_variable %in% colnames(data)){
       stop('column "',facet_by_variable,'" is not available in the provided data')
