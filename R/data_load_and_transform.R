@@ -106,17 +106,8 @@ transform_data <- function(keep, transformation, original_data){
   # Save temp df
   transf_data <- original_data
 
-  # Define fixed transformations
-  CyTOFlgcl <- logicleTransform(w=0.25, t=16409, m=4.5, a=0)
-
   # Transform the data
   for(paramName in as.character(keep)){
-
-    if(transformation == "cytof_logi"){
-      dataNum <- which(colnames(original_data)==paramName)
-      temp <- apply(original_data[,dataNum,drop=F],2, CyTOFlgcl)
-      transf_data[,dataNum] <- temp
-    }
 
     if(transformation == "clr" ){
       dataNum <- which(colnames(original_data)==paramName)
@@ -214,7 +205,7 @@ prep_fcd <- function(data_path,
   raw_data <- raw_data[,which(colnames(raw_data) %in% keep)]
 
   ## Check if transformation is a valid value
-  if (!transformation %in% c("cytof_logi", "clr", "arcsinh", "auto_logi")) {
+  if (!transformation %in% c("clr", "arcsinh", "auto_logi", "none")) {
     stop(paste0(transformation, " is not a valid transformation method"))
   }
 
@@ -329,7 +320,7 @@ prep_fjw <- function(data_gs,
     raw_data <- raw_data[,which(colnames(raw_data) %in% keep)]
 
     ## Check if transformation is a valid value
-    if (!transformation %in% c("cytof_logi", "fluor_logi", "clr", "arcsinh", "auto_logi")) {
+    if (!transformation %in% c("clr", "arcsinh", "auto_logi", "none")) {
      stop(paste0(transformation, " is not a valid transformation method"))
     }
 
