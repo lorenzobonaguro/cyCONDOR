@@ -360,6 +360,17 @@ prep_fjw <- function(data_gs,
   fcd[["expr"]][["orig"]] <- df[ ,colnames(df) %in% fs[[1]]@parameters$desc]
   fcd[["anno"]][["cell_anno"]] <- df[ ,!colnames(df) %in% fs[[1]]@parameters$desc]
 
+  #save import parameters
+  fcd[["extras"]][["prep_fcd_param"]] <- list(data_path = data_path,
+                                              max_cell = max_cell,
+                                              transformation = transformation,
+                                              remove_param= remove_param,
+                                              anno_table = anno_table,
+                                              filename_col= filename_col,
+                                              seed= seed,
+                                              separator_anno = separator_anno,
+                                              separator_fc_csv = separator_fc_csv)
+
   class(fcd) <- "flow_cytometry_dataframe"
 
   return(fcd)
