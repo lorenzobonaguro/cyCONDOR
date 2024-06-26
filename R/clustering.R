@@ -1,40 +1,43 @@
 #' metaclustering
 #'
 #' @title metaclustering
-#' @description Assignment of a metaclusters name.
-#' @param fcd flow cytometry dataset.
-#' @param clustering Name of the clustering to match for the metaclustering.
-#' @param cluster_slot Column containing the original cluster.
-#' @param cluster_var Name of the output column.
-#' @param metaclusters Vector of the new clusters names, this should be of the same length of the levels of the original clustering.
-#' @return metaclustering
+#' @description Assignment of metacluster names to an existing clustering.
+#' @param fcd flow cytometry data set, that has been subjected to clustering with cyCONDOR.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param cluster_var variable name in cluster_slot that contains the original cluster labels.
+#' @param cluster_var_new column name that will be used to store the newly assigned cluster labels.
+#' @param metaclusters named vector of original cluster labels as names and the corresponding new labels as value, e.g. in case cluster 1 corresponds to T cells and cluster 2 to monocytes use: \code{c("1" = "Tcells", "2" = "Monocytes")}
+#' @return The function adds a new column with the name given in cluster_var_new to the selected cluster_slot. The column contains the new cluster labels (as factors) based on the name to value pairs in metaclusters.
+#' @details
+#' To correctly set up the metaclusters vector, cluster_var needs to be a factor (default after clustering with cyCONDOR).
+#' Additionally, the names of the metaclusters vector need to be in the same order as the levels of the factor cluster_var.
 #'
 #' @export
 metaclustering <- function(fcd,
-                           clustering,
                            cluster_slot,
-                           cluster_var = "metacluster",
+                           cluster_var,
+                           cluster_var_new = "metacluster",
                            metaclusters) {
 
   ### Assign the metacluster
   #### To make it easier when the number of cluster is high
 
-  if (identical(as.character(data.frame(cluster = levels(fcd$clustering[[clustering]][[cluster_slot]]))$cluster), names(metaclusters))) {
+  if (identical(as.character(data.frame(cluster = levels(fcd$clustering[[cluster_slot]][[cluster_var]]))$cluster), names(metaclusters))) {
 
-    tmp_metaclusters <- data.frame(cluster = levels(fcd$clustering[[clustering]][[cluster_slot]]),
+    tmp_metaclusters <- data.frame(cluster = levels(fcd$clustering[[cluster_slot]][[cluster_var]]),
                                    metacluster = c(metaclusters))
 
     print(tmp_metaclusters)
 
-    fcd$clustering[[clustering]][[cluster_var]] <- factor(fcd$clustering[[clustering]][[cluster_slot]],
-                                                       levels = levels(fcd$clustering[[clustering]][[cluster_slot]]),
+    fcd$clustering[[cluster_slot]][[cluster_var_new]] <- factor(fcd$clustering[[cluster_slot]][[cluster_var]],
+                                                       levels = levels(fcd$clustering[[cluster_slot]][[cluster_var]]),
                                                        labels = tmp_metaclusters$metacluster)
 
     return(fcd)
 
   }else {
 
-    print("Names in the metacluster vector do not match the clusters names")
+    stop('Names in the metacluster vector do not match the levels ("cluster names") in cluster_var.')
 
     return(fcd)
 
