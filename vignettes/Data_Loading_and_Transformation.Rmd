@@ -16,23 +16,27 @@ library(cyCONDOR)
 
 # How to load data
 
-`cyCONDOR` provide an integrated function to prepare a `condor` object starting from `.fcs` files or `.csv` files. All files should be saved in a single directory `FCSpath`, the user now also define the number of events to process from each file with the setting 'ceil'. To load `.csv` files instead of `.fcs` the `useCSV` setting should be set to `TRUE`.
+`cyCONDOR` provides an integrated function to prepare a `condor` object (flow cytometry dataset) starting from the input files in either `.fcs` or `.csv` format. All files should be saved in a single directory which path should be stated in `data_path`. The user can define the number of (cells) to process from each file within 'max_cell'. If the input type is `.csv` the `useCSV` setting should be set to `TRUE`.
 
-For data transformation `cyCONDOR` provide different options inherited form the `Cytofkit` package (**Chen et al. 2016**). Here the transformation can be set to:
-- `y`: For CyTOF data
-- `f`: For FlowCytometry data (fixed logicle transform)
-- `c`: For CITE-seq data (clr transformtation)
-- `a`: For FlowCytometry data (recommended, auto-logicle transformation)
+For data transformation `cyCONDOR` provides different options inherited form the `Cytofkit` package (**Chen et al. 2016**). Here the transformation can be set to:
 
-The used can also decide at this step to remove unwanted parameters not important for the downstream analysis (e.g. Time).
+- `auto_logi`: For FlowCytometry data (recommended, auto-logicle transformation)
+- `clr`: For CITE-seq data (clr transformtation)
+- `arcsinh`: arcsinh transformation
 
-Last important piece to build a `condor` object is a metadata table. This should be supplied as .csv file with one column matching the name of the .fcs or .csv files. The column matching the file names should be stated as 'filename_col'.
+The last important piece to build a `condor` object is the annotation table. The annotation table should contain all necessary metadata used for analysis as well a column containing the names of the input files and should be supplied as `.csv` file. The column containing the file names should be stated in 'filename_col'. Below an exemplary metadata table is shown.
 
 ```{r}
-condor <- prep_fcd(FCSpath = "../.test_files/fcs/", 
-                    ceil = 1000, 
+read.csv("../.test_files/metadata.csv")
+```
+
+Unwanted parameters that are not important for the downstream analysis (e.g. Time, InFile) and should be removed can be listed in `remove_param`.
+
+```{r}
+condor <- prep_fcd(data_path = "../.test_files/fcs/", 
+                    max_cell = 1000, 
                     useCSV = FALSE, 
-                    transformation = "a", 
+                    transformation = "auto_logi", 
                     remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile"), 
                     anno_table = "../.test_files/metadata.csv", 
                     filename_col = "filename",
