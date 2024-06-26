@@ -197,14 +197,13 @@ scaleColors <- function(data = input_scale,
 #' @importFrom Matrix sparseMatrix
 #' @import pheatmap
 #' @return Create a confusion matrix
-#'
 #' @export
 confusionMatrix <- function (i = NULL, j = NULL)
 {
   ui <- unique(i)
   uj <- unique(j)
-  m <- Matrix::sparseMatrix(i = match(i, ui), j = match(j,
-                                                        uj), x = rep(1, length(i)), dims = c(length(ui), length(uj)))
+  m <- Matrix::sparseMatrix(i = match(i, ui), j = match(j,uj),
+                            x = rep(1, length(i)), dims = c(length(ui), length(uj)))
   rownames(m) <- ui
   colnames(m) <- uj
   m
@@ -887,7 +886,7 @@ plot_counts_barplot<-function (fcd = condor,
                                facet_var = NULL,
                                facet_by_clustering = F,
                                facet_ncol = NULL,
-                               color_palette = NULL,
+                               color_palette = cluster_palette,
                                title = "Counts") {
 
   #### check slots, cell IDs and variables
@@ -930,20 +929,21 @@ plot_counts_barplot<-function (fcd = condor,
     theme_bw() +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-    labs(y = "cell count", x = "", fill = cluster_var) + ggtitle(title)
+    labs(y = "cell count", x = "", fill = cluster_var) + ggtitle(title) +
+    scale_fill_manual(values = color_palette)
 
   if(!is.null(facet_var) & isFALSE(facet_by_clustering)){
     p <- p + facet_wrap(.~facet_var, scales = "free_x", ncol = facet_ncol)
   }
   if(is.null(facet_var) & isTRUE(facet_by_clustering)){
-    p <- p + facet_wrap(.~cluster, scales = "free_x", ncol = facet_ncol)
+    p <- p + facet_wrap(.~cluster, scales = "free_x", ncol = facet_ncol)+
+      theme(legend.position = "none")
   }
   if(!is.null(facet_var) & isTRUE(facet_by_clustering)){
-    p <- p + facet_grid(cluster~facet_var, scales = "free")
+    p <- p + facet_grid(cluster~facet_var, scales = "free")+
+      theme(legend.position = "none")
   }
-  if(!is.null(color_palette)){
-    p <- p + scale_fill_manual(values = color_palette)
-  }
+
   return(p)
 }
 
@@ -1246,7 +1246,7 @@ plot_marker_violinplot<- function(fcd,
       colnames(data_sub)[colnames(data_sub) == as.character(i)] <- "marker"
 
       p <- ggplot(data_sub, aes(cluster, marker))+
-        geom_violin(draw_quantiles = 0.5, trim = T, scale = "area")+
+        geom_violin(draw_quantiles = 0.5, trim = T, scale = "area", fill = "grey80")+
         theme_linedraw()+
         ggtitle(i)+
         theme(axis.text.x = element_text(angle=90, hjust = 1, vjust = 0.5))+
