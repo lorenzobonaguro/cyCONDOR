@@ -1,21 +1,21 @@
 #' frequency_anova_test
 #'
 #' @title Anova test to compare cell population frequencies of independent samples
-#' @description `frequency_anova_test()`performs an independent measures Anova to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Emmeans test.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{frequency_anova_test()} performs an independent measures Anova to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Emmeans test.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
-#' @param anova_p.adjust.method p-value adjustment method to use for multiple test correction of Anova tests, e.g "bonferroni"(default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param anova_p.adjust.method p-value adjustment method to use for multiple test correction of Anova tests, e.g "bonferroni"(default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param post_hoc_test logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
-#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param anova_sig_threshold significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
 #' @param color_palette Color Palette (Charlotte check)
-#' @details `frequency_anova_test()` is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package *rstatix*.
-#' The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
-#' @returns `frequency_anova_test` returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+#' @details \code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package \code{\link[rstatix]}.
+#' The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
+#' @returns \code{frequency_anova_test()} returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -146,20 +146,20 @@ frequency_anova_test<-function(fcd,
 #' frequency_friedman_test
 #'
 #' @title Friedman Rank Sum test to compare cell population frequencies of paired samples
-#' @description `frequency_friedman_test()` performs a Friedman Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Wilcoxon Rank Sum test.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{frequency_friedman_test()} performs a Friedman Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Wilcoxon Rank Sum test.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
-#' @param friedman_p.adjust.method p-value adjustment method to use for multiple comparisons of Friedman Rank Sum test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param friedman_p.adjust.method p-value adjustment method to use for multiple comparisons of Friedman Rank Sum test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param post_hoc_test logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
-#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param friedman_sig_threshold significance threshold Friedman Rank Sum test. For all Friedman Rank Sum comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
 #' @param pair_var string indicating variable in cell_anno that should be used to pair the samples.
-#' @details `frequency_friedman_test()` is a wrapper function around \code{\link[rstatix]{friedman_test}},  \code{\link[rstatix]{friedman_effsize}} and  \code{\link[rstatix]{wilcox_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Friedman Rank Sum test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with pairwise Wilcoxon Rank Sum Tests and p-value correction is performed for each significant Friedman Rank Sum test comparison.
-#' @returns `frequency_friedman_test` returns a list of two data frames, "friedman_test" and "wilcox_test". "friedman_test" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "wilcox_test" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+#' @details \code{frequency_friedman_test()} is a wrapper function around \code{\link[rstatix]{friedman_test}},  \code{\link[rstatix]{friedman_effsize}} and  \code{\link[rstatix]{wilcox_test}} implemented in the package \code{\link[rstatix]}. The function first calculates cell population frequencies for each sample in sample_var. Then a Friedman Rank Sum test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise Wilcoxon Rank Sum Tests and p-value correction is performed for each significant Friedman Rank Sum test comparison.
+#' @returns \code{frequency_friedman_test} returns a list of two data frames, "friedman_test" and "wilcox_test". "friedman_test" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "wilcox_test" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -332,20 +332,20 @@ frequency_friedman_test<-function(fcd,
 #' frequency_kruskal_test
 #'
 #' @title Kruskal-Wallis test to compare cell population frequencies
-#' @description `frequency_kruskal_test()` performs a Kruskal-Wallis Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Dunne's test.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{frequency_kruskal_test()} performs a Kruskal-Wallis Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Dunne's test.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
-#' @param kruskal_p.adjust.method p-value adjustment method to use for multiple comparisons of Kruskal-Wallis test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param kruskal_p.adjust.method p-value adjustment method to use for multiple comparisons of Kruskal-Wallis test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param post_hoc_test logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
-#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param kruskal_sig_threshold significance threshold for Kruskal-Wallis test. For all Kruskal-Wallis comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
 #' @param detailed Charlotte
-#' @details `frequency_kruskal_test()` is a wrapper function around \code{\link[rstatix]{kruskal_test}},  \code{\link[rstatix]{kruskal_effsize}} and  \code{\link[rstatix]{dunn_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Kruskal-Wallis rank sum test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with Dunne's Test and p-value correction is performed for each significant Kruskal-Wallis comparison.
-#' @returns `frequency_kruskal_test` returns a list of two data frames, "kruskal_test" and "dunn_test". "kruskal_test" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "dunn_test" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+#' @details \code{frequency_kruskal_test()} is a wrapper function around \code{\link[rstatix]{kruskal_test}},  \code{\link[rstatix]{kruskal_effsize}} and  \code{\link[rstatix]{dunn_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Kruskal-Wallis rank sum test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with Dunne's Test and p-value correction is performed for each significant Kruskal-Wallis comparison.
+#' @returns \code{frequency_kruskal_test()} returns a list of two data frames, "kruskal_test" and "dunn_test". "kruskal_test" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "dunn_test" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -481,22 +481,22 @@ frequency_kruskal_test<-function(fcd,
 #' frequency_t_test
 #'
 #' @title t-test to compare cell population frequencies
-#' @description `frequency_t_test()` performs a two-sided, two sample t-test on cell type frequencies.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{frequency_t_test()} performs a two-sided, two sample t-test on cell type frequencies.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have exactly two levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
-#' @param pair_var string indicating variable in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if `paired_test = T`.
+#' @param pair_var string indicating variable in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if \code{paired_test = T}.
 #' @param paired_test logical, indicating if a paired (TRUE) or unpaired test (FALSE, default) should be performed.
 #' @param var.equal logical, indicating whether variance in both groups should be treated as equal (TRUE) or not (FALSE, default). TRUE uses pooled variance, FALSE the Welch approximation, see documentation of \code{\link[rstatix]{t_test}} .
 #' @param detailed logical if detailed output from \code{\link[rstatix]{t_test}} should be reported.
-#' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
-#' @details `frequency_t_test()` is a wrapper function around the `t_test()` implemented in the package *rstatix*.
+#' @details \code{frequency_t_test()} is a wrapper function around the \code{t_test()} implemented in the package \code{\link[rstatix]}.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then, a two-sided, two sample t-test is performed between two groups defined in group_var.
 #' The test can either be run unpaired (two independent groups) or paired. Afterwards,  p-value adjustment will be performed across all comparisons that were made.
-#' @returns `frequency_t_test()` returns a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+#' @returns \code{frequency_t_test()} returns a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -656,21 +656,21 @@ frequency_t_test<-function(fcd,
 #' frequency_wilcox_test
 #'
 #' @title Wilcoxon Rank Sum test to compare cell population frequencies
-#' @description `frequency_wilcox_test()` performs a two-sided, two sample Wilcoxon Rank Sum test on cell type frequencies.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{frequency_wilcox_test()} performs a two-sided, two sample Wilcoxon Rank Sum test on cell type frequencies.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable  in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable  in cell_anno that should be used to group samples in sample_var. group_var must have exactly two levels.
 #' @param sample_var string indicating variable  in cell_anno that defines sample IDs to be used.
-#' @param pair_var string indicating variable  in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if `paired_test = T`.
+#' @param pair_var string indicating variable  in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if \code{paired_test = T}.
 #' @param paired_test logical, indicating if a paired (TRUE) or unpaired test (FALSE, default) should be performed.
-#' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.
+#' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param detailed logical if detailed output from \code{\link[rstatix]{wilcox_test}} should be reported.
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
-#' @details `frequency_wilcox_test()` is a wrapper function around the `wilcox_test()` function implemented in the package *rstatix*.
+#' @details \code{frequency_wilcox_test()} is a wrapper function around the \code{wilcox_test()} function implemented in the package \code{\link[rstatix]}.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then a two-sided, two sample wilcoxon test is performed between two groups defined in group_var.
 #' The test can either be run unpaired (two independent groups) or paired. Afterwards,  p-value adjustment will be performed across all comparisons that were made.
-#' @returns `frequency_wilcox_test` returns a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+#' @returns \code{frequency_wilcox_test} returns a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -827,24 +827,26 @@ frequency_wilcox_test<-function(fcd,
 #' prepInputDiffcyt
 #'
 #' @title Convert a condor object to se object
-#' @description `prepInputDiffcyt()` converts a fcd object into a SummarizedExperiment object compatible with *diffcyt* functions `diffcyt::calcCounts()` and `diffcyt::calcMedians()`.
-#' @param fcd flow cytometry dataset, that has been subjected to clustering or cell type label prediction with *condor* before
+#' @description \code{prepInputDiffcyt()} converts a fcd object into a SummarizedExperiment object compatible with \code{\link[diffcyt]} functions \code{\link[diffcyt]{calcCounts}} and \code{\link[diffcyt]{calcMedians}}.
+#' @param fcd flow cytometry dataset, that has been subjected to clustering or cell type label prediction with cyCONDOR before
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
 #' @param sample_var Charlotte
 #' @param meta_vars vector of variables in cell_anno, which contain sample level metadata, which means that each sample ID is associated with exactly one level per variable. All variables that the user wants to use in the test design need to be listed, e.g. group, donor_id. Variables with names "sample_id" and "cluster_id" are not allowed, since these names have designated purposes in diffcyt workflow.
 #' @param marker_state vector of marker names that should get the marker_class "state". If no markers are provided in marker_state and marker_type all available markers and features in expr data will be set as "state".
 #' @param marker_type vector of marker names available in expr data, that should get the marker_class "type". If no markers are provided in marker_state and marker_type all available markers and features in expr data will get the marker_class "state".
-#' @details The function will carry over the original transformed expression. The flexible experimental design of  `diffcyt`'s testing functions allows to include batch variables.
+#' @details The function will carry over the original transformed expression. The flexible experimental design of  diffcyt's testing functions allows to include batch variables.
 #' @import diffcyt
 #' @import SummarizedExperiment
 #' @returns
-#' A SummarizedExperiment object suitable to be used as input for *diffcyt* functions \code{\link[diffcyt]{calcCounts}} and \code{\link[diffcyt]{calcMedians}}. The object contains the following components:
-#' *metadata "experiment_info": sample-level metadata table, containing all variables provided in meta_vars and sample_var, whereby sample_var is renamed to "sample_id"
-#' *metadata "n_cells": number of cells per sample_id
-#' *assay "exprs": contains expression data
-#' *rowData: cell-level information, containing all variables provided in meta_vars, sample_var and cluster_var, whereby sample_var is renamed to "sample_id" and cluster_var tp "cluster_id" to be compatible with diffcyt workflow.
-#' *colData: marker information required for diffcyt differential state analysis.
+#' A SummarizedExperiment object suitable to be used as input for \code{\link[diffcyt]} functions \code{\link[diffcyt]{calcCounts}} and \code{\link[diffcyt]{calcMedians}}. The object contains the following components:
+#' \itemize{
+#'  \item{metadata "experiment_info"} : sample-level metadata table, containing all variables provided in meta_vars and sample_var, whereby sample_var is renamed to "sample_id"
+#'  \item{metadata "n_cells"} : number of cells per sample_id
+#'  \item{assay "exprs"} : contains expression data
+#'  \item{rowData} : cell-level information, containing all variables provided in meta_vars, sample_var and cluster_var, whereby sample_var is renamed to "sample_id" and cluster_var tp "cluster_id" to be compatible with diffcyt workflow.
+#'  \item{colData} : marker information required for diffcyt differential state analysis.
+#' }
 #'
 #' @export
 prepInputDiffcyt<-function(fcd,
@@ -987,32 +989,33 @@ prepInputDiffcyt<-function(fcd,
 #' @title Differential expression testing on cell level
 #' @description
 #' EXPERIEMTAL FEATURE, we advise against using it yet and suggest you have a look at the Vignette "Differential Analysis" for other options.
-#' `marker_wilcox_test()` performes a Wilcoxon Rank Sum Test for two groups of cells for each marker and cell population combination.
-#' @param fcd flow cytometry data set, that has been subjected to the clustering or cell type label prediction with *cyCONDOR*
+#' \code{marker_wilcox_test()} performes a Wilcoxon Rank Sum Test for two groups of cells for each marker and cell population combination.
+#' @param fcd flow cytometry data set, that has been subjected to the clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable name in cell_anno that should be used as grouping variable. The grouping variable needs to have two or more groupss
 #' @param group1 string indicating group level in group_var that should be used to select cells for group 1
 #' @param group2 string indicating group level in group_var that should be used to select cells for group 2
-#' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "BH" (Benjamini-Hochberg, default) or "bonferroni". All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*
+#' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "BH" (Benjamini-Hochberg, default) or "bonferroni". All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param marker (optional) vector of character strings indicating which features in the expression expr_slot should be considered during testing. by default, all features are tested.
 #' @param min_cells_per_group Minimum number of cells per group required to include a cell population for differential testing.
 #' @returns
 #' A data frame containing test results for each marker and cell population combination - one combination per row.
-#' *`cluster` cell population that was tested
-#' *`marker` feature from expression data that was tested
-#' *`group1` group name (level) of group 1
-#' *`group2` group name (level) of group 2
-#' *`n1 / n2` absolute cell counts in group 1 (n1) and group 2 (n2)
-#' *`mean1 / mean2` mean marker expression in group 1 (mean1) and group 2 (mean2)
-#' *`p` p-value
-#' *`p.adj` adjusted p-value.
-#' *`delta_mean` delta of mean1 and mean2
-#'
+#' \itemize{
+#'  \item{cluster} : cell population that was tested
+#'  \item{marker} : feature from expression data that was tested
+#'  \itme{group1} : group name (level) of group 1
+#'  \item{group2} : group name (level) of group 2
+#'  \item{n1 / n2} : absolute cell counts in group 1 (n1) and group 2 (n2)
+#'  \item{mean1 / mean2} : mean marker expression in group 1 (mean1) and group 2 (mean2)
+#'  \item{p} : p-value
+#'  \item{p.adj} : adjusted p-value.
+#'  \item{delta_mean} : delta of mean1 and mean2
+#' }
 #' @details
-#' The function `marker_wilcox_test` compares two groups of cells for each marker-cell population combination. Expression values will be extracted from expr_slot "orig", containing the transformed data.
+#' The function \code{marker_wilcox_test()} compares two groups of cells for each marker-cell population combination. Expression values will be extracted from expr_slot "orig", containing the transformed data.
 #' In case group_var has more than two levels, the dataset will be subsetted to the two levels specified in group1 and group2.
-#' Wilcoxon Rank Sum Test is performed using the \code{\link[stats]{wilcox.test}} implemented in the *stats* package. Afterwards p-value adjustement is performed considering all comparisons that were made.
+#' Wilcoxon Rank Sum Test is performed using the \code{\link[stats]{wilcox.test}} implemented in the \code{\link[stats]} package. Afterwards p-value adjustment is performed considering all comparisons that were made.
 #' @import tidyr
 #' @import reshape2
 #' @import dplyr

@@ -2,22 +2,24 @@
 #'
 #' @title Get summary values
 #' @description
-#' `getTable()` can be used to generate frequently used parameters on cell populations defined by clustering or prediction, while considering a meta variable for grouping. It can produce cell numbers (counts), cell population frequencies as well as median or mean marker expression for each group to cell population combination.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' \code{getTable()} can be used to generate frequently used parameters on cell populations defined by clustering or prediction, while considering a meta variable for grouping. It can produce cell numbers (counts), cell population frequencies as well as median or mean marker expression for each group to cell population combination.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
 #' @param output_type type of parameter that should be reported in table. One of the following option needs to be selected:
-#'  * `"counts"`: gives cell numbers per group_var and cell population
-#'  * `"frequency"`: returns proportion of each cell population for each level in group_var (default)
-#'  * `"median"`: calculates median expression for each group_var and cell population combination for each available feature in expression matrix
-#'  * `"mean"`: calculates mean expression for each group_var and cell population combination for each available feature in expression matrix
+#' \itemize{
+#'  \item{"counts"} : gives cell numbers per group_var and cell population
+#'  \item{"frequency"} : returns proportion of each cell population for each level in group_var (default)
+#'  \item{"median"}: calculates median expression for each group_var and cell population combination for each available feature in expression matrix
+#'  \item{"mean"}: calculates mean expression for each group_var and cell population combination for each available feature in expression matrix
+#' }
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable name in cell_anno that should be used to group the output, e.g. group or sample ID.
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
 #' @import dplyr
 #' @returns
-#' `getTable()` returns a data frame with parameters in columns and observations in rows. In case of output_type of "counts" or "frequency", counts and frequencies for each cell population (columns) are reported in one row for each level in group_var. Given an output_type of "mean" or "median", aggregated expression for each feature (columns) is reported for each group_var and cell population combination (cluster).
+#' \code{getTable()} returns a data frame with parameters in columns and observations in rows. In case of output_type of "counts" or "frequency", counts and frequencies for each cell population (columns) are reported in one row for each level in group_var. Given an output_type of "mean" or "median", aggregated expression for each feature (columns) is reported for each group_var and cell population combination (cluster).
 #'
 #'@export
 getTable <- function(fcd,
@@ -214,8 +216,8 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' plot_dim_red
 #'
 #' @title Dimensionality reduction dotplot
-#' @description `plot_dim_red` generates a dotplot of the coordinates of any dimensionality reduction performed on a `condor` object. The plot can be colored by any variable both numeric (e.g. expression) or categorical (e.g. clustering/metadata).
-#' @param fcd flow cytometry data set, that has been subjected to dimensionality reduction with *cyCONDOR*.
+#' @description \code{plot_dim_red()} generates a dotplot of the coordinates of any dimensionality reduction performed on a \code{condor} object. The plot can be colored by any variable both numeric (e.g. expression) or categorical (e.g. clustering/metadata).
+#' @param fcd flow cytometry data set, that has been subjected to dimensionality reduction with cyCONDOR.
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
 #' @param reduction_method string specifying which dimensionality reduction method to use ("umap", "tSNE", "diffmap", "pca").
@@ -231,9 +233,9 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param dot_size size of the dots.
 #' @param apha transparency of the dots.
 #' @param color_discrete colors for discrete parameters, must be provided as vector of the same length as the number of factors of `param`.
-#' @param color_gradient colors for continous parameters.
+#' @param color_gradient colors for continuous parameters.
 #' @param remove_guide logical, if you want to remove the guide.
-#' @param facet_by_variable option to facet the plot by a variable, if `FALSE` the plot is not faceted, if `TRUE` the plot is faceted by the `param` variable. If any other variable is provided (e.g. "group") the plot will be faceted by this variable.
+#' @param facet_by_variable option to facet the plot by a variable, if FALSE the plot is not faceted, if TRUE the plot is faceted by the `param` variable. If any other variable is provided (e.g. "group") the plot will be faceted by this variable.
 #' @param label_clusters logical: If clusters should be labeled with a text box.
 #' @param label_size size of the labels.
 #' @param label_color color of the labels.
@@ -524,8 +526,8 @@ plot_dim_red <- function(fcd,
 #'
 #' @title Heatmap of scaled expression by cell population
 #' @description
-#' `plot_marker_HM()` generates a heatmap of scaled mean marker expression for each cell population.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' \code{plot_marker_HM()} generates a heatmap of scaled mean marker expression for each cell population.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
 #' @param marker_to_exclude (optional) vector of characters indicating which features in expression matrix should not be included in the heatmap.
@@ -614,8 +616,8 @@ plot_marker_HM <- function(fcd,
 #' plot_confusion_HM
 #'
 #' @title plot_confusion_HM
-#' @description `plot_confusion_HM()` generates a heatmap showing the contribution of each group_var to a cell population after normalizing all levels in group_var to the same cell numbers.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{plot_confusion_HM()} generates a heatmap showing the contribution of each group_var to a cell population after normalizing all levels in group_var to the same cell numbers.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used to calculate the confusion.
 #' @param group_var string indicating variable name in cell_anno that should be used to calculate the relative contribution to the variable specified in cluster_var.
@@ -624,7 +626,7 @@ plot_marker_HM <- function(fcd,
 #' @param title character string, title of the plot.
 #' @param cluster_cols logical indicating if columns should be clustered (default: FALSE)
 #' @param cluster_rows logical indicating if rows should be clustered (default: FALSE)
-#' @return `plot_confusion_HM()` first calculates cell counts for each combination of group_var and cell population and normalizes the counts to a total of 1000 cells per group_var.
+#' @return \code{plot_confusion_HM()} first calculates cell counts for each combination of group_var and cell population and normalizes the counts to a total of 1000 cells per group_var.
 #' Afterwards the percentage of cells coming from each level in group_var is calculated per cell population. The normalization of counts corrects the visualization for differences in total cells (events) measured per group_var.
 #' @import pheatmap
 #'
@@ -687,8 +689,8 @@ plot_confusion_HM <- function(fcd,
 #' plot_frequency_boxplot
 #'
 #' @title box plot of cell population frequencies
-#' @description `plot_frequency_boxplot` plots cell population frequencies of samples grouped by group_var as boxplots.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{plot_frequency_boxplot()} plots cell population frequencies of samples grouped by group_var as boxplots.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param groups_to_show vector of strings indicating levels in group_var that should be included for plotting. By default all groups are plotted.
@@ -700,7 +702,7 @@ plot_confusion_HM <- function(fcd,
 #' @import dplyr
 #' @import reshape2
 #' @import ggplot2
-#' @returns `plot_frequency_boxplots` returns a list of boxplots, each element of the list contains the plot of one cell population.
+#' @returns \code{plot_frequency_boxplots()} returns a list of boxplots, each element of the list contains the plot of one cell population.
 #'
 #' @export
 plot_frequency_boxplot<-function(fcd,
@@ -798,8 +800,8 @@ plot_frequency_boxplot<-function(fcd,
 #' plot_frequency_barplot
 #'
 #' @title bar chart of cell population frequencies
-#' @description `plot_frequency_barplot` plots cell population frequencies for each level in group_var as stacked barplot.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{plot_frequency_barplot()} plots cell population frequencies for each level in group_var as stacked barplot.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable name in cell_anno that defines grouping variable to be used (x-axis), e.g. group or sample ID.
@@ -807,7 +809,7 @@ plot_frequency_boxplot<-function(fcd,
 #' @param color_palette vector of colors to be used to fill bar chart plots
 #' @param title title of the plot, default is "Frequency"
 #' @import ggplot2
-#' @returns `plot_frequency_barplot` returns a plot showing cell population frequencies for each level in group_var. The plot is faceted by another variable, when provided a facet_var.
+#' @returns \code{plot_frequency_barplot} returns a plot showing cell population frequencies for each level in group_var. The plot is faceted by another variable, when provided a facet_var.
 #'
 #' @export
 plot_frequency_barplot<-function (fcd = condor,
@@ -868,8 +870,8 @@ plot_frequency_barplot<-function (fcd = condor,
 #' plot_counts_barplot
 #'
 #' @title bar chart of cell population counts
-#' @description `plot_counts_barplot` plots cell population counts for each level in group_var as bar plot.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{plot_counts_barplot()} plots cell population counts for each level in group_var as bar plot.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param group_var string indicating variable name in cell_anno that defines grouping variable to be used (x-axis), e.g. group or sample ID.
@@ -879,7 +881,7 @@ plot_frequency_barplot<-function (fcd = condor,
 #' @param color_palette vector of colors to be used to fill bar chart plots
 #' @param title title of the plot, default is "Counts"
 #' @import ggplot2
-#' @returns `plot_counts_barplot` returns a plot showing cell numbers per cell population for each level in group_var. The plot is faceted by another variable, when provided a facet_var and or by the cell population, depending on facet_by_clustering.
+#' @returns \code{plot_counts_barplot()} returns a plot showing cell numbers per cell population for each level in group_var. The plot is faceted by another variable, when provided a facet_var and or by the cell population, depending on facet_by_clustering.
 #' @export
 plot_counts_barplot<-function (fcd = condor,
                                cluster_slot,
@@ -952,15 +954,15 @@ plot_counts_barplot<-function (fcd = condor,
 #' plot_dim_density
 #'
 #' @title dimensionality reduction plot with density distribution
-#' @description `plot_dim_density` plots the density distribution of each level of a grouping variable on top of dimensionality reduction plot. At the moment, only UMAP visualization is supported
-#' @param fcd flow cytometry data set comprising dimensionality reduction calculated with *cyCONDOR*.
+#' @description \code{plot_dim_density()} plots the density distribution of each level of a grouping variable on top of dimensionality reduction plot. At the moment, only UMAP visualization is supported
+#' @param fcd flow cytometry data set comprising dimensionality reduction calculated with cyCONDOR.
 #' @param reduction_method string specifying which dimensionality reduction method to use. At the moment, only "umap" is supported.
 #' @param reduction_slot string specifying reduction name in reduction_method to use for visualization, e.g. "pca_orig".
 #' @param group_var string indicating variable name in cell_anno for which density distribution will be plotted for each level in group_var.
 #' @param title character string, title of the plot
 #' @param dot_size size of the background dots.
 #' @param alpha transparency of the background dots.
-#' @param color_density vector of strings indicating the color palette from *RColorBrewer" to be used for the density gradient. A names vector using levels in group_var allows the assignment of a specific color to a group level. If vector is not names, entries will be assigned to groups in alphabetic order and color palettes will be reused if vector has less colors than levels in group_var
+#' @param color_density vector of strings indicating the color palette from \code{\link[RColorBrewer]} to be used for the density gradient. A names vector using levels in group_var allows the assignment of a specific color to a group level. If vector is not names, entries will be assigned to groups in alphabetic order and color palettes will be reused if vector has less colors than levels in group_var
 #' @import ggrastr
 #' @import ggpubr
 #' @import ggplot2
@@ -1041,8 +1043,8 @@ plot_dim_density <- function(fcd,
 #'
 #' @title Heatmap of scaled expression to compare two groups
 #' @description
-#' `plot_marker_group_HM()` generates a heatmap of scaled mean marker expression for each cell population split by a grouping variable.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' \code{plot_marker_group_HM()} generates a heatmap of scaled mean marker expression for each cell population split by a grouping variable.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
 #' @param marker_to_exclude (optional) vector of characters indicating which features in expression matrix should not be included in the heatmap.
@@ -1134,8 +1136,8 @@ plot_marker_group_HM <- function(fcd,
 #'
 #' @title violin plot of marker expression in cell populations
 #' @description
-#' `plot_marker_violinplot` plots the expression of selected markers as violin plots for cell populations.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' \code{plot_marker_violinplot()} plots the expression of selected markers as violin plots for cell populations.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param marker vector of characters indicating which features of the expression matrix should be plotted.
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
@@ -1145,8 +1147,8 @@ plot_marker_group_HM <- function(fcd,
 #' @param group_var (optional) string indicating variable name in cell_anno that should be used to split violin plots.
 #' @param color_palette vector of colors to be used to fill violin plots, when group_var is used
 #' @import ggplot2
-#' @returns `plot_marker_violinplot` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
-#' @details The violin plots are plotted with default parameters of ggplot2's `geom_violin()` and horizontal lines indicate the median.
+#' @returns \code{plot_marker_violinplot()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.
+#' @details The violin plots are plotted with default parameters of ggplot2's \code{\link[ggplot2]{geom_violin}} and horizontal lines indicate the median.
 #'
 #' @export
 #'
@@ -1276,8 +1278,8 @@ plot_marker_violinplot<- function(fcd,
 #' plot_marker_boxplot
 #'
 #' @title plot box plots of marker median or mean
-#' @description `plot_marker_boxplot()` generates faceted box plots of aggregated expression per sample grouped by a grouping of interest for each marker-cluster combination.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' @description \code{plot_marker_boxplot()} generates faceted box plots of aggregated expression per sample grouped by a grouping of interest for each marker-cluster combination.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param marker marker in provided expr_slot that should be included in plotting. By default all features are plotted.
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
@@ -1446,8 +1448,8 @@ plot_marker_boxplot<- function(fcd,
 #'
 #' @title plot_marker_dotplot
 #' @description
-#' `plot_marker_dotplot` generates a classical scatter plot of two markers
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' \code{plot_marker_dotplot()} generates a classical scatter plot of two markers
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
 #' @param marker_x marker name in expr slot of which transformed expression is shown on x-axis.
@@ -1599,19 +1601,19 @@ plot_marker_dotplot <- function(fcd,
 #'
 #' @title density plot of marker expression in cell populations grouped by a meta variable
 #' @description
-#' `plot_marker_density` plots the density distribution of expression for cell populations. Each line indicates distribution for one level in group_var.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' \code{plot_marker_density()} plots the density distribution of expression for cell populations. Each line indicates distribution for one level in group_var.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param marker vector of characters indicating which features of the expression matrix should be plotted.
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
-#' @param cluster_to_show (optionl) vector of strings indicating levels in cluster_var that should be included for plotting.
+#' @param cluster_to_show (optional) vector of strings indicating levels in cluster_var that should be included for plotting.
 #' @param group_var string indicating variable name in cell_anno for which density distributions get calculated.
 #' @param facet_var (optional) string indicating variable name in cell_anno that should be used to facet the plots by a meta variable.
-#' @param facet_ncol numeric, number of columns used for facetting.
+#' @param facet_ncol numeric, number of columns used for faceting.
 #' @param color_palette vector of colors to be used to color the density lines
-#' @returns `plot_marker_density` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+#' @returns \code{plot_marker_density()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.
 #' @details The density plots are plotted with default parameters of ggplot2's \code{\link[ggplot2]{geom_density}}.
 #' @import ggplot2
 #'
@@ -1743,8 +1745,8 @@ plot_marker_density <- function(fcd,
 #'
 #' @title ridgeline plot of marker expression in cell populations
 #' @description
-#' `plot_marker_ridgeplot` plots the expression of selected markers as ridgeline plots for cell populations.
-#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*
+#' \code{plot_marker_ridgeplot()} plots the expression of selected markers as ridgeline plots for cell populations.
+#' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param marker vector of characters indicating which features of the expression matrix should be plotted.
 #' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
 #' Corrected input data should be handled cautiously.
@@ -1754,7 +1756,7 @@ plot_marker_density <- function(fcd,
 #' @param color_palette vector of colors to be used to fill density distributions.
 #' @param alpha numeric, adjust alpha to be used on fill color of density distributions.
 #' @import ggridges
-#' @returns `plot_marker_ridgeplot` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+#' @returns \code{plot_marker_ridgeplot()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.
 #' @details The ridgeline plots are plotted with default parameters of ggridges's \code{\link[ggridges]{geom_density_ridges}}
 #' @export
 #'
