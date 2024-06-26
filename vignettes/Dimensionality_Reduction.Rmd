@@ -14,7 +14,13 @@ editor_options:
 library(cyCONDOR)
 ```
 
-In this vignette we showcase some `cyCONDOR` functions for dimensionality reduction. Here we exemplify the how to run PCA, UMAP. tSNE and DM. All functions take as input the `fcd` and the data slot to be used for the calculation. The `runPCA` function always use the `expr` slot for the calculation, for non linear dimensionality reduction (UMAP, tSNE, DM) the used can decide to use the `expr` data or the `pca` result as input.
+In this vignette we showcase some `cyCONDOR` functions for dimensionality reduction. Here we exemplify how to perform principle component analysis (PCA) and calculate uniform manifold approximation and projection (UMAP), t-distributed stochastic neighbor embedding (tSNE) and diffusion map (DM). 
+
+All functions need the `condor` object as `fcd` input and the `data_slot` to be used for the calculation. The `runPCA` function always uses the `expr` slot for the calculation, for non-linear dimensionality reduction (UMAP, tSNE, DM) the user can decide to use the `expr` data or the `pca` result as input. 
+
+Additionaly, the user has the option to specifically state which markers should be used for the calculation by listing them under `markers`. The list can be either written out manually or be extracted directly from the condor object using the implemented functions `measured_markers` and `used_markers` By default all available markers from the condor object are used. If the `discard` option is set to TRUE, all markers **except** the ones listed under `markers` are used for calculation. This enables the exclusion of single markers.
+
+By defining a `prefix` for the dimensionality reduction each function can be run with different settings and the results will be saved accordingly.
 
 # Load example cyCONDOR object
 ```{r}
@@ -23,9 +29,29 @@ condor <- readRDS("../.test_files/condor_example.rds")
 
 # Principal Component Analysis
 ```{r}
-condor <- runPCA(fcd = condor, 
-                 data_slot = "orig", 
+condor <- runPCA(fcd = condor,
+                 data_slot = "orig",
                  seed = 91)
+```
+
+### PCA using only T cell markers
+```{r}
+condor <- runPCA(fcd = condor,
+                 data_slot = "orig",
+                 seed = 91,
+                 prefix =  "Tcell",
+                 markers = c("CD3", "CD4", "CD8"),
+                 discard = FALSE)
+```
+
+### PCA excluding unwanted markers ("LD")
+```{r}
+condor <- runPCA(fcd,
+                 data_slot = "orig",
+                 seed = 91,
+                 prefix =  "exclusionLD",
+                 markers = c("LD"),
+                 discard = TRUE)
 ```
 
 # tSNE
