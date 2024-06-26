@@ -231,7 +231,7 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param limX limits of the x axes (e.g. c(-1, 7)).
 #' @param limY limits of the y axes (e.g. c(-1, 7)).
 #' @param dot_size size of the dots.
-#' @param apha transparency of the dots.
+#' @param alpha transparency of the dots.
 #' @param color_discrete colors for discrete parameters, must be provided as vector of the same length as the number of factors of `param`.
 #' @param color_gradient colors for continuous parameters.
 #' @param remove_guide logical, if you want to remove the guide.
@@ -264,7 +264,7 @@ plot_dim_red <- function(fcd,
                          limX = NULL,
                          limY = NULL,
                          dot_size = 0.1,
-                         apha = 0.2,
+                         alpha = 0.2,
                          color_discrete = cluster_palette,
                          color_gradient = colors,
                          remove_guide = FALSE,
@@ -345,14 +345,14 @@ plot_dim_red <- function(fcd,
   # Selection of raster plot or standard
   if (raster == FALSE) {
 
-    core_numeric <- list(geom_point(aes(color = poi), alpha = apha, size = dot_size),
+    core_numeric <- list(geom_point(aes(color = poi), alpha = alpha, size = dot_size),
                          theme_bw(),
                          theme(aspect.ratio = 1, panel.grid = element_blank()),
                          ggtitle(title),
                          scale_color_gradientn(colours = color_gradient),
                          labs(color = param))
 
-    core_discrete <- list(geom_point(aes(color = poi), alpha = apha, size = dot_size),
+    core_discrete <- list(geom_point(aes(color = poi), alpha = alpha, size = dot_size),
                           theme_bw(),
                           theme(aspect.ratio = 1, panel.grid = element_blank()),
                           ggtitle(title),
@@ -362,14 +362,14 @@ plot_dim_red <- function(fcd,
 
   } else {
 
-    core_numeric <- list(geom_point_rast(aes(color = poi), alpha = apha, size = dot_size),
+    core_numeric <- list(geom_point_rast(aes(color = poi), alpha = alpha, size = dot_size),
                          theme_bw(),
                          theme(aspect.ratio = 1, panel.grid = element_blank()),
                          ggtitle(title),
                          scale_color_gradientn(colours = color_gradient),
                          labs(color = param))
 
-    core_discrete <- list(geom_point_rast(aes(color = poi), alpha = apha, size = dot_size),
+    core_discrete <- list(geom_point_rast(aes(color = poi), alpha = alpha, size = dot_size),
                           theme_bw(),
                           theme(aspect.ratio = 1, panel.grid = element_blank()),
                           ggtitle(title),
