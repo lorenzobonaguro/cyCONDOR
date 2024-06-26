@@ -986,6 +986,7 @@ prepInputDiffcyt<-function(fcd,
 #'
 #' @title Differential expression testing on cell level
 #' @description
+#' EXPERIEMTAL FEATURE, we advise against using it yet and suggest you have a look at the Vignette "Differential Analysis" for other options.
 #' `marker_wilcox_test()` performes a Wilcoxon Rank Sum Test for two groups of cells for each marker and cell population combination.
 #' @param fcd flow cytometry data set, that has been subjected to the clustering or cell type label prediction with *cyCONDOR*
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
@@ -1029,6 +1030,8 @@ marker_wilcox_test<-function(fcd,
                              marker = NULL,
                              min_cells_per_group = 10
 ){
+
+  warning('HOLD UP! This is an experimental feature - we advise against using it yet and suggest you have a look at the Vignette "Differential Analysis" for other options.')
 
   expr_slot <- "orig"
 
