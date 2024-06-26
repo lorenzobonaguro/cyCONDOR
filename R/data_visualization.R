@@ -197,6 +197,8 @@ scaleColors <- function(data = input_scale,
 #' @importFrom Matrix sparseMatrix
 #' @import pheatmap
 #' @return Create a confusion matrix
+#' @references code for this function was obtained from the R package ArchR (https://github.com/GreenleafLab/ArchR/blob/master/R/HelperUtils.R)
+#'
 #' @export
 confusionMatrix <- function (i = NULL, j = NULL)
 {
