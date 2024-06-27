@@ -1,7 +1,7 @@
 #' crt_transform
 #'
 #' @title crt_transform
-#' @description Data transformation, this function run within the prep_fcd wrapper.
+#' @description Data transformation, this function runs within the \code{\link{prep_fcd}} wrapper.
 #' @param x matrix to transform
 #' @return crt_transform
 #'
@@ -94,7 +94,7 @@ read_data <- function(FCSpath, max_cells, useCSV, separator){
 #' transform_data
 #'
 #' @title transform_data
-#' @description Data transformation, this function run within the prep_fcd wrapper, the logicle tranformation are derived from Cytofkit.
+#' @description Data transformation, this function runs within the \code{\link{prep_fcd}} wrapper, the logicle tranformation are derived from Cytofkit.
 #' @param keep Vector of the parameter to keep in the analysis.
 #' @param original_data Original data
 #' @param transformation transformation to perform.
@@ -162,17 +162,19 @@ transform_data <- function(keep, transformation, original_data){
 #' prep_fcd
 #'
 #' @title prep_fcd
-#' @description Wrapping function to prepare a flow cytometry dataset
+#' @description Loading and transforming the data to create a flow cytometry dataset from FCS files for the analysis with the cyCONDOR workflow.
 #' @param data_path Folder where the .fcs files or .csv files are stored.
 #' @param max_cell Number of cells to use for each file (set to a high number if you want to use all available events).
 #' @param useCSV Flag if the input are .csv files and not .fcs (experimental).
-#' @param transformation Transformation to perform.
-#' @param remove_param Parameters to remove from the transformation, "inTime" should be kept.
-#' @param anno_table path to the annotation table file.
-#' @param filename_col Name of the column containing the file name matching with the .fcs files.
+#' @param transformation Transformation to perform. Select one of the following: \code{"auto_log"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).
+#' @param remove_param Parameters to remove from the transformation, "inTime" should be kept. The selected parameters will not be included in the \code{fcd}.
+#' @param anno_table Path to the annotation table text file. The annotation table should contain one column with the file names of all .fcs or .csv files to read in and optionally additional columns with further sample information (e.g. "sample_id", "condition").
+#' @param filename_col Name of the column of the \code{anno_table} containing the file name matching with the .fcs/.csv files.
 #' @param seed A seed is set for reproducibility.
-#' @param separator_anno separator used in the annotation file.
-#' @param separator_fc_csv separator used in the fc csv files.
+#' @param separator_anno Separator used in the annotation file, by default \code{separator_anno = ","}.
+#' @param separator_fc_csv Separator used in the cytometry data .csv files, by default \code{separator_anno = ","}.
+#' @details The \code{prep_fcd} is a wrapper function to read in the files, subset to \code{max_cell}, transform the data and create a 'flow cytometry dataframe' (\code{fcd}).
+#' @return An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
 #' @import readr
 #' @import readxl
 #' @import stringr
@@ -252,16 +254,18 @@ prep_fcd <- function(data_path,
 #' Read FlowJo workspace
 #'
 #' @title Read FlowJo Workspace
-#' @description read_flowjo_workspace and prepare the condor object
-#' @param data_gs Gate Set object from flowWorkspace Package.
+#' @description Loading and transforming the data to create a flow cytometry dataset from a Gate Set object for the analysis with the cyCONDOR workflow.
+#' @param data_gs Gate Set object, e.g. created by using \code{\link[CytoML]{open_flowjo_xml}} and \code{\link[CytoML]{flowjo_to_gatingset}} from the CytoML package.
 #' @param pop Gate to keep for downstream analysis (default: 'root').
 #' @param gate_list Gate List of the FlowJo Workspace.
 #' @param inverse.transform Logical: if the data should be reverse transformed of kept with FlowJo transformation (default = FALSE).
-#' @param transformation If inverse.transform = TRUE, type of new transformation to perform (see nfTransform).
+#' @param transformation If \code{inverse.transform = TRUE}, type of new transformation to perform. Select one of the following: \code{"auto_log"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).
 #' @param remove_param Parameters to be removed from the condor object.
-#' @param merge_anno Logical: If sample anno should be merged to the condor object.
-#' @param anno_table Path to annotation table.
-#' @param separator_anno Separator of the .csv annotation table.
+#' @param merge_anno Logical: If sample anno should be merged to the \code{fcd}.
+#' @param anno_table If \code{merge_anno = TRUE}, path to the annotation table text file. The annotation table should contain one column with the file names of all .fcs or .csv files to read in and optionally additional columns with further sample information (e.g. "sample_id", "condition").
+#' @param separator_anno Separator used in the annotation file, by default \code{separator_anno = ","}.
+#' @param filename_col Name of the column of the \code{anno_table} containing the file name matching with the .fcs files.
+#' @return An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
 #' @import flowWorkspace
 #' @import Biobase
 #' @import CytoML
@@ -275,8 +279,9 @@ prep_fjw <- function(data_gs,
                      transformation,
                      remove_param,
                      merge_anno = FALSE,
-                     anno_table,
-                     separator_anno) {
+                     anno_table = NULL,
+                     separator_anno = ",",
+                     filename_col = NULL) {
 
   fs <- flowWorkspace::gs_pop_get_data(obj = data_gs, y = "root", inverse.transform = inverse.transform) %>% flowWorkspace::cytoset_to_flowSet()
 
@@ -361,15 +366,15 @@ prep_fjw <- function(data_gs,
   fcd[["anno"]][["cell_anno"]] <- df[ ,!colnames(df) %in% fs[[1]]@parameters$desc]
 
   #save import parameters
-  fcd[["extras"]][["prep_fcd_param"]] <- list(data_path = data_path,
-                                              max_cell = max_cell,
+  fcd[["extras"]][["prep_fcd_param"]] <- list(#data_path = data_path,
+                                             #max_cell = max_cell,
                                               transformation = transformation,
                                               remove_param= remove_param,
                                               anno_table = anno_table,
                                               filename_col= filename_col,
-                                              seed= seed,
-                                              separator_anno = separator_anno,
-                                              separator_fc_csv = separator_fc_csv)
+                                             #seed= seed,
+                                              separator_anno = separator_anno)
+
 
   class(fcd) <- "flow_cytometry_dataframe"
 
