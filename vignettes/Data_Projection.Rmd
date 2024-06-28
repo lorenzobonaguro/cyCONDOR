@@ -14,21 +14,44 @@ editor_options:
 library(cyCONDOR)
 ```
 
-Considering the high nunber of samples that can be generated with modern HDC instruments and the number of cells acquired we developed a data projection workflow in `cyCONDOR`. With this approach an initial model it trained including a UMAP dimensionality reduction and a cell classifier of the cell labels. We can then project any new sample into the pre-trained model, this operation is much faster and allows to analyse millions of cell in few minutes. 
+```{r, include= FALSE}
+library(dplyr)
+library(flowCore)
+library(Rphenograph)
+
+#load functions 
+source("../repo/cyCONDOR/R/batch_correction.R")
+source("../repo/cyCONDOR/R/data_load_and_transform.R")
+source("../repo/cyCONDOR/R/data_visualization.R")
+source("../repo/cyCONDOR/R/dim_reduction.R")
+source("../repo/cyCONDOR/R/colors.R")
+source("../repo/cyCONDOR/R/clustering.R")
+source("../repo/cyCONDOR/R/misc.R")
+source("../repo/cyCONDOR/R/data_projection.R")
+```
+Considering the high number of samples that can be generated with modern HDC instruments and the number of cells acquired we developed a data projection workflow in `cyCONDOR`. With this approach an initial model it trained including a UMAP dimensionality reduction and a cell classifier of the cell labels. We can then project any new sample into the pre-trained model, this operation is much faster and allows to analyse millions of cell in few minutes. 
 
 # Loading the data for training
 
 We start by loading the data for the training.
 
 ```{r}
-condor_train <- prep_fcd(FCSpath = "../.test_files/fcs/", 
-                        ceil = 5000, 
+# condor_train <- prep_fcd(data_path = "../.test_files/fcs/", 
+#                         may_cell = 5000, 
+#                         useCSV = FALSE, 
+#                         transformation = "auto_logi", 
+#                         remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"), 
+#                         anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_train.csv", 
+#                         filename_col = "filename")
+
+
+condor_train <- prep_fcd(data_path = "../../data/.test_files/fcs", 
+                        max_cell = 5000, 
                         useCSV = FALSE, 
-                        transformation = "a", 
+                        transformation = "auto_logi", 
                         remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"), 
-                        anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_train.csv", 
-                        filename_col = "filename",
-                        seed = 91)
+                        anno_table = "../../data/Figure 6 - Data Projection/data_and_envs/metadata_train.csv", 
+                        filename_col = "filename")
 ```
 ```{r}
 condor_train$anno$cell_anno$group <- "train"
@@ -39,14 +62,21 @@ condor_train$anno$cell_anno$group <- "train"
 We also load the data to later project.
 
 ```{r}
-condor_test <- prep_fcd(FCSpath = "../.test_files/fcs/", 
-                        ceil = 5000, 
-                        useCSV = FALSE, 
-                        transformation = "a", 
-                        remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"), 
-                        anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_test.csv", 
-                        filename_col = "filename",
-                        seed = 91)
+# condor_test <- prep_fcd(data_path = "../.test_files/fcs/", 
+#                         max_cell = 5000, 
+#                         useCSV = FALSE, 
+#                         transformation = "auto_logi", 
+#                         remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"), 
+#                         anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_test.csv", 
+#                         filename_col = "filename")
+
+condor_test <- prep_fcd(data_path = "../../data/.test_files/fcs",
+                        max_cell = 5000,
+                        useCSV = FALSE,
+                        transformation = "auto_logi",
+                        remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"),
+                        anno_table = "../../data/Figure 6 - Data Projection/data_and_envs/metadata_test.csv",
+                        filename_col = "filename")
 ```
 
 ```{r}
@@ -55,30 +85,35 @@ condor_test$anno$cell_anno$group <- "test"
 
 # UMAP Projection
 
-We start now by running a UMAP, in this case we set the `ret_model` variable to `TRUE` to keep the UMAP model in the `condor`  object.
+We start now by running a UMAP, in this case we set the `ret_model` variable to `TRUE` to keep the UMAP model in the `condor`  object. The UMAP calculation and data projection can be performed based on the protein expression (`expr`) or principal components (`pca`). In this vignette we use protein expression.
 
 ## Run UMAP keeping the model
+
 ```{r}
 condor_train <- runUMAP(fcd = condor_train, 
                         input_type = "expr", 
                         data_slot = "orig", 
-                        seed = 91, 
-                        n_threads = 4, 
+                        nThreads = 4,
                         ret_model = TRUE)
 ```
 
 ## Add data to the embedding
 
-We can now predict the UMAP coordinates of the projected data.
+We can now predict the UMAP coordinates of the test data.
 
 ```{r}
-condor_test <- learnUMAP(fcd = condor_test, 
+condor_test<- learnUMAP(fcd = condor_test,
                          input_type = "expr", 
                          data_slot = "orig", 
-                         model = condor_train$extras$umap_model, 
-                         n_epochs = 100, 
-                         seed = 91, 
-                         n_threads = 4)
+                         fcd_model = condor_train,
+                         nEpochs = 100, 
+                         nThreads = 4, 
+                         prefix = "pred")
+```
+
+The predicted UMAP coordinates can be accessed via `condor_test$umap$pred_expr_orig`.
+```{r}
+condor_test$umap$pred_expr_orig[1:5,]
 ```
 
 # Train a classifier for the label transfer
@@ -89,68 +124,79 @@ To transfer also the labels from the reference to the projected data we need to 
 condor_train <- runPhenograph(fcd = condor_train, 
                               input_type = "expr", 
                               data_slot = "orig", 
-                              k = 300, 
-                              seed = 91)
+                              k = 300)
 ```
 
-## Visualization
+We can visualize the Phenograph clustering in a UMAP.
+
 ```{r}
-plot_marker(data = cbind(condor_train$umap$expr_orig, condor_train$clustering$Phenograph_expr_orig_k_300), 
-            param = "Phenograph", 
-            order = T, 
-            title = "Figure S9b -UMAP on the training dataset, Phenograph clusters", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE, 
-            label_clusters = FALSE)
+plot_dim_red(fcd= condor_train,  
+             expr_slot = NULL,
+             reduction_method = "umap", 
+             reduction_slot = "expr_orig", 
+             cluster_slot = "phenograph_expr_orig_k_300",
+             param = "Phenograph",
+             title = "Phenograph clustering of the training data set")
+
 ```
 
 # Label transfer
 
-And we now train the classifier on the clustering labels. If you assigned a metacluster label, this can also be used to train the classifier.
+Now, we train the classifier on the clustering labels. If you assigned a metacluster label, this can also be used to train the classifier.
 
 ## Train label transfer kNN classifier
+
+Here, we use the Phenograph clustering labels as an example to train the classifier. In many cases you probably want to use the metacluster labels of an annotated flow cytometry data set which had been previously assigned using `metaclustering()`.
 ```{r}
-condor_train_fine <- train_transfer_model(fcd = condor_train, 
-                                          data_slot = "orig", 
-                                          input_type = "expr", 
-                                          label = condor_train$clustering$Phenograph_expr_orig_k_300$Phenograph, 
-                                          method = "knn", 
-                                          tuneLength = 5, 
-                                          trControl = caret::trainControl(method = "cv"), 
-                                          seed = 91)
+condor_train <- train_transfer_model(fcd = condor_train, 
+                                           data_slot = "orig", 
+                                           input_type = "expr", 
+                                           cluster_slot = "phenograph_expr_orig_k_300",
+                                           cluster_var = "Phenograph",
+                                           method = "knn", 
+                                           tuneLength = 5, 
+                                           trControl = caret::trainControl(method = "cv"))
 ```
 
 ```{r}
-condor_train_fine$extras$lt_model$performace_plot
+condor_train$extras$lt_model$performance_plot
 ```
 
 ```{r, fig.height=10, fig.width=10}
-# Figure S10b - kNN importance
-
-condor_train_fine$extras$lt_model$features_plot
+#kNN importance
+condor_train$extras$lt_model$features_plot
 ```
+
 
 ## Predict the labels
 
+Based on the trained classifier, we predict now the cluster labels for the test data set.
 ```{r}
 condor_test <- predict_labels(fcd = condor_test, 
                               data_slot = "orig", 
                               input_type = "expr", 
-                              model_object = condor_train_fine, 
-                              label = "label_pred_fine", 
-                              seed = 91)
+                              fcd_model = condor_train, 
+                              label = "label_pred")
 ```
+
+The predicted labels are saved in `condor_test$clustering$label_pred`.
+
+```{r}
+condor_test$clustering$label_pred[1:5,]
+```
+
+
 
 # Visualize the results
 
 ## Prepare the dataframe
 ```{r}
-train <- as.data.frame(cbind(condor_train$umap$expr_orig, Phenograph = condor_train$clustering$Phenograph_expr_orig_k_300[, 1]))
+train <- as.data.frame(cbind(condor_train$umap$expr_orig, Phenograph = condor_train$clustering$phenograph_expr_orig_k_300[, 1]))
 
 train$type <- "train"
 
-test <- cbind(condor_test$umap$expr_orig, 
-              condor_test$clustering$label_pred_fine)
+test <- cbind(condor_test$umap$pred_expr_orig, 
+              condor_test$clustering$label_pred)
 
 test$Description <- NULL
 test$Description <- NULL
@@ -175,7 +221,7 @@ ggplot(data = vis_data, aes(x = UMAP1, y = UMAP2, color = type, alpha = type, si
   scale_size_manual(values = c(0.1, 0.5)) +
   theme_bw() +
   theme(aspect.ratio = 1, panel.grid = element_blank()) + 
-  ggtitle("Figure 6c - UMAP projected")
+  ggtitle("UMAP projected")
 ```
 
 ```{r}
@@ -185,7 +231,7 @@ ggplot(data = vis_data, aes(x = UMAP1, y = UMAP2, color = Phenograph, alpha = ty
   scale_size_manual(values = c(0.1, 0.5)) +
   theme_bw() +
   theme(aspect.ratio = 1, panel.grid = element_blank()) + 
-  ggtitle("Figure S9c - Predicted cluster")
+  ggtitle("Predicted cluster")
 ```
 
 # Session Info
