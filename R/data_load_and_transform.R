@@ -239,7 +239,7 @@ prep_fcd <- function(data_path,
   fcd[["anno"]][["cell_anno"]] <- df[ ,!colnames(df) %in% keep]
 
   #save import parameters
-  fcd[["extras"]][["prep_fcd_param"]] <- list(data_path = data_path,
+  fcd[["extras"]][["prep_param"]] <- list(data_path = data_path,
                                               max_cell = max_cell,
                                               transformation = transformation,
                                               remove_param= remove_param,
@@ -385,7 +385,7 @@ prep_fjw <- function(data_gs,
   fcd[["anno"]][["cell_anno"]] <- df[ ,!colnames(df) %in% fs[[1]]@parameters$desc]
 
   #save import parameters
-  fcd[["extras"]][["prep_fcd_param"]] <- list(max_cell = 1000000000, #set to a high number to read in all events
+  fcd[["extras"]][["prep_param"]] <- list(max_cell = 1000000000, #set to a high number to read in all events
                                               inverse.transform = inverse.transform,
                                               transformation = transformation,
                                               remove_param = remove_param,

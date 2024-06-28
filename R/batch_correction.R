@@ -113,9 +113,9 @@ train_cytonorm <- function(fcd,
 
   # check data_path
   if(is.null(data_path)){
-    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["data_path"]])){
+    if(!is.null(fcd[["extras"]][["prep_param"]][["data_path"]])){
       #extract fcs_path from extras slot in fcd
-      data_path <- fcd[["extras"]][["prep_fcd_param"]][["data_path"]]
+      data_path <- fcd[["extras"]][["prep_param"]][["data_path"]]
     } else{
       stop(paste0("There is no data_path saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'data_path' parameter."))
     }
@@ -131,11 +131,11 @@ train_cytonorm <- function(fcd,
   }
 
   #parameters to remove
-  if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["remove_param"]])){
+  if(!is.null(fcd[["extras"]][["prep_param"]][["remove_param"]])){
     #extract remove_param from extras slot in fcd
-    remove_param_fcd <- fcd[["extras"]][["prep_fcd_param"]][["remove_param"]]
+    remove_param_fcd <- fcd[["extras"]][["prep_param"]][["remove_param"]]
   } else{
-    stop("fcd$extras$prep_fcd_param$remove_param is required but is missing in your fcd")
+    stop("fcd$extras$prep_param$remove_param is required but is missing in your fcd")
   }
 
   if(!is.null(remove_param)){
@@ -166,7 +166,7 @@ train_cytonorm <- function(fcd,
   }
   transformList <- flowCore::transformList(channels, cytofTransform)
 
-  if(fcd[["extras"]][["prep_fcd_param"]][["prep_function"]] == "prep_fjw"){
+  if(fcd[["extras"]][["prep_param"]][["prep_function"]] == "prep_fjw"){
     warning(paste0("The fcd was created using prep_fjw(). Make sure that the FCS files in ",data_path, " contain compensated values."))
   }
 
@@ -231,9 +231,9 @@ run_cytonorm <- function(fcd,
 
   # check data_path
   if(is.null(data_path)){
-    if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["data_path"]])){
+    if(!is.null(fcd[["extras"]][["prep_param"]][["data_path"]])){
       #extract fcs_path from extras slot in fcd
-      data_path <- fcd[["extras"]][["prep_fcd_param"]][["data_path"]]
+      data_path <- fcd[["extras"]][["prep_param"]][["data_path"]]
     } else{
       stop(paste0("There is no data_path saved in your fcd. Please provide the path to the folder where the FCS files are stored using the 'data_path' parameter."))
     }
@@ -259,39 +259,39 @@ run_cytonorm <- function(fcd,
   transformList.reverse <- flowCore::transformList(channels, CytoNorm::cytofTransform.reverse)
 
 
-  #prep_fcd_params
-  if(!is.null(fcd[["extras"]][["prep_fcd_param"]])){
-    if(fcd[["extras"]][["prep_fcd_param"]][["prep_function"]] == "prep_fcd"){
+  #prep_params
+  if(!is.null(fcd[["extras"]][["prep_param"]])){
+    if(fcd[["extras"]][["prep_param"]][["prep_function"]] == "prep_fcd"){
     #check if all required parameters are saved in fcd
     param_names <- c("max_cell", "transformation", "remove_param", "filename_col", "seed", "separator_anno")
-    if(sum(param_names %in% names(fcd[["extras"]][["prep_fcd_param"]])) != length(param_names
+    if(sum(param_names %in% names(fcd[["extras"]][["prep_param"]])) != length(param_names
     )){
-      stop(paste0(setdiff(param_names, names(fcd[["extras"]][["prep_fcd_param"]])), " is missing in fcd$extras$prep_fcd_param."))
+      stop(paste0(setdiff(param_names, names(fcd[["extras"]][["prep_param"]])), " is missing in fcd$extras$prep_param."))
     }
-    #extract prep_fcd_param from extras slot in fcd
-    prep_fcd_param <- list(max_cell = fcd[["extras"]][["prep_fcd_param"]][["max_cell"]],
-                           transformation =fcd[["extras"]][["prep_fcd_param"]][["transformation"]],
-                           remove_param= fcd[["extras"]][["prep_fcd_param"]][["remove_param"]],
-                           filename_col= fcd[["extras"]][["prep_fcd_param"]][["filename_col"]],
-                           seed= fcd[["extras"]][["prep_fcd_param"]][["seed"]],
-                           separator_anno = fcd[["extras"]][["prep_fcd_param"]][["separator_anno"]])
+    #extract prep_param from extras slot in fcd
+    prep_param <- list(max_cell = fcd[["extras"]][["prep_param"]][["max_cell"]],
+                           transformation =fcd[["extras"]][["prep_param"]][["transformation"]],
+                           remove_param= fcd[["extras"]][["prep_param"]][["remove_param"]],
+                           filename_col= fcd[["extras"]][["prep_param"]][["filename_col"]],
+                           seed= fcd[["extras"]][["prep_param"]][["seed"]],
+                           separator_anno = fcd[["extras"]][["prep_param"]][["separator_anno"]])
     #check if anno_table parameter was provided
     if(!is.null(anno_table)){
-      prep_fcd_param[["anno_table"]] <- anno_table
+      prep_param[["anno_table"]] <- anno_table
     } else{
-      if(!is.null(fcd[["extras"]][["prep_fcd_param"]][["anno_table"]])){
-        prep_fcd_param[["anno_table"]] <-fcd[["extras"]][["prep_fcd_param"]][["anno_table"]]
+      if(!is.null(fcd[["extras"]][["prep_param"]][["anno_table"]])){
+        prep_param[["anno_table"]] <-fcd[["extras"]][["prep_param"]][["anno_table"]]
       }else{
         stop(paste0("There is no anno_table parameter saved in your fcd. Please provide the path to the folder where the annotation file using the 'anno_table' parameter."))
       }
     }
     #check if anno_table file exists
-    if (!file.exists( prep_fcd_param[["anno_table"]])) {
-      stop(paste0("The annotation file ", prep_fcd_param[["anno_table"]], " cannot be found. Please provide the correct path to the annotation file using the 'anno_table' parameter."))
+    if (!file.exists( prep_param[["anno_table"]])) {
+      stop(paste0("The annotation file ", prep_param[["anno_table"]], " cannot be found. Please provide the correct path to the annotation file using the 'anno_table' parameter."))
     }
   }
   }else{
-    stop("The fcd$extras$prep_fcd_param is required but cannot be found in your fcd.")
+    stop("The fcd$extras$prep_param is required but cannot be found in your fcd.")
   }
 
   message("start normalization")
@@ -309,20 +309,20 @@ run_cytonorm <- function(fcd,
                                truncate_max_range= FALSE)
 
 
-  if(fcd[["extras"]][["prep_fcd_param"]][["prep_function"]] == "prep_fjw"){
+  if(fcd[["extras"]][["prep_param"]][["prep_function"]] == "prep_fjw"){
     message(paste0("The fcd was created using prep_fjw() ,normalized expression values cannot be added to your fcd. The normalized FCS files are saved in ", output_dir))
   } else{
 
       # read in normalized FCS files
       message("adding normalized expression data to fcd")
       fcd_norm<- prep_fcd(data_path = output_dir,
-                          max_cell = prep_fcd_param[["max_cell"]],
+                          max_cell = prep_param[["max_cell"]],
                           useCSV = FALSE,
-                          transformation = prep_fcd_param[["transformation"]],
-                          remove_param = prep_fcd_param[["remove_param"]],
-                          anno_table = prep_fcd_param[["anno_table"]],
-                          filename_col = prep_fcd_param[["filename_col"]],
-                          seed = prep_fcd_param[["seed"]])
+                          transformation = prep_param[["transformation"]],
+                          remove_param = prep_param[["remove_param"]],
+                          anno_table = prep_param[["anno_table"]],
+                          filename_col = prep_param[["filename_col"]],
+                          seed = prep_param[["seed"]])
 
 
       #add normalized expression data frame to original fcd
