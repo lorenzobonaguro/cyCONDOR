@@ -2,7 +2,7 @@
 title: "How to run cyCONDOR as container"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Batch correction}
+  %\VignetteIndexEntry{How to run cyCONDOR as container}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -11,69 +11,70 @@ editor_options:
 ---
 
 The easiest way to get started uning `cyCONDOR` is by deploying the `Docker` container
-we provide with each release of the package. This container is based on the `Bioconductor`
-base image and start an `RStudio` server session in your browser.
+we provide with each release of the package. This container is based on the `Bioconductor` image and start an `RStudio` server session on your `localhost` accessible from any browser.
 
-In this vignette we will cover a few option to deploy our `Docker` container in your computing infrastructure. If your specific situation is not cevered do not hesitate to contact us.
+In this vignette we will cover a few option to deploy our `Docker` container in your computing infrastructure. If your specific situation is not covered do not hesitate to contact us.
 
-First we will show how to install `Docker Desktop` on any Windows or Mac machine, we will then cover some basic set 
-up for the configuration of `Docker` in a remote server.
+First we will show how to install `Docker Desktop` on any Windows or Mac machine, we will then cover some basic set-up for the configuration of `Docker` in a remote server.
 
-Last we will show how to deploy our `Docker` container using `Singularity` as for safery reasons many research
-institutions are not allowing `Docker` containers in their IT infrastructure.
+Last we will show how to deploy our `Docker` container using `Singularity` as for safety reasons many research
+institutions are not allowing `Docker` containers in their IT infrastructure anymore.
 
-# Run cyCONDOR with Docker Desktop (PC/Mac)
-Install Docker or another tool to deploy Docker containers (e.g., Singularity).
+# Run cyCONDOR with `Docker Desktop` (PC/Mac)
+Install `Docker` or another tool to deploy Docker containers (e.g., `Singularity`).
 
 *Note*: depending on the operating system follow the instructions at https://www.docker.com/, on Windows also the Windows Subsystem for Linux needs to be installed:
 
-1. Set up the Windows Subsystem for Linux 2 (WSL2) and any of the available Linux distributions:
-    - Install WSL2 first following the instructions reported here: https://learn.microsoft.com/en-us/windows/wsl/install
-    - Install Ubuntu or another Linux distribution as reported here: https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10#1-overview
+1. Set up the Windows Subsystem for Linux 2 (`WSL2`) and any of the available Linux distributions:
+    - Install `WSL2` first following the instructions reported here: https://learn.microsoft.com/en-us/windows/wsl/install
+    - Install `Ubuntu` or another Linux distribution as reported here: https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10#1-overview
 
-2. Download and install the latest version of Docker Desktop.
+2. Download and install the latest version of `Docker Desktop`.
 
 3. After starting the software, verify the installation of Docker Desktop.
-   - Open the Ubuntu terminal.
+   - Open the `Ubuntu` terminal.
    - Run:
 
-```{r}
+```
 docker info
 ```
 
-*Note*: If Docker is installed and running correctly this will output some basic information on the system, if no output is produced the installation was not successful. 
+*Note*: If `Docker` is installed and running correctly this will output some basic information on the system, if no output is produced the installation was not successful. 
 
-Since the cause of this malfunction could be extremely diverse, it is advisable to consult the troubleshooting section of Docker desktop (https://docs.docker.com/desktop/troubleshoot/overview/).
+Since the cause of this malfunction could be extremely diverse, it is advisable to consult the troubleshooting section of `Docker desktop` website (https://docs.docker.com/desktop/troubleshoot/overview/).
 
-You can now start a `Docker` container for cyCONDOR analysis.
+You can now start a `Docker` container for `cyCONDOR` analysis.
 
 First download the latest version of the `Docker` image
 
 ```
-docker pull lorenzobonaguro/cycondor:v015
+docker pull lorenzobonaguro/cycondor:v016
 ```
 
 Now start the container with the following command (everything in `[]` need to be edited by the user).
 
 ```
-docker run -dp [YOUR PORT]:8787 ∖ # define the port to use
--e USER=[USER] -e PASSWORD=[PW] ∖ # username and password, can be defined by the user
---name cycondor_analysis ∖ # name of the container
--v [LOCAL DIRECTORY PATH]:/data/ ∖ # directory to mount
-lorenzobonaguro/cycondor:015 #name of the docker image
+docker run -dp [YOUR PORT]:8787 ∖         # define the port to use
+-e USER=[USER] -e PASSWORD=[PW] ∖         # username and password, can be defined by the user
+--name cycondor_analysis ∖                # name of the container
+-v [LOCAL DIRECTORY PATH]:/data/ ∖        # directory to mount
+lorenzobonaguro/cycondor:015              #name of the docker image
 ```
 
-You can now access your RStudio session with any browser at the address:
+You can now access your `RStudio` session with any browser at the address:
 
 ```
-http://localhost:[YOUR PORT]/
+http://localhost:[YOUR PORT]
 ```
 
 Enter now the selected `[USER]` and `[PW]` and you will have access to `Rstudio`.
 
 To locate your data click on the `...` symbol above the `Files` tab (see picture below) and type `/data` to finally press enter.
 
-<img src="../man/figures/open_data.png" alt="drawing">
+<br>
+
+<img src="../man/figures/open_data.png" alt="drawing" width="500"/>
+*Exemplary `Files` windows of the `Rstudio` server*
 
 # Run cyCONDOR with Docker on a remote server
 
@@ -89,31 +90,31 @@ ssh [ServerAddress] -l [username]
 
 Both `Mac OS Terminal` and `Windows PowerShell` can use natively the `ssh` protocol.  
 
-You can now start `cyCONDOR` `Docker` container as previously
+You can now start `cyCONDOR Docker` container as previously
 
 ```
-docker run -dp [YOUR PORT]:8787 ∖ # define the port to use
--e USER=[USER] -e PASSWORD=[PW] ∖ # username and password
---name cycondor_analysis ∖ # name of the container
--v [LOCAL DIRECTORY PATH]:/data/ ∖ # directory to mount
-lorenzobonaguro/cycondor:015 #name of the docker image
+docker run -dp [YOUR PORT]:8787 ∖         # define the port to use
+-e USER=[USER] -e PASSWORD=[PW] ∖         # username and password
+--name cycondor_analysis ∖                # name of the container
+-v [LOCAL DIRECTORY PATH]:/data/ ∖        # directory to mount
+lorenzobonaguro/cycondor:015              #name of the docker image
 ```
 
-The RServer session will now be available at the following address:
+The `RServer` session will now be available at the following address:
 
 ```
 http://[ServerAddress]:[YOURPORT]/
 ```
 
-*Note*: This vignette is not intended as an exhaustive tutorial on how to use Docker, we encourage the reader to explore Docker functionalities on https://www.docker.com.
+*Note:* This vignette is not intended as an exhaustive tutorial on how to use `Docker`, we encourage the reader to explore `Docker` functionalists on https://www.docker.com.
 
 # Stop, restart and delete a Docker container
 
 Once you are done with your work, either on your local machine or on a remote server you can stop your `Docker` container. 
 
-Stoped container can be started quickly without loss of temporary data or permanently removed.
+Stopped container can be started quickly without loss of temporary data or permanently removed.
 
-To stop your `Docker` contaienr you first need to identify the `CONTAINER ID` of your session, this can be done by typing in the terminal
+To stop your `Docker` container you first need to identify the `CONTAINER ID` of your session, this can be done by typing in the terminal
 
 ```
 docker container ls
@@ -133,23 +134,23 @@ To now restart the container simply run
 docker contaienr start [CONTAINER ID]
 ```
 
-Or alternatively to permanently remove the contaier
+Or alternatively to permanently remove the container
 
 ```
 docker container rm [CONTAINER ID]
 ```
 
-*Note*: Keep in mind that this operation will only remove the container, the docker image will still be available to your system. If you want to remove also the docker image 
+*Note:* Keep in mind that this operation will only remove the container, the `Docker` image will still be available to your system. If you want to remove also the docker image 
 type `docker image rm [IMAGE NAME]`.
 
 # Run cyCONDOR with Singularity on a remote server
 Running cyCONDOR `Docker` container with `Singularity` as runtime is possible, first you need to download cyCONDOR `Docker` image and convert it to a `.sif` file:
 
 ```
-singularity pull docker://lorenzobonaguro/cycondor:v015
+singularity pull docker://lorenzobonaguro/cycondor:v016
 ```
 
-This command will save the docker image in the current working directory.
+This command will save the `Docker` image in the current working directory.
 
 You can now generate a script to start the singularity container in the same directory named for example `start_singularity.sh`.
 
@@ -215,6 +216,6 @@ kill [PID]
 # Run cyCONDOR on a HPC cluster as SLURM Job
 For really big dataset it is possible to run `Singularity` containers as `SLURM` jobs on HPC computer clusters. 
 
-To set up your enviroment follow this detailed guide from the `Rocker` project: https://rocker-project.org/use/singularity.html 
+To set up your environment follow this detailed guide from the `Rocker` project: https://rocker-project.org/use/singularity.html.
 
-*Note*: Mare sure your institution allows interactive session via SLURM, keep in mind this approach is reserving an entire node do your work and might interfere wiith other users.
+*Note*: Mare sure your institution allows interactive session via `SLURM`, keep in mind this approach is reserving an entire node do your work and might interfere with other users.
