@@ -16,32 +16,53 @@ library(ggplot2)
 library(CytoDx)
 ```
 
-With `cyCONDOR` we developed a set of functions allowing the user to easily train a classifier for the sample labels. For example we can train the model on a dataset of control and leukemia sample. The trained model can then be used to predict the label of and external sample. This workflow is based on the `CytoDX` package
+With `cyCONDOR` we developed a set of functions allowing the user to easily train a classifier for the sample labels. In this vignette we exemplify all the steps required for the classification of AML (acute myeloid leukemia) and control samples. The trained model can then be used to predict the label of and external sample. This workflow is based on the `CytoDX` package, for detailed documentation see the original manuscript [Hu et. al, 2019, Bioinformatics](https://academic.oup.com/bioinformatics/article/35/7/1197/5088319) and `cytoDX`documentation of  [Bioconductor](https://bioconductor.org/packages/release/bioc/html/CytoDx.html).
 
-# Loading the data - Training Set
+We will start the vignette by loading a training dataset, in this dataset the clinical classification of the sample is known and will be used to train a `cytoDX` model. In `cyCONDOR` the `cytoDX` model is saved withing the `condor` object and can be used to classify new samples.
 
-We start by importing the training dataset:
+If you use this workflow in your work please consider citing [cyCONDOR](XXX) and [cytoDX](https://academic.oup.com/bioinformatics/article/35/7/1197/5088319).
+
+<br>
+
+# Train the `cytoDX` model
+
+## Load the data
+
+We start by importing the training dataset, this is done as previously described with the `prep_fcd` function, in this case the `anno_table` also include the clinical classification of the samples (`aml` or `normal`).
 
 ```{r}
-condor <- prep_fcd(FCSpath = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
-                    ceil = 10000000, 
-                    useCSV = FALSE, 
-                    transformation = "a", 
-                    remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
-                    anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv", 
-                    filename_col = "fcsName",
-                    seed = 91)
+condor <- prep_fcd(data_path = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+                   max_cell = 10000000, 
+                   useCSV = FALSE, 
+                   transformation = "auto_logi", 
+                   remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
+                   anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv", 
+                   filename_col = "fcsName",
+                   seed = 91)
 ```
 
 ## Build the classifier model
 
-We now train the classifier on the sample label, this step does not require any other pre-analysis on the dataset, nevertheless, if you are not familiar with the data you are using from training we recommend an exploratory data analysis firts.
+We now train the `cytoDX` classifier on the sample label, this step does not require any other pre-analysis on the dataset, nevertheless, if you are not familiar with the data you are using for training we recommend an exploratory data analysis first.
 
 ```{r}
-# Re order variables
+# Re order variables - this is not strictly needed but the classification always consider the first variable as reference.
 
-condor$anno$cell_anno$Label <- factor(condor$anno$cell_anno$Label, levels = c("normal", "aml"), labels = c("1_normal", "2_aml"))
+condor$anno$cell_anno$Label <- factor(condor$anno$cell_anno$Label, 
+                                      levels = c("normal", "aml"), 
+                                      labels = c("1_normal", "2_aml"))
 ```
+
+The `train_classifier_model` requires the user to define the input table and few parameter to be used for training the `cytoDX` model. As some of the variables are derived from the `cytoDX` package (`cytoDX.fit` function) please refer to `cytoDX` documentation for further details.
+
+ - fcd: Flow cytometry data set to be used for training the model.
+ - input_type: data slot to be used for the classification, suggested `expr`.
+ - data slot: exact name of the data slot to be used (`orig` or `norm`, if batch correction was performed).
+ - sample_names: name of the column of the `anno_table` containing the sample names.
+ - classification_variable: name of the column of the `anno_table` containing the clinical classification to be used for training the classifier.
+ - type1: type of first level prediction, parameter inherited from `cytoDX`, see `cytoDX` documentation for details.
+ - type2: type of second level prediction, parameter inherited from `cytoDX`, see `cytoDX` documentation for details.
+ - parallelCore: number of cores to be used.
 
 ```{r}
 condor <- train_classifier_model(fcd = condor, 
@@ -56,34 +77,79 @@ condor <- train_classifier_model(fcd = condor,
                                  seed = 91)
 ```
 
-### Explore the model
+## Explore the result of model training
 
-We can now explore the results of the model at sample level
+We can now explore the results of the cell level and sample level prediction on the training data. The results are stored together with the `cytoDX` model itself in the `extras` slot (`classifier_model`)
 
-```{r}
-head(condor$extras$classifier_model$train.Data.sample)
-```
+### Cell level predition result on the training dataset
 
-And at cellular level
+The cellular level result contain the probability of classification to `aml` for each cell in the dataset, this table also include the true label of each cell.
 
 ```{r}
 head(condor$extras$classifier_model$train.Data.cell)
 ```
 
+### Sample level predition result on the training dataset
 
-# Load the data - test Set
-
-To now validate the performance of the trained model we will test it on a test dataset with no overlap with the training data.
+The sample level result contain the probability of classification to `aml` for each cell in the dataset, this table also include the true label of each cell.
 
 ```{r}
-condor_test <- prep_fcd(FCSpath = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
-                    ceil = 10000000, 
-                    useCSV = FALSE, 
-                    transformation = "a", 
-                    remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
-                    anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv", 
-                    filename_col = "fcsName",
-                    seed = 91)
+head(condor$extras$classifier_model$train.Data.sample)
+```
+
+### Visualize the results on the train dataset
+
+We can now visualize the prediction result both at cell and sample level.
+
+```{r}
+anno <- read.csv("../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv")
+
+ggplot(merge(x = condor$extras$classifier_model$train.Data.cell, y = anno, by.x = "sample", by.y = "fcsName"), aes(x = sample, y = y.Pred.s0, color = Label)) +
+  geom_jitter() + 
+  geom_violin() +
+  scale_color_manual(values = c("#92278F", "#F15A29")) +
+  theme_bw() + 
+  theme(aspect.ratio = 1) + 
+  ylab("probability") + 
+  ggtitle("sample level prediction - train data") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+ggplot(merge(x = condor$extras$classifier_model$train.Data.sample, y = anno, by.x = "sample", by.y = "fcsName"), aes(x = sample, y = y.Pred.s0, color = Label)) +
+  geom_point(size = 4) +
+  scale_color_manual(values = c("#92278F", "#F15A29")) +
+  theme_bw() + 
+  theme(aspect.ratio = 2) + 
+  ylab("probability") +
+  ggtitle("sample level prediction - train data") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Visualization of the decision tree
+
+We can use a `cytoDX` built-in function to visualize the decision tree used for the cell level classification. See `cytoDX` documentation for further details.
+
+```{r}
+tree <- treeGate(P = condor$extras$classifier_model$train.Data.cell$y.Pred.s0,
+                 x= condor$expr$orig)
+```
+
+# Testing on an independent dataset
+
+## Load the data
+
+To now validate the performance of the trained `cytoDX` model we will test it on a test dataset with no overlap with the training data.
+
+```{r}
+condor_test <- prep_fcd(data_path = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+                        max_cell = 10000000, 
+                        useCSV = FALSE, 
+                        transformation = "auto_logi", 
+                        remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
+                        anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv", 
+                        filename_col = "fcsName",
+                        seed = 91)
 ```
 
 ## Predict classification
@@ -91,11 +157,20 @@ condor_test <- prep_fcd(FCSpath = "../../../Figure 7 - Clinical Classifier/data_
 We can now predict the label using the trained model
 
 ```{r}
-# Re order variables
+# Re order variables - this is not strictly needed but the classification always consider the first variable as reference.
 
 condor_test$anno$cell_anno$Label <- factor(condor_test$anno$cell_anno$Label, 
-                                           levels = c("normal", "aml"), labels = c("1_normal", "2_aml"))
+                                           levels = c("normal", "aml"), 
+                                           labels = c("1_normal", "2_aml"))
 ```
+
+The `predict_classifier` requires few user defined input to predict the labels of an external dataset using a previously prepared `cytoDX` model. 
+
+ - fcd: flow cytometri dataset of the new data
+ - input_type: data slot to be used for the classification, suggested `expr`. Should match the option selection in `train_classifier_model`.
+ - data slot: exact name of the data slot to be used (`orig` or `norm`, if batch correction was performed). Should match the option selection in `train_classifier_model`.
+ - sample_names: name of the column in the `anno_table` containing the sample names.
+ - model_object: `cyCONDOR` trained `cytoDX` model, this is stored in the `condor` object used to train the model (`extras` slot).
 
 ```{r}
 condor_test <- predict_classifier(fcd = condor_test, 
@@ -106,49 +181,30 @@ condor_test <- predict_classifier(fcd = condor_test,
                                   seed = 91)
 ```
 
-### Explore Prediction
+## Explore the result of prediction in test dataset
 
-Also here we can explore the results at sample level
+We can now explore the results of the cell level and sample level prediction on the test data. The results are stored together with the `cytoDX` model itself in the `extras` slot (`classifier_prediction`)
 
-```{r}
-head(condor_test$extras$classifier_prediction$xNew.Pred.sample)
-```
+### Cell level predition result on the test dataset
 
-And at cellular level
+The cellular level result contain the probability of classification to `aml` for each cell in the dataset.
 
 ```{r}
 head(condor_test$extras$classifier_prediction$xNew.Pred.cell)
 ```
 
-# Visualize the results
+### Cell level predition result on the test dataset
 
-## Training Data
-```{r}
-anno <- read.csv("../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv")
-
-tmp <- merge(x = condor$extras$classifier_model$train.Data.cell, y = anno, by.x = "sample", by.y = "fcsName")
-
-ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
-  geom_jitter() + 
-  geom_violin() +
-  scale_color_manual(values = c("#92278F", "#F15A29")) +
-  theme_bw() + 
-  theme(aspect.ratio = 1) + 
-  ggtitle("Figure S12b - Training prediction cell")
-```
+The sample level result contain the probability of classification to `aml` for each cell in the dataset.
 
 ```{r}
-tmp <- merge(x = condor$extras$classifier_model$train.Data.sample, y = anno, by.x = "sample", by.y = "fcsName")
-
-ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
-  geom_point(size = 4) +
-  scale_color_manual(values = c("#92278F", "#F15A29")) +
-  theme_bw() + 
-  theme(aspect.ratio = 2) + 
-  ggtitle("Figure S12c - Training prediction sample")
+head(condor_test$extras$classifier_prediction$xNew.Pred.sample)
 ```
 
-## Test Data
+### Visualize the results on the test dataset
+
+We can now visualize the prediction result both at cell and sample level.
+
 ```{r}
 anno <- read.csv("../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv")
 
@@ -162,7 +218,11 @@ ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
   scale_color_manual(values = c("#92278F", "#F15A29")) +
   theme_bw() + 
   theme(aspect.ratio = 1) + 
-  ggtitle("Figure 7c - Test prediction cell")
+  ylab("probability") +
+  ggtitle("cell level prediction - test data") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+rm(tmp)
 ```
 
 ```{r}
@@ -175,13 +235,11 @@ ggplot(tmp, aes(x = sample, y = y.Pred.s0, color = Label)) +
   scale_color_manual(values = c("#92278F", "#F15A29")) +
   theme_bw() + 
   theme(aspect.ratio = 2) + 
-  ggtitle("Figure 7d - Test prediction sample")
-```
+  ylab("probability") +
+  ggtitle("sample level prediction - test data") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Visualization of the decision three
-```{r}
-treeGate(P = condor$extras$classifier_model$train.Data.cell$y.Pred.s0,
-         x= condor$expr$orig)
+rm(tmp)
 ```
 
 # Session Info
