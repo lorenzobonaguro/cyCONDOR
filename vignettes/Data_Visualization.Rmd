@@ -23,8 +23,7 @@ library(cyCONDOR)
 In this vignette, we will use a flow cytometry dataset of six PBMC samples taken from three patients and three control. The data was transformed and subjected to several dimensionality reduction methods as well as clustering and metaclustering using `cyCONDOR`(see vignettes: `Data loading and transformation`, `Dimensionality Reduction`, `Clustering and cell annotation`).
 
 ```{r}
-condor <- readRDS("../.test_files/condor_example.rds")
-#condor <- readRDS("/data/001_Bonaguro_cyCONDOR/analysis/data/.test_files/condor_example.rds")
+condor <- readRDS("../.test_files/condor_example_016.rds")
 ```
 
 ```{r}
@@ -125,14 +124,14 @@ Sometimes it comes in handy to split the dimensionality reduction by a variable,
 Setting `facet_by_variable = T`, will split the plot by the variable provided in `param`.
 
 ```{r}
-# plot_dim_red(fcd = condor,
-#              expr_slot = NULL,
-#              reduction_method = "umap",
-#              reduction_slot = "pca_orig",
-#              cluster_slot = NULL,
-#              param = "group",
-#              facet_by_variable = T,
-#              title = "UMAP")
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = NULL,
+             param = "group",
+             facet_by_variable = T,
+             title = "UMAP")
 ```
 
 Providing `facet_by_variable` with a different variable than specified in `param`, will keep the coloring by the variable in `param`, but splits the plot by the faceting variable. Note, that in case clustering variables are used, a `cluster_slot` needs to be provided as well.
@@ -182,7 +181,7 @@ p1<-plot_dim_red(fcd = condor,
                  reduction_slot = "pca_orig",
                  cluster_slot = NULL,
                  param = "CD3",
-                 order = T, #default
+                 order = F, #default
                  title = "CD3 expression - random order")
 
 p2<-plot_dim_red(fcd = condor,
@@ -412,7 +411,7 @@ plot_counts_barplot(fcd = condor,
 `PC_loadings()` can be used to visualize the loadings for each principle component. 
 
 ```{r}
-# PC_loadings(fcd = condor, data_slot = "orig")
+PC_loadings(fcd = condor, data_slot = "orig")
 ```
 
 ## Density plot

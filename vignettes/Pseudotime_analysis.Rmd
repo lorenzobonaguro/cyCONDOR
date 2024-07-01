@@ -17,32 +17,16 @@ library(ggplot2)
 library(dplyr)
 ```
 
-```{r, include= FALSE}
-library(dplyr)
-library(flowCore)
-library(Rphenograph)
-library(slingshot)
+With `cyCONDOR` we implemented `slingshot` for pseudotome analysis, following a workflow to calculate trajectories and pseudotime. 
 
-#load functions 
-source("../repo/cyCONDOR/R/batch_correction.R")
-source("../repo/cyCONDOR/R/data_load_and_transform.R")
-source("../repo/cyCONDOR/R/data_visualization.R")
-source("../repo/cyCONDOR/R/dim_reduction.R")
-source("../repo/cyCONDOR/R/colors.R")
-source("../repo/cyCONDOR/R/clustering.R")
-source("../repo/cyCONDOR/R/misc.R")
-source("../repo/cyCONDOR/R/pseudotime.R")
-
-```
-
-With `cyCONDOR` we implemented `slingshot` for pseudotome analysis, following a workflow to calculate trajectories and pseudotime.
+This workflow can be applied to any type of HDFC data, nevertheless the interpretation of trajectories and preudotime should always be validated by other experiment of domain knowledge. We exemplified here with a subset of the cyTOF dataset from [Bendall et al. 2011](https://www.science.org/doi/10.1126/science.1198704)
 
 ## Load the cyCONDOR object
 
 We start here by loading an example `condor` object already annotated.
 
 ```{r}
-condor <- readRDS("../../data/.test_files/condor_pseudotime.rds")
+condor <- readRDS("../.test_files/condor_pseudotime_016.rds")
 ```
 
 ```{r}
@@ -50,17 +34,17 @@ plot_dim_red(fcd= condor,
              expr_slot = NULL,
              reduction_method = "umap", 
              reduction_slot = "pca_orig", 
-             cluster_slot = "Phenograph_filter_pca_orig_k_10",
+             cluster_slot = "phenograph_filter_pca_orig_k_10",
              param = "metaclusters",
              title = "UMAP colored by Phenograph",
-             alpha= 1, dot_size = 1)
+             apha= 1, dot_size = 1)
 ```
 
 ```{r, fig.height=7}
 plot_marker_HM(fcd = condor,
                expr_slot = "orig",
-               cluster_slot = "Phenograph_filter_pca_orig_k_10",
-               cluster_var = "Phenograph",
+               cluster_slot = "phenograph_filter_pca_orig_k_10",
+               cluster_var = "metaclusters",
                cluster_rows = TRUE,
                cluster_cols = TRUE,
                title= "Marker expression Phenograph clustering")
@@ -76,10 +60,11 @@ We can now calculate the pseudotime with different settings:
 condor <- runPseudotime(fcd = condor, 
                         reduction_method = "umap",
                         reduction_slot = "pca_orig",
-                        cluster_slot= "Phenograph_filter_pca_orig_k_10",
+                        cluster_slot= "phenograph_filter_pca_orig_k_10",
                         cluster_var = "metaclusters",
                         approx_points = 5)
 ```
+
 The output of is saved in `condor$pseudotime$slingshot_umap_pca_orig`.
 
 ```{r}
@@ -90,16 +75,13 @@ condor$pseudotime$slingshot_umap_pca_orig[1:5,]
 ## With a specific starting cluster
 
 ```{r}
-
 condor <- runPseudotime(fcd = condor, 
                         reduction_method = "umap",
                         reduction_slot = "pca_orig",
-                        cluster_slot= "Phenograph_filter_pca_orig_k_10",
+                        cluster_slot= "phenograph_filter_pca_orig_k_10",
                         cluster_var = "metaclusters",
                         approx_points = 5,
                         start.clus =  "CMPs",)
-
-
 ```
 
 The output of is saved in `condor$pseudotime$slingshot_umap_pca_orig_CMPs`.
@@ -112,12 +94,12 @@ condor$pseudotime$slingshot_umap_pca_orig_CMPs[1:5,]
 ## Testing all clusters as starting point
 
 ```{r}
-for (i in unique(condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters)[1:5]) {
+for (i in unique(condor$clustering$phenograph_filter_pca_orig_k_10$metaclusters)[1:5]) {
   
   condor <- runPseudotime(fcd = condor, 
                           reduction_method = "umap",
                           reduction_slot = "pca_orig",
-                          cluster_slot= "Phenograph_filter_pca_orig_k_10",
+                          cluster_slot= "phenograph_filter_pca_orig_k_10",
                           cluster_var = "metaclusters",
                           approx_points = 5,
                           start.clus =  i)
@@ -125,57 +107,36 @@ for (i in unique(condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters)
 }
 ```
 
-Can we plot this using the plot_dim_red() function?
-```{r, eval=FALSE}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_filter_pca_orig_k_10, condor$pseudotime$slingshot_umap_pca_orig), 
-                   param = "mean", 
-                   order = T, 
-                   title = "Figure 4e - UMAP mean pseudotime", 
-                   dim_red = "UMAP", 
-                   facet_by_variable = FALSE, dot_size = 1, apha = 1) + 
+## Visualize the result of `slingshot` analysis
+
+It is possible to use the `plot_dim_red` function to plot the result of pseudotime analysis overlayed on the UMAP coordinates.
+
+```{r}
+plot_dim_red(fcd = condor, 
+             expr_slot = "orig", 
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             cluster_slot = "phenograph_filter_pca_orig_k_10", 
+             add_pseudotime = TRUE, 
+             pseudotime_slot = "slingshot_umap_pca_orig",
+             param = "mean", 
+             order = T, 
+             title = "UMAP colored by pseudotime", 
+             facet_by_variable = FALSE, 
+             raster = TRUE, 
+             apha = 1, 
+             dot_size = 1) + 
   geom_path(data = condor$extras$slingshot_umap_pca_orig$lineages %>% arrange(Order), aes(group = Lineage), size = 0.5)
 ```
 
 
 
-# Heatmap visualization of trajectory
+# Heatmap visualization of monocytes trajectory
 
-## DCs
-```{r}
-selections <- rownames(condor$clustering$Phenograph_filter_pca_orig_k_10[condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters %in% c("HSCs", "Pre-DC", "pDCs"), ])
-
-condor_dcs <- filter_fcd(fcdataset = condor,
-                            cell_ids = selections)
-```
+We provide here some custom code to visualize the pseudotime, nevertheless many visualization can be performed on this data depending on the biological question.
 
 ```{r}
-expression <- condor_dcs$expr$orig
-
-anno <- cbind(condor_dcs$clustering$Phenograph_filter_pca_orig_k_10[, c("Phenograph", "metaclusters")], condor_dcs$pseudotime$slingshot_umap_pca_orig)
-
-anno <- anno[order(anno$Lineage2, decreasing = TRUE),]
-
-expression <- expression[rownames(anno), c("174-HLADR", "151-CD123", "148-CD34")]
-
-my_colour = list(metaclusters = c(HSCs = "#689030", pDCs = "#CD9BCD", `Pre-DC` = "#2B3990"))
-```
-
-```{r}
-pheatmap(mat = expression, 
-         scale = "column", 
-         show_rownames = FALSE, 
-         cluster_rows = F, 
-         cluster_cols = F, 
-         annotation_row = anno[, c("metaclusters", "Lineage2")], 
-         annotation_colors = my_colour, 
-         breaks = scaleColors(expression, maxvalue = 2)[["breaks"]], 
-         color = scaleColors(expression, maxvalue = 2)[["color"]], 
-         main = "Figure S6b - Heatmap pDCs trajectory")
-```
-
-## Monocytes
-```{r}
-selections <- rownames(condor$clustering$Phenograph_filter_pca_orig_k_10[condor$clustering$Phenograph_filter_pca_orig_k_10$metaclusters %in% c("HSCs", "CMPs", "Myeloblast", "Monocytes"), ])
+selections <- rownames(condor$clustering$phenograph_filter_pca_orig_k_10[condor$clustering$phenograph_filter_pca_orig_k_10$metaclusters %in% c("HSCs", "CMPs", "Myeloblast", "Monocytes"), ])
 
 condor_mono <- filter_fcd(fcdataset = condor,
                             cell_ids = selections)
@@ -184,7 +145,7 @@ condor_mono <- filter_fcd(fcdataset = condor,
 ```{r}
 expression <- condor_mono$expr$orig
 
-anno <- cbind(condor_mono$clustering$Phenograph_filter_pca_orig_k_10[, c("Phenograph", "metaclusters")], condor_mono$pseudotime$slingshot_umap_pca_orig)
+anno <- cbind(condor_mono$clustering$phenograph_filter_pca_orig_k_10[, c("Phenograph", "metaclusters")], condor_mono$pseudotime$slingshot_umap_pca_orig)
 
 anno <- anno[order(anno$Lineage2, decreasing = FALSE),]
 

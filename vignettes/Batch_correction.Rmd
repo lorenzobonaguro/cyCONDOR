@@ -19,28 +19,6 @@ if(!require(lisi)){
 library(lisi)
 ```
 
-```{r, include= FALSE}
-if(!require(CytoNorm)){
-  library(devtools)
-  install_github('saeyslab/CytoNorm')
-}
-
-library(dplyr)
-library(stringr)
-library(flowCore)
-library(CytoNorm)
-library(harmony)
-
-#load functions 
-source("../../cyCONDOR/R/batch_correction.R")
-source("../../cyCONDOR/R/data_load_and_transform.R")
-source("../../cyCONDOR/R/data_visualization.R")
-source("../../cyCONDOR/R/dim_reduction.R")
-source("../../cyCONDOR/R/colors.R")
-source("../../cyCONDOR/R/clustering.R")
-source("../../cyCONDOR/R/misc.R")
-```
-
 In this vignette we exemplify a workflow to correct for a batch effect induced by performing experiments (including cell preparation, staining and recording of flow cytometry data) on different dates. The example data set used in this vignette consists of peripheral blood mononuclear cells (PBMCs) from healthy donors.
 
 # 1 cyCONDOR dimensionality reduction workflow
@@ -60,12 +38,12 @@ We start by loading the data.
 #                    filename_col = "filename")
 
 
-condor <- prep_fcd(data_path = "/data/analysis/data/Figure 3 - Batch Correction/data/CureDem/all/",
+condor <- prep_fcd(data_path = "../../../Figure 3 - Batch Correction/data/CureDem/all/",
                    max_cell = 500,
                    useCSV = FALSE,
                    transformation = "auto_logi",
                    remove_param = c("InFile", "Time", "FSC-H", "SSC-H"),
-                   anno_table = "/data/analysis/data/Figure 3 - Batch Correction/data/CureDem/all.csv",
+                   anno_table = "../../../Figure 3 - Batch Correction/data/CureDem/all.csv",
                    filename_col = "filename"
 )
 
@@ -150,6 +128,7 @@ plot_dim_red(fcd= condor,
              param = "exp", 
              title = "Harmonized UMAP")
 ```
+
 ```{r}
 plot_dim_red(fcd= condor,  
              reduction_method = "umap", 
@@ -223,25 +202,21 @@ As a first step, the batch effect is learnt from reference samples provided by t
 
 Here, a model is trained on all samples contained in the data set. For this we need to provide the name of the batch variable `batch_var` and optionally parameters which should not be included for the training as well as different parameters for clustering the cells with FlowSOM (`FlowSom_param`). Here, we use all markers present in the `fcd` and perform the training with the default parameters for `FlowSom_param`. The number of desired FlowSOM metaclusters is defined by `nClus` and should be adjusted according to your data set, see [Van Gassen et al., 2019](https://doi.org/10.1002/cyto.a.23904) for more details.
 ```{r}
-condor <- train_cytonorm(
-  fcd = condor,
-  batch_var = "exp",
-  remove_param = NULL,
-  FlowSOM_param = list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale = FALSE)
-)
-
+condor <- train_cytonorm(fcd = condor,
+                         batch_var = "exp",
+                         remove_param = NULL,
+                         FlowSOM_param = list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale = FALSE), 
+                         seed = 91)
 ```
 
 #### Normalization of data with trained model
 
 Next the trained model saved within your `fcd` is used to normalize all samples present in your `fcd`. The fcs files with the normalized expression values can be saved, if `keep_fcs` is set to `TRUE`. 
 ```{r, warning=FALSE}
-condor <- run_cytonorm(
-  fcd = condor,
-  files = NULL,
-  batch_var = "exp",
-  keep_fcs = FALSE
-)
+condor <- run_cytonorm(fcd = condor,
+                       files = NULL,
+                       batch_var = "exp",
+                       keep_fcs = FALSE)
 ```
 
 # Session Info
