@@ -35,8 +35,8 @@ The option of marker selection is implemented in all dimensionality reduction fu
 
 # Load example cyCONDOR object
 ```{r}
-#condor <- readRDS("../.test_files/condor_example.rds")
-condor <- readRDS("/data/analysis/data/.test_files/condor_example.rds")
+condor <- readRDS("../.test_files/condor_example.rds")
+#condor <- readRDS("/data/analysis/data/.test_files/condor_example.rds")
 ```
 
 # Principal Component Analysis (PCA)
