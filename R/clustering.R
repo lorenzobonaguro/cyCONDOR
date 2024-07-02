@@ -54,7 +54,7 @@ metaclustering <- function(fcd,
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
 #' @param k K value used for clustering.
 #' @param seed A seed is set for reproducibility.
-#' @param prefix Prefix of the output.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @param nPC Number of principal components to use for the analysis.
 #' @param markers vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
 #' @param discard LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.
@@ -62,8 +62,12 @@ metaclustering <- function(fcd,
 #' @import Rphenograph
 #' @importFrom igraph membership
 #'
+#' @details
+#' See [Stuchly J (2020). "Rphenoannoy: R implementation of the phenograph algorithm - approximate KNN modification, based on Rphenograph package". R package version 0.1.0.] (https://github.com/stuchly/Rphenoannoy)
 #'
-#' @return runPhenograph
+#'
+#'
+#' @return The function returns a fcd including a data frame containing the phenograph clustering saved in \code{fcd$clustering}. The name of the output consists of the prefix (if given) and the data slot and the defined \code{k}. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
 
@@ -165,7 +169,7 @@ runPhenograph <- function (fcd,
 #' @param grid_xdim x-axis size of the FlowSOM grid. Default = 10.
 #' @param grid_ydim y-axis size of the FlowSOM grid. Default = 10.
 #' @param seed A seed is set for reproducibility.
-#' @param prefix Prefix of the output.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @param ret_model LOGICAL if the model should be saved for future projection of the data. Default = F.
 #' @param nPC Number of principal components to use for the analysis. Default = All.
 #' @param markers vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
@@ -174,7 +178,11 @@ runPhenograph <- function (fcd,
 #' @import FlowSOM
 #' @import dplyr
 #'
-#' @return runFlowSOM
+#' @details
+#' See [Van Gassen S et al. (2015) "FlowSOM: Using self-organizing maps for visualization and interpretation of cytometry data." Cytom Part J Int Soc Anal Cytol 87: 636-645.] (https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625)
+#'
+#'
+#' @return The function returns a fcd including a data frame containing the FlowSOM clustering saved in \code{fcd$clustering}. The name of the output consists of the prefix (if given) and the data slot and the defined \code{nClusters}. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
 

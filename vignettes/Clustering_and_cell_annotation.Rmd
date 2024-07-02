@@ -14,17 +14,27 @@ editor_options:
 library(cyCONDOR)
 ```
 
-In this vignette we showcase some `cyCONDOR` functions for clustering and cell annotation
+In this vignette we showcase `cyCONDOR` functions for clustering and cell annotation.
 
 # Load example cyCONDOR object
 ```{r}
 condor <- readRDS("../.test_files/condor_example.rds")
+#condor <- readRDS("/data/analysis/data/.test_files/condor_example.rds")
 ```
 
-The `cyCONDOR` ecosystem provides different clustering methods, Phenograph and FlowSOM. It also provide convenient functions to 
+The `cyCONDOR` ecosystem provides different clustering methods, Phenograph and FlowSOM. It also provides a convenient way to assign cell annotations to the clustered object.
+
+The clustering functions take the `condor` object as `fcd` input and the matrix to be used for the calculation of the clusters as `data_slot` input (e.g. `orig` or `norm`). We recommend using the PCA coordinates as `input_type` to compensate for fluctuations in the expression data. By defining a `prefix` which gets incorporated into the slot name of the output, each function can be run with different settings and the results will be saved accordingly. The functions return a fcd with an additional data frame corresponding to the calculated clustering saved in `fcd$clustering`. The name of the output consists of the `prefix` (if given), the clustering method and the `data_slot`.
+
+Additionally, the user has the option to specifically state which markers should be used for the calculation by listing them under `markers`. The list can be either written out manually or be extracted directly from the `condor` object using the implemented functions `measured_markers` and `used_markers` By default all available markers from the condor object are used. If the `discard` option is set to TRUE, all markers **except** the ones listed under `markers` are used for calculation. This enables the exclusion of single markers.
 
 # Phenograph clustering
-Phenograpg takes as input the `condor` object and the matrix to be used to the calculation of the clusters. We reccoment using the PCA coordinates as for non-linear dimensionality reduction. The `k` parameter define the number of nearest neighbors to be used for the nearest-neighbor graph. A seed can be set to ensure reproducibility of the clustering.
+
+`runPhenograph` is based on the package `Rphenoannoy`, an optimized version of `Rphenograph`. This clustering method is designed for high-dimensional single-cell data analysis incorporating the approximate k-nearest neighbor (kNN) technique for graph construction. The `k` parameter defines the number of nearest neighbors to be used for the nearest-neighbor graph, with higher values resulting in fewer clusters. It can be useful to try out different settings here to get the desired cluster resolution. A seed can be set to ensure reproducibility of the clustering.
+
+For more details see: 
+Chen H (2015). "Rphenograph: R implementation of the phenograph algorithm". R package version 0.99.1. <https://github.com/JinmiaoChenLab/Rphenograph>
+Stuchly J (2020). "Rphenoannoy: R implementation of the phenograph algorithm - approximate KNN modification, based on Rphenograph package". R package version 0.1.0. <https://github.com/stuchly/Rphenoannoy>
 
 ```{r}
 condor <- runPhenograph(fcd = condor, 
@@ -33,25 +43,35 @@ condor <- runPhenograph(fcd = condor,
                         k = 60, 
                         seed = 91)
 ```
+The output of the phenograph clustering can be accessed with `condor$clustering$phenograph_pca_orig_k_60`.
 
 # FlowSOM clustering
-FlowsOM provide a fast algorithm to cluster a high number of cells. The FlowSOM function takes the condor object as input and the matrix to be used to the calculation of the cluters. We reccoment using the PCA coordinates as for non-linear dimensionality reduction. The `num_cluster` parameter defines the final number of clusters to be generated. A seed can be set to ensure reproducibility of the clustering.
+
+`runFlowSOM` provides a fast algorithm to cluster a high number of cells. The `nClusters` parameter defines the final number of clusters to be generated. A seed can be set to ensure reproducibility of the clustering.
+
+For more details see: Van Gassen S et al. (2015) "FlowSOM: Using self-organizing maps for visualization and interpretation of cytometry data." Cytom Part J Int Soc Anal Cytol 87: 636-645. <https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625>
+
 ```{r}
 condor <- runFlowSOM(fcd = condor, 
                      input_type = "pca", 
                      data_slot = "orig", 
-                     num_clusters = 15, 
+                     nClusters = 15, 
                      seed = 91, 
                      ret_model = TRUE)
 ```
+The output of the FlowSOM clustering can be accessed with `condor$clustering$FlowSOM_pca_orig_k_60`.
+
+
 
 # Metaclustering
-Each cluster can be now labeled according to the specific cell type with the metaclustering function. This function takes as input the condor object and the clustering slot to be names. The name_out is the name of the new column containing the cell types. The metacluster parameter is a named vector where the content is the selected cell types and the names are the original cluster names.
+
+Each cluster can be now labeled according to the specific cell type with the `metaclustering` function. This function takes the condor object (`fcd`) and the `cluster_slot` as input. The `cluster_var_new` parameter names the new column containing the cell types. The `metacluster` parameter is a named vector acting as translation table to annotate each cell cluster.
+
 ```{r}
 condor <- metaclustering(fcd = condor, 
-                         clustering = "Phenograph_pca_orig_k_60", 
-                         name_col = "Phenograph", 
-                         name_out = "metaclusters", 
+                         cluster_slot = "Phenograph_pca_orig_k_60", 
+                         cluster_var = "Phenograph", 
+                         cluster_var_new = "metaclusters", 
                          metaclusters = c("1" = "Classical Monocytes", 
                                           "2" = "B cells", 
                                           "3" = "CD8 CD45RA+ CD127-", 
