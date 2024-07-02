@@ -91,9 +91,11 @@ frequency_anova_test<-function(fcd,
   tmp <- dplyr::left_join(tmp, unique(data[,c("group_var","sample_var")]), by = "sample_var")
   tmp <- reshape2::melt(tmp, id.vars=c("group_var","sample_var"))
 
-  ##get levels from original condor object. Allows user to adjust group1 and group2 via levels of group_var
+  ##get levels from original condor object or change to factor.
   if(is.factor(data$group_var)){
     tmp$group_var <- factor(tmp$group_var, levels = levels(data$group_var))
+  }else{
+    tmp$group_var <- factor(tmp$group_var)
   }
 
   ## perform statistical test
@@ -271,9 +273,11 @@ frequency_friedman_test<-function(fcd,
   #   stop('Something unexpected is wrong in pairing of sample_var and pair_var.') #should not be needed, but better safe than sorry.
   # }
 
-  ##get levels from original condor object. Allows user to adjust group1 and group2 via levels of group_var
+  ##get levels from original condor object or change to factor.
   if(is.factor(data$group_var)){
     tmp$group_var <- factor(tmp$group_var, levels = levels(data$group_var))
+  }else{
+    tmp$group_var <- factor(tmp$group_var)
   }
 
   ## perform statistical test (paired)
@@ -420,9 +424,11 @@ frequency_kruskal_test<-function(fcd,
   tmp <- dplyr::left_join(tmp, unique(data[,c("group_var","sample_var")]), by = "sample_var")
   tmp <- reshape2::melt(tmp, id.vars=c("group_var","sample_var"))
 
-  ## get levels from original condor object. Allows user to adjust groups via levels of group_var
+  ## get levels from original condor object or change to factor
   if(is.factor(data$group_var)){
     tmp$group_var <- factor(tmp$group_var, levels = levels(data$group_var))
+  }else{
+    tmp$group_var <- factor(tmp$group_var)
   }
 
   ## perform statistical test
@@ -618,6 +624,8 @@ frequency_t_test<-function(fcd,
     ## get levels from original condor object. Allows user to adjust group1 and group2 via levels of group_var
     if(is.factor(data$group_var)){
       tmp$group_var <- factor(tmp$group_var, levels = levels(data$group_var))
+    }else{
+      tmp$group_var <- factor(tmp$group_var)
     }
 
     ## perform statistical test (paired)
@@ -637,6 +645,8 @@ frequency_t_test<-function(fcd,
     ## get levels from original condor object. Allows user to adjust group1 and group2 via levels of group_var
     if(is.factor(data$group_var)){
       tmp$group_var <- factor(tmp$group_var, levels = levels(data$group_var))
+    }else{
+      tmp$group_var <- factor(tmp$group_var)
     }
 
     ## perform statistical test (unpaired)
@@ -655,8 +665,8 @@ frequency_t_test<-function(fcd,
 
 #' frequency_wilcox_test
 #'
-#' @title Wilcoxon Rank Sum test to compare cell population frequencies
-#' @description \code{frequency_wilcox_test()} performs a two-sided, two sample Wilcoxon Rank Sum test on cell type frequencies.
+#' @title Wilcoxon test to compare cell population frequencies
+#' @description \code{frequency_wilcox_test()} performs a two-sided, two-sample Wilcoxon Rank Sum test (independent) or Wilcoxon Signed Rank test (paired data) on cell type frequencies.
 #' @param fcd flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var
 #' @param cluster_var string specifying variable  in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
@@ -790,6 +800,8 @@ frequency_wilcox_test<-function(fcd,
     ## get levels from original condor object. Allows user to adjust group1 and group2 via levels of group_var
     if(is.factor(data$group_var)){
       tmp$group_var <- factor(tmp$group_var, levels = levels(data$group_var))
+    }else{
+      tmp$group_var <- factor(tmp$group_var)
     }
 
     ## perform statistical test (paired)
@@ -809,6 +821,8 @@ frequency_wilcox_test<-function(fcd,
     ##get levels from original condor object. Allows user to adjust group1 and group2 via levels of group_var
     if(is.factor(data$group_var)){
       tmp$group_var <- factor(tmp$group_var, levels = levels(data$group_var))
+    }else{
+      tmp$group_var <- factor(tmp$group_var)
     }
 
     ## perform statistical test (unpaired)
