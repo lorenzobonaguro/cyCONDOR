@@ -1,21 +1,23 @@
 #' runPCA
 #'
 #' @title runPCA
-#' @description Run a Principal Component Analysis.
+#' @description Performs a Principal Component Analysis (PCA) on the expression matrix specified in \code{data_slot}.
 #' @param fcd flow cytometry dataset.
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
 #' @param seed A seed is set for reproducibility.
-#' @param prefix Prefix of the output.
-#' @param markers vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
+#' @param prefix Optional prefix for the slot name of the output.
+#' @param markers Vector of marker names to include or exclude from the calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
 #' @param discard LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.
 #'
 #' @import stats
 #' @import dplyr
 #'
-#' @return runPCA
+#' @details
+#' The calculation of the PC is based on the function \code{\link[stats]{prcomp}} from the R Stats Package. See the RDocumentation (https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/prcomp) for more details.
+#'
+#' @return The function returns a fcd with a Principle Components (PC) data frame saved in \code{fcd$pca}. The name of the output consists of the prefix (if given) and the data slot.
 #'
 #' @export
-
 
 
 
@@ -38,7 +40,7 @@ runPCA <- function(fcd,
   # calculate PC
   if (discard == FALSE){              # (discard == F -> keep markers (default = all))
 
-    tmp <- prcomp(fcd$expr[[data_slot]][, colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
+    tmp <- stats::prcomp(fcd$expr[[data_slot]][, colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
 
   } else if (discard == TRUE) {       # (discard == T -> discard markers, error if markers are not specified)
 
@@ -49,7 +51,7 @@ runPCA <- function(fcd,
 
     } else {
 
-      tmp <- prcomp(fcd$expr[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
+      tmp <- stats::prcomp(fcd$expr[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
 
     }
   }
@@ -70,27 +72,31 @@ runPCA <- function(fcd,
 #' runUMAP
 #'
 #' @title runUMAP
-#' @description Run a UMAP dimensionality reduction.
+#' @description Perform a UMAP dimensionality reduction on the expression values or pca results.
 #'
 #' @param fcd flow cytometry dataset.
 #' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca".
 #' @param data_slot data slot to use for the calculation of the UMAP, e.g. "orig" or "norm".
-#' @param nNeighbors Number of neighbors for UMAP calculation. Default = 15.
+#' @param nNeighbors Number of items that define the neighborhood around each point. Default = 15.
 #' @param nComponents Number of components for UMAP calculation. Default = 2.
 #' @param min_dist Min_dist for UMAP calculation. Default = 0.2.
-#' @param metric Metric for UMAP calculation. Default = "euclidian". **(other options?)**
+#' @param metric Metric for UMAP calculation. Default = "euclidean".
 #' @param seed A seed is set for reproducibility.
-#' @param prefix Prefix of the output.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @param nThreads Number of threads to be used in the UMAP calculation. Default = 32.
 #' @param nPC Number of PCs used in the UMAP calculation. Default = All.
 #' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data using \code{\link{learnUMAP}}.
-#' @param markers vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
+#' @param markers Vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
 #' @param discard LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.
 #'
 #' @import umap
-#' @import Rtsne
+#' @import uwot
 #'
-#' @return runUMAP
+#' @details
+#' See [Melville J (2023). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R package version 0.1.16](https://github.com/jlmelville/uwot) for more details on the umap method.
+#'
+#'
+#' @return The function returns a fcd including a data frame with the UMAP coordinates saved in \code{fcd$umap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
 
@@ -207,9 +213,9 @@ runUMAP <- function(fcd,
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
 #' @param k K used for the analysis. Default = 10.
 #' @param seed A seed is set for reproducibility.
-#' @param prefix Prefix of the output.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @param nPC Number of principal components to use for the analysis. Default = All.
-#' @param markers vector of marker names to include or exclude from DM calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
+#' @param markers Vector of marker names to include or exclude from DM calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
 #' @param discard LOGICAL if the markers specified should be included, "False", or excluded, "True", from the DM calculation. Default = F.
 #'
 #' @import destiny
@@ -217,7 +223,11 @@ runUMAP <- function(fcd,
 #' @import slingshot
 #' @import dplyr
 #'
-#' @return runDM
+#' @details
+#' See [Philipp Angerer et al. (2015): destiny: diffusion maps for large-scale single-cell data in R. Helmholtz-Zentrum München.] (http://bioinformatics.oxfordjournals.org/content/32/8/1241)
+#'
+#'
+#' @return The function returns a fcd including a data frame with the DM coordinates saved in \code{fcd$diffmap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
 
@@ -274,7 +284,7 @@ runDM <- function (fcd,
 
     #define fcd subset for DM calculations and get used markers of PCA analysis
     data1 <- fcd$pca[[data_slot]][,1:nPC]
-    DM_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
+    dm_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
   }
 
   # calculate DM (changes to fcd (now data1))
@@ -317,22 +327,28 @@ runDM <- function (fcd,
 #' @param fcd flow cytometry dataset.
 #' @param input_type data to use for the calculation, e.g. "expr" or "pca" (suggested: "pca").
 #' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
-#' @param perplexity Perplexity used for tSNE calculation (see Rtsne documentation for details).
+#' @param perplexity Value that controls how many nearest neighbors are taken into account when constructing the embedding (see Rtsne documentation for details).
 #' @param seed A seed is set for reproducibility.
-#' @param prefix Prefix of the output.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @param nThreads Number of threads to be used in the tSNE calculation.
 #' @param nPC Number of principal components to use for the analysis.
-#' @param markers vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
+#' @param markers Vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
 #' @param discard Boolean to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.
 #'
-#' @return tSNE cohordinates
+#' @import Rtsne
+#'
+#' @details
+#' See [Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation], (https://github.com/jkrijthe/Rtsne) for more details on the Rtsne method.
+#'
+#'
+#' @return The function returns a fcd including a data frame with the tSNE coordinates saved in \code{fcd$tSNE}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
 
 runtSNE <- function (fcd,
                          input_type, # expr o. pca
                          data_slot,  # orig, norm or "prefix"-orig/nrom
-                         perplexity,
+                         perplexity = 30,
                          seed = 91,
                          prefix = NULL, # new prefix for tSNE DimRed
                          nThreads = 1,
@@ -386,7 +402,7 @@ runtSNE <- function (fcd,
     tSNE_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
   }
 
-  tSNE_df <- Rtsne(X = data1,
+  tSNE_df <- Rtsne::Rtsne(X = data1,
                    dims = 2,
                    perplexity = perplexity,
                    check_duplicates = F,
