@@ -274,11 +274,11 @@ prep_fcd <- function(data_path,
 #' @import flowWorkspace
 #' @import Biobase
 #' @import CytoML
+#' @import stringr
 #' @return read_flowjo_workspace
 #'
 #' @export
 prep_fjw <- function(data_gs,
-                    # gate_list,
                      inverse.transform = FALSE,
                      transformation = NULL,
                      remove_param = NULL,
