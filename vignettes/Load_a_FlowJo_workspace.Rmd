@@ -18,82 +18,115 @@ library(Biobase)
 library(ggplot2)
 ```
 
-With the `cyCONDOR` ecosystem is possible to load a FlowJo work space. This gives the advantage of having the gating hierarchy in the `condor` object.
+```{r, include= FALSE}
+library(dplyr)
+library(flowCore)
+library(Rphenograph)
+library(stringr)
+
+#load functions 
+source("../repo/cyCONDOR/R/data_load_and_transform.R")
+source("../repo/cyCONDOR/R/data_visualization.R")
+source("../repo/cyCONDOR/R/dim_reduction.R")
+source("../repo/cyCONDOR/R/colors.R")
+source("../repo/cyCONDOR/R/clustering.R")
+source("../repo/cyCONDOR/R/misc.R")
+source("../repo/cyCONDOR/R/batch_correction.R")
+
+```
+
+Within the `cyCONDOR` ecosystem it is possible to load a FlowJo work space (.wsp file). This gives the advantage of having the gating hierarchy in the `fcd` object.
 
 ## Read the .wsp file
 
-First we use the `flowWrokspace` package to load the `.wsp` file.
+First we use the [CytoML](https://doi.org/10.18129/B9.bioc.CytoML) package to load the `.wsp` file.
 
 ```{r}
-ws <- open_flowjo_xml("../.test_files/flowjo_workspace.wsp")
+ws <- CytoML::open_flowjo_xml("../../data/.test_files/flowjo_workspace.wsp")
 
 ws
 ```
 
-## Transformation into **gatingset** object
+## Transformation into **GatingSet** object
 
-We then transform the object to an `getingset`.
+We then transform the object to a `GatingSet` object.
 
 ```{r}
-gs <- flowjo_to_gatingset(ws, name = "samples", path = "../.test_files/fcs_flowjo_ws/")
+gs <- CytoML::flowjo_to_gatingset(ws, name = "samples", path = "../../data/.test_files/fcs_flowjo_ws/")
 
 gs
 ```
 
-### Visualization of the gating strategy
+### Visualization of the FlowJo gating strategy
 
-We can now visualize the gating herarchy.
+We visualize the gating hierarchy and look at the cell count per gated population.
 
 ```{r}
-plot(gs, bool = TRUE)
-```
-
-### Get unique gate names
-```{r}
-gs_pop_get_stats(gs)
+flowWorkspace::plot(gs, bool = TRUE)
 ```
 
 ```{r}
-nodelist <- gs_get_pop_paths(gs, path = "auto")
-nodelist
+flowWorkspace::gs_pop_get_stats(gs)
 ```
 
-## Prepare the data
 
-From the `gatingset` object we can now prepare the `condor` object. 
+## Prepare the data for **cyCONDOR**
+
+From the `GatingSet` object we prepare the `fcd` object using `prep_fjw()`. Here, we provide the `GatingSet` object as input, reverse the FlowJo tranformation, perform an autologicle transformation and remove the parameter "Time". Optionally, we can read in an annotation table to add further sample information (not shown).
 
 ```{r}
 condor <- prep_fjw(data_gs = gs, 
-                   pop = "root", 
-                   gate_list = nodelist, 
                    inverse.transform = TRUE,
-                   transformation = "a",
-                   remove_param = c("Time"))
+                   transformation = "auto_logi",
+                   remove_param = c("Time")
+                   )
 
 class(condor)
 ```
 
-### Simple visualization of the dataset with FlowJo gating
-
+The performed FlowJo gating with the assigned cell populations is saved in `condor$anno$cell_anno`.
 ```{r}
-set.seed(91)
-
-tmp <- cbind(condor$expr$orig, condor$anno$cell_anno)
-
-tmp <- tmp[sample(1:dim(tmp)[1], 100000), ]
+condor$anno$cell_anno[110:115,]
 ```
 
+
+## Filter for a population
+
+We can filter our data set for a population of interest e.g. the CD45+ cells.
+
 ```{r}
-ggplot(tmp[tmp$`CD45+` == 1,], aes(x= `CD3`, y = `CD8`, color = as.factor(`CD3+`))) +
+#select cell IDs of all CD45+ cells
+keep <- condor$anno$cell_anno[condor$anno$cell_anno$`CD45+` == 1,] %>% rownames()
+
+#check the number of CD45+ cells
+length(keep)
+
+#filter data for CD45+ cells
+condor_CD45 <- filter_fcd(condor, cell_ids = keep)
+```
+
+
+### Simple visualization of the dataset with FlowJo gating
+
+We can visualize the gated cell populations for example in a simple dot plot. In the plot below, we plot the fluorescence intensity of CD3 against CD19 and color the cells by the 'CD3+' population from the FlowJo workspace.
+
+```{r}
+# subset condor to 10000 cells for visualization
+condor_sub <- subset_fcd(condor_CD45, size= 10000)
+
+#prepare data frame for plotting
+tmp <- cbind(condor_sub$expr$orig, condor_sub$anno$cell_anno)
+
+ggplot(tmp, aes(x= `CD19`, y = `CD3`, color = as.factor(`CD3+`))) +
   geom_point() + 
   theme_bw() + 
   theme(aspect.ratio = 1) + 
   scale_color_viridis_d()
 ```
 
-```{r}
-rm(tmp)
-```
+We can now continue with the usual `cyCONDOR` workflow (see e.g. vignette("Dimensionality_Reduction"), vignette("Clustering_and_cell_annotation") and vignette("Data_Visualization").
+
+
 
 # Session Info
 ```{r}
