@@ -6,10 +6,10 @@
 #' @param fcd flow cytometry dataset.
 #' @param input_type Data for marker extraction, e.g. "pca", "umap", "phenograph", "FlowSOM"
 #' @param data_slot Data slot for marker extraction, e.g. "orig" or "norm".
-#' @param prefix Prefix of the specific data_slot, if used.
-#' @param mute LOGICAL, if output of funtion is wanted (F) or not (T). Default = F.
+#' @param prefix Optional prefix of the specific data_slot, if used.
+#' @param mute LOGICAL, if output of function is wanted (F) or not (T). Default = F.
 #'
-#' @return marker vector.
+#' @return The function returns a vector containing the markers used for the specified method.
 #'
 #' @export
 
@@ -22,9 +22,8 @@ used_markers <- function(fcd,
   markers <- fcd$extras$markers[[paste(input_type, sub("^_", "", paste(prefix, data_slot,"markers", sep = "_")), sep = "_")]]
   if (mute == F){
 
-    print(paste("number of measured markers:",length(markers)))
+    print(paste("number of used markers in",paste(input_type, sub("^_", "", paste(prefix, data_slot, sep = "_")), sep = "_"),":",length(markers)))
     print(markers)
-    return(markers)
   }else{
     return(markers)}
 }
@@ -33,9 +32,11 @@ used_markers <- function(fcd,
 #' measured_markers
 #'
 #' @title measured_markers
-#' @description returns a vector of markers for orig condor expr.
+#' @description returns a vector of markers for fcd$expr$orig.
+#'
 #' @param fcd flow cytometry dataset.
-#' @return marker vector.
+#'
+#' @return The function returns a vector containing all markers present in the fcd.
 #'
 #' @export
 
@@ -49,19 +50,23 @@ measured_markers <- function(fcd){
 #' filter_fcd
 #'
 #' @title filter_fcd
-#' @description Filter a fcd according to selected cell IDs
-#' @param fcdataset Flow cytometry dataset to be filtered.
+#' @description Filters a fcd according to selected cell IDs
+#'
+#' @param fcd Flow cytometry dataset to be filtered.
 #' @param cell_ids Row names of the cells to be filtered, should be provided as vector.
-#' @return filter the flowframe according to specific cell IDs
+#'
+#' @return The function returns a fcd filtered on the specified cell IDs.
 #'
 #' @export
-filter_fcd <- function(fcdataset, cell_ids) {
+
+
+filter_fcd <- function(fcd, cell_ids) {
 
   new_fcd <- list()
 
-  for (level_1 in names(fcdataset)[names(fcdataset) != "extras"]) {
+  for (level_1 in names(fcd)[names(fcd) != "extras"]) {
 
-    int_cont <- fcdataset[[level_1]]
+    int_cont <- fcd[[level_1]]
 
     int_collector <- list()
 
@@ -74,9 +79,9 @@ filter_fcd <- function(fcdataset, cell_ids) {
 
   }
 
-  if (length(names(fcdataset)[names(fcdataset) == "extras"]) == 1) {
+  if (length(names(fcd)[names(fcd) == "extras"]) == 1) {
 
-    new_fcd[["extras"]] <- fcdataset[["extras"]]
+    new_fcd[["extras"]] <- fcd[["extras"]]
 
   }
 
@@ -87,9 +92,11 @@ filter_fcd <- function(fcdataset, cell_ids) {
 #' check_IDs
 #'
 #' @title check_IDs
-#' @description Check the integrity and the correctness of a flow cytometry dataset by comparing the cell IDs of all existing slots to the cell IDs of the orig. exprs
+#' @description Checks the integrity and the correctness of a flow cytometry dataset by comparing the cell IDs of all existing slots to the cell IDs of the fcd$exprs$orig
+#'
 #' @param fcd Flow cytometry dataset to be checked.
-#' @return check the integrity and the correctness of a flow cytometry dataset
+#'
+#' @return If the cell IDs differ at any level from the ones of the fcd$expr$orig data frame, a warning will be returned.
 #'
 #' @export
 #'
@@ -129,10 +136,16 @@ check_IDs <- function(fcd){
 #' merge_condor
 #'
 #' @title merge_condor
-#' @description Merges two condor objects.
-#' @param data1 Dataset 1 to merge.
-#' @param data2 Dataset 2 to merge.
-#' @return Condor Object
+#' @description Merges two flow cytometry datasets.
+#'
+#' @param data1 flow cytometry dataset 1 to merge.
+#' @param data2 flow cytometry dataset 2 to merge.
+#'
+#' @details
+#' If cell IDs between data1 and data2 are doubled, the merging will not be performed.
+#'
+#'
+#' @return The function returns a merged flow cytometry dataset comprised of all cells from data1 and data2.
 #'
 #' @export
 merge_condor <- function(data1, data2) {
@@ -172,10 +185,12 @@ merge_condor <- function(data1, data2) {
 #'
 #' @title change_param
 #' @description  change parameter names
-#' @param fcd flowframe object (condor).
+#'
+#' @param fcd flow cytometry dataset.
 #' @param old_names vector of names that should be changed.
 #' @param new_names vector of new names in the same order.
-#' @return change_param
+#'
+#' @return The function returns a fcd with changed parameter names.
 #'
 #' @export
 change_param_name <- function(fcd,
@@ -218,19 +233,48 @@ change_param_name <- function(fcd,
   return(fcd)
 }
 
+#' subset_fcd
+#'
+#' @title subset_fcd
+#' @description Performs a random subset of the fcd
+#'
+#' @param fcd flow cytometry dataset.
+#' @param size Numeric: size of the sub-sampling.
+#' @param seed A seed is set for reproducibility.
+#'
+#' @return df_frequency
+#'
+#' @export
+subset_fcd <- function(fcd, size, seed = 91) {
+
+  set.seed(seed)
+
+  random_cells <- sample(rownames(fcd[["expr"]][["orig"]]), size = size)
+
+  condor_filter <- filter_fcd(fcdataset = fcd,
+                              cell_ids = random_cells)
+
+  return(condor_filter)
+}
+
+
 #' df_frequency
 #'
 #' @title df_frequency
 #' @description function to get dataframe of frequencies
+#'
 #' @param classification classification parameters.
 #' @param classification_header **optional** chosen header for classification parameters, default = "classification".
 #' @param vertical logical, if FALSE frequency on level of classification, default = TRUE.
 #' @param groups ** optional ** vector of selected groups to display, default = all.
 #' @param condition grouping to be used.
+#'
 #' @import reshape2
+#'
 #' @return df_frequency
 #'
 #' @export
+
 df_frequency <- function(classification,      #condor$clustering$Phenograph_pca_norm_k60$Phenograph
                          classification_header = "classification",
                          condition,            #condor$anno$cell_anno$group
@@ -262,27 +306,6 @@ df_frequency <- function(classification,      #condor$clustering$Phenograph_pca_
   return(result)
 }
 
-#' subset_fcd
-#'
-#' @title subset_fcd
-#' @description Performs a random subset of the fcd
-#' @param fcd flowframe object.
-#' @param size Numeric: size of the sub-sampling.
-#' @param seed A seed is set for reproducibility.
-#' @return df_frequency
-#'
-#' @export
-subset_fcd <- function(fcd, size, seed = 91) {
-
-  set.seed(seed)
-
-  random_cells <- sample(rownames(fcd[["expr"]][["orig"]]), size = size)
-
-  condor_filter <- filter_fcd(fcdataset = fcd,
-                              cell_ids = random_cells)
-
-  return(condor_filter)
-}
 
 #' checkInput
 #'
