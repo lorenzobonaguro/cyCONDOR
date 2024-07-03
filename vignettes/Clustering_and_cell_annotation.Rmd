@@ -18,7 +18,7 @@ In this vignette we showcase `cyCONDOR` functions for clustering and cell annota
 
 # Load example cyCONDOR object
 ```{r}
-condor <- readRDS("../.test_files/condor_example.rds")
+condor <- readRDS("../.test_files/condor_example_016.rds")
 #condor <- readRDS("/data/analysis/data/.test_files/condor_example.rds")
 ```
 
@@ -62,14 +62,13 @@ condor <- runFlowSOM(fcd = condor,
 The output of the FlowSOM clustering can be accessed with `condor$clustering$FlowSOM_pca_orig_k_60`.
 
 
-
 # Metaclustering
 
 Each cluster can be now labeled according to the specific cell type with the `metaclustering` function. This function takes the condor object (`fcd`) and the `cluster_slot` as input. The `cluster_var_new` parameter names the new column containing the cell types. The `metacluster` parameter is a named vector acting as translation table to annotate each cell cluster.
 
 ```{r}
 condor <- metaclustering(fcd = condor, 
-                         cluster_slot = "Phenograph_pca_orig_k_60", 
+                         cluster_slot = "phenograph_pca_orig_k_60", 
                          cluster_var = "Phenograph", 
                          cluster_var_new = "metaclusters", 
                          metaclusters = c("1" = "Classical Monocytes", 
