@@ -347,7 +347,6 @@ frequency_friedman_test<-function(fcd,
 #' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{\link[rstatix]}.
 #' @param kruskal_sig_threshold significance threshold for Kruskal-Wallis test. For all Kruskal-Wallis comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
-#' @param detailed Charlotte
 #' @details \code{frequency_kruskal_test()} is a wrapper function around \code{\link[rstatix]{kruskal_test}},  \code{\link[rstatix]{kruskal_effsize}} and  \code{\link[rstatix]{dunn_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Kruskal-Wallis rank sum test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with Dunne's Test and p-value correction is performed for each significant Kruskal-Wallis comparison.
 #' @returns \code{frequency_kruskal_test()} returns a list of two data frames, "kruskal_test" and "dunn_test". "kruskal_test" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "dunn_test" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 #' @import rstatix
@@ -364,7 +363,6 @@ frequency_kruskal_test<-function(fcd,
                                  post_hoc_test = T,
                                  post_hoc_p.adjust.method = "bonferroni",
                                  kruskal_sig_threshold = 0.05,
-                                 detailed = F,
                                  numeric = F)
 {
 
