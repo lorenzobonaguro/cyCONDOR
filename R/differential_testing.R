@@ -845,8 +845,8 @@ frequency_wilcox_test<-function(fcd,
 #' @param cluster_var string specifying variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
 #' @param sample_var Charlotte
 #' @param meta_vars vector of variables in cell_anno, which contain sample level metadata, which means that each sample ID is associated with exactly one level per variable. All variables that the user wants to use in the test design need to be listed, e.g. group, donor_id. Variables with names "sample_id" and "cluster_id" are not allowed, since these names have designated purposes in diffcyt workflow.
-#' @param marker_state vector of marker names that should get the marker_class "state". If no markers are provided in marker_state and marker_type all available markers and features in expr data will be set as "state".
-#' @param marker_type vector of marker names available in expr data, that should get the marker_class "type". If no markers are provided in marker_state and marker_type all available markers and features in expr data will get the marker_class "state".
+#' @param marker_state vector of marker names that should get the marker_class "state". If no markers are provided in marker_state and marker_type all available markers and features in expr data will be set as "type".
+#' @param marker_type vector of marker names available in expr data, that should get the marker_class "type". If no markers are provided in marker_state and marker_type all available markers and features in expr data will get the marker_class "type".
 #' @details The function will carry over the original transformed expression. The flexible experimental design of  diffcyt's testing functions allows to include batch variables.
 #' @import diffcyt
 #' @import SummarizedExperiment
@@ -894,23 +894,6 @@ prepInputDiffcyt<-function(fcd,
     stop("Error: Specified markers in marker_state and marker_type are overlapping.")
   }
 
-  ## state marker
-  if(!is.null(marker_state)){
-    marker_state<-unique(marker_state)
-
-    ##check if markers are present in expr slot
-    marker_state_present<-marker_state[marker_state %in% colnames(fcd$expr[[expr_slot]])]
-    if(length(marker_state_present) == 0){
-      stop('None of the provided state markers are present in expr slot "', expr_slot, '".')
-    }
-    if(length(marker_state_present) < length(marker_state)){
-      warning('The following markers could not be found in expr slot "', expr_slot, '": ',
-              paste(marker_state[!marker_state %in% marker_state_present], collapse = ","))
-    }
-  }else{
-    marker_state_present<-colnames(fcd$expr[[expr_slot]])
-  }
-
   ## type marker
   if(!is.null(marker_type)){
     marker_type<-unique(marker_type)
@@ -918,24 +901,41 @@ prepInputDiffcyt<-function(fcd,
     ##check if markers are present in expr slot
     marker_type_present<-marker_type[marker_type %in% colnames(fcd$expr[[expr_slot]])]
     if(length(marker_type_present) == 0){
-      stop('None of the provided state markers are present in expr slot "', expr_slot, '".')
+      stop('None of the provided type marker are present in expr slot "', expr_slot, '".')
     }
     if(length(marker_type_present) < length(marker_type)){
-      warning('The following markers could not be found in expr slot "', expr_slot, '": ',
+      warning('The following type marker could not be found in expr slot "', expr_slot, '": ',
               paste(marker_type[!marker_type %in% marker_type_present], collapse = ","))
     }
   }else{
-    marker_type_present<-NULL
+    marker_type_present<-colnames(fcd$expr[[expr_slot]])
+  }
+
+  ## state marker
+  if(!is.null(marker_state)){
+    marker_state<-unique(marker_state)
+
+    ##check if markers are present in expr slot
+    marker_state_present<-marker_state[marker_state %in% colnames(fcd$expr[[expr_slot]])]
+    if(length(marker_state_present) == 0){
+      stop('None of the provided state marker are present in expr slot "', expr_slot, '".')
+    }
+    if(length(marker_state_present) < length(marker_state)){
+      warning('The following state marker could not be found in expr slot "', expr_slot, '": ',
+              paste(marker_state[!marker_state %in% marker_state_present], collapse = ","))
+    }
+  }else{
+    marker_state_present<-NULL
   }
 
   ## prepare data frame marker_info
   marker_info<-data.frame(channel_name = colnames(fcd$expr[[expr_slot]]),
                           marker_name = colnames(fcd$expr[[expr_slot]]),
                           marker_class = c(rep("none",length(colnames(fcd$expr[[expr_slot]])))))
-  marker_info[marker_info$marker_name %in% marker_state_present,]$marker_class<-"state"
+  marker_info[marker_info$marker_name %in% marker_type_present,]$marker_class<-"type"
 
-  if(!is.null(marker_type)){
-    marker_info[marker_info$marker_name %in% marker_type_present,]$marker_class<-"type"
+  if(!is.null(marker_state)){
+    marker_info[marker_info$marker_name %in% marker_state_present,]$marker_class<-"state"
   }
 
 
