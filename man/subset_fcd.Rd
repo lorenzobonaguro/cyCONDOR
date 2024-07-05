@@ -7,7 +7,7 @@
 subset_fcd(fcd, size, seed = 91)
 }
 \arguments{
-\item{fcd}{flowframe object.}
+\item{fcd}{flow cytometry dataset.}
 
 \item{size}{Numeric: size of the sub-sampling.}
 

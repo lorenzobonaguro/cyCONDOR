@@ -9,7 +9,7 @@ harmonize_PCA(fcd, data_slot = "orig", batch_var, seed = 91, prefix = NULL)
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, \code{orig}.}
+\item{data_slot}{name of the PCA data slot to use for harmonization. If no prefix was added the, \code{orig}.}
 
 \item{batch_var}{vector of column names from \code{fcd$anno$cell_anno} to use for correcting the data.}
 
@@ -18,14 +18,14 @@ harmonize_PCA(fcd, data_slot = "orig", batch_var, seed = 91, prefix = NULL)
 \item{prefix}{Prefix for the output.}
 }
 \value{
-harmonize_PCA
+The function returns a fcd with a harmonized Principal Components based on \code{\link[harmony]{HarmonyMatrix}}. If no prefix is added, the harmonized PCs are saved in \code{fcd$pca$norm}.
 }
 \description{
-Harmonize the Principal Component Analysis.
+Harmonize the Principal Components previously calculated by \code{\link{runPCA}} for a defined batch variable (\code{batch_var}).
 }
 \details{
 harmonize_PCA
 
 
-See https://doi.org/10.1038/s41592-019-0619-0 for more details on the Harmony algorithm.
+See [Korunsky et al., 2019](https://doi.org/10.1038/s41592-019-0619-0) for more details on the Harmony algorithm.
 }

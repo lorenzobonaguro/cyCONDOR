@@ -2,7 +2,7 @@
 % Please edit documentation in R/differential_testing.R
 \name{frequency_wilcox_test}
 \alias{frequency_wilcox_test}
-\title{Wilcoxon Rank Sum test to compare cell population frequencies}
+\title{Wilcoxon test to compare cell population frequencies}
 \usage{
 frequency_wilcox_test(
   fcd,
@@ -18,7 +18,7 @@ frequency_wilcox_test(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -28,26 +28,26 @@ frequency_wilcox_test(
 
 \item{group_var}{string indicating variable  in cell_anno that should be used to group samples in sample_var. group_var must have exactly two levels.}
 
-\item{pair_var}{string indicating variable  in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if `paired_test = T`.}
+\item{pair_var}{string indicating variable  in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if \code{paired_test = T}.}
 
 \item{paired_test}{logical, indicating if a paired (TRUE) or unpaired test (FALSE, default) should be performed.}
 
-\item{p.adjust.method}{p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.}
+\item{p.adjust.method}{p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{detailed}{logical if detailed output from \code{\link[rstatix]{wilcox_test}} should be reported.}
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
 }
 \value{
-`frequency_wilcox_test` returns a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+\code{frequency_wilcox_test} returns a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
 }
 \description{
-`frequency_wilcox_test()` performs a two-sided, two sample Wilcoxon Rank Sum test on cell type frequencies.
+\code{frequency_wilcox_test()} performs a two-sided, two-sample Wilcoxon Rank Sum test (independent) or Wilcoxon Signed Rank test (paired data) on cell type frequencies.
 }
 \details{
 frequency_wilcox_test
 
-`frequency_wilcox_test()` is a wrapper function around the `wilcox_test()` function implemented in the package *rstatix*.
+\code{frequency_wilcox_test()} is a wrapper function around the \code{wilcox_test()} function implemented in the package \code{rstatix}.
 The function first calculates cell population frequencies for each sample in sample_var. Then a two-sided, two sample wilcoxon test is performed between two groups defined in group_var.
 The test can either be run unpaired (two independent groups) or paired. Afterwards,  p-value adjustment will be performed across all comparisons that were made.
 }

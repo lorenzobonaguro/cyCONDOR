@@ -6,10 +6,10 @@
 \usage{
 plot_dim_red(
   fcd,
-  expr_slot,
+  expr_slot = NULL,
   reduction_method,
   reduction_slot,
-  cluster_slot,
+  cluster_slot = NULL,
   add_pseudotime = FALSE,
   pseudotime_slot,
   param,
@@ -18,7 +18,7 @@ plot_dim_red(
   limX = NULL,
   limY = NULL,
   dot_size = 0.1,
-  apha = 0.2,
+  alpha = 0.2,
   color_discrete = cluster_palette,
   color_gradient = colors,
   remove_guide = FALSE,
@@ -31,7 +31,7 @@ plot_dim_red(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to dimensionality reduction with *cyCONDOR*.}
+\item{fcd}{flow cytometry data set, that has been subjected to dimensionality reduction with cyCONDOR.}
 
 \item{expr_slot}{expr_slot from which to take marker expression values, default is "orig".
 Corrected input data should be handled cautiously.}
@@ -58,15 +58,15 @@ Corrected input data should be handled cautiously.}
 
 \item{dot_size}{size of the dots.}
 
-\item{apha}{transparency of the dots.}
+\item{alpha}{transparency of the dots.}
 
 \item{color_discrete}{colors for discrete parameters, must be provided as vector of the same length as the number of factors of `param`.}
 
-\item{color_gradient}{colors for continous parameters.}
+\item{color_gradient}{colors for continuous parameters.}
 
 \item{remove_guide}{logical, if you want to remove the guide.}
 
-\item{facet_by_variable}{option to facet the plot by a variable, if `FALSE` the plot is not faceted, if `TRUE` the plot is faceted by the `param` variable. If any other variable is provided (e.g. "group") the plot will be faceted by this variable.}
+\item{facet_by_variable}{option to facet the plot by a variable, if FALSE the plot is not faceted, if TRUE the plot is faceted by the `param` variable. If any other variable is provided (e.g. "group") the plot will be faceted by this variable.}
 
 \item{label_clusters}{logical: If clusters should be labeled with a text box.}
 
@@ -82,7 +82,7 @@ Corrected input data should be handled cautiously.}
 plot marker or list of markers
 }
 \description{
-`plot_dim_red` generates a dotplot of the coordinates of any dimensionality reduction performed on a `condor` object. The plot can be colored by any variable both numeric (e.g. expression) or categorical (e.g. clustering/metadata).
+\code{plot_dim_red()} generates a dotplot of the coordinates of any dimensionality reduction performed on a \code{condor} object. The plot can be colored by any variable both numeric (e.g. expression) or categorical (e.g. clustering/metadata).
 }
 \details{
 plot_dim_red

@@ -17,7 +17,7 @@ plot_marker_group_HM(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{expr_slot}{expr_slot from which to take marker expression values, default is "orig".
 Corrected input data should be handled cautiously.}
@@ -40,7 +40,7 @@ Corrected input data should be handled cautiously.}
 A heatmap of scaled mean expression, depicting markers in rows and cell populations grouped by a grouping variable in columns.
 }
 \description{
-`plot_marker_group_HM()` generates a heatmap of scaled mean marker expression for each cell population split by a grouping variable.
+\code{plot_marker_group_HM()} generates a heatmap of scaled mean marker expression for each cell population split by a grouping variable.
 }
 \details{
 plot_marker_group_HM

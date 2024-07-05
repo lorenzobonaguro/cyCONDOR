@@ -251,7 +251,7 @@ subset_fcd <- function(fcd, size, seed = 91) {
 
   random_cells <- sample(rownames(fcd[["expr"]][["orig"]]), size = size)
 
-  condor_filter <- filter_fcd(fcdataset = fcd,
+  condor_filter <- filter_fcd(fcd = fcd,
                               cell_ids = random_cells)
 
   return(condor_filter)

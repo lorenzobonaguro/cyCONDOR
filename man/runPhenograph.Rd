@@ -27,7 +27,7 @@ runPhenograph(
 
 \item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix of the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
 \item{nPC}{Number of principal components to use for the analysis.}
 
@@ -36,11 +36,14 @@ runPhenograph(
 \item{discard}{LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.}
 }
 \value{
-runPhenograph
+The function returns a fcd including a data frame containing the phenograph clustering saved in \code{fcd$clustering}. The name of the output consists of the prefix (if given) and the data slot and the defined \code{k}. If a \code{nPC} is given it will be added to the output name.
 }
 \description{
 Run Phenograph based clustering.
 }
 \details{
 runPhenograph
+
+
+See [Stuchly J (2020). "Rphenoannoy: R implementation of the phenograph algorithm - approximate KNN modification, based on Rphenograph package". R package version 0.1.0.] (https://github.com/stuchly/Rphenoannoy)
 }

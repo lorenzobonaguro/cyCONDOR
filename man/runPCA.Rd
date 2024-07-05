@@ -20,18 +20,21 @@ runPCA(
 
 \item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix of the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
-\item{markers}{vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object}
+\item{markers}{Vector of marker names to include or exclude from the calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.}
 
 \item{discard}{LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.}
 }
 \value{
-runPCA
+The function returns a fcd with a Principle Components (PC) data frame saved in \code{fcd$pca}. The name of the output consists of the prefix (if given) and the data slot.
 }
 \description{
-Run a Principal Component Analysis.
+Performs a Principal Component Analysis (PCA) on the expression matrix specified in \code{data_slot}.
 }
 \details{
 runPCA
+
+
+The calculation of the PC is based on the function \code{\link[stats]{prcomp}} from the R Stats Package. See the RDocumentation (https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/prcomp) for more details.
 }

@@ -27,20 +27,23 @@ runDM(
 
 \item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix of the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
 \item{nPC}{Number of principal components to use for the analysis. Default = All.}
 
-\item{markers}{vector of marker names to include or exclude from DM calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object}
+\item{markers}{Vector of marker names to include or exclude from DM calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.}
 
 \item{discard}{LOGICAL if the markers specified should be included, "False", or excluded, "True", from the DM calculation. Default = F.}
 }
 \value{
-runDM
+The function returns a fcd including a data frame with the DM coordinates saved in \code{fcd$diffmap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 }
 \description{
 Run Diffusion Map dimensionality reduction.
 }
 \details{
 runDM
+
+
+See [Philipp Angerer et al. (2015): destiny: diffusion maps for large-scale single-cell data in R. Helmholtz-Zentrum München.] (http://bioinformatics.oxfordjournals.org/content/32/8/1241)
 }

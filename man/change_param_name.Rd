@@ -7,14 +7,14 @@
 change_param_name(fcd, old_names, new_names)
 }
 \arguments{
-\item{fcd}{flowframe object (condor).}
+\item{fcd}{flow cytometry dataset.}
 
 \item{old_names}{vector of names that should be changed.}
 
 \item{new_names}{vector of new names in the same order.}
 }
 \value{
-change_param
+The function returns a fcd with changed parameter names.
 }
 \description{
 change parameter names

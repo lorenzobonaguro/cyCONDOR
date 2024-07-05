@@ -17,7 +17,7 @@ plot_confusion_HM(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -36,11 +36,11 @@ plot_confusion_HM(
 \item{cluster_rows}{logical indicating if rows should be clustered (default: FALSE)}
 }
 \value{
-`plot_confusion_HM()` first calculates cell counts for each combination of group_var and cell population and normalizes the counts to a total of 1000 cells per group_var.
+\code{plot_confusion_HM()} first calculates cell counts for each combination of group_var and cell population and normalizes the counts to a total of 1000 cells per group_var.
 Afterwards the percentage of cells coming from each level in group_var is calculated per cell population. The normalization of counts corrects the visualization for differences in total cells (events) measured per group_var.
 }
 \description{
-`plot_confusion_HM()` generates a heatmap showing the contribution of each group_var to a cell population after normalizing all levels in group_var to the same cell numbers.
+\code{plot_confusion_HM()} generates a heatmap showing the contribution of each group_var to a cell population after normalizing all levels in group_var to the same cell numbers.
 }
 \details{
 plot_confusion_HM

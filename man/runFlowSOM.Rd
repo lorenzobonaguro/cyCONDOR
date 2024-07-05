@@ -34,7 +34,7 @@ runFlowSOM(
 
 \item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix of the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
 \item{ret_model}{LOGICAL if the model should be saved for future projection of the data. Default = F.}
 
@@ -45,11 +45,14 @@ runFlowSOM(
 \item{discard}{LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.}
 }
 \value{
-runFlowSOM
+The function returns a fcd including a data frame containing the FlowSOM clustering saved in \code{fcd$clustering}. The name of the output consists of the prefix (if given) and the data slot and the defined \code{nClusters}. If a \code{nPC} is given it will be added to the output name.
 }
 \description{
 Run FlowSOM based clustering.
 }
 \details{
 runFlowSOM
+
+
+See [Van Gassen S et al. (2015) "FlowSOM: Using self-organizing maps for visualization and interpretation of cytometry data." Cytom Part J Int Soc Anal Cytol 87: 636-645.] (https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625)
 }

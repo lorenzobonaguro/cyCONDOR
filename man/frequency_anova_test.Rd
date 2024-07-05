@@ -19,7 +19,7 @@ frequency_anova_test(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -29,7 +29,7 @@ frequency_anova_test(
 
 \item{group_var}{string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.}
 
-\item{anova_p.adjust.method}{p-value adjustment method to use for multiple test correction of Anova tests, e.g "bonferroni"(default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.}
+\item{anova_p.adjust.method}{p-value adjustment method to use for multiple test correction of Anova tests, e.g "bonferroni"(default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
 
@@ -37,19 +37,19 @@ frequency_anova_test(
 
 \item{post_hoc_test}{logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).}
 
-\item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.}
+\item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{anova_sig_threshold}{significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)}
 }
 \value{
-`frequency_anova_test` returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+\code{frequency_anova_test()} returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 }
 \description{
-`frequency_anova_test()`performs an independent measures Anova to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Emmeans test.
+\code{frequency_anova_test()} performs an independent measures Anova to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Emmeans test.
 }
 \details{
 frequency_anova_test
 
-`frequency_anova_test()` is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package *rstatix*.
-The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
+\code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package \code{rstatix}.
+The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
 }

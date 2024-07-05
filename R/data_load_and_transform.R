@@ -201,6 +201,10 @@ prep_fcd <- function(data_path,
 
   raw_data <- as.matrix(data$merged_df) # Take the dataframe with the intensity values
 
+  ## Add InFile to remove_param
+
+  remove_param <- c(remove_param, "InFile")
+
   ## Data Transformation
   keep <- colnames(raw_data)[!colnames(raw_data) %in% remove_param]
 

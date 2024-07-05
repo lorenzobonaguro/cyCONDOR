@@ -21,7 +21,7 @@ run_cytonorm(
 
 \item{keep_fcs}{Boolean whether to keep the normalized FCS files in \code{output_dir}.}
 
-\item{output_dir}{Directory to save normalized FCS files temporary or permanently, if keep_fcs == TRUE.}
+\item{output_dir}{Directory to save normalized FCS files temporary or permanently, if \code{keep_fcs == TRUE}.}
 
 \item{files}{Vector of fcs file names of samples which should be normalized. By default all files contained in the flow cytometry dataset are used.}
 
@@ -30,14 +30,14 @@ run_cytonorm(
 \item{anno_table}{Path to the annotation table file.}
 }
 \value{
-fcd with a normalized expression data frame.
+fcd with a normalized expression data frame saved in \code{fcd$expr$norm}.
 }
 \description{
-Wrapper function around CytoNorm.normalize from the CytoNorm package.
+Wrapper function around \code{\link[CytoNorm]{CytoNorm.normalize}} from the CytoNorm package.
 }
 \details{
 run_cytonorm
 
 
-This function assumes that your fcd contains a trained model computed by \code{\link{train_cytonorm}}. The function performs normalization of the samples contained in your fcd. The normalized expression values are added to your fcd and by default FCS files with the normalized values are written to the  \code{output_dir}.
+This function assumes that your fcd contains a trained model computed by \code{\link{train_cytonorm}}. The function performs normalization of the samples contained in your fcd. The normalized expression values are added to your fcd and by default FCS files with the normalized values are written to the \code{output_dir}. See [Van Gassen et al., 2019](https://doi.org/10.1002/cyto.a.23904) for more details on CytoNorm.
 }

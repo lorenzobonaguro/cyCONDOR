@@ -19,7 +19,7 @@ frequency_t_test(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -29,7 +29,7 @@ frequency_t_test(
 
 \item{group_var}{string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have exactly two levels.}
 
-\item{pair_var}{string indicating variable in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if `paired_test = T`.}
+\item{pair_var}{string indicating variable in cell_anno that defines pairing of samples, e.g. donor ID, that should be used if \code{paired_test = T}.}
 
 \item{paired_test}{logical, indicating if a paired (TRUE) or unpaired test (FALSE, default) should be performed.}
 
@@ -37,20 +37,20 @@ frequency_t_test(
 
 \item{detailed}{logical if detailed output from \code{\link[rstatix]{t_test}} should be reported.}
 
-\item{p.adjust.method}{p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.}
+\item{p.adjust.method}{p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
 }
 \value{
-`frequency_t_test()` returns a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+\code{frequency_t_test()} returns a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
 }
 \description{
-`frequency_t_test()` performs a two-sided, two sample t-test on cell type frequencies.
+\code{frequency_t_test()} performs a two-sided, two sample t-test on cell type frequencies.
 }
 \details{
 frequency_t_test
 
-`frequency_t_test()` is a wrapper function around the `t_test()` implemented in the package *rstatix*.
+\code{frequency_t_test()} is a wrapper function around the \code{t_test()} implemented in the package \code{rstatix}.
 The function first calculates cell population frequencies for each sample in sample_var. Then, a two-sided, two sample t-test is performed between two groups defined in group_var.
 The test can either be run unpaired (two independent groups) or paired. Afterwards,  p-value adjustment will be performed across all comparisons that were made.
 }

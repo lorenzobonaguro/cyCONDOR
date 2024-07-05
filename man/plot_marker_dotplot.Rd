@@ -21,7 +21,7 @@ plot_marker_dotplot(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{expr_slot}{expr_slot from which to take marker expression values, default is "orig".
 Corrected input data should be handled cautiously.}
@@ -53,7 +53,7 @@ By default all groups are plotted.}
 The function returns a scatter plot of two features available in the expression matrix. By default, dots are colored by cell population label provided in cluster_var. If coloring by a metadata is wanted instead, a group_var can be defined. Further, if only a selection of levels available in cluster_var should be included in plotting, a vector of labels of interest can be provided to cluster_to_show argument.
 }
 \description{
-`plot_marker_dotplot` generates a classical scatter plot of two markers
+\code{plot_marker_dotplot()} generates a classical scatter plot of two markers
 }
 \details{
 plot_marker_dotplot

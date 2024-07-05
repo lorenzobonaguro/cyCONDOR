@@ -16,7 +16,7 @@ plot_marker_violinplot(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{marker}{vector of characters indicating which features of the expression matrix should be plotted.}
 
@@ -34,13 +34,13 @@ Corrected input data should be handled cautiously.}
 \item{color_palette}{vector of colors to be used to fill violin plots, when group_var is used}
 }
 \value{
-`plot_marker_violinplot` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+\code{plot_marker_violinplot()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.
 }
 \description{
-`plot_marker_violinplot` plots the expression of selected markers as violin plots for cell populations.
+\code{plot_marker_violinplot()} plots the expression of selected markers as violin plots for cell populations.
 }
 \details{
 plot_marker_violinplot
 
-The violin plots are plotted with default parameters of ggplot2's `geom_violin()` and horizontal lines indicate the median.
+The violin plots are plotted with default parameters of ggplot2's \code{\link[ggplot2]{geom_violin}} and horizontal lines indicate the median.
 }

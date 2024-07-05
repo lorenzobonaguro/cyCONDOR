@@ -6,29 +6,33 @@
 \usage{
 metaclustering(
   fcd,
-  clustering,
   cluster_slot,
-  cluster_var = "metacluster",
+  cluster_var,
+  cluster_var_new = "metacluster",
   metaclusters
 )
 }
 \arguments{
-\item{fcd}{flow cytometry dataset.}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering with cyCONDOR.}
 
-\item{clustering}{Name of the clustering to match for the metaclustering.}
+\item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var.}
 
-\item{cluster_slot}{Column containing the original cluster.}
+\item{cluster_var}{variable name in cluster_slot that contains the original cluster labels.}
 
-\item{cluster_var}{Name of the output column.}
+\item{cluster_var_new}{column name that will be used to store the newly assigned cluster labels.}
 
-\item{metaclusters}{Vector of the new clusters names, this should be of the same length of the levels of the original clustering.}
+\item{metaclusters}{named vector of original cluster labels as names and the corresponding new labels as value, e.g. in case cluster 1 corresponds to T cells and cluster 2 to monocytes use: \code{c("1" = "Tcells", "2" = "Monocytes")}}
 }
 \value{
-metaclustering
+The function adds a new column with the name given in cluster_var_new to the selected cluster_slot. The column contains the new cluster labels (as factors) based on the name to value pairs in metaclusters.
 }
 \description{
-Assignment of a metaclusters name.
+Assignment of metacluster names to an existing clustering.
 }
 \details{
 metaclustering
+
+
+To correctly set up the metaclusters vector, cluster_var needs to be a factor (default after clustering with cyCONDOR).
+Additionally, the names of the metaclusters vector need to be in the same order as the levels of the factor cluster_var.
 }

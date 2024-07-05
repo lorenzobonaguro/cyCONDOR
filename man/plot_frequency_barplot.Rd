@@ -15,7 +15,7 @@ plot_frequency_barplot(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var.}
 
@@ -30,10 +30,10 @@ plot_frequency_barplot(
 \item{title}{title of the plot, default is "Frequency"}
 }
 \value{
-`plot_frequency_barplot` returns a plot showing cell population frequencies for each level in group_var. The plot is faceted by another variable, when provided a facet_var.
+\code{plot_frequency_barplot} returns a plot showing cell population frequencies for each level in group_var. The plot is faceted by another variable, when provided a facet_var.
 }
 \description{
-`plot_frequency_barplot` plots cell population frequencies for each level in group_var as stacked barplot.
+\code{plot_frequency_barplot()} plots cell population frequencies for each level in group_var as stacked barplot.
 }
 \details{
 plot_frequency_barplot

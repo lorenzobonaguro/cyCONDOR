@@ -7,16 +7,19 @@
 merge_condor(data1, data2)
 }
 \arguments{
-\item{data1}{Dataset 1 to merge.}
+\item{data1}{flow cytometry dataset 1 to merge.}
 
-\item{data2}{Dataset 2 to merge.}
+\item{data2}{flow cytometry dataset 2 to merge.}
 }
 \value{
-Condor Object
+The function returns a merged flow cytometry dataset comprised of all cells from data1 and data2.
 }
 \description{
-Merges two condor objects.
+Merges two flow cytometry datasets.
 }
 \details{
 merge_condor
+
+
+If cell IDs between data1 and data2 are doubled, the merging will not be performed.
 }

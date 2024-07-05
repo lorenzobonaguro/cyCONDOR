@@ -16,7 +16,7 @@ plot_dim_density(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set comprising dimensionality reduction calculated with *cyCONDOR*.}
+\item{fcd}{flow cytometry data set comprising dimensionality reduction calculated with cyCONDOR.}
 
 \item{reduction_method}{string specifying which dimensionality reduction method to use. At the moment, only "umap" is supported.}
 
@@ -30,13 +30,13 @@ plot_dim_density(
 
 \item{alpha}{transparency of the background dots.}
 
-\item{color_density}{vector of strings indicating the color palette from *RColorBrewer" to be used for the density gradient. A names vector using levels in group_var allows the assignment of a specific color to a group level. If vector is not names, entries will be assigned to groups in alphabetic order and color palettes will be reused if vector has less colors than levels in group_var}
+\item{color_density}{vector of strings indicating the color palette from \code{RColorBrewer} to be used for the density gradient. A names vector using levels in group_var allows the assignment of a specific color to a group level. If vector is not names, entries will be assigned to groups in alphabetic order and color palettes will be reused if vector has less colors than levels in group_var}
 }
 \value{
 Density Plot
 }
 \description{
-`plot_dim_density` plots the density distribution of each level of a grouping variable on top of dimensionality reduction plot. At the moment, only UMAP visualization is supported
+\code{plot_dim_density()} plots the density distribution of each level of a grouping variable on top of dimensionality reduction plot. At the moment, only UMAP visualization is supported
 }
 \details{
 plot_dim_density

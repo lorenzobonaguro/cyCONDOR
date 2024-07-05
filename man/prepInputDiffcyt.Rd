@@ -15,7 +15,7 @@ prepInputDiffcyt(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry dataset, that has been subjected to clustering or cell type label prediction with *condor* before}
+\item{fcd}{flow cytometry dataset, that has been subjected to clustering or cell type label prediction with cyCONDOR before}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -25,23 +25,25 @@ prepInputDiffcyt(
 
 \item{meta_vars}{vector of variables in cell_anno, which contain sample level metadata, which means that each sample ID is associated with exactly one level per variable. All variables that the user wants to use in the test design need to be listed, e.g. group, donor_id. Variables with names "sample_id" and "cluster_id" are not allowed, since these names have designated purposes in diffcyt workflow.}
 
-\item{marker_state}{vector of marker names that should get the marker_class "state". If no markers are provided in marker_state and marker_type all available markers and features in expr data will be set as "state".}
+\item{marker_state}{vector of marker names that should get the marker_class "state". If no markers are provided in marker_state and marker_type all available markers and features in expr data will be set as "type".}
 
-\item{marker_type}{vector of marker names available in expr data, that should get the marker_class "type". If no markers are provided in marker_state and marker_type all available markers and features in expr data will get the marker_class "state".}
+\item{marker_type}{vector of marker names available in expr data, that should get the marker_class "type". If no markers are provided in marker_state and marker_type all available markers and features in expr data will get the marker_class "type".}
 }
 \value{
-A SummarizedExperiment object suitable to be used as input for *diffcyt* functions \code{\link[diffcyt]{calcCounts}} and \code{\link[diffcyt]{calcMedians}}. The object contains the following components:
-*metadata "experiment_info": sample-level metadata table, containing all variables provided in meta_vars and sample_var, whereby sample_var is renamed to "sample_id"
-*metadata "n_cells": number of cells per sample_id
-*assay "exprs": contains expression data
-*rowData: cell-level information, containing all variables provided in meta_vars, sample_var and cluster_var, whereby sample_var is renamed to "sample_id" and cluster_var tp "cluster_id" to be compatible with diffcyt workflow.
-*colData: marker information required for diffcyt differential state analysis.
+A SummarizedExperiment object suitable to be used as input for \code{diffcyt} functions \code{\link[diffcyt]{calcCounts}} and \code{\link[diffcyt]{calcMedians}}. The object contains the following components:
+\itemize{
+ \item{metadata "experiment_info"} : sample-level metadata table, containing all variables provided in meta_vars and sample_var, whereby sample_var is renamed to "sample_id"
+ \item{metadata "n_cells"} : number of cells per sample_id
+ \item{assay "exprs"} : contains expression data
+ \item{rowData} : cell-level information, containing all variables provided in meta_vars, sample_var and cluster_var, whereby sample_var is renamed to "sample_id" and cluster_var tp "cluster_id" to be compatible with diffcyt workflow.
+ \item{colData} : marker information required for diffcyt differential state analysis.
+}
 }
 \description{
-`prepInputDiffcyt()` converts a fcd object into a SummarizedExperiment object compatible with *diffcyt* functions `diffcyt::calcCounts()` and `diffcyt::calcMedians()`.
+\code{prepInputDiffcyt()} converts a fcd object into a SummarizedExperiment object compatible with \code{diffcyt} functions \code{\link[diffcyt]{calcCounts}} and \code{\link[diffcyt]{calcMedians}}.
 }
 \details{
 prepInputDiffcyt
 
-The function will carry over the original transformed expression. The flexible experimental design of  `diffcyt`'s testing functions allows to include batch variables.
+The function will carry over the original transformed expression. The flexible experimental design of  diffcyt's testing functions allows to include batch variables.
 }

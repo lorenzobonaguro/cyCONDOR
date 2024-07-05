@@ -18,11 +18,11 @@ predict_labels(
 
 \item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, \code{orig}.}
 
 \item{fcd_model}{flow cytometry dataset containing Caret model for the label transfer.}
 
-\item{label}{Label for the output column of the condor object.}
+\item{label}{Label for the output column of the condor object which is saved in the clustering slot of the \code{fcd}.}
 
 \item{seed}{A seed is set for reproducibility.}
 }
@@ -30,7 +30,7 @@ predict_labels(
 predict_labels
 }
 \description{
-Uses the model generated with \code{\link{train_transfer_model}} to predict the labels of new samples
+Uses the model generated with \code{\link{train_transfer_model}} to predict the labels of new samples.
 }
 \details{
 predict_labels

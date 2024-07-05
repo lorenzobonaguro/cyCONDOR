@@ -16,7 +16,7 @@ plot_marker_ridgeplot(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{marker}{vector of characters indicating which features of the expression matrix should be plotted.}
 
@@ -34,10 +34,10 @@ Corrected input data should be handled cautiously.}
 \item{alpha}{numeric, adjust alpha to be used on fill color of density distributions.}
 }
 \value{
-`plot_marker_ridgeplot` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+\code{plot_marker_ridgeplot()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.
 }
 \description{
-`plot_marker_ridgeplot` plots the expression of selected markers as ridgeline plots for cell populations.
+\code{plot_marker_ridgeplot()} plots the expression of selected markers as ridgeline plots for cell populations.
 }
 \details{
 plot_marker_ridgeplot

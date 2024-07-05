@@ -8,8 +8,8 @@ prep_fcd(
   data_path,
   max_cell,
   useCSV = FALSE,
-  transformation,
-  remove_param,
+  transformation = NULL,
+  remove_param = NULL,
   anno_table,
   filename_col,
   seed = 91,
@@ -24,26 +24,30 @@ prep_fcd(
 
 \item{useCSV}{Flag if the input are .csv files and not .fcs (experimental).}
 
-\item{transformation}{Transformation to perform.}
+\item{transformation}{Transformation to perform. Select one of the following: \code{"auto_log"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).}
 
-\item{remove_param}{Parameters to remove from the transformation, "inTime" should be kept.}
+\item{remove_param}{Parameters to be removed from the \code{fcd}, "inTime" should be kept.}
 
-\item{anno_table}{path to the annotation table file.}
+\item{anno_table}{Path to the annotation table text file. The annotation table should contain one column with the file names of all .fcs or .csv files to read in and optionally additional columns with further sample information (e.g. "sample_id", "condition").}
 
-\item{filename_col}{Name of the column containing the file name matching with the .fcs files.}
+\item{filename_col}{Name of the column of the \code{anno_table} containing the file name matching with the .fcs/.csv files.}
 
 \item{seed}{A seed is set for reproducibility.}
 
-\item{separator_anno}{separator used in the annotation file.}
+\item{separator_anno}{Separator used in the annotation file, by default \code{separator_anno = ","}.}
 
-\item{separator_fc_csv}{separator used in the fc csv files.}
+\item{separator_fc_csv}{Separator used in the cytometry data .csv files, by default \code{separator_anno = ","}.}
 }
 \value{
+An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
+
 prep_fcd
 }
 \description{
-Wrapping function to prepare a flow cytometry dataset
+Loading and transforming the data to create a flow cytometry dataset from FCS files for the analysis with the cyCONDOR workflow.
 }
 \details{
 prep_fcd
+
+The \code{prep_fcd} is a wrapper function to read in the files, subset to \code{max_cell}, transform the data and create a 'flow cytometry dataframe' (\code{fcd}).
 }

@@ -22,22 +22,24 @@ learnUMAP(
 
 \item{data_slot}{Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added. This should be the same which has been used for calculating the UMAP of the reference data set.}
 
-\item{fcd_model}{Flow cytometry reference dataset containing data associated with an existing embedding in \code{fcd_model$extras}.}
+\item{fcd_model}{Flow cytometry reference data set containing data associated with an existing embedding in \code{fcd_model$extras}.}
 
 \item{nEpochs}{Number of epochs to use during the optimization of the embedded coordinates. A value between 30 - 100 is a reasonable trade off between speed and thoroughness. By default, this value is set to one third the number of epochs used to build the model.}
 
 \item{prefix}{Prefix for the name of the dimensionality reduction.}
 
-\item{nThreads}{Number of threads to use, (except during stochastic gradient descent). Default is half the number of concurrent threads supported by the system.}
+\item{nThreads}{Number of threads to use, (except during stochastic gradient descent). By default \code{nThreads = 32}.}
 
 \item{seed}{A seed is set for reproducibility.}
 }
 \value{
-learnUMAP
+\code{learnUMAP()} returns a \code{fcd} with the predicted UMAP coordinates saved in \code{fcd$umap$expr_orig}, if no \code{prefix} was set.
 }
 \description{
-Projects new samples on a UMAP calculated previously for a reference data set with the same parameters as the new sample. Before executing this function, \code{\link{runUMAP}} needs to be run with \code{{ret_model = TRUE}} for the reference data set.
+Projects new samples on a UMAP calculated previously for a reference data set with the same parameters as the new sample. Before executing this function, \code{\link{runUMAP}} needs to be run with \code{ret_model = TRUE} for the reference data set.
 }
 \details{
 learnUMAP
+
+\code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using code{\link{runUMAP}}.
 }

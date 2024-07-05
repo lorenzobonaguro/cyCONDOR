@@ -65,8 +65,7 @@ learnUMAP <- function(fcd,
 #' @param seed A seed is set for reproducibility.
 #' @import caret
 #' @import randomForest
-#' @details \code{train_transfer_model} uses \code{\link[caret]{train}.
-#'
+#' @details The \code{train_transfer_model} uses \code{\link[caret]{train}}.
 #' @return \code{train_transfer_model} returns a \code{fcd} with the model and associated visualizations saved in \code{fcd$extras$lt_model}.
 #'
 #' @export

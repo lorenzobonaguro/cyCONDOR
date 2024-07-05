@@ -17,7 +17,7 @@ transform_data(keep, transformation, original_data)
 transformed flow cytometry dataset
 }
 \description{
-Data transformation, this function run within the prep_fcd wrapper, the logicle tranformation are derived from Cytofkit.
+Data transformation, this function runs within the \code{\link{prep_fcd}} wrapper, the logicle tranformation are derived from Cytofkit.
 }
 \details{
 transform_data

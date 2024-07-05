@@ -12,12 +12,12 @@ plot_counts_barplot(
   facet_var = NULL,
   facet_by_clustering = F,
   facet_ncol = NULL,
-  color_palette = NULL,
+  color_palette = cluster_palette,
   title = "Counts"
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -36,10 +36,10 @@ plot_counts_barplot(
 \item{title}{title of the plot, default is "Counts"}
 }
 \value{
-`plot_counts_barplot` returns a plot showing cell numbers per cell population for each level in group_var. The plot is faceted by another variable, when provided a facet_var and or by the cell population, depending on facet_by_clustering.
+\code{plot_counts_barplot()} returns a plot showing cell numbers per cell population for each level in group_var. The plot is faceted by another variable, when provided a facet_var and or by the cell population, depending on facet_by_clustering.
 }
 \description{
-`plot_counts_barplot` plots cell population counts for each level in group_var as bar plot.
+\code{plot_counts_barplot()} plots cell population counts for each level in group_var as bar plot.
 }
 \details{
 plot_counts_barplot

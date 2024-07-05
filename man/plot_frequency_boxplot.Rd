@@ -17,7 +17,7 @@ plot_frequency_boxplot(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -36,10 +36,10 @@ plot_frequency_boxplot(
 \item{dot_size}{Size of the dots.}
 }
 \value{
-`plot_frequency_boxplots` returns a list of boxplots, each element of the list contains the plot of one cell population.
+\code{plot_frequency_boxplots()} returns a list of boxplots, each element of the list contains the plot of one cell population.
 }
 \description{
-`plot_frequency_boxplot` plots cell population frequencies of samples grouped by group_var as boxplots.
+\code{plot_frequency_boxplot()} plots cell population frequencies of samples grouped by group_var as boxplots.
 }
 \details{
 plot_frequency_boxplot

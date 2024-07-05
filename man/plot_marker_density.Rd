@@ -18,7 +18,7 @@ plot_marker_density(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{marker}{vector of characters indicating which features of the expression matrix should be plotted.}
 
@@ -29,21 +29,21 @@ Corrected input data should be handled cautiously.}
 
 \item{cluster_var}{string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).}
 
-\item{cluster_to_show}{(optionl) vector of strings indicating levels in cluster_var that should be included for plotting.}
+\item{cluster_to_show}{(optional) vector of strings indicating levels in cluster_var that should be included for plotting.}
 
 \item{group_var}{string indicating variable name in cell_anno for which density distributions get calculated.}
 
 \item{facet_var}{(optional) string indicating variable name in cell_anno that should be used to facet the plots by a meta variable.}
 
-\item{facet_ncol}{numeric, number of columns used for facetting.}
+\item{facet_ncol}{numeric, number of columns used for faceting.}
 
 \item{color_palette}{vector of colors to be used to color the density lines}
 }
 \value{
-`plot_marker_density` returns either one plot in case only one marker is provided via `marker` argument or a list of plots, if several markers are requested.
+\code{plot_marker_density()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.
 }
 \description{
-`plot_marker_density` plots the density distribution of expression for cell populations. Each line indicates distribution for one level in group_var.
+\code{plot_marker_density()} plots the density distribution of expression for cell populations. Each line indicates distribution for one level in group_var.
 }
 \details{
 plot_marker_density

@@ -8,7 +8,7 @@ train_cytonorm(
   fcd,
   batch_var,
   remove_param = NULL,
-  seed,
+  seed = 91,
   files = NULL,
   data_path = NULL,
   FlowSOM_param = list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale = FALSE)
@@ -23,22 +23,22 @@ train_cytonorm(
 
 \item{seed}{A seed is set for reproducibility.}
 
-\item{files}{Vector of FCS file names of reference samples which are used for training the model. If files == NULL, all files contained in the fcd are used.}
+\item{files}{Vector of FCS file names of reference samples which are used for training the model. If \code{files == NULL}, all files contained in the fcd are used.}
 
 \item{data_path}{File path to folder where .fcs files contained in the fcd are stored. This parameter does not need to be provided, unless the folder where the .fcs files are stored has changed.}
 
-\item{FlowSOM_param}{A list of parameters to pass to the FlowSOM algorithm. Default= list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale= FALSE)}
+\item{FlowSOM_param}{A list of parameters to pass to the FlowSOM algorithm. Default= \code{list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale= FALSE)}}
 }
 \value{
-The function returns a fcd with the trained model saved in extras.
+The function returns a fcd with the trained model saved in \code{fcd$extras$cytonorm_model}.
 }
 \description{
-Wrapper function around 'CytoNorm.train' from the CytoNorm package.
+Wrapper function around \code{\link[CytoNorm]{CytoNorm.train}} from the CytoNorm package.
 }
 \details{
 train_cytonorm
 
 
 train_cytonorm' takes a fcd as an input and learns the batch effect of a given batch variable across reference samples provided by the user using the CytoNorm algorithm. This function returns a fcd with the trained model which can be used as input for the \code{\link{run_cytonorm}} function to normalize samples with the trained model.
-See https://doi.org/10.1002/cyto.a.23904 for more details.
+See [Van Gassen et al., 2019](https://doi.org/10.1002/cyto.a.23904) for more details on CytoNorm.
 }

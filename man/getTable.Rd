@@ -15,13 +15,15 @@ getTable(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{output_type}{type of parameter that should be reported in table. One of the following option needs to be selected:
-* `"counts"`: gives cell numbers per group_var and cell population
-* `"frequency"`: returns proportion of each cell population for each level in group_var (default)
-* `"median"`: calculates median expression for each group_var and cell population combination for each available feature in expression matrix
-* `"mean"`: calculates mean expression for each group_var and cell population combination for each available feature in expression matrix}
+\itemize{
+ \item{"counts"} : gives cell numbers per group_var and cell population
+ \item{"frequency"} : returns proportion of each cell population for each level in group_var (default)
+ \item{"median"}: calculates median expression for each group_var and cell population combination for each available feature in expression matrix
+ \item{"mean"}: calculates mean expression for each group_var and cell population combination for each available feature in expression matrix
+}}
 
 \item{expr_slot}{expr_slot from which to take marker expression values, default is "orig".
 Corrected input data should be handled cautiously.}
@@ -35,10 +37,10 @@ Corrected input data should be handled cautiously.}
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
 }
 \value{
-`getTable()` returns a data frame with parameters in columns and observations in rows. In case of output_type of "counts" or "frequency", counts and frequencies for each cell population (columns) are reported in one row for each level in group_var. Given an output_type of "mean" or "median", aggregated expression for each feature (columns) is reported for each group_var and cell population combination (cluster).
+\code{getTable()} returns a data frame with parameters in columns and observations in rows. In case of output_type of "counts" or "frequency", counts and frequencies for each cell population (columns) are reported in one row for each level in group_var. Given an output_type of "mean" or "median", aggregated expression for each feature (columns) is reported for each group_var and cell population combination (cluster).
 }
 \description{
-`getTable()` can be used to generate frequently used parameters on cell populations defined by clustering or prediction, while considering a meta variable for grouping. It can produce cell numbers (counts), cell population frequencies as well as median or mean marker expression for each group to cell population combination.
+\code{getTable()} can be used to generate frequently used parameters on cell populations defined by clustering or prediction, while considering a meta variable for grouping. It can produce cell numbers (counts), cell population frequencies as well as median or mean marker expression for each group to cell population combination.
 }
 \details{
 getTable

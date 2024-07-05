@@ -962,7 +962,7 @@ plot_counts_barplot<-function (fcd = condor,
 #' @param title character string, title of the plot
 #' @param dot_size size of the background dots.
 #' @param alpha transparency of the background dots.
-#' @param color_density vector of strings indicating the color palette from \code{\link[RColorBrewer]} to be used for the density gradient. A names vector using levels in group_var allows the assignment of a specific color to a group level. If vector is not names, entries will be assigned to groups in alphabetic order and color palettes will be reused if vector has less colors than levels in group_var
+#' @param color_density vector of strings indicating the color palette from \code{RColorBrewer} to be used for the density gradient. A names vector using levels in group_var allows the assignment of a specific color to a group level. If vector is not names, entries will be assigned to groups in alphabetic order and color palettes will be reused if vector has less colors than levels in group_var
 #' @import ggrastr
 #' @import ggpubr
 #' @import ggplot2

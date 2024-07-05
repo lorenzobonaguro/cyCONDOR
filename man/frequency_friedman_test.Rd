@@ -19,7 +19,7 @@ frequency_friedman_test(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{cluster_slot}{string specifying which clustering slot to use to find variable specified in cluster_var}
 
@@ -31,24 +31,24 @@ frequency_friedman_test(
 
 \item{pair_var}{string indicating variable in cell_anno that should be used to pair the samples.}
 
-\item{friedman_p.adjust.method}{p-value adjustment method to use for multiple comparisons of Friedman Rank Sum test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.}
+\item{friedman_p.adjust.method}{p-value adjustment method to use for multiple comparisons of Friedman Rank Sum test, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
 
 \item{post_hoc_test}{logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).}
 
-\item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package *rstatix*.}
+\item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{friedman_sig_threshold}{significance threshold Friedman Rank Sum test. For all Friedman Rank Sum comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)}
 }
 \value{
-`frequency_friedman_test` returns a list of two data frames, "friedman_test" and "wilcox_test". "friedman_test" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "wilcox_test" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+\code{frequency_friedman_test} returns a list of two data frames, "friedman_test" and "wilcox_test". "friedman_test" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "wilcox_test" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 }
 \description{
-`frequency_friedman_test()` performs a Friedman Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Wilcoxon Rank Sum test.
+\code{frequency_friedman_test()} performs a Friedman Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Wilcoxon Rank Sum test.
 }
 \details{
 frequency_friedman_test
 
-`frequency_friedman_test()` is a wrapper function around \code{\link[rstatix]{friedman_test}},  \code{\link[rstatix]{friedman_effsize}} and  \code{\link[rstatix]{wilcox_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Friedman Rank Sum test is performed for each cell population followed by p-value adjustment. If `post_hoc = T`, post-hoc testing with pairwise Wilcoxon Rank Sum Tests and p-value correction is performed for each significant Friedman Rank Sum test comparison.
+\code{frequency_friedman_test()} is a wrapper function around \code{\link[rstatix]{friedman_test}},  \code{\link[rstatix]{friedman_effsize}} and  \code{\link[rstatix]{wilcox_test}} implemented in the package \code{rstatix}. The function first calculates cell population frequencies for each sample in sample_var. Then a Friedman Rank Sum test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise Wilcoxon Rank Sum Tests and p-value correction is performed for each significant Friedman Rank Sum test comparison.
 }

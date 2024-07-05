@@ -11,14 +11,14 @@ used_markers(fcd, input_type, prefix = NULL, data_slot, mute = F)
 
 \item{input_type}{Data for marker extraction, e.g. "pca", "umap", "phenograph", "FlowSOM"}
 
-\item{prefix}{Prefix of the specific data_slot, if used.}
+\item{prefix}{Optional prefix of the specific data_slot, if used.}
 
 \item{data_slot}{Data slot for marker extraction, e.g. "orig" or "norm".}
 
-\item{mute}{LOGICAL, if output of funtion is wanted (F) or not (T). Default = F.}
+\item{mute}{LOGICAL, if output of function is wanted (F) or not (T). Default = F.}
 }
 \value{
-marker vector.
+The function returns a vector containing the markers used for the specified method.
 }
 \description{
 returns a vector of markers for given input_type and data slot.

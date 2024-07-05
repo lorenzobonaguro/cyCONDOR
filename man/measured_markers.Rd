@@ -10,10 +10,10 @@ measured_markers(fcd)
 \item{fcd}{flow cytometry dataset.}
 }
 \value{
-marker vector.
+The function returns a vector containing all markers present in the fcd.
 }
 \description{
-returns a vector of markers for orig condor expr.
+returns a vector of markers for fcd$expr$orig.
 }
 \details{
 measured_markers

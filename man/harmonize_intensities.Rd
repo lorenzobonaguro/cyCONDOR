@@ -14,14 +14,14 @@ harmonize_intensities(fcd, batch_var, seed = 91)
 \item{seed}{A seed is set for reproducibility.}
 }
 \value{
-fcd with a harmonized expression data frame.
+The function returns a fcd with a harmonized expression data frame based on \code{\link[harmony]{HarmonyMatrix}}. The harmonized expression data frame is saved in \code{fcd$expr$norm}.
 }
 \description{
-Harmonize the expression values.
+Harmonize the expression values for a defined batch variable (\code{batch_var}).
 }
 \details{
 harmonize_intensities
 
 
-See https://doi.org/10.1038/s41592-019-0619-0 for more details on the Harmony algorithm.
+See [Korunsky et al., 2019](https://doi.org/10.1038/s41592-019-0619-0) for more details on the Harmony algorithm.
 }

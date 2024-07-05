@@ -28,17 +28,17 @@ runUMAP(
 
 \item{data_slot}{data slot to use for the calculation of the UMAP, e.g. "orig" or "norm".}
 
-\item{nNeighbors}{Number of neighbors for UMAP calculation. Default = 15.}
+\item{nNeighbors}{Number of items that define the neighborhood around each point. Default = 15.}
 
 \item{nComponents}{Number of components for UMAP calculation. Default = 2.}
 
 \item{min_dist}{Min_dist for UMAP calculation. Default = 0.2.}
 
-\item{metric}{Metric for UMAP calculation. Default = "euclidian". **(other options?)**}
+\item{metric}{Metric for UMAP calculation. Default = "euclidean".}
 
 \item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix of the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
 \item{nThreads}{Number of threads to be used in the UMAP calculation. Default = 32.}
 
@@ -46,16 +46,19 @@ runUMAP(
 
 \item{ret_model}{LOGICAL if the UMAP model should be saved for future projection of the data using \code{\link{learnUMAP}}.}
 
-\item{markers}{vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object}
+\item{markers}{Vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.}
 
 \item{discard}{LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.}
 }
 \value{
-runUMAP
+The function returns a fcd including a data frame with the UMAP coordinates saved in \code{fcd$umap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 }
 \description{
-Run a UMAP dimensionality reduction.
+Perform a UMAP dimensionality reduction on the expression values or pca results.
 }
 \details{
 runUMAP
+
+
+See [Melville J (2023). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R package version 0.1.16](https://github.com/jlmelville/uwot) for more details on the umap method.
 }

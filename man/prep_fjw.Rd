@@ -6,40 +6,41 @@
 \usage{
 prep_fjw(
   data_gs,
-  pop = "root",
-  gate_list = nodelist,
   inverse.transform = FALSE,
-  transformation,
-  remove_param,
+  transformation = NULL,
+  remove_param = NULL,
   merge_anno = FALSE,
-  anno_table,
-  separator_anno
+  anno_table = NULL,
+  separator_anno = ",",
+  filename_col = NULL
 )
 }
 \arguments{
-\item{data_gs}{Gate Set object from flowWorkspace Package.}
+\item{data_gs}{Gate Set object, e.g. created by using \code{\link[CytoML]{open_flowjo_xml}} and \code{\link[CytoML]{flowjo_to_gatingset}} from the CytoML package.}
 
-\item{pop}{Gate to keep for downstream analysis (default: 'root').}
+\item{inverse.transform}{Logical: if the data should be reverse transformed or kept with FlowJo transformation (default = FALSE).}
 
-\item{gate_list}{Gate List of the FlowJo Workspace.}
+\item{transformation}{If \code{inverse.transform = TRUE}, type of new transformation to perform. Select one of the following: \code{"auto_log"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).}
 
-\item{inverse.transform}{Logical: if the data should be reverse transformed of kept with FlowJo transformation (default = FALSE).}
+\item{remove_param}{Parameters to be removed from the \code{fcd}.}
 
-\item{transformation}{If inverse.transform = TRUE, type of new transformation to perform (see nfTransform).}
+\item{merge_anno}{Logical: If sample anno should be merged to the \code{fcd}.}
 
-\item{remove_param}{Parameters to be removed from the condor object.}
+\item{anno_table}{If \code{merge_anno = TRUE}, path to the annotation table text file. The annotation table should contain one column with the file names of all .fcs or .csv files to read in and optionally additional columns with further sample information (e.g. "sample_id", "condition").}
 
-\item{merge_anno}{Logical: If sample anno should be merged to the condor object.}
+\item{separator_anno}{Separator used in the annotation file, by default \code{separator_anno = ","}.}
 
-\item{anno_table}{Path to annotation table.}
-
-\item{separator_anno}{Separator of the .csv annotation table.}
+\item{filename_col}{Name of the column of the \code{anno_table} containing the file name matching with the .fcs files.}
 }
 \value{
+An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
+
 read_flowjo_workspace
 }
 \description{
-read_flowjo_workspace and prepare the condor object
+Loading and transforming the data to create a flow cytometry dataset from a Gate Set object for the analysis with the cyCONDOR workflow.
+
+\code{prep_fjw} takes a gate set object as input and returns a \code{fcd} with the FlowJo gating information saved in \code{fcd$anno$cell_anno}.
 }
 \details{
 Read FlowJo workspace

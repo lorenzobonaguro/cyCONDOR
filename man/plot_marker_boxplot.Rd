@@ -21,7 +21,7 @@ plot_marker_boxplot(
 )
 }
 \arguments{
-\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with *cyCONDOR*}
+\item{fcd}{flow cytometry data set, that has been subjected to clustering or cell type label prediction with cyCONDOR}
 
 \item{marker}{marker in provided expr_slot that should be included in plotting. By default all features are plotted.}
 
@@ -53,7 +53,7 @@ By default all groups are plotted.}
 A faceted ggplot showing box plots of aggregated expression per sample grouped by group_var.
 }
 \description{
-`plot_marker_boxplot()` generates faceted box plots of aggregated expression per sample grouped by a grouping of interest for each marker-cluster combination.
+\code{plot_marker_boxplot()} generates faceted box plots of aggregated expression per sample grouped by a grouping of interest for each marker-cluster combination.
 }
 \details{
 plot_marker_boxplot
