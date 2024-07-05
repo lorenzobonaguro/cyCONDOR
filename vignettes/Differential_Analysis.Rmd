@@ -1,8 +1,8 @@
 ---
-title: "Differential Analysis"
+title: "Differential Analysis with cyCONDOR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Differential Analysis}
+  %\VignetteIndexEntry{condor_workflow}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -10,70 +10,633 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, warning=FALSE, message=FALSE}
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
 library(cyCONDOR)
-library(ggpubr)
+library(diffcyt)
+library(ggplot2)
+library(dplyr)
 ```
 
-# Load an example dataset
 ```{r}
-condor <- readRDS("../.test_files/condor_diff.rds")
+cluster_palette <- c("#89C5DA", "#DA5724", "#74D944", "#CE50CA", "#3F4921", "#C0717C", "#CBD588", "#5F7FC7",
+                     "#673770", "#D3D93E", "#38333E", "#508578", "#D7C1B1", "#689030", "#AD6F3B", "#CD9BCD",
+                     "#D14285", "#6DDE88", "#652926", "#7FDCC0", "#C84248", "#8569D5", "#5E738F", "#D1A33D",
+                     "#8A7C64", "#599861", "#89C5DA", "#DA5724", "#74D944", "#CE50CA", "#3F4921", "#C0717C", "#CBD588", "#5F7FC7",
+                     "#673770", "#D3D93E", "#38333E", "#508578", "#D7C1B1", "#689030", "#AD6F3B", "#CD9BCD",
+                     "#D14285", "#6DDE88", "#652926", "#7FDCC0", "#C84248", "#8569D5", "#5E738F", "#D1A33D",
+                     "#8A7C64", "#599861")
 ```
 
-`cyCONDOR` provides several ways to investigate the difference in cellular frequencies or marker expression.
+# Introduction
 
-# Cell Frqeuency
+`cyCONDOR` provides several functions for exploratory differential analysis of cell population frequencies and marker expression. 
+In order to run differential analysis, a pre-processed condor object is required, that has been subjected to clustering (and metaclustering) or one of the other labeling approaches (see vignettes: `Clustering and cell annotation`, `Data projection` and `Cell type prediction`) implemented in `cyCONDOR`. 
+Further, the meta data slot `cell_anno` has to contain a variable with unique sample IDs and at least one grouping variable with two or more levels, e.g. indicating the disease status. Each sample ID needs to be unique and assigned to exactly one level of the grouping variable of interest.
 
-## Export Perfecntage table
-If you prefer to generate your own plots, `cyCONDOR` can easily export a percentage table for downstream analysis.
+Along this line, specifying the condor object, cell population labels as well as group and sample ID variables are central for most of the functions we are going to use:
+
+* `fcd = ` flow cytometry dataset, that has been subjected to clustering or cell type label prediction
+* `cluster_slot = ` clustering slot to use to find variable specified in cluster_var
+* `cluster_var = ` variable in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
+* `group_var = ` meta variable in `cell_anno` that should be used for the main grouping of the data, e.g. group or sample ID variable.
+* `sample_var = ` meta variable in `cell_anno` containing sample IDs. This argument is not always required and usually indicates that the function requires, both sample IDs and group information. in those cases the group variable should be provided via `group_var`.
+
+
+# Load example data set
+
+In this vignette, we showcase differential analysis with `cyCONDOR` on a data set comprising samples from two biological groups - patients ("pat") and control donors ("ctrl"). Each group comprises three PBMC samples measured with flow cytometry. The data set has been annotated by Phenograph clustering and subsequent knowledge-based metaclustering prior to this analysis.
+
 ```{r}
-df_frequency(classification = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
-             condition = condor$anno$cell_anno$group)
+#TAKE out for final vignette!
+source("/data/001_Bonaguro_cyCONDOR/analysis/charlotte/condor_dev/git_cyCONDOR_2/cyCONDOR/R/differential_testing.R")
 ```
 
-## Confusion Matrix
-```{r, fig.width=15, fig.height=5}
-confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
-             group = condor$anno$cell_anno$group, size = 40, 
-             title = "Confusion Matrix")
-```
-
-# Stacked barplot
 ```{r}
-barplot_frequency(x_axes = condor$anno$cell_anno$group, 
-                  colour = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
-                  title = "Stacked barplot of cluster frequencies", 
-                  legend_title = "Metaclusters") + theme(aspect.ratio = 2)
+condor <- readRDS("../../differential_testing/objects/condor_HIV.rds")
 ```
 
-## Percentages Boxplot 
-```{r, fig.width=20, fig.height=20}
-box_stat <- boxplot_and_stats(annotation = condor$anno$cell_anno, 
-                              sample_var = "sample_ID", 
-                              group_var = "group", 
-                              variable = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
-                              numeric = FALSE, 
-                              test.type = "t.test")
-
-ggarrange(plotlist = box_stat$plot, legend = "none")
-```
-
-# Differential expression
-
-## Splitted heatmap by group
-```{r, fig.width=20, fig.height=20}
-HM_differential_marker(fcd = condor, 
-                       data_slot = "orig", 
-                       cluster_method = "Phenograph_pca_orig_k_60", 
-                       cluster_type = "metaclusters", 
-                       group_by = "group",
-                       title = "Figure 5f - Marker expression per cluster and group", size = 40)
-```
-
-# Session Info
 ```{r}
-info <- sessionInfo()
+# Let's check the meta data
+unique(condor$anno$cell_anno[,c("sample_ID","group")])
+```
 
-info
+```{r}
+# Let's double check that clustering is available
+str(condor$clustering)
+```
+
+```{r}
+# visualize metaclustering
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = "Phenograph_pca_orig_k_60",
+             param = "metaclusters",
+             title = "UMAP colored by metaclusters", 
+             facet_by_variable = FALSE)
+```
+
+
+# Investigate cell population frequencies
+
+In the first section we will focus on differential abundance testing of cell population frequencies and how to visualize them. 
+
+## Investigating counts
+
+As in manual gating based approaches, it is important to consider how many cells are actually underlying the calculated frequencies.
+You can either look at the cell counts per sample and cell population in table format with the `getTable()` function setting `output_type = "counts"`, or visualize cell numbers with the `plot_counts_barplot()` function.
+
+```{r}
+# get counts as data frame
+counts<-getTable(fcd = condor,
+                 output_type = "counts",
+                 cluster_slot = "Phenograph_pca_orig_k_60", 
+                 cluster_var = "metaclusters", 
+                 group_var = "sample_ID", 
+                 numeric = F)
+counts
+```
+
+The `plot_counts_barplot()` function stacks absolute cell numbers of each cell population on top of each other for each group in the grouping variable, which can be set via the `group_var` parameter. In this case we would like to see counts per sample (`group_var = "sample_ID"`) and further facet the plot by the disease group (`facet_var = "group"`).
+
+```{r, fig.width=8, fig.height=8}
+# visualize counts as stacked bar plot, faceted by group_var
+plot_counts_barplot(fcd = condor,
+                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_var = "metaclusters",
+                    group_var = "sample_ID",
+                    facet_var = "group",
+                    facet_by_clustering = F,
+                    facet_ncol = 10,
+                    color_palette = cluster_palette
+)
+```
+
+A faceting of the plot by cell population can be achieved by setting the parameter `facet_by_group = T`. Note that faceting by disease group is gone, this could be achieved by providing a `facet_var` as in the example above.
+
+```{r, fig.width=8, fig.height=8}
+# visualize counts as stacked bar plot, faceted by clustering
+plot_counts_barplot(fcd = condor,
+                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_var = "metaclusters",
+                    group_var = "sample_ID",
+                    facet_by_clustering = T,
+                    facet_ncol = 5,
+                    color_palette = cluster_palette
+)
+```
+
+## Investigation of cell population frequencies
+
+Next, we explore the cell population frequencies, for which `cyCONDOR` provides several visualization options.
+
+### Plot stacked bar plot
+
+The `plot_frequency_barplot()` generates a barplot, in which the proportions of each cell population are stacked on top of each other.
+This provides a quick overview and large proportional shifts can easily by spotted. 
+
+```{r, fig.width=8, fig.height=8}
+plot_frequency_barplot(fcd = condor,
+                       cluster_slot = "Phenograph_pca_orig_k_60",
+                       cluster_var = "metaclusters",
+                       group_var = "group",
+                       #facet_var = "group",
+                       color_palette = cluster_palette
+)
+```
+
+We can use the same visualization to show cell population proportions on sample level by providing the meta data variable "sample_ID" as `group_var`. An additional grouping (or faceting) of the samples can be achieved with providing a meta variable to the parameter `facet_var`. Here we set it to "group" to group by disease status.
+
+```{r, fig.width=8, fig.height=8}
+plot_frequency_barplot(fcd = condor,
+                       cluster_slot = "Phenograph_pca_orig_k_60",
+                       cluster_var = "metaclusters",
+                       group_var = "sample_ID",
+                       facet_var = "group",
+                       color_palette = cluster_palette
+)
+```
+
+### Plot box plots
+
+The `plot_frequency_boxplot()` function generates a list of plots, comprising one plot for each cell population in `cluster_var`. Each plot shows cell population frequencies in percent as boxplots for all groups provided in `group_var`. Individual values for each sample in `sample_var` are represented as a dot. (Short reminder: sample IDs in `sample_var` need to be uniquely assigned to one level of the grouping variable)
+
+```{r, fig.width=10, fig.height=6}
+
+# factor levels can be used to influence plotting order of groupes on the x-axis
+condor$anno$cell_anno$group<-factor(condor$anno$cell_anno$group, levels=c("ctrl","pat"))
+
+# assign output to object plots
+plots <- plot_frequency_boxplot(fcd = condor,
+                                cluster_slot = "Phenograph_pca_orig_k_60", 
+                                cluster_var = "metaclusters",
+                                sample_var = "sample_ID", 
+                                group_var = "group", 
+                                #groups_to_show = c("test"),
+                                numeric = F,
+                                color_palette = c("pat"="darkorange","ctrl"="purple"))
+
+# the list of plots can be summarized to one graph, by using e.g. the cowplot package.
+cowplot::plot_grid(plotlist = plots, ncol = 5)
+```
+
+### Confusion matrix
+
+To get an overview across many cell populations and conditions at once, It might be more convenient to look at a heatmap. 
+The function `confusion_HM()` first normalizes each group level provided in `group_var` to 1000 cells. Afterwards, for each cell population in `group_var`, the proportions of each group contributing to this population will be calculated. Note that this way, we normalize for differences in cell numbers. The uncorrected proportion of a group in a cluster might look quite different.
+
+```{r, fig.width=8, fig.height=8}
+plot_confusion_HM(fcd = condor,
+                  cluster_slot = "Phenograph_pca_orig_k_60", 
+                  cluster_var = "metaclusters",
+                  group_var = "group", )
+```
+
+### Export frequencies as data frame
+
+In case you would like to visualize the frequencies yourself or perform other statistical tests, the `getTable()` function with `output_type = "frequency"` can be used to generate a data frame of cell population frequencies for all levels in a given `group_var`, e.g. biological group or sample ID. In this example, we add another metadata column "group_sample_ID" to have the combination of both available.
+
+```{r}
+condor$anno$cell_anno$group_sample_ID <- paste(condor$anno$cell_anno$group,condor$anno$cell_anno$sample_ID, sep="_")
+
+frequencies<-getTable(fcd = condor,
+                      output_type = "frequency",
+                      cluster_slot = "Phenograph_pca_orig_k_60", 
+                      cluster_var = "metaclusters", 
+                      group_var = "group_sample_ID", 
+                      numeric = F)
+
+frequencies
+```
+
+### Differential testing
+
+`cyCONDOR` provides wrapper functions around frequently used statistical tests implemented in the `rstatix` package ([link](https://rpkgs.datanovia.com/rstatix/).
+The functions first calculate cell population frequencies given a condor object and a few arguments specifying the cell population annotation (via `cluster_slot` and `cluster_var`), sample IDs (`sample_var`) and grouping variable (`group_var`) to be used. The user needs to make sure that sample IDs are unique and only assigned to one level of the grouping variable. Afterwards the function automatically performs the testing and p-value adjustment.
+
+Tests for two groups:
+
+* `frequency_t_test()`: parametric, two-sample t-test to compare two groups (paired or independent)
+* `frequency_wilcox_test()`: non-parametric, two-sample Wilcoxon Test to compare two groups (paired or independent)
+* In case of paired testing, a pairing variable (`pair_var`) containing the donor IDs needs to be specified and `paired_test = T` needs to be set.
+
+Tests for three or more groups:
+
+* `frequency_anova_test()`: parametric one-way Anova for independent measures to compare three or more groups, with optional post-hoc testing utilizing emmeans tests.
+* `frequency_kruskal_test()`: non-parametric Kruskal-Wallis Rank Sum Test to compare 3 or more independent groups. Optionally, post-hoc testing with Dunne's Test can be performed.
+* `frequency_friedman_test()`: non-parametric Friedman Rank Sum Test to compare 3 or more groups of paired data. Optionally, post-hoc testing with pairwise Wilcoxon Tests can be performed. 
+* Whether post-hoc testing should be performed, can be regulated via setting the `post_hoc_parameter` to `TRUE` or `FALSE`. By default, post-hoc tests are performed for Anova, Kruskal-Wallis or Friedman Test with an adjusted p-value <= the threshold argument (e.g. kruskal_sig_threshold). P-value adjustment of the post-hoc tests is performed per cell population.
+
+By default, p-value adjustment is performed using the conservative "bonferroni" method, but other methods available in the basic R function `stats::p.adjust()` can be chosen and fed to the cyCONDOR functions via arguments. (Note that post-hoc tests have a separate argument for this). We recommend to get familiar with the options in the `p.adjust` function at this point.
+
+
+Here, we exemplary show how to compare two groups using a t-test:
+
+```{r}
+#double check correctness of sample IDs to group assignment
+unique(condor$anno$cell_anno[,c("sample_ID","group")])
+```
+
+```{r}
+#perform test
+results_t <- frequency_t_test(fcd = condor,
+                                   cluster_slot = "Phenograph_pca_orig_k_60", 
+                                   cluster_var = "metaclusters",
+                                   sample_var = "sample_ID", 
+                                   group_var = "group",
+                                   paired_test = F,
+                                   p.adjust.method = "bonferroni")
+results_t
+```
+
+As usual, there is no "one-solves-it-all" approach for statistical testing and it is still necessary to think about whether the given data meet the required assumptions for the test or what kind of p-value adjustment should be performed. But as mentioned above, the `getTable()` function allows easy extraction of the cell population frequencies that can be subsequently subjected to other tests, assumption checks or tools. 
+
+`cyCONDOR` also provides an easy way to perform differential abundance testing with tests implemented in the package `diffcyt` by [Weber et al. (2019)](https://www.nature.com/articles/s42003-019-0415-5). It is important to note, that these abundance tests are not based on cell population frequencies but on cell population counts as input. For more information read the section `Differential testing with diffcyt`.
+
+
+# Investigate differential expression
+
+## Visualization
+`cyCONDOR` provides several functions to look at marker expression between groups or groups of samples. 
+
+### Heatmap split by group
+
+Heatmaps provide a convenient overview to show expression of many markers for many group and cell population combinations. 
+The `plot_marker_group_HM()` function calculates mean value for each marker, group and cell population combination and performs centering and scaling on the data. 
+
+As mentioned in the beginning, the underlying absolute cell numbers should be considered when interpreting the expression, especially if the clustering or annotation is rather fine grained or larger proportional shifts are observed between the groups. 
+
+```{r, fig.width=6, fig.height=6}
+plot_marker_group_HM(fcd = condor,
+                     expr_slot = "orig",
+                     cluster_slot = "Phenograph_pca_orig_k_60",
+                     cluster_var = "metaclusters",
+                     group_var = "group",
+                     size = 8,
+                     title = "Heatmap of expression", 
+                     marker_to_exclude = c("SSC-A", "FSC-A")
+)
+```
+
+### Violin plot split by group
+
+In contrast to heatmaps that only show an aggregated expression value, violin plots can be used to visualize the distribution of expression values. Providing a grouping variable `group_var` to the function `plot_marker_violinplot()` allows to split the violins by a meta variable available in cell_anno, e.g. disease group or sample ID. The horizontal line indicates the median expression.  
+
+```{r, fig.width=8, fig.height=8}
+plot_marker_violinplot(fcd =condor,
+                       marker =c("CD57"),
+                       expr_slot ="orig",
+                       cluster_slot = "Phenograph_pca_orig_k_60", 
+                       cluster_var = "metaclusters",
+                       group_var = "group",
+                       color_palette = c("ctrl"="purple","pat"="darkorange"))
+
+```
+
+If a vector with more than one feature is provided via the `marker` argument, the function returns a list of of plots. The plots can be either plotted separately or can by combined, e.g. with the `cowplot` package.
+
+```{r, fig.height=6, fig.width=6}
+plot.list<-plot_marker_violinplot(fcd =condor,
+                                  marker =c("CD27","CD127 (IL7RA)"),
+                                  expr_slot ="orig",
+                                  cluster_slot = "Phenograph_pca_orig_k_60", 
+                                  cluster_var = "metaclusters",
+                                  group_var = "group",
+                                  color_palette = c("ctrl"="purple","pat"="darkorange"))
+
+cowplot::plot_grid(plotlist = plot.list, ncol = 1)
+```
+
+### Boxplots of aggregated expression
+
+The function `plot_marker_boxplot()` summarizes the expression for selected markers for each sample-cluster combination, by calculating the median (`fun = "median"`) or the mean (`fun = "mean"`). The values are grouped by a grouping variable `group_var` and are visualized as box plots with each dot representing one sample defined in `sample_var`.
+
+```{r, fig.width=8, fig.height=8}
+plot_marker_boxplot(fcd = condor,
+                    #marker = c("CD57","CD8"),
+                    expr_slot ="orig",
+                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_var = "metaclusters",
+                    facet_by_clustering = F,
+                    group_var = "group", 
+                    sample_var = "sample_ID",
+                    color_palette = cluster_palette,
+                    fun = "median")
+
+```
+
+By default, the function outputs boxplots for all cell populations and markers available. But it is also possible to provide a vector of markers via the `marker` parameter or cell populations via `cluster_to_show`.
+
+When using `facet_by_clustering = T`, plots are faceted by cell population, while the markers are located on the x-axis. 
+
+```{r, fig.width=8, fig.height=8}
+plot_marker_boxplot(fcd = condor,
+                    marker = c("CD57","CD8"),
+                    expr_slot ="orig",
+                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_var = "metaclusters",
+                    facet_by_clustering = T,
+                    group_var = "group", 
+                    sample_var = "sample_ID",
+                    color_palette = cluster_palette,
+                    fun = "median")
+```
+
+### Export aggregated expression as data frame
+
+For custom visualizations, the `getTable()` function can be used to calculate the median (`output_type = "median"`) or the mean (`output_type = "mean"`) expression for all combinations of cell populations and group variables in `group_var`. 
+
+```{r}
+getTable(fcd = condor,
+         output_type = "mean",
+         cluster_slot = "Phenograph_pca_orig_k_60", 
+         cluster_var = "metaclusters", 
+         group_var = "sample_ID", 
+         numeric = F)
+```
+
+
+# Differential testing with diffcyt
+
+The `diffcyt` package (Weber et al.,2019) provides several advanced methods to perform exploratory differential analysis on high-dimensional cytometry data. 
+The package enables the comparison of groups of samples from different biological conditions by providing both, methods to test for differential cell population abundance (DA) and methods to test differential expression within cell populations (differential state (DS) testing).
+
+In this section, we show how a `condor` object, that was processed and clustered with `cyCONDOR`, can be converted into a `SummarizedExperiment` object and subsequently give an example how this object can be used with functions implemented in `diffcyt`.
+
+For more details on `diffcyt`, please refer to the `diffcyt` publication by [Weber et al. (2019)](https://www.nature.com/articles/s42003-019-0415-5) or the `diffcyt` [Bioconductor vignette](https://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html).
+
+While the diffcyt publication itself, focused on the analysis of high resolution clustering of cytometry data, `diffcyt` has also been used in the Bioconductor workflow *cytofWorkflow*(Nowicka M, Crowell H, Robinson M (2024);[DOI: 10.18129/B9.bioc.cytofWorkflow]([DOI: 10.18129/B9.bioc.cytofWorkflow)) to analyse lower resolution annotations based on knowledge-based merging of clusters.  
+
+
+## Install packages
+
+The `diffcyt` package is installed in the `cyCONDOR` docker image. If code is run in a different environment, you may have to install diffcyt.
+
+```{r}
+# #Install 'diffcyt' package from Bioconductor
+# BiocManager::install("diffcyt")
+```
+
+## Convert condor object to SummarizedExperiment object
+
+To run `diffcyt's` differential analysis pipeline on high-dimensional cytometry data clustered with `cyCONDOR`, the condor object needs to be converted into a compatible input format first. `cyCONDOR` provides the function `prepInputDiffcyt()` that generates a `SummarizedExperiment` object, tailored for the use with `diffcyt`. 
+
+- `fcd`: condor object, that has been subjected to the condor clustering workflow before
+- `cluster_slot`: clustering slot from which clustering variable in cluster_var will be selected
+- `cluster_typ`: variable name of clustering that should be used to define cell populations during testing. The variable name will change to "cluster_id" since diffcyt requires cluster identifier to be stored in the variable "cluster_id"
+- `sample_var`: variable name in cell_anno that contains unique sample IDs. The variable name will change to "sample_id" since diffcyt requires sample IDs to be stored in the variable "sample_id"
+- `meta_vars`: vector of variables in cell_anno, which contain sample level metadata, meaning that each sample ID is associated with exactly one level per variable. All variables that the user wants to use in the test design need to be listed, e.g. group, donor_id. 
+- `marker_state`: vector of marker names that should have the marker_class "state"
+- `marker_type`: vector of marker names that should have the marker_class "type"
+
+
+```{r}
+# check that clustering or cell label prediction is available
+str(condor$clustering)
+```
+
+```{r}
+condor_se<-prepInputDiffcyt(fcd = condor,
+                            cluster_slot = "Phenograph_pca_orig_k_60",
+                            cluster_var = "metaclusters",
+                            sample_var = "sample_ID",
+                            meta_vars = c("expfcs_filename","group"),
+                            marker_state = NULL,
+                            marker_type = NULL)
+```
+
+The function returns a `SummarizedExperiment` object containing:
+
+- metadata, including the experiment_info, which includes all the sample-level metadata provided in sample_var and meta_vars. Note that sample_var was renamed to "sample_id"
+- an assay "exprs", which contains the feature values from the expr_slot "orig"
+- rowData, containing cell-level metadata as well as a column "cluster_id" containing the cell population labels and sample IDs in column "sample_id"
+- colData, containing marker names and marker types required for `diffcyt` functions
+
+```{r}
+condor_se
+```
+
+
+## Differential analysis workflow with diffcyt
+
+Next we run the individual functions of the diffcyt analysis workflow, similar to the  `diffcyt` [Bioconductor vignette](https://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html) provided by the authors of the package.  
+
+### Setup input for testing
+
+First, we calculate the cell counts for each sample and cluster combination using `diffcyt::calcCounts()`.
+The counts are required for all diffcyt tests.
+
+```{r}
+# calculate cell counts
+d_counts <- diffcyt::calcCounts(condor_se)
+
+# inspect object
+d_counts
+```
+
+
+```{r}
+# inspect counts
+SummarizedExperiment::assays(d_counts)$counts
+```
+
+In a second step, we calculate the median marker expression for each sample and cluster combination using `diffcyt::calcMedians()`. This data is required for differential state testing, since `diffcyt`'s test are performed on the aggregated expression instead of cell level. 
+
+Note, that the output will also contain medians of scatter features, if those were available in the "orig" expression data of the condor object. 
+
+```{r}
+# Calculate cluster medians
+d_medians <- diffcyt::calcMedians(condor_se)
+
+#inspect medians
+d_medians
+```
+
+```{r}
+# inspect medians
+SummarizedExperiment::assays(d_medians)$CD57
+```
+
+Next we prepare a design matrix describing our experimental design. In our example, we are interested in the factor "group", indicating if a sample was taken from a patient or control donor. (Note: Some of the `diffcyt` tests require a formula instead of a design matrix.)
+
+```{r}
+experiment_info<-condor_se@metadata$experiment_info
+
+design <- diffcyt::createDesignMatrix(experiment_info,
+                                      cols_design = c("group"))
+design
+```
+
+Additionally, `diffcyt`'s differential testing functions also require a contrast matrix specifying which comparisons should be performed. 
+
+```{r}
+# Create contrast matrix
+contrast <- diffcyt::createContrast(c(0, 1))
+
+# check
+nrow(contrast) == ncol(design)
+
+data.frame(parameters = colnames(design), contrast)
+```
+
+### Test differential abundance
+
+After all the input objects are set up, we can perform the differential abundance test `testDA_edgeR()`, the default method for DA testing in `diffcyt`.
+
+```{r}
+# perform differential abundance test
+res_DA <- diffcyt::testDA_edgeR(d_counts, design, contrast)
+```
+
+```{r}
+# table of results ordered by increasing adjusted p-value
+diffcyt::topTable(res_DA, all = TRUE)
+```
+
+According to the  results table, Unconventional T cell show differential abundance with an adjusted p-value below 0.05. 
+We can use `cyCONDOR` to visualize the population frequencies per sample for this population - note the frequency is used for visualization purposes only, `diffcyt` takes the counts for each cluster sample combination as input.
+
+```{r, fig.height=4, fig.width=3}
+plots <- plot_frequency_boxplot(fcd = condor,
+                                cluster_slot = "Phenograph_pca_orig_k_60",
+                                cluster_var = "metaclusters",
+                                sample_var = "sample_ID",
+                                group_var = "group",
+                                numeric = F,
+                                color_palette = c("ctrl"="purple","pat"="darkorange"))
+
+plots$`Unconventioal T`
+```
+
+### Test differential states
+
+Next, we give an example on how to apply the differential state test `testDS_LMM` from `diffcyt`.
+
+This function actually requires a formula instead of design.
+
+```{r}
+experiment_info<-condor_se@metadata$experiment_info
+
+formula <- createFormula(experiment_info, cols_fixed = "group")
+
+formula
+```
+
+It is important to note that the`diffcyt` workflow distinguishes between "type" and "state" markers. "type" markers identify cell types and are used for clustering, while "state" markers are used to investigate different states, e.g. activation. By default, only state markers are tested for differential expression. This clear separation avoids that the same data is used twice - for clustering and for differential state analysis. On the other hand, a clear distinction of type and state markers is often quite difficult, e.g. HLA-DR can be used to identify myeloid or B cell populations in peripheral blood, but is also upregulated on activated cells. 
+
+During the processing of this dataset, all parameters were used for clustering. Due the broad annotation, differential state analysis is still of interest here. When working on an high resolution clustering based on all markers, this might be different. For example, you could have identified a small population of HLA-DR+ T cells already, and a frequency or abundance test could capture the difference between your biological groups already, while differential state analysis might be difficult. Overall, the explicit setup of this analysis strongly depends on the used panel and the research question.
+
+But back to our example. The diffcyt functions require that a marker_class is specified for every parameter.
+Therefor, we should check first which marker class has been assigned to the markers when converting the data with `prepInputDiffcyt()`.
+Since we didn't specify certain markers in `marker_state` or `marker_type` when generating `condor_se` with the `prepInputDiffcyt()` function, by default all available features were classified as "type". 
+
+```{r}
+#check marker annotation in condor_se
+marker_info<-SummarizedExperiment::colData(condor_se) %>% as.data.frame()
+marker_info
+```
+
+Obviously, we would like to exclude FSC-A and SSC-A from differential testing. To do so, we either have to go back and specify marker_state and marker_type in `prepInputDiffct()`. Or we provide the `diffcyt` test with a logical vector of marker to include for testing via the `markers_to_test` argument.
+
+The original `diffcyt` workflow was set up for arcsinh transformed cyTOF or flow cytometry data. Here, we applied it to a flow cytometry dataset that was autological transformed. The observed p-values were however very similar to those obtained when using a arcsinh transformation (cofactor 150) on this dataset.
+
+```{r}
+#get logical vector of marker to be tested
+markers_oi <- !names(SummarizedExperiment::assays(d_medians)) %in% c("SSC-A","FSC-A")
+
+# perform differential state analysis
+res_DS <- diffcyt::testDS_LMM(d_counts, d_medians, formula, contrast,
+                                markers_to_test = markers_oi)
+```
+
+```{r}
+# display table of results ordered by increasing adjusted p-value
+diffcyt::topTable(res_DS, format_vals = FALSE)
+
+```
+
+Let's have a look at the top cluster marker combinations.
+
+```{r}
+res<-diffcyt::topTable(res_DS, all = TRUE) %>% data.frame()
+head(res)
+```
+
+In this case no marker shows an FDR corrected p-value <0.05. 
+
+Nevertheless, it is worth mentioning, that results always require visual inspection to set potential findings into context. We can use `cyCONDOR` functions to visualize the median expression. It can also be helpful to look
+
+```{r, fig.height=5}
+p1<-plot_marker_boxplot(fcd = condor,
+                        marker = c("CD94 (KLRD1)"),
+                        expr_slot ="orig",
+                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_var = "metaclusters",
+                        cluster_to_show = "CD8",
+                        facet_by_clustering = F,
+                        group_var = "group",
+                        sample_var = "sample_ID",
+                        color_palette = cluster_palette,
+                        fun = "median")
+
+condor$anno$cell_anno$group_sample_ID<-paste(condor$anno$cell_anno$group, condor$anno$cell_anno$sample_ID, sep="_")
+p2<-plot_marker_violinplot(fcd = condor,
+                        marker = c("CD94 (KLRD1)"),
+                        expr_slot ="orig",
+                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_var = "metaclusters",
+                        cluster_to_show = "CD8",
+                        group_var = "group_sample_ID",
+                        color_palette = cluster_palette)
+
+p3<-plot_marker_violinplot(fcd = condor, 
+                           expr_slot ="orig",
+                           marker = "CD94 (KLRD1)",
+                           cluster_slot = "Phenograph_pca_orig_k_60",
+                           cluster_var = "metaclusters")
+
+plots<-cowplot::plot_grid(plotlist = list(p1,p2),rel_widths = c(2,3))
+cowplot::plot_grid(plotlist = list(plots,p3),ncol=1,rel_heights = c(1,1.5))
+```
+
+```{r, fig.height=5}
+p1<-plot_marker_boxplot(fcd = condor,
+                        marker = c("CD19"),
+                        expr_slot ="orig",
+                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_var = "metaclusters",
+                        cluster_to_show = "pDCs",
+                        facet_by_clustering = F,
+                        group_var = "group",
+                        sample_var = "sample_ID",
+                        color_palette = cluster_palette,
+                        fun = "median")
+
+condor$anno$cell_anno$group_sample_ID<-paste(condor$anno$cell_anno$group, condor$anno$cell_anno$sample_ID, sep="_")
+p2<-plot_marker_violinplot(fcd = condor,
+                        marker = c("CD19"),
+                        expr_slot ="orig",
+                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_var = "metaclusters",
+                        cluster_to_show = "pDCs",
+                        group_var = "group_sample_ID",
+                        color_palette = cluster_palette)
+
+p3<-plot_marker_violinplot(fcd = condor, 
+                           expr_slot ="orig",
+                           marker = "CD19",
+                           cluster_slot = "Phenograph_pca_orig_k_60",
+                           cluster_var = "metaclusters")
+
+plots<-cowplot::plot_grid(plotlist = list(p1,p2),rel_widths = c(2,3))
+cowplot::plot_grid(plotlist = list(plots,p3),ncol=1,rel_heights = c(1,1.5))
 ```
 
