@@ -19,7 +19,6 @@ In this vignette we introduce the structure of the condor object and showcase so
 # Load example `condor` object
 ```{r}
 condor <- readRDS("../.test_files/condor_example_016_misc.rds")
-#condor <- readRDS("/data/analysis/jacqueline/others/condor_example_016_misc.rds")
 ```
 
 # Structure of the `condor` object 
@@ -134,7 +133,7 @@ check_IDs(condor)
 
 The `merge_condor` function combines two `condor` objects comprised of the same parameters (markers). This function will merge only expression table and annotation as all the downstream analysis will need to be repeated. If the cell IDs are doubled between the two objects the merging can not be facilitated.
 
-```{r}
+```{r, eval=FALSE}
 condor_merged <- merge_condor(data1 = condor, 
                               data2 = condor)
 ```

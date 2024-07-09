@@ -20,8 +20,8 @@ library(cyCONDOR)
 
 For data transformation `cyCONDOR` provides different options:
 
-- `auto_logi`: For HDFC and Spectral Flow data (recommended, auto-logicle transformation). This transformation gives good results also with cyTOF data, expecially if you are experiencing a lot of noise with `arcsinh` due to negative values. auto-logicle transformation is inherited from the `Cytofkit` package [Chen er al. 2016](https://pubmed.ncbi.nlm.nih.gov/27662185/).
-- `clr`: Reccomended for CITE-seq data (centered log ratio transformtation)
+- `auto_logi`: For HDFC and Spectral Flow data (recommended, auto-logicle transformation). This transformation gives good results also with cyTOF data, especially if you are experiencing a lot of noise with `arcsinh` due to negative values. auto-logicle transformation is inherited from the `Cytofkit` package [Chen er al. 2016](https://pubmed.ncbi.nlm.nih.gov/27662185/).
+- `clr`: Recommended for CITE-seq data (centered log ratio transformation)
 - `arcsinh`: arcsinh transformation with co-factor 5, common transformation for cyTOF data.
 
 The last important piece to build a `condor` object is the annotation table. The annotation table should contain all necessary metadata used for analysis as well a column containing the names of the input files and should be supplied as `.csv` file. The column containing the file names should be stated in 'filename_col'. Below an exemplary metadata table is shown.
@@ -30,14 +30,14 @@ The last important piece to build a `condor` object is the annotation table. The
 read.csv("../.test_files/metadata.csv")
 ```
 
-Unwanted parameters that are not important for the downstream analysis (e.g. Time, InFile) and should be removed can be listed in `remove_param`. In the `prep_fcd` function we also set a `seed` for reproducibility since the subsetting to `max_cell` is otherwise randomized.
+Unwanted parameters that are not important for the downstream analysis (e.g. Time) and should be removed can be listed in `remove_param`. In the `prep_fcd` function we also set a `seed` for reproducibility since the subsetting to `max_cell` is otherwise randomized.
 
 ```{r}
 condor <- prep_fcd(data_path = "../.test_files/fcs/", 
                    max_cell = 1000, 
                    useCSV = FALSE, 
                    transformation = "auto_logi", 
-                   remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile"), 
+                   remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time"), 
                    anno_table = "../.test_files/metadata.csv", 
                    filename_col = "filename",
                    seed = 91)

@@ -24,16 +24,6 @@ library(ggplot2)
 library(dplyr)
 ```
 
-```{r}
-cluster_palette <- c("#89C5DA", "#DA5724", "#74D944", "#CE50CA", "#3F4921", "#C0717C", "#CBD588", "#5F7FC7",
-                     "#673770", "#D3D93E", "#38333E", "#508578", "#D7C1B1", "#689030", "#AD6F3B", "#CD9BCD",
-                     "#D14285", "#6DDE88", "#652926", "#7FDCC0", "#C84248", "#8569D5", "#5E738F", "#D1A33D",
-                     "#8A7C64", "#599861", "#89C5DA", "#DA5724", "#74D944", "#CE50CA", "#3F4921", "#C0717C", "#CBD588", "#5F7FC7",
-                     "#673770", "#D3D93E", "#38333E", "#508578", "#D7C1B1", "#689030", "#AD6F3B", "#CD9BCD",
-                     "#D14285", "#6DDE88", "#652926", "#7FDCC0", "#C84248", "#8569D5", "#5E738F", "#D1A33D",
-                     "#8A7C64", "#599861")
-```
-
 # Introduction
 
 `cyCONDOR` provides several functions for exploratory differential analysis of cell population frequencies and marker expression. 
@@ -51,15 +41,10 @@ Along this line, specifying the condor object, cell population labels as well as
 
 # Load example data set
 
-In this vignette, we showcase differential analysis with `cyCONDOR` on a data set comprising samples from two biological groups - patients ("pat") and control donors ("ctrl"). Each group comprises three PBMC samples measured with flow cytometry. The data set has been annotated by Phenograph clustering and subsequent knowledge-based metaclustering prior to this analysis.
+In this vignette, we showcase differential analysis with `cyCONDOR` on a data set comprising samples from two biological groups - patients ("pat") and control donors ("ctrl"). Each group comprises three PBMC samples measured with flow cytometry. The dataset has been annotated by Phenograph clustering and subsequent knowledge-based metaclustering prior to this analysis.
 
 ```{r}
-#TAKE out for final vignette!
-source("/data/001_Bonaguro_cyCONDOR/analysis/charlotte/condor_dev/git_cyCONDOR_2/cyCONDOR/R/differential_testing.R")
-```
-
-```{r}
-condor <- readRDS("../../differential_testing/objects/condor_HIV.rds")
+condor <- readRDS("../.test_files/conodr_diff_016.rds")
 ```
 
 ```{r}
@@ -78,7 +63,7 @@ plot_dim_red(fcd = condor,
              expr_slot = NULL,
              reduction_method = "umap",
              reduction_slot = "pca_orig",
-             cluster_slot = "Phenograph_pca_orig_k_60",
+             cluster_slot = "phenograph_pca_orig_k_60",
              param = "metaclusters",
              title = "UMAP colored by metaclusters", 
              facet_by_variable = FALSE)
@@ -98,7 +83,7 @@ You can either look at the cell counts per sample and cell population in table f
 # get counts as data frame
 counts<-getTable(fcd = condor,
                  output_type = "counts",
-                 cluster_slot = "Phenograph_pca_orig_k_60", 
+                 cluster_slot = "phenograph_pca_orig_k_60", 
                  cluster_var = "metaclusters", 
                  group_var = "sample_ID", 
                  numeric = F)
@@ -110,13 +95,12 @@ The `plot_counts_barplot()` function stacks absolute cell numbers of each cell p
 ```{r, fig.width=8, fig.height=8}
 # visualize counts as stacked bar plot, faceted by group_var
 plot_counts_barplot(fcd = condor,
-                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_slot = "phenograph_pca_orig_k_60",
                     cluster_var = "metaclusters",
                     group_var = "sample_ID",
                     facet_var = "group",
                     facet_by_clustering = F,
-                    facet_ncol = 10,
-                    color_palette = cluster_palette
+                    facet_ncol = 10
 )
 ```
 
@@ -125,12 +109,11 @@ A faceting of the plot by cell population can be achieved by setting the paramet
 ```{r, fig.width=8, fig.height=8}
 # visualize counts as stacked bar plot, faceted by clustering
 plot_counts_barplot(fcd = condor,
-                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_slot = "phenograph_pca_orig_k_60",
                     cluster_var = "metaclusters",
                     group_var = "sample_ID",
                     facet_by_clustering = T,
-                    facet_ncol = 5,
-                    color_palette = cluster_palette
+                    facet_ncol = 5
 )
 ```
 
@@ -145,11 +128,10 @@ This provides a quick overview and large proportional shifts can easily by spott
 
 ```{r, fig.width=8, fig.height=8}
 plot_frequency_barplot(fcd = condor,
-                       cluster_slot = "Phenograph_pca_orig_k_60",
+                       cluster_slot = "phenograph_pca_orig_k_60",
                        cluster_var = "metaclusters",
                        group_var = "group",
-                       #facet_var = "group",
-                       color_palette = cluster_palette
+                       #facet_var = "group"
 )
 ```
 
@@ -157,11 +139,10 @@ We can use the same visualization to show cell population proportions on sample 
 
 ```{r, fig.width=8, fig.height=8}
 plot_frequency_barplot(fcd = condor,
-                       cluster_slot = "Phenograph_pca_orig_k_60",
+                       cluster_slot = "phenograph_pca_orig_k_60",
                        cluster_var = "metaclusters",
                        group_var = "sample_ID",
-                       facet_var = "group",
-                       color_palette = cluster_palette
+                       facet_var = "group"
 )
 ```
 
@@ -170,13 +151,12 @@ plot_frequency_barplot(fcd = condor,
 The `plot_frequency_boxplot()` function generates a list of plots, comprising one plot for each cell population in `cluster_var`. Each plot shows cell population frequencies in percent as boxplots for all groups provided in `group_var`. Individual values for each sample in `sample_var` are represented as a dot. (Short reminder: sample IDs in `sample_var` need to be uniquely assigned to one level of the grouping variable)
 
 ```{r, fig.width=10, fig.height=6}
-
 # factor levels can be used to influence plotting order of groupes on the x-axis
 condor$anno$cell_anno$group<-factor(condor$anno$cell_anno$group, levels=c("ctrl","pat"))
 
 # assign output to object plots
 plots <- plot_frequency_boxplot(fcd = condor,
-                                cluster_slot = "Phenograph_pca_orig_k_60", 
+                                cluster_slot = "phenograph_pca_orig_k_60", 
                                 cluster_var = "metaclusters",
                                 sample_var = "sample_ID", 
                                 group_var = "group", 
@@ -193,11 +173,11 @@ cowplot::plot_grid(plotlist = plots, ncol = 5)
 To get an overview across many cell populations and conditions at once, It might be more convenient to look at a heatmap. 
 The function `confusion_HM()` first normalizes each group level provided in `group_var` to 1000 cells. Afterwards, for each cell population in `group_var`, the proportions of each group contributing to this population will be calculated. Note that this way, we normalize for differences in cell numbers. The uncorrected proportion of a group in a cluster might look quite different.
 
-```{r, fig.width=8, fig.height=8}
+```{r, fig.width=8, fig.height=4}
 plot_confusion_HM(fcd = condor,
-                  cluster_slot = "Phenograph_pca_orig_k_60", 
+                  cluster_slot = "phenograph_pca_orig_k_60", 
                   cluster_var = "metaclusters",
-                  group_var = "group", )
+                  group_var = "group", size = 30)
 ```
 
 ### Export frequencies as data frame
@@ -209,7 +189,7 @@ condor$anno$cell_anno$group_sample_ID <- paste(condor$anno$cell_anno$group,condo
 
 frequencies<-getTable(fcd = condor,
                       output_type = "frequency",
-                      cluster_slot = "Phenograph_pca_orig_k_60", 
+                      cluster_slot = "phenograph_pca_orig_k_60", 
                       cluster_var = "metaclusters", 
                       group_var = "group_sample_ID", 
                       numeric = F)
@@ -248,7 +228,7 @@ unique(condor$anno$cell_anno[,c("sample_ID","group")])
 ```{r}
 #perform test
 results_t <- frequency_t_test(fcd = condor,
-                                   cluster_slot = "Phenograph_pca_orig_k_60", 
+                                   cluster_slot = "phenograph_pca_orig_k_60", 
                                    cluster_var = "metaclusters",
                                    sample_var = "sample_ID", 
                                    group_var = "group",
@@ -277,7 +257,7 @@ As mentioned in the beginning, the underlying absolute cell numbers should be co
 ```{r, fig.width=6, fig.height=6}
 plot_marker_group_HM(fcd = condor,
                      expr_slot = "orig",
-                     cluster_slot = "Phenograph_pca_orig_k_60",
+                     cluster_slot = "phenograph_pca_orig_k_60",
                      cluster_var = "metaclusters",
                      group_var = "group",
                      size = 8,
@@ -294,7 +274,7 @@ In contrast to heatmaps that only show an aggregated expression value, violin pl
 plot_marker_violinplot(fcd =condor,
                        marker =c("CD57"),
                        expr_slot ="orig",
-                       cluster_slot = "Phenograph_pca_orig_k_60", 
+                       cluster_slot = "phenograph_pca_orig_k_60", 
                        cluster_var = "metaclusters",
                        group_var = "group",
                        color_palette = c("ctrl"="purple","pat"="darkorange"))
@@ -307,7 +287,7 @@ If a vector with more than one feature is provided via the `marker` argument, th
 plot.list<-plot_marker_violinplot(fcd =condor,
                                   marker =c("CD27","CD127 (IL7RA)"),
                                   expr_slot ="orig",
-                                  cluster_slot = "Phenograph_pca_orig_k_60", 
+                                  cluster_slot = "phenograph_pca_orig_k_60", 
                                   cluster_var = "metaclusters",
                                   group_var = "group",
                                   color_palette = c("ctrl"="purple","pat"="darkorange"))
@@ -323,14 +303,12 @@ The function `plot_marker_boxplot()` summarizes the expression for selected mark
 plot_marker_boxplot(fcd = condor,
                     #marker = c("CD57","CD8"),
                     expr_slot ="orig",
-                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_slot = "phenograph_pca_orig_k_60",
                     cluster_var = "metaclusters",
                     facet_by_clustering = F,
                     group_var = "group", 
                     sample_var = "sample_ID",
-                    color_palette = cluster_palette,
                     fun = "median")
-
 ```
 
 By default, the function outputs boxplots for all cell populations and markers available. But it is also possible to provide a vector of markers via the `marker` parameter or cell populations via `cluster_to_show`.
@@ -341,12 +319,11 @@ When using `facet_by_clustering = T`, plots are faceted by cell population, whil
 plot_marker_boxplot(fcd = condor,
                     marker = c("CD57","CD8"),
                     expr_slot ="orig",
-                    cluster_slot = "Phenograph_pca_orig_k_60",
+                    cluster_slot = "phenograph_pca_orig_k_60",
                     cluster_var = "metaclusters",
                     facet_by_clustering = T,
                     group_var = "group", 
                     sample_var = "sample_ID",
-                    color_palette = cluster_palette,
                     fun = "median")
 ```
 
@@ -357,7 +334,7 @@ For custom visualizations, the `getTable()` function can be used to calculate th
 ```{r}
 getTable(fcd = condor,
          output_type = "mean",
-         cluster_slot = "Phenograph_pca_orig_k_60", 
+         cluster_slot = "phenograph_pca_orig_k_60", 
          cluster_var = "metaclusters", 
          group_var = "sample_ID", 
          numeric = F)
@@ -375,6 +352,7 @@ For more details on `diffcyt`, please refer to the `diffcyt` publication by [Web
 
 While the diffcyt publication itself, focused on the analysis of high resolution clustering of cytometry data, `diffcyt` has also been used in the Bioconductor workflow *cytofWorkflow*(Nowicka M, Crowell H, Robinson M (2024);[DOI: 10.18129/B9.bioc.cytofWorkflow]([DOI: 10.18129/B9.bioc.cytofWorkflow)) to analyse lower resolution annotations based on knowledge-based merging of clusters.  
 
+If you use this workflow in your work please consider citing [cyCONDOR](XXX) and [Weber et al. (2019)](https://www.nature.com/articles/s42003-019-0415-5).
 
 ## Install packages
 
@@ -405,7 +383,7 @@ str(condor$clustering)
 
 ```{r}
 condor_se<-prepInputDiffcyt(fcd = condor,
-                            cluster_slot = "Phenograph_pca_orig_k_60",
+                            cluster_slot = "phenograph_pca_orig_k_60",
                             cluster_var = "metaclusters",
                             sample_var = "sample_ID",
                             meta_vars = c("expfcs_filename","group"),
@@ -506,14 +484,14 @@ We can use `cyCONDOR` to visualize the population frequencies per sample for thi
 
 ```{r, fig.height=4, fig.width=3}
 plots <- plot_frequency_boxplot(fcd = condor,
-                                cluster_slot = "Phenograph_pca_orig_k_60",
+                                cluster_slot = "phenograph_pca_orig_k_60",
                                 cluster_var = "metaclusters",
                                 sample_var = "sample_ID",
                                 group_var = "group",
                                 numeric = F,
                                 color_palette = c("ctrl"="purple","pat"="darkorange"))
 
-plots$`Unconventioal T`
+plots$`Unconventional T cells`
 ```
 
 ### Test differential states
@@ -560,7 +538,6 @@ res_DS <- diffcyt::testDS_LMM(d_counts, d_medians, formula, contrast,
 ```{r}
 # display table of results ordered by increasing adjusted p-value
 diffcyt::topTable(res_DS, format_vals = FALSE)
-
 ```
 
 Let's have a look at the top cluster marker combinations.
@@ -572,35 +549,33 @@ head(res)
 
 In this case no marker shows an FDR corrected p-value <0.05. 
 
-Nevertheless, it is worth mentioning, that results always require visual inspection to set potential findings into context. We can use `cyCONDOR` functions to visualize the median expression. It can also be helpful to look
+Nevertheless, it is worth mentioning, that results always require visual inspection to set potential findings into context. We can use `cyCONDOR` functions to visualize the median expression.
 
 ```{r, fig.height=5}
 p1<-plot_marker_boxplot(fcd = condor,
                         marker = c("CD94 (KLRD1)"),
                         expr_slot ="orig",
-                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_slot = "phenograph_pca_orig_k_60",
                         cluster_var = "metaclusters",
                         cluster_to_show = "CD8",
                         facet_by_clustering = F,
                         group_var = "group",
                         sample_var = "sample_ID",
-                        color_palette = cluster_palette,
                         fun = "median")
 
 condor$anno$cell_anno$group_sample_ID<-paste(condor$anno$cell_anno$group, condor$anno$cell_anno$sample_ID, sep="_")
 p2<-plot_marker_violinplot(fcd = condor,
                         marker = c("CD94 (KLRD1)"),
                         expr_slot ="orig",
-                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_slot = "phenograph_pca_orig_k_60",
                         cluster_var = "metaclusters",
                         cluster_to_show = "CD8",
-                        group_var = "group_sample_ID",
-                        color_palette = cluster_palette)
+                        group_var = "group_sample_ID")
 
 p3<-plot_marker_violinplot(fcd = condor, 
                            expr_slot ="orig",
                            marker = "CD94 (KLRD1)",
-                           cluster_slot = "Phenograph_pca_orig_k_60",
+                           cluster_slot = "phenograph_pca_orig_k_60",
                            cluster_var = "metaclusters")
 
 plots<-cowplot::plot_grid(plotlist = list(p1,p2),rel_widths = c(2,3))
@@ -609,31 +584,29 @@ cowplot::plot_grid(plotlist = list(plots,p3),ncol=1,rel_heights = c(1,1.5))
 
 ```{r, fig.height=5}
 p1<-plot_marker_boxplot(fcd = condor,
-                        marker = c("CD19"),
+                        marker = c("CD57"),
                         expr_slot ="orig",
-                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_slot = "phenograph_pca_orig_k_60",
                         cluster_var = "metaclusters",
-                        cluster_to_show = "pDCs",
+                        cluster_to_show = "CD8",
                         facet_by_clustering = F,
                         group_var = "group",
                         sample_var = "sample_ID",
-                        color_palette = cluster_palette,
                         fun = "median")
 
 condor$anno$cell_anno$group_sample_ID<-paste(condor$anno$cell_anno$group, condor$anno$cell_anno$sample_ID, sep="_")
 p2<-plot_marker_violinplot(fcd = condor,
-                        marker = c("CD19"),
+                        marker = c("CD57"),
                         expr_slot ="orig",
-                        cluster_slot = "Phenograph_pca_orig_k_60",
+                        cluster_slot = "phenograph_pca_orig_k_60",
                         cluster_var = "metaclusters",
-                        cluster_to_show = "pDCs",
-                        group_var = "group_sample_ID",
-                        color_palette = cluster_palette)
+                        cluster_to_show = "CD8",
+                        group_var = "group_sample_ID")
 
 p3<-plot_marker_violinplot(fcd = condor, 
                            expr_slot ="orig",
-                           marker = "CD19",
-                           cluster_slot = "Phenograph_pca_orig_k_60",
+                           marker = "CD57",
+                           cluster_slot = "phenograph_pca_orig_k_60",
                            cluster_var = "metaclusters")
 
 plots<-cowplot::plot_grid(plotlist = list(p1,p2),rel_widths = c(2,3))

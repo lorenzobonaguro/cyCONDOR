@@ -18,7 +18,7 @@ In this vignette we showcase `cyCONDOR` functions for dimensionality reduction. 
 
 All functions need the `condor` object as `fcd` input and the `data_slot` to be used for the calculation. The `runPCA` function always uses the `expr` slot for the calculation, for non-linear dimensionality reduction (UMAP, tSNE, DM) the user can decide to use the `expr` data or the `pca` result as `input_type`. 
 
-Additionally, the user has the option to specifically state which markers should be used for the calculation by listing them under `markers`. The list can be either written out manually or be extracted directly from the `condor` object using the implemented functions `measured_markers` and `used_markers` By default all available markers from the condor object are used. If the `discard` option is set to TRUE, all markers **except** the ones listed under `markers` are used for calculation. This enables the exclusion of single markers.
+Additionally, the user has the option to specifically state which markers should be used for the calculation by listing them under `markers`. The list can be either written out manually or be extracted directly from the `condor` object using the implemented functions `measured_markers` and `used_markers` By default all available markers from the condor object are used. If the `discard` option is set to TRUE, all markers **except** the ones listed under `markers` are used for calculation. This enables the exclusion of single markers. When using `pca` as input is possible to specify the number of PCs to be used.
 
 By defining a `prefix` which gets incorporated into the slot name of the output, each function can be run with different settings and the results will be saved accordingly.
 
@@ -35,8 +35,7 @@ The option of marker selection is implemented in all dimensionality reduction fu
 
 # Load example cyCONDOR object
 ```{r}
-condor <- readRDS("../.test_files/condor_example.rds")
-#condor <- readRDS("/data/analysis/data/.test_files/condor_example.rds")
+condor <- readRDS("../.test_files/conodr_example_016.rds")
 ```
 
 # Principal Component Analysis (PCA)
@@ -84,7 +83,7 @@ The calculation of the UMAP is based on the `umap` function from the uwot packag
 
 Besides important metrics that can be set in the uwot umap function (e.g. number of items that define a neighborhood around each point (`nNeighbors`) and minimum distance between embedded points (`min_dist`)) the `runUMAP` function implemented in `cyCondor` has additional parameters that can be adjusted. Next to the selection of `markers` and an output `prefix` the user can specify the number of PCs that should be used for the umap calculation (`nPC`) and has the option to save the umap model for future data projection (`ret_model`).
 
-```{r}
+```{r, eval=FALSE}
 condor <- runUMAP(fcd = condor, 
                   input_type = "pca", 
                   data_slot = "orig", 
@@ -98,7 +97,7 @@ The output data frame of the UMAP coordinates can be accessed with `condor$umap$
 The tSNE calculation is based on the function `Rtsne` from the package `Rtsne`. The implementation in `cyCondor` allows for the  definition of the perplexity used in the tSNE calculation. This parameter controls how many nearest neighbors should be taken into account when constructing the embedding. The user has the option, similar as in the UMAP function, to select the number of PCs which should be used for the calculation. For more details see: Jesse H. Krijthe (2015). "Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation" <https://github.com/jkrijthe/Rtsne>.
 
 
-```{r}
+```{r, eval=FALSE}
 condor <- runtSNE(fcd = condor, 
                   input_type = "pca", 
                   data_slot = "orig", 
@@ -111,7 +110,7 @@ The output data frame of the tSNE coordinates can be accessed with `condor$tSNE$
 
 The calculation of DM is based on the function `DiffusionMap` from the package `destiny`. The number of nearest neighbors to be considered can be specified with `k`. Here, the user has as well the option to select the number of PCs which should be used for the calculation. For more deatils see: Philipp Angerer et al. (2015). "destiny: diffusion maps for large-scale single-cell data in R." Helmholtz-Zentrum München.<http://bioinformatics.oxfordjournals.org/content/32/8/1241>.
 
-```{r}
+```{r, eval=FALSE}
 condor <- runDM(fcd = subset_fcd(condor, 5000), 
                 input_type = "pca", 
                 data_slot = "orig", 

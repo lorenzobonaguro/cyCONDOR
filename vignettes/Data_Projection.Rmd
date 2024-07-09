@@ -14,18 +14,18 @@ editor_options:
 library(cyCONDOR)
 ```
 
-Considering the high number of samples that can be generated with modern HDC instruments and the number of cells acquired we developed a data projection workflow in `cyCONDOR`. With this approach an initial model it trained including a UMAP dimensionality reduction and a cell classifier of the cell labels. We can then project any new sample into the pre-trained model, this operation is much faster and allows to analyse millions of cell in few minutes. 
+Considering the high number of samples that can be generated with modern HDC instruments and the number of cells acquired we developed a data projection workflow in `cyCONDOR`. With this approach an initial model it trained including a UMAP dimensionality reduction and a cell classifier of the cell labels. We can then project any new sample into the pre-trained model, this operation is much faster and allows to analyse millions of cell in few minutes.
 
 # Loading the data for training
 
 We start by loading the data for the training.
 
 ```{r}
-condor_train <- prep_fcd(data_path = "../.test_files/fcs/", 
+condor_train <- prep_fcd(data_path = "../../../Figure 6 - Data Projection/data_and_envs/fcs_train/", 
                          max_cell = 5000, 
                          useCSV = FALSE, 
                          transformation = "auto_logi", 
-                         remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"), 
+                         remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "live_dead"), 
                          anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_train.csv", 
                          filename_col = "filename")
 ```
@@ -39,11 +39,11 @@ condor_train$anno$cell_anno$group <- "train"
 We also load the data to later project.
 
 ```{r}
-condor_test <- prep_fcd(data_path = "../.test_files/fcs/",
-                        max_cell = 5000,
+condor_test <- prep_fcd(data_path = "../../../Figure 6 - Data Projection/data_and_envs/fcs_test/",
+                        max_cell = 10000,
                         useCSV = FALSE,
                         transformation = "auto_logi",
-                        remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile", "live_dead"),
+                        remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "live_dead"),
                         anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_test.csv",
                         filename_col = "filename")
 ```
@@ -93,7 +93,7 @@ To transfer also the labels from the reference to the projected data we need to 
 condor_train <- runPhenograph(fcd = condor_train, 
                               input_type = "expr", 
                               data_slot = "orig", 
-                              k = 300)
+                              k = 150)
 ```
 
 We can visualize the `Phenograph` clustering in a UMAP.
@@ -103,7 +103,7 @@ plot_dim_red(fcd= condor_train,
              expr_slot = NULL,
              reduction_method = "umap", 
              reduction_slot = "expr_orig", 
-             cluster_slot = "phenograph_expr_orig_k_300",
+             cluster_slot = "phenograph_expr_orig_k_150",
              param = "Phenograph",
              title = "Phenograph clustering of the training data set")
 ```
@@ -120,7 +120,7 @@ Here, we use the `Phenograph` clustering labels as an example to train the class
 condor_train <- train_transfer_model(fcd = condor_train, 
                                      data_slot = "orig", 
                                      input_type = "expr", 
-                                     cluster_slot = "phenograph_expr_orig_k_300",
+                                     cluster_slot = "phenograph_expr_orig_k_150",
                                      cluster_var = "Phenograph",
                                      method = "knn", 
                                      tuneLength = 5, 
@@ -160,7 +160,7 @@ We provide here some costom code to overlap in a single plot the results from th
 
 ## Prepare the dataframe
 ```{r}
-train <- as.data.frame(cbind(condor_train$umap$expr_orig, Phenograph = condor_train$clustering$phenograph_expr_orig_k_300[, 1]))
+train <- as.data.frame(cbind(condor_train$umap$expr_orig, Phenograph = condor_train$clustering$phenograph_expr_orig_k_150[, 1]))
 
 train$type <- "train"
 
@@ -200,7 +200,7 @@ ggplot(data = vis_data, aes(x = UMAP1, y = UMAP2, color = Phenograph, alpha = ty
   scale_size_manual(values = c(0.1, 0.5)) +
   theme_bw() +
   theme(aspect.ratio = 1, panel.grid = element_blank()) +
-  ggtitle("Predicted cluster")
+  ggtitle("Predicted cluster") + facet_wrap(~type)
 ```
 
 # Session Info

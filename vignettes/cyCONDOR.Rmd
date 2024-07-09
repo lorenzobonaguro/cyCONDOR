@@ -50,12 +50,12 @@ exp_x_sample2.fcs | sample2           | control
 
 
 ```{r}
-condor <- prep_fcd(data_path = "../../data/.test_files/fcs/", 
+condor <- prep_fcd(data_path = "../.test_files/fcs/", 
                     max_cell = 1000, 
                     useCSV = FALSE, 
                     transformation = "auto_logi", 
-                    remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile"), 
-                    anno_table = "../../data/.test_files/metadata.csv", 
+                    remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time"), 
+                    anno_table = "../.test_files/metadata.csv", 
                     filename_col = "filename"
                    )
 
@@ -228,11 +228,12 @@ We can now further visualize our data set to compare the different experimental 
 
 *`group_var`* = String indicating variable name in cell_anno that defines grouping variable to be used (x-axis), e.g. group or sample ID
 
-```{r}
+```{r, fig.width=7, fig.height=3}
 plot_confusion_HM(fcd = condor,
                   cluster_slot = "phenograph_pca_orig_k_60", 
                   cluster_var = "Phenograph",
-                  group_var = "group"
+                  group_var = "group", 
+                  size = 30
                   )
 ```
 

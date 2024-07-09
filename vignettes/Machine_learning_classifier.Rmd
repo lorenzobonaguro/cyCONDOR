@@ -31,11 +31,11 @@ If you use this workflow in your work please consider citing [cyCONDOR](XXX) and
 We start by importing the training dataset, this is done as previously described with the `prep_fcd` function, in this case the `anno_table` also include the clinical classification of the samples (`aml` or `normal`).
 
 ```{r}
-condor <- prep_fcd(data_path = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+condor <- prep_fcd(data_path = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/train/", 
                    max_cell = 10000000, 
                    useCSV = FALSE, 
                    transformation = "auto_logi", 
-                   remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
+                   remove_param = c("FSC-A","FSC-W","FSC-H","Time"), 
                    anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv", 
                    filename_col = "fcsName",
                    seed = 91)
@@ -142,11 +142,11 @@ tree <- treeGate(P = condor$extras$classifier_model$train.Data.cell$y.Pred.s0,
 To now validate the performance of the trained `cytoDX` model we will test it on a test dataset with no overlap with the training data.
 
 ```{r}
-condor_test <- prep_fcd(data_path = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+condor_test <- prep_fcd(data_path = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/test/", 
                         max_cell = 10000000, 
                         useCSV = FALSE, 
                         transformation = "auto_logi", 
-                        remove_param = c("FSC-A","FSC-W","FSC-H","Time", "InFile"), 
+                        remove_param = c("FSC-A","FSC-W","FSC-H","Time"), 
                         anno_table = "../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv", 
                         filename_col = "fcsName",
                         seed = 91)

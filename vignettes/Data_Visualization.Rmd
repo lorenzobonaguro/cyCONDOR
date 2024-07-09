@@ -23,7 +23,7 @@ library(cyCONDOR)
 In this vignette, we will use a flow cytometry dataset of six PBMC samples taken from three patients and three control. The data was transformed and subjected to several dimensionality reduction methods as well as clustering and metaclustering using `cyCONDOR`(see vignettes: `Data loading and transformation`, `Dimensionality Reduction`, `Clustering and cell annotation`).
 
 ```{r}
-condor <- readRDS("../.test_files/condor_example_016.rds")
+condor <- readRDS("../.test_files/conodr_example_016.rds")
 ```
 
 ```{r}

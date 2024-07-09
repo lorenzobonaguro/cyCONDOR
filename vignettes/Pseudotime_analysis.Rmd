@@ -21,6 +21,8 @@ With `cyCONDOR` we implemented `slingshot` for pseudotome analysis, following a 
 
 This workflow can be applied to any type of HDFC data, nevertheless the interpretation of trajectories and preudotime should always be validated by other experiment of domain knowledge. We exemplified here with a subset of the cyTOF dataset from [Bendall et al. 2011](https://www.science.org/doi/10.1126/science.1198704)
 
+If you use this workflow in your work please consider citing [cyCONDOR](XXX) and [Street et al. (2018)](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4772-0).
+
 ## Load the cyCONDOR object
 
 We start here by loading an example `condor` object already annotated.
@@ -37,7 +39,7 @@ plot_dim_red(fcd= condor,
              cluster_slot = "phenograph_filter_pca_orig_k_10",
              param = "metaclusters",
              title = "UMAP colored by Phenograph",
-             apha= 1, dot_size = 1)
+             alpha= 1, dot_size = 1)
 ```
 
 ```{r, fig.height=7}
@@ -124,7 +126,7 @@ plot_dim_red(fcd = condor,
              title = "UMAP colored by pseudotime", 
              facet_by_variable = FALSE, 
              raster = TRUE, 
-             apha = 1, 
+             alpha = 1, 
              dot_size = 1) + 
   geom_path(data = condor$extras$slingshot_umap_pca_orig$lineages %>% arrange(Order), aes(group = Lineage), size = 0.5)
 ```
@@ -138,7 +140,7 @@ We provide here some custom code to visualize the pseudotime, nevertheless many 
 ```{r}
 selections <- rownames(condor$clustering$phenograph_filter_pca_orig_k_10[condor$clustering$phenograph_filter_pca_orig_k_10$metaclusters %in% c("HSCs", "CMPs", "Myeloblast", "Monocytes"), ])
 
-condor_mono <- filter_fcd(fcdataset = condor,
+condor_mono <- filter_fcd(fcd = condor,
                             cell_ids = selections)
 ```
 

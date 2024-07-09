@@ -18,15 +18,14 @@ In this vignette we showcase `cyCONDOR` functions for clustering and cell annota
 
 # Load example cyCONDOR object
 ```{r}
-condor <- readRDS("../.test_files/condor_example_016.rds")
-#condor <- readRDS("/data/analysis/data/.test_files/condor_example.rds")
+condor <- readRDS("../.test_files/conodr_example_016.rds")
 ```
 
 The `cyCONDOR` ecosystem provides different clustering methods, Phenograph and FlowSOM. It also provides a convenient way to assign cell annotations to the clustered object.
 
 The clustering functions take the `condor` object as `fcd` input and the matrix to be used for the calculation of the clusters as `data_slot` input (e.g. `orig` or `norm`). We recommend using the PCA coordinates as `input_type` to compensate for fluctuations in the expression data. By defining a `prefix` which gets incorporated into the slot name of the output, each function can be run with different settings and the results will be saved accordingly. The functions return a fcd with an additional data frame corresponding to the calculated clustering saved in `fcd$clustering`. The name of the output consists of the `prefix` (if given), the clustering method and the `data_slot`.
 
-Additionally, the user has the option to specifically state which markers should be used for the calculation by listing them under `markers`. The list can be either written out manually or be extracted directly from the `condor` object using the implemented functions `measured_markers` and `used_markers` By default all available markers from the condor object are used. If the `discard` option is set to TRUE, all markers **except** the ones listed under `markers` are used for calculation. This enables the exclusion of single markers.
+Additionally, when using the expression matrix as input, the user has the option to specifically state which markers should be used for the calculation by listing them under `markers`. The list can be either written out manually or be extracted directly from the `condor` object using the implemented functions `measured_markers` and `used_markers` By default all available markers from the condor object are used. If the `discard` option is set to TRUE, all markers **except** the ones listed under `markers` are used for calculation. This enables the exclusion of single markers. When using `pca` as input is possible to specify the number of PCs to be used.
 
 # Phenograph clustering
 
@@ -71,29 +70,31 @@ condor <- metaclustering(fcd = condor,
                          cluster_slot = "phenograph_pca_orig_k_60", 
                          cluster_var = "Phenograph", 
                          cluster_var_new = "metaclusters", 
-                         metaclusters = c("1" = "Classical Monocytes", 
-                                          "2" = "B cells", 
-                                          "3" = "CD8 CD45RA+ CD127-", 
-                                          "4" = "CD8 CD45RA+ CD127-", 
-                                          "5" = "NK bright", 
-                                          "6" = "CD8 CD45RA- CD127+", 
-                                          "7" = "CD4 CD45RA+ CD127+", 
-                                          "8" = "CD8 CD45RA+ CD127+", 
-                                          "9" = "CD4 CD127-", 
-                                          "10" = "CD16- Monocytes", 
-                                          "11" = "CD4 CD45RA- CD127+", 
-                                          "12" = "Unconventional T cells", 
-                                          "13" = "NK dim",
-                                          "14" = "Classical Monocytes",
-                                          "15" = "pDCs",
-                                          "16" = "Classical Monocytes",
-                                          "17" = "Classical Monocytes",
-                                          "18" = "CD4 CD25+",
-                                          "19" = "Unconventional T cells",
-                                          "20" = "CD8 CD45RA- CD127+",
-                                          "21" = "Basophils",
-                                          "22" = "CD8 CD45RA- CD127+",
-                                          "23" = "NK bright"))
+                         metaclusters = c("1" = "Classical Monocytes",
+                                          "2" = "CD4 CD45RA+ CD127+",
+                                          "3" = "CD8 CD45RA+ CD127+", 
+                                          "4" = "NK dim",
+                                          "5" = "CD8 CD45RA+ CD127-",
+                                          "6" = "Classical Monocytes",
+                                          "7" = "Unconventional T cells", 
+                                          "8" = "CD4 CD45RA- CD127+",
+                                          "9" = "CD16+ Monocytes",
+                                          "10" = "CD4 CD127-",
+                                          "11" = "Classical Monocytes", 
+                                          "12" = "CD8 CD45RA- CD127+", 
+                                          "13" = "CD8 CD45RA- CD127+",
+                                          "14" = "NK bright",
+                                          "15" = "CD8 CD45RA+ CD127-",
+                                          "16" = "CD4 CD25+",
+                                          "17" = "B cells",
+                                          "18" = "Unconventional T cells",
+                                          "19" = "Classical Monocytes",
+                                          "20" = "pDCs",
+                                          "21" = "CD8 CD45RA+ CD127+",
+                                          "22" = "Basophils",
+                                          "23" = "Mixed",
+                                          "24" = "B cells",
+                                          "25" = "NK bright"))
 ```
 
 # Session Info

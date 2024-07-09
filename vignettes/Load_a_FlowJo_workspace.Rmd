@@ -18,31 +18,14 @@ library(Biobase)
 library(ggplot2)
 ```
 
-```{r, include= FALSE}
-library(dplyr)
-library(flowCore)
-library(Rphenograph)
-library(stringr)
-
-#load functions 
-source("../repo/cyCONDOR/R/data_load_and_transform.R")
-source("../repo/cyCONDOR/R/data_visualization.R")
-source("../repo/cyCONDOR/R/dim_reduction.R")
-source("../repo/cyCONDOR/R/colors.R")
-source("../repo/cyCONDOR/R/clustering.R")
-source("../repo/cyCONDOR/R/misc.R")
-source("../repo/cyCONDOR/R/batch_correction.R")
-
-```
-
-Within the `cyCONDOR` ecosystem it is possible to load a FlowJo work space (.wsp file). This gives the advantage of having the gating hierarchy in the `fcd` object.
+Within the `cyCONDOR` ecosystem it is possible to load a FlowJo work space (.wsp file). This gives the advantage of having the gating hierarchy in the `fcd` object. We would still reccomend using files preprocessed as described in vignette("Prepare_data_for_cyCONDOR_analysis") to be fully compatible with all downstream analysis (e.g. cytonorm). Exported compensared files can be loaded in FlowJo and used for gating analysis.
 
 ## Read the .wsp file
 
 First we use the [CytoML](https://doi.org/10.18129/B9.bioc.CytoML) package to load the `.wsp` file.
 
 ```{r}
-ws <- CytoML::open_flowjo_xml("../../data/.test_files/flowjo_workspace.wsp")
+ws <- CytoML::open_flowjo_xml("../.test_files/flowjo_workspace.wsp")
 
 ws
 ```
@@ -52,7 +35,7 @@ ws
 We then transform the object to a `GatingSet` object.
 
 ```{r}
-gs <- CytoML::flowjo_to_gatingset(ws, name = "samples", path = "../../data/.test_files/fcs_flowjo_ws/")
+gs <- CytoML::flowjo_to_gatingset(ws, name = "samples", path = "../.test_files/fcs_flowjo_ws/")
 
 gs
 ```
@@ -125,7 +108,6 @@ ggplot(tmp, aes(x= `CD19`, y = `CD3`, color = as.factor(`CD3+`))) +
 ```
 
 We can now continue with the usual `cyCONDOR` workflow (see e.g. vignette("Dimensionality_Reduction"), vignette("Clustering_and_cell_annotation") and vignette("Data_Visualization").
-
 
 
 # Session Info

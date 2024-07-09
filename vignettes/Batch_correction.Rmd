@@ -14,8 +14,6 @@ editor_options:
 library(cyCONDOR)
 library(ggplot2)
 library(ggrastr)
-if(!require(lisi)){
-  devtools::install_github("immunogenomics/lisi")}
 library(lisi)
 ```
 
@@ -29,20 +27,11 @@ This first part describes the general `cyCONDOR` data processing and dimensional
 
 We start by loading the data.
 ```{r}
-# condor <- prep_fcd(FCSpath = "../../../Figure 3 - Batch Correction/data/CureDem/all/", 
-#                    ceil = 500, 
-#                    useCSV = FALSE, 
-#                    transformation = "auto_logi", 
-#                    remove_param = c("InFile", "Time"), 
-#                    anno_table = "../../../Figure 3 - Batch Correction/data/CureDem/all.csv", 
-#                    filename_col = "filename")
-
-
 condor <- prep_fcd(data_path = "../../../Figure 3 - Batch Correction/data/CureDem/all/",
                    max_cell = 500,
                    useCSV = FALSE,
                    transformation = "auto_logi",
-                   remove_param = c("InFile", "Time", "FSC-H", "SSC-H"),
+                   remove_param = c("Time", "FSC-H", "SSC-H"),
                    anno_table = "../../../Figure 3 - Batch Correction/data/CureDem/all.csv",
                    filename_col = "filename"
 )
@@ -86,6 +75,8 @@ plot_dim_red(fcd= condor,
 # 2 Batch correction
 
 Within the `cyCONDOR` ecosystem we implemented [harmony](https://doi.org/10.1038/s41592-019-0619-0) and [CytoNorm](https://doi.org/10.1002/cyto.a.23904) for batch correction. The correction can be applied either to the protein expression values (fluorescence intensities) or to the principal components. There is no 'magic bullet' for batch correction and each of these methods needs to be used with care to correct for the batch effect but not the underlying biological effects. Therefore, each of the here described methods should always be validated by inspecting the expression of hallmark markers. 
+
+If you use this workflow in your work please consider citing [cyCONDOR](XXX) and [harmony](https://doi.org/10.1038/s41592-019-0619-0) or [CytoNorm](https://doi.org/10.1002/cyto.a.23904).
 
 ## 2.1 Correct Principal Components 
 

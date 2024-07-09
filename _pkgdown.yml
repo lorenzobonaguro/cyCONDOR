@@ -4,83 +4,104 @@ template:
 
 reference:
 - title: Data Loading
-  desc:  Functions to load data to a condor object.
+  desc: Functions to load data to a condor object.
   contents:
   - prep_fcd
   - prep_fjw
-  - nfTransform
+  - transform_data
   - clr
-  - prepFcsFolderData
+  - read_data
 
 - title: Dimensionality Reduction
-  desc:  Dimensionality recution functions.
+  desc: Dimensionality reduction functions.
   contents:
   - runPCA_pseudobulk
   - runPCA
   - runUMAP
   - runtSNE
   - runDM
-  - learnUMAP
 
 - title: Clustering
-  desc:  Clustering functions.
+  desc: Clustering functions.
   contents:
   - runPhenograph
   - runFlowSOM
   - metaclustering
 
 - title: Batch Correction
-  desc:  Implementation of Harmony.
+  desc: Implementation of Harmony.
   contents:
   - harmonize_PCA
   - harmonize_intensities
+  - train_cytonorm
+  - run_cytonorm
 
 - title: Pseudotime
-  desc:  Implementation of slingshot.
+  desc: Implementation of slingshot.
   contents:
   - runPseudotime
 
-- title: Classifier
-  desc:  Machine learning classifier.
+- title: Classifier and Data Projection
+  desc: Machine learning classifier and data projection.
   contents:
   - train_classifier_model
   - train_transfer_model
   - predict_classifier
   - predict_labels
+  - learnUMAP
   - runAstir_cellstates
   - runAstir_celltype
 
 - title: Data Visualization
-  desc:  Collection of functions to visualize the results.
+  desc: Collection of functions to visualize the results.
   contents:
-  - barplot_frequency
-  - boxplot_and_stats
-  - confusion_HM
-  - confusionMatrix
-  - densityplot_marker
-  - dotplot_cyto
-  - HM_differential_marker
-  - HM_markers
+  - getTable
   - PC_loadings
-  - plot_density
-  - plot_marker
-  - violinplot_marker
+  - plot_frequency_boxplot
+  - plot_frequency_barplot
+  - plot_count_barplot
+  - plot_confusion_HM
+  - confusionMatrix
+  - plot_marker_density
+  - plot_marker_group_HM
+  - plot_marker_HM
+  - plot_dim_density
+  - plot_dim_red
+  - plot_marker_violinplot
+  - plot_marker_boxplot
+  - plot_marker_dotplot
+  - plot_marker_ridgeplot
+
+- title: Differential Testing
+  desc: Collection of functions to calculate differential abundance and expression.
+  contents:
+  - frequency_anova_test
+  - frequency_friedman_test
+  - frequency_kruskal_test
+  - frequency_t_test
+  - frequency_wilcox_test
+  - prepInputDiffcyt
+  - marker_wilcox_test
 
 - title: Utilities
   desc:  Collection of misc functions.
   contents:
+  - scaleColors
+  - used_markers
   - change_param_name
   - check_IDs
   - df_frequency
   - filter_fcd
   - merge_condor
-  - scaleColors
   - subset_fcd
+  - checkInput
 
 articles:
 - title: Detailed cyCONDOR workflows
   navbar: ~
   contents:
+  - Prepare_data_for_cyCONDOR_analysis
+  - How_to_run_cyCONDOR_as_container
   - Data_Loading_and_Transformation
   - Load_a_FlowJo_workspace
   - Dimensionality_Reduction
