@@ -16,6 +16,7 @@ library(flowWorkspace)
 library(CytoML)
 library(Biobase)
 library(ggplot2)
+library(dplyr)
 ```
 
 Within the `cyCONDOR` ecosystem it is possible to load a FlowJo work space (.wsp file). This gives the advantage of having the gating hierarchy in the `fcd` object. We would still reccomend using files preprocessed as described in vignette("Prepare_data_for_cyCONDOR_analysis") to be fully compatible with all downstream analysis (e.g. cytonorm). Exported compensared files can be loaded in FlowJo and used for gating analysis.
@@ -107,7 +108,7 @@ ggplot(tmp, aes(x= `CD19`, y = `CD3`, color = as.factor(`CD3+`))) +
   scale_color_viridis_d()
 ```
 
-We can now continue with the usual `cyCONDOR` workflow (see e.g. vignette("Dimensionality_Reduction"), vignette("Clustering_and_cell_annotation") and vignette("Data_Visualization").
+We can now continue with the usual `cyCONDOR` workflow (see e.g. `vignette("Dimensionality_Reduction")`, `vignette("Clustering_and_cell_annotation")` and `vignette("Data_Visualization")`.
 
 
 # Session Info

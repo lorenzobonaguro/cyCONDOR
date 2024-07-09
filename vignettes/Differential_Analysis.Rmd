@@ -2,7 +2,7 @@
 title: "Differential Analysis with cyCONDOR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{condor_workflow}
+  %\VignetteIndexEntry{Differential Analysis with cyCONDOR}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

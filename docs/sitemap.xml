@@ -31,6 +31,9 @@
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/articles/Dimensionality_Reduction.html</loc>
   </url>
   <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/articles/How_to_run_cyCONDOR_as_container.html</loc>
+  </url>
+  <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/articles/Load_a_FlowJo_workspace.html</loc>
   </url>
   <url>
@@ -38,6 +41,9 @@
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/articles/Other_utilities.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/articles/Prepare_data_for_cyCONDOR_analysis.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/articles/Pseudotime_analysis.html</loc>
@@ -58,22 +64,13 @@
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/news/index.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/HM_differential_marker.html</loc>
-  </url>
-  <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/HM_markers.html</loc>
-  </url>
-  <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/PC_loadings.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/barplot_frequency.html</loc>
-  </url>
-  <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/boxplot_and_stats.html</loc>
-  </url>
-  <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/change_param_name.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/checkInput.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/check_IDs.html</loc>
@@ -88,19 +85,28 @@
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/confusionMatrix.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/confusion_HM.html</loc>
-  </url>
-  <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/densityplot_marker.html</loc>
-  </url>
-  <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/df_frequency.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/dotplot_cyto.html</loc>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/filter_fcd.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/filter_fcd.html</loc>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/frequency_anova_test.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/frequency_friedman_test.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/frequency_kruskal_test.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/frequency_t_test.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/frequency_wilcox_test.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/getTable.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/harmonize_PCA.html</loc>
@@ -115,19 +121,55 @@
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/learnUMAP.html</loc>
   </url>
   <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/marker_wilcox_test.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/measured_markers.html</loc>
+  </url>
+  <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/merge_condor.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/metaclustering.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/nfTransform.html</loc>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_confusion_HM.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_density.html</loc>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_counts_barplot.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker.html</loc>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_dim_density.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_dim_red.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_frequency_barplot.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_frequency_boxplot.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker_HM.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker_boxplot.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker_density.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker_dotplot.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker_group_HM.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker_ridgeplot.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/plot_marker_violinplot.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/predict_classifier.html</loc>
@@ -136,13 +178,16 @@
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/predict_labels.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/prepFcsFolderData.html</loc>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/prepInputDiffcyt.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/prep_fcd.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/prep_fjw.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/read_data.html</loc>
   </url>
   <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/runAstir_cellstates.html</loc>
@@ -172,6 +217,9 @@
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/runUMAP.html</loc>
   </url>
   <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/run_cytonorm.html</loc>
+  </url>
+  <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/runtSNE.html</loc>
   </url>
   <url>
@@ -184,9 +232,15 @@
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/train_classifier_model.html</loc>
   </url>
   <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/train_cytonorm.html</loc>
+  </url>
+  <url>
     <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/train_transfer_model.html</loc>
   </url>
   <url>
-    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/violinplot_marker.html</loc>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/transform_data.html</loc>
+  </url>
+  <url>
+    <loc>https://lorenzobonaguro.github.io/cyCONDOR/reference/used_markers.html</loc>
   </url>
 </urlset>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,18 +27,20 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a>
+    <a class="dropdown-item" href="../articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a>
     <a class="dropdown-item" href="../articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a>
     <a class="dropdown-item" href="../articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a>
     <a class="dropdown-item" href="../articles/Dimensionality_Reduction.html">Dimensionality Reduction</a>
     <a class="dropdown-item" href="../articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a>
     <a class="dropdown-item" href="../articles/Batch_correction.html">Batch correction</a>
     <a class="dropdown-item" href="../articles/Data_Visualization.html">Data Visualization</a>
-    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis</a>
+    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a>
     <a class="dropdown-item" href="../articles/Pseudotime_analysis.html">Pseudotime analysis</a>
     <a class="dropdown-item" href="../articles/Data_Projection.html">Data Projection</a>
     <a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a>
     <a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a>
-    <a class="dropdown-item" href="../articles/Other_utilities.html">Other utilities</a>
+    <a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a>
   </div>
 </li>
 <li class="nav-item">
@@ -86,9 +88,9 @@
         <dd>Read FlowJo Workspace</dd>
       </dl><dl><dt>
           
-          <code><a href="nfTransform.html">nfTransform()</a></code> 
+          <code><a href="transform_data.html">transform_data()</a></code> 
         </dt>
-        <dd>nfTransform</dd>
+        <dd>transform_data</dd>
       </dl><dl><dt>
           
           <code><a href="clr.html">clr()</a></code> 
@@ -96,13 +98,13 @@
         <dd>crt_transform</dd>
       </dl><dl><dt>
           
-          <code><a href="prepFcsFolderData.html">prepFcsFolderData()</a></code> 
+          <code><a href="read_data.html">read_data()</a></code> 
         </dt>
-        <dd>prepFcsFolderData</dd>
+        <dd>read_data</dd>
       </dl></div><div class="section level2">
       <h2 id="dimensionality-reduction">Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#dimensionality-reduction"></a></h2>
       
-      <p class="section-desc"></p><p>Dimensionality recution functions.</p>
+      <p class="section-desc"></p><p>Dimensionality reduction functions.</p>
 
       
     </div><div id="" class="section level2">
@@ -135,11 +137,6 @@
           <code><a href="runDM.html">runDM()</a></code> 
         </dt>
         <dd>runDM</dd>
-      </dl><dl><dt>
-          
-          <code><a href="learnUMAP.html">learnUMAP()</a></code> 
-        </dt>
-        <dd>learnUMAP</dd>
       </dl></div><div class="section level2">
       <h2 id="clustering">Clustering<a class="anchor" aria-label="anchor" href="#clustering"></a></h2>
       
@@ -187,6 +184,16 @@
           <code><a href="harmonize_intensities.html">harmonize_intensities()</a></code> 
         </dt>
         <dd>harmonize_intensities</dd>
+      </dl><dl><dt>
+          
+          <code><a href="train_cytonorm.html">train_cytonorm()</a></code> 
+        </dt>
+        <dd>train_cytonorm</dd>
+      </dl><dl><dt>
+          
+          <code><a href="run_cytonorm.html">run_cytonorm()</a></code> 
+        </dt>
+        <dd>run_cytonorm</dd>
       </dl></div><div class="section level2">
       <h2 id="pseudotime">Pseudotime<a class="anchor" aria-label="anchor" href="#pseudotime"></a></h2>
       
@@ -202,11 +209,11 @@
           
           <code><a href="runPseudotime.html">runPseudotime()</a></code> 
         </dt>
-        <dd>runPseudotime</dd>
+        <dd>Function of calculate Pseudotime from HDFC data analysed with cyCONDOR</dd>
       </dl></div><div class="section level2">
-      <h2 id="classifier">Classifier<a class="anchor" aria-label="anchor" href="#classifier"></a></h2>
+      <h2 id="classifier-and-data-projection">Classifier and Data Projection<a class="anchor" aria-label="anchor" href="#classifier-and-data-projection"></a></h2>
       
-      <p class="section-desc"></p><p>Machine learning classifier.</p>
+      <p class="section-desc"></p><p>Machine learning classifier and data projection.</p>
 
       
     </div><div id="" class="section level2">
@@ -218,7 +225,7 @@
           
           <code><a href="train_classifier_model.html">train_classifier_model()</a></code> 
         </dt>
-        <dd>train_classifier_model</dd>
+        <dd>Train a machine learning classifier for the clinical classification of HDFC data.</dd>
       </dl><dl><dt>
           
           <code><a href="train_transfer_model.html">train_transfer_model()</a></code> 
@@ -228,12 +235,17 @@
           
           <code><a href="predict_classifier.html">predict_classifier()</a></code> 
         </dt>
-        <dd>predict_classifier</dd>
+        <dd>Predict clinical classification.</dd>
       </dl><dl><dt>
           
           <code><a href="predict_labels.html">predict_labels()</a></code> 
         </dt>
         <dd>predict_labels</dd>
+      </dl><dl><dt>
+          
+          <code><a href="learnUMAP.html">learnUMAP()</a></code> 
+        </dt>
+        <dd>learnUMAP</dd>
       </dl><dl><dt>
           
           <code><a href="runAstir_cellstates.html">runAstir_cellstates()</a></code> 
@@ -243,7 +255,7 @@
           
           <code><a href="runAstir_celltype.html">runAstir_celltype()</a></code> 
         </dt>
-        <dd>runAstir_celltype</dd>
+        <dd>Run Astir cell type prediction</dd>
       </dl></div><div class="section level2">
       <h2 id="data-visualization">Data Visualization<a class="anchor" aria-label="anchor" href="#data-visualization"></a></h2>
       
@@ -257,19 +269,34 @@
 
       <dl><dt>
           
-          <code><a href="barplot_frequency.html">barplot_frequency()</a></code> 
+          <code><a href="getTable.html">getTable()</a></code> 
         </dt>
-        <dd>barplot_frequency</dd>
+        <dd>Get summary values</dd>
       </dl><dl><dt>
           
-          <code><a href="boxplot_and_stats.html">boxplot_and_stats()</a></code> 
+          <code><a href="PC_loadings.html">PC_loadings()</a></code> 
         </dt>
-        <dd>boxplot_and_stats</dd>
+        <dd>PC_loadings</dd>
       </dl><dl><dt>
           
-          <code><a href="confusion_HM.html">confusion_HM()</a></code> 
+          <code><a href="plot_frequency_boxplot.html">plot_frequency_boxplot()</a></code> 
         </dt>
-        <dd>confusion_HM</dd>
+        <dd>box plot of cell population frequencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_frequency_barplot.html">plot_frequency_barplot()</a></code> 
+        </dt>
+        <dd>bar chart of cell population frequencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_counts_barplot.html">plot_counts_barplot()</a></code> 
+        </dt>
+        <dd>bar chart of cell population counts</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_confusion_HM.html">plot_confusion_HM()</a></code> 
+        </dt>
+        <dd>plot_confusion_HM</dd>
       </dl><dl><dt>
           
           <code><a href="confusionMatrix.html">confusionMatrix()</a></code> 
@@ -277,44 +304,95 @@
         <dd>confusionMatrix</dd>
       </dl><dl><dt>
           
-          <code><a href="densityplot_marker.html">densityplot_marker()</a></code> 
+          <code><a href="plot_marker_density.html">plot_marker_density()</a></code> 
         </dt>
-        <dd>dotplot_cyto</dd>
+        <dd>density plot of marker expression in cell populations grouped by a meta variable</dd>
       </dl><dl><dt>
           
-          <code><a href="dotplot_cyto.html">dotplot_cyto()</a></code> 
+          <code><a href="plot_marker_group_HM.html">plot_marker_group_HM()</a></code> 
         </dt>
-        <dd>dotplot_cyto</dd>
+        <dd>Heatmap of scaled expression to compare two groups</dd>
       </dl><dl><dt>
           
-          <code><a href="HM_differential_marker.html">HM_differential_marker()</a></code> 
+          <code><a href="plot_marker_HM.html">plot_marker_HM()</a></code> 
         </dt>
-        <dd>HM_differential_marker</dd>
+        <dd>Heatmap of scaled expression by cell population</dd>
       </dl><dl><dt>
           
-          <code><a href="HM_markers.html">HM_markers()</a></code> 
+          <code><a href="plot_dim_density.html">plot_dim_density()</a></code> 
         </dt>
-        <dd>HM_markers</dd>
+        <dd>dimensionality reduction plot with density distribution</dd>
       </dl><dl><dt>
           
-          <code><a href="PC_loadings.html">PC_loadings()</a></code> 
+          <code><a href="plot_dim_red.html">plot_dim_red()</a></code> 
         </dt>
-        <dd>PC_loading</dd>
+        <dd>Dimensionality reduction dotplot</dd>
       </dl><dl><dt>
           
-          <code><a href="plot_density.html">plot_density()</a></code> 
+          <code><a href="plot_marker_violinplot.html">plot_marker_violinplot()</a></code> 
         </dt>
-        <dd>plot_density</dd>
+        <dd>violin plot of marker expression in cell populations</dd>
       </dl><dl><dt>
           
-          <code><a href="plot_marker.html">plot_marker()</a></code> 
+          <code><a href="plot_marker_boxplot.html">plot_marker_boxplot()</a></code> 
         </dt>
-        <dd>plot_marker</dd>
+        <dd>plot box plots of marker median or mean</dd>
       </dl><dl><dt>
           
-          <code><a href="violinplot_marker.html">violinplot_marker()</a></code> 
+          <code><a href="plot_marker_dotplot.html">plot_marker_dotplot()</a></code> 
         </dt>
-        <dd>violinplot_marker</dd>
+        <dd>plot_marker_dotplot</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_marker_ridgeplot.html">plot_marker_ridgeplot()</a></code> 
+        </dt>
+        <dd>ridgeline plot of marker expression in cell populations</dd>
+      </dl></div><div class="section level2">
+      <h2 id="differential-testing">Differential Testing<a class="anchor" aria-label="anchor" href="#differential-testing"></a></h2>
+      
+      <p class="section-desc"></p><p>Collection of functions to calculate differential abundance and expression.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="frequency_anova_test.html">frequency_anova_test()</a></code> 
+        </dt>
+        <dd>Anova test to compare cell population frequencies of independent samples</dd>
+      </dl><dl><dt>
+          
+          <code><a href="frequency_friedman_test.html">frequency_friedman_test()</a></code> 
+        </dt>
+        <dd>Friedman Rank Sum test to compare cell population frequencies of paired samples</dd>
+      </dl><dl><dt>
+          
+          <code><a href="frequency_kruskal_test.html">frequency_kruskal_test()</a></code> 
+        </dt>
+        <dd>Kruskal-Wallis test to compare cell population frequencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="frequency_t_test.html">frequency_t_test()</a></code> 
+        </dt>
+        <dd>t-test to compare cell population frequencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="frequency_wilcox_test.html">frequency_wilcox_test()</a></code> 
+        </dt>
+        <dd>Wilcoxon test to compare cell population frequencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="prepInputDiffcyt.html">prepInputDiffcyt()</a></code> 
+        </dt>
+        <dd>Convert a condor object to se object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="marker_wilcox_test.html">marker_wilcox_test()</a></code> 
+        </dt>
+        <dd>Differential expression testing on cell level</dd>
       </dl></div><div class="section level2">
       <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
       
@@ -327,6 +405,16 @@
       
 
       <dl><dt>
+          
+          <code><a href="scaleColors.html">scaleColors()</a></code> 
+        </dt>
+        <dd>scaleColors</dd>
+      </dl><dl><dt>
+          
+          <code><a href="used_markers.html">used_markers()</a></code> 
+        </dt>
+        <dd>used_markers</dd>
+      </dl><dl><dt>
           
           <code><a href="change_param_name.html">change_param_name()</a></code> 
         </dt>
@@ -353,21 +441,26 @@
         <dd>merge_condor</dd>
       </dl><dl><dt>
           
-          <code><a href="scaleColors.html">scaleColors()</a></code> 
-        </dt>
-        <dd>scaleColors</dd>
-      </dl><dl><dt>
-          
           <code><a href="subset_fcd.html">subset_fcd()</a></code> 
         </dt>
         <dd>subset_fcd</dd>
+      </dl><dl><dt>
+          
+          <code><a href="checkInput.html">checkInput()</a></code> 
+        </dt>
+        <dd>Helper function within cyCONDOR</dd>
+      </dl><dl><dt>
+          
+          <code><a href="measured_markers.html">measured_markers()</a></code> 
+        </dt>
+        <dd>measured_markers</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Lorenzo Bonaguro.</p>
+  <p></p><p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner.</p>
 </div>
 
 <div class="pkgdown-footer-right">

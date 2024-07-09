@@ -1,3 +1,25 @@
+# cyCONDOR 0.1.6
+
+* Reorganization of existing visualization functions including harmonization of function names and function arguments, utilization of `condor` object as main input object and addition of more extensive documentation and error messages.
+* Added visualization functions `plot_counts_barplot()`, `plot_marker_ridgeplot()` and `plot_marker_boxplot()`
+* Added `getTable()` function to generate tables of cell population counts and frequencies, as well as mean or median marker expression for all cell population - sample - marker combinations.
+* `boxplot_and_stats()` function was replaces by `plot_frequency_boxplot()` function for visualization and several functions to conduct statistical tests on population frequencies.
+* Added wrapper functions around basic statistical tests to compare cell population frequencies between groups of samples (`frequency_t_test()`, `frequency_wilcox_test()`, `frequency_anova_test()`, `frequency_kruskal_test()`, `frequency_friedman_test()`) 
+* Added `prepInputDiffcyt()` function to transform the `condor` object into an SummarizedExperiment object compatible with the `diffcyt` package for differential testing.
+* Renaming of arguments in `runPseudotime()` function to harmonize within the package
+* Renaming of arguments in `metaclustering()` function to harmonize within the package
+* Updated documentation
+* Renaming of arguments in multiple function to harmonize within the package
+* Setting a default seed in multiple functions
+* Added functions to use the `CytoNorm` algorithm for batch normalization
+* Bug fixes in `prep_flw()` when merging annotation and removing parameters, saving of import parameters in extras slot of fcd
+* Added new parameters in `runFlowSOM()` to determine size of FlowSOM grid
+* implemented marker selection (`runPCA()`, `runUMAP()`, `runDM()`, `runtSNE()`, `runPhenograph()`, `runFlowSOM()`), saving of marker selection in extra slot of fcd
+* Added functions to extract all markers present in fcd (`measured_markers()`) or selected markers (`used_markers()`)
+* Added function to visualize PC loadings
+* Simplified data loading and transformation function including useful error messages
+* Included `arcsinh` transformation with cofactor 5 for cyTOF data
+
 # cyCONDOR 0.1.5
 
 * Fix bug in the definition of tab separator when loading csv files

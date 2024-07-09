@@ -21,7 +21,7 @@ In this vignette we exemplify a workflow to correct for a batch effect induced b
 
 # 1 cyCONDOR dimensionality reduction workflow
 
-This first part describes the general `cyCONDOR` data processing and dimensionality reduction workflow (see vignettes: `Data loading and transformation` and `Dimensionality Reduction` for more details) until the closer inspection of the data set and identification of a technical batch effect. 
+This first part describes the general `cyCONDOR` data processing and dimensionality reduction workflow (see `vignettes("Data loading and transformation")` and `vignettes("Dimensionality Reduction")` for more details) until the closer inspection of the data set and identification of a technical batch effect. 
 
 ## Loading the data
 
@@ -192,7 +192,8 @@ As a first step, the batch effect is learnt from reference samples provided by t
 #### Training the model
 
 Here, a model is trained on all samples contained in the data set. For this we need to provide the name of the batch variable `batch_var` and optionally parameters which should not be included for the training as well as different parameters for clustering the cells with FlowSOM (`FlowSom_param`). Here, we use all markers present in the `fcd` and perform the training with the default parameters for `FlowSom_param`. The number of desired FlowSOM metaclusters is defined by `nClus` and should be adjusted according to your data set, see [Van Gassen et al., 2019](https://doi.org/10.1002/cyto.a.23904) for more details.
-```{r}
+
+```{r, message=FALSE, warning=FALSE}
 condor <- train_cytonorm(fcd = condor,
                          batch_var = "exp",
                          remove_param = NULL,

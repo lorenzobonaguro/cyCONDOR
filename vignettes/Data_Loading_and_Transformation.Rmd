@@ -16,7 +16,7 @@ library(cyCONDOR)
 
 # How to load data
 
-`cyCONDOR` provides an integrated function to prepare a `condor` object (flow cytometry dataset) starting from the input files in either `.fcs` or `.csv` format. All files should be saved in a single directory which path should be stated in `data_path`. The user can define the number of (cells) to process from each file within 'max_cell'. If the input type is `.csv` the `useCSV` setting should be set to `TRUE`.
+`cyCONDOR` provides an integrated function to prepare a `condor` object (flow cytometry dataset) starting from the input files in either `.fcs` or `.csv` format. All files should be saved in a single directory which path should be stated in `data_path`. The user can define the number of (cells) to process from each file within 'max_cell'. If the input type is `.csv` the `useCSV` setting should be set to `TRUE`. Is important to keep in mind that currently all files in the `data_path` folder are loaded independently from which are also included in the annotation table, this can induce slight differences in auto-logicle transformation, to avoid this only include in the `data_path` the files you plan to analyse.
 
 For data transformation `cyCONDOR` provides different options:
 

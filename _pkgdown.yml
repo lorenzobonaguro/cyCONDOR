@@ -1,6 +1,7 @@
 url: https://lorenzobonaguro.github.io/cyCONDOR
 template:
   bootstrap: 5
+  light-switch: true
 
 reference:
 - title: Data Loading
@@ -59,7 +60,7 @@ reference:
   - PC_loadings
   - plot_frequency_boxplot
   - plot_frequency_barplot
-  - plot_count_barplot
+  - plot_counts_barplot
   - plot_confusion_HM
   - confusionMatrix
   - plot_marker_density
@@ -95,6 +96,7 @@ reference:
   - merge_condor
   - subset_fcd
   - checkInput
+  - measured_markers
 
 articles:
 - title: Detailed cyCONDOR workflows

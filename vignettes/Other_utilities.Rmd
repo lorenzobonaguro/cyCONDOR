@@ -2,7 +2,7 @@
 title: "Introduction to the condor object and other utilities"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Other utilities}
+  %\VignetteIndexEntry{Introduction to the condor object and other utilities}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -27,7 +27,7 @@ Knowing the structure of one's data object is a huge advantage to maximize the e
 
 <br>
 
-<img src="../man/figures/condor_object_structure" alt="drawing" width="500"/>
+<img src="../man/figures/condor_object_structure.png" alt="drawing" width="500"/>
 
 *graphic of the condor object structure. The hierarchical levels are depicted as columns and the the major sections are colored in.*
 

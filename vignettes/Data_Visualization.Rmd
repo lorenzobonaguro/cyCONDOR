@@ -252,7 +252,7 @@ plot_marker_group_HM(fcd = condor,
 ## Plot mean expression as boxplots
 
 Instead of as a heatmap, the mean (or median) expression can be visualized as boxplots with each sample being represented by a dot. 
-For this, the `plot_marker_boxplot` requires the user to specify a variable containing sample IDs in `sample_var` and a grouping variable in `group_var`. Each sample ID should be uniquely associated with one level in `group_var`. The grouping variable could for example be the disease status or the batch variable. Since the data has no batch and we are not yet interested in differences in our biological groups (see vignette `Differential Analysis`), we are using the variable "experiment_name" in the following chunk to get an overview about the expression in our samples. 
+For this, the `plot_marker_boxplot` requires the user to specify a variable containing sample IDs in `sample_var` and a grouping variable in `group_var`. Each sample ID should be uniquely associated with one level in `group_var`. The grouping variable could for example be the disease status or the batch variable. Since the data has no batch and we are not yet interested in differences in our biological groups (see `vignette("Differential Analysis")`, we are using the variable "experiment_name" in the following chunk to get an overview about the expression in our samples. 
 
 ```{r, fig.width=7, fig.height=7}
 condor$anno$cell_anno$experiment_name <-"test_data"
@@ -428,7 +428,7 @@ plot_dim_density(fcd = condor,
 # MORE visualization?
 
 In this vignette, we mostly focused on visualizations that are useful to investigate clusterings and support annotation of cell populations. However, biological questions often revolve around comparing different biological groups of samples. 
-To get some inspirations how those can be visualized, check out the vignette `Differential Analysis`!
+To get some inspirations how those can be visualized, check out the `vignette("Differential Analysis")`!
 
 # Session Info
 
