@@ -16,7 +16,7 @@ library(cyCONDOR)
 
 In this vignette we showcase `cyCONDOR` functions for clustering and cell annotation.
 
-# Load example cyCONDOR object
+# Load an example dataset
 ```{r}
 condor <- readRDS("../.test_files/conodr_example_016.rds")
 ```

@@ -16,7 +16,7 @@ library(cyCONDOR)
 
 In this vignette we introduce the structure of the condor object and showcase some useful `cyCONDOR` functions to interact with it. 
 
-# Load example `condor` object
+# Load an example dataset
 ```{r}
 condor <- readRDS("../.test_files/condor_example_016_misc.rds")
 ```
@@ -29,13 +29,13 @@ Knowing the structure of one's data object is a huge advantage to maximize the e
 
 <img src="../man/figures/condor_object_structure.png" alt="drawing" width="500"/>
 
-*graphic of the condor object structure. The hierarchical levels are depicted as columns and the the major sections are colored in.*
+*Graphic of the condor object structure. The hierarchical levels are depicted as columns and the the major sections are colored in.*
 
-##Hierarchical structure
+## Hierarchical structure
 
-The *1st level* describes the data types and methods present in the object followed by the *2nd level* specifying separate data slots for the actual data stored as data frames (df). The *3rd level* contains the variables (column names) of the respective df.
+The 1st level describes the data types and methods present in the object followed by the 2nd level specifying separate data slots for the actual data stored as data frames (df). The 3rd level contains the variables (column names) of the respective df.
 
-##Overview of the 5 sections of a `condor` object
+## Overview of the 5 sections of a `condor` object
 
 The data types `$expr` and `$anno` are created while data loading and transformation of the `condor` object is performed and serve as the basis for further data analysis. 
 
@@ -140,7 +140,7 @@ condor_merged <- merge_condor(data1 = condor,
 
 ## Subset a `condor` object
 
-The 'subset_fcd' function subsets the `condor` object to a specific number of randomly selected cells specified with the `size` parameter. A seed can be set for reproducibility.
+The `subset_fcd` function subsets the `condor` object to a specific number of randomly selected cells specified with the `size` parameter. A seed can be set for reproducibility.
 
 ```{r}
 condor_subset <- subset_fcd(fcd = condor, 
