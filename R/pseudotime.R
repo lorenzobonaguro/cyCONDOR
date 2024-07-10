@@ -1,13 +1,14 @@
 #' runPseudotime
 #'
-#' @title runPseudotime
-#' @description Calculate pseudotime of flow data
+#' @title Function of calculate Pseudotime from HDFC data analysed with cyCONDOR
+#' @description Function of calculate Pseudotime from HDFC data analysed with cyCONDOR. This function uses *slingshot* to calculate trajectories and pesudotime for each cell in the 'condor' object.
 #' @param fcd flow cytometry dataset.
-#' @param dim_red_type Type of dimensionality reduction to calculate the speudotime.
-#' @param dim_red_name Name of the dimensionality reduction slot to be used.
+#' @param reduction_method Type of dimensionality reduction to calculate the pseudotime.
+#' @param reduction_slot Name of the dimensionality reduction slot to be used.
 #' @param start.clus (optional) character, indicates the starting cluster(s) from which lineages will be drawn.
 #' @param end.clus (optional) character, indicates which cluster(s) will be forced to be leaf nodes in the graph.
-#' @param clustering Label of the clustering for each cell.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels).
 #' @param dist.method (optional) character, specifies the method for calculating distances between clusters. Default is "slingshot", see createClusterMST for details.
 #' @param use.median logical, whether to use the median (instead of mean) when calculating cluster centroid coordinates.
 #' @param omega (optional) numeric or logical, this granularity parameter determines the distance between every real cluster and the artificial cluster, .OMEGA. In practice, this makes omega the maximum allowable distance between two connected clusters. By default, omega = Inf. If omega = TRUE, the maximum edge length will be set to the median edge length of the unsupervised MST times a scaling factor (omega_scale, default = 1.5). This value is provided as a potentially useful rule of thumb for datasets with outlying clusters or multiple, distinct trajectories. See outgroup in createClusterMST.
@@ -24,18 +25,21 @@
 #' @param smoother choice of scatter plot smoother. Same as principal_curve, but "lowess" option is replaced with "loess" for additional flexibility.
 #' @param shrink.method character denoting how to determine the appropriate amount of shrinkage for a branching lineage. Accepted values are the same as for kernel in density (default is "cosine"), as well as "tricube" and "density". See 'Details' for more.
 #' @param allow.breaks logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.
-#' @param seed seed to be used
+#' @param seed A seed is set for reproducibility.
+#' @details `runPseudotime()` is a wrapper function around \code{\link[slingshot]{getLineages}} and \code{\link[slingshot]{getCurves}} implemented in the package *slingshot*.
+#' The function first calculated the linages and then the curves of the pseudotime and converts the result to a format compatible with the structure of the 'condor' object. The user can specify all the parameters available for the \code{\link[slingshot]{getLineages}} and  \code{\link[slingshot]{getCurves}} functions, arguments description were copied from the documentation of the *slingshot* package.
+#' @return runPseudotime
 #' @import slingshot
 #' @import DelayedMatrixStats
-#' @return runPseudotime
 #'
 #' @export
 runPseudotime <- function(fcd,
-                          dim_red_type,
-                          dim_red_name,
+                          reduction_method,
+                          reduction_slot,
+                          cluster_slot,
+                          cluster_var,
                           start.clus = NULL,
                           end.clus = NULL,
-                          clustering,
                           dist.method = "slingshot",
                           use.median = FALSE,
                           omega = FALSE,
@@ -52,7 +56,17 @@ runPseudotime <- function(fcd,
                           smoother = "smooth.spline",
                           shrink.method = "cosine",
                           allow.breaks = TRUE,
-                          seed) {
+                          seed = 91) {
+
+
+  ## check input
+  checkInput(fcd = fcd,
+             check_reduction = T,
+             check_cluster_slot = T,
+             reduction_method = reduction_method,
+             reduction_slot = reduction_slot,
+             cluster_slot = cluster_slot,
+             cluster_var = cluster_var)
 
   set.seed(seed)
 
@@ -60,8 +74,8 @@ runPseudotime <- function(fcd,
 
   print("Slingshot - getLineages")
 
-  lin <- getLineages(data = fcd[[dim_red_type]][[dim_red_name]],
-                     clusterLabels = clustering,
+  lin <- getLineages(data = fcd[[reduction_method]][[reduction_slot]],
+                     clusterLabels = fcd$clustering[[cluster_slot]][[cluster_var]],
                      start.clus = start.clus,
                      end.clus = end.clus,
                      dist.method = dist.method,
@@ -101,15 +115,15 @@ runPseudotime <- function(fcd,
 
   if (is.null(start.clus)) {
 
-    fcd[["extras"]][[paste("slingshot", dim_red_type, dim_red_name, sep = "_")]] <- pseudotime_extra
+    fcd[["extras"]][[paste("slingshot", reduction_method, reduction_slot, sep = "_")]] <- pseudotime_extra
 
-    fcd[["pseudotime"]][[paste("slingshot", dim_red_type, dim_red_name, sep = "_")]] <- curve
+    fcd[["pseudotime"]][[paste("slingshot", reduction_method, reduction_slot, sep = "_")]] <- curve
 
   } else {
 
-    fcd[["extras"]][[paste("slingshot", dim_red_type, dim_red_name, start.clus, sep = "_")]] <- pseudotime_extra
+    fcd[["extras"]][[paste("slingshot", reduction_method, reduction_slot, start.clus, sep = "_")]] <- pseudotime_extra
 
-    fcd[["pseudotime"]][[paste("slingshot", dim_red_type, dim_red_name, start.clus, sep = "_")]] <- curve
+    fcd[["pseudotime"]][[paste("slingshot", reduction_method, reduction_slot, start.clus, sep = "_")]] <- curve
 
   }
 

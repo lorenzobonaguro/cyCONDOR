@@ -13,7 +13,7 @@ clr(x)
 crt_transform
 }
 \description{
-Data transformation, this function run within the prep_fcd wrapper.
+Data transformation, this function runs within the \code{\link{prep_fcd}} wrapper.
 }
 \details{
 crt_transform

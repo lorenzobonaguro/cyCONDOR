@@ -4,16 +4,16 @@
 \alias{check_IDs}
 \title{check_IDs}
 \usage{
-check_IDs(fcdataset)
+check_IDs(fcd)
 }
 \arguments{
-\item{fcdataset}{Flow cytometry dataset to be checked.}
+\item{fcd}{Flow cytometry dataset to be checked.}
 }
 \value{
-check the integrity and the correctness of a flow cytometry dataset
+If the cell IDs differ at any level from the ones of the fcd$expr$orig data frame, a warning will be returned.
 }
 \description{
-Check the integrity and the correctness of a flow cytometry dataset
+Checks the integrity and the correctness of a flow cytometry dataset by comparing the cell IDs of all existing slots to the cell IDs of the fcd$exprs$orig
 }
 \details{
 check_IDs

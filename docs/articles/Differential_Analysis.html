@@ -6,12 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="cyCONDOR">
-<title>Differential Analysis • cyCONDOR</title>
+<title>Differential Analysis with cyCONDOR • cyCONDOR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Differential Analysis">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Differential Analysis with cyCONDOR">
 <meta property="og:description" content="cyCONDOR">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,18 +44,20 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a>
+    <a class="dropdown-item" href="../articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a>
     <a class="dropdown-item" href="../articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a>
     <a class="dropdown-item" href="../articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a>
     <a class="dropdown-item" href="../articles/Dimensionality_Reduction.html">Dimensionality Reduction</a>
     <a class="dropdown-item" href="../articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a>
     <a class="dropdown-item" href="../articles/Batch_correction.html">Batch correction</a>
     <a class="dropdown-item" href="../articles/Data_Visualization.html">Data Visualization</a>
-    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis</a>
+    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a>
     <a class="dropdown-item" href="../articles/Pseudotime_analysis.html">Pseudotime analysis</a>
     <a class="dropdown-item" href="../articles/Data_Projection.html">Data Projection</a>
     <a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a>
     <a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a>
-    <a class="dropdown-item" href="../articles/Other_utilities.html">Other utilities</a>
+    <a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a>
   </div>
 </li>
 <li class="nav-item">
@@ -85,7 +87,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Differential Analysis</h1>
+      <img src="" class="logo" alt=""><h1>Differential Analysis with cyCONDOR</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/lorenzobonaguro/condor/blob/HEAD/vignettes/Differential_Analysis.Rmd" class="external-link"><code>vignettes/Differential_Analysis.Rmd</code></a></small>
@@ -96,229 +98,1113 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lorenzobonaguro/condor" class="external-link">cyCONDOR</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/" class="external-link">ggpubr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: replacing previous import 'Biobase::rowMedians' by</span></span>
+<span><span class="co">#&gt; 'DelayedMatrixStats::rowMedians' when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'Biobase::contents' by 'Hmisc::contents'</span></span>
+<span><span class="co">#&gt; when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'SummarizedExperiment::distance' by</span></span>
+<span><span class="co">#&gt; 'destiny::distance' when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'Hmisc::src' by 'dplyr::src' when loading</span></span>
+<span><span class="co">#&gt; 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'Hmisc::summarize' by 'dplyr::summarize'</span></span>
+<span><span class="co">#&gt; when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'Biobase::combine' by 'dplyr::combine' when</span></span>
+<span><span class="co">#&gt; loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'dplyr::filter' by 'flowCore::filter' when</span></span>
+<span><span class="co">#&gt; loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'cowplot::get_legend' by</span></span>
+<span><span class="co">#&gt; 'ggpubr::get_legend' when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'ggplot2::margin' by 'randomForest::margin'</span></span>
+<span><span class="co">#&gt; when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'dplyr::combine' by 'randomForest::combine'</span></span>
+<span><span class="co">#&gt; when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'flowCore::filter' by 'rstatix::filter' when</span></span>
+<span><span class="co">#&gt; loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'SummarizedExperiment::start' by</span></span>
+<span><span class="co">#&gt; 'stats::start' when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'slingshot::predict' by 'stats::predict'</span></span>
+<span><span class="co">#&gt; when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'dplyr::lag' by 'stats::lag' when loading</span></span>
+<span><span class="co">#&gt; 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'SummarizedExperiment::end' by 'stats::end'</span></span>
+<span><span class="co">#&gt; when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'SingleCellExperiment::weights' by</span></span>
+<span><span class="co">#&gt; 'stats::weights' when loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'rstatix::filter' by 'stats::filter' when</span></span>
+<span><span class="co">#&gt; loading 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'umap::umap' by 'uwot::umap' when loading</span></span>
+<span><span class="co">#&gt; 'cyCONDOR'</span></span>
+<span><span class="co">#&gt; Welcome to cyCONDOR version 0.1.6!</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                                                                    dddddddd</span></span>
+<span><span class="co">#&gt;                                                                    d::::::d</span></span>
+<span><span class="co">#&gt;                                                                    d::::::d</span></span>
+<span><span class="co">#&gt;                                                                    d::::::d</span></span>
+<span><span class="co">#&gt;                                                                    d:::::d</span></span>
+<span><span class="co">#&gt;     cccccccccccccccc   ooooooooooo   nnnn  nnnnnnnn        ddddddddd:::::d    ooooooooooo   rrrrr   rrrrrrrrr</span></span>
+<span><span class="co">#&gt;   cc:::::::::::::::c oo:::::::::::oo n:::nn::::::::nn    dd::::::::::::::d  oo:::::::::::oo r::::rrr:::::::::r</span></span>
+<span><span class="co">#&gt;  c:::::::::::::::::co:::::::::::::::on::::::::::::::nn  d::::::::::::::::d o:::::::::::::::or:::::::::::::::::r</span></span>
+<span><span class="co">#&gt; c:::::::cccccc:::::co:::::ooooo:::::onn:::::::::::::::nd:::::::ddddd:::::d o:::::ooooo:::::orr::::::rrrrr::::::r</span></span>
+<span><span class="co">#&gt; c::::::c     ccccccco::::o     o::::o  n:::::nnnn:::::nd::::::d    d:::::d o::::o     o::::o r:::::r     r:::::r</span></span>
+<span><span class="co">#&gt; c:::::c             o::::o     o::::o  n::::n    n::::nd:::::d     d:::::d o::::o     o::::o r:::::r     rrrrrrr</span></span>
+<span><span class="co">#&gt; c:::::c             o::::o     o::::o  n::::n    n::::nd:::::d     d:::::d o::::o     o::::o r:::::r</span></span>
+<span><span class="co">#&gt; c::::::c     ccccccco::::o     o::::o  n::::n    n::::nd:::::d     d:::::d o::::o     o::::o r:::::r</span></span>
+<span><span class="co">#&gt; c:::::::cccccc:::::co:::::ooooo:::::o  n::::n    n::::nd::::::ddddd::::::ddo:::::ooooo:::::o r:::::r</span></span>
+<span><span class="co">#&gt;  c:::::::::::::::::co:::::::::::::::o  n::::n    n::::n d:::::::::::::::::do:::::::::::::::o r:::::r</span></span>
+<span><span class="co">#&gt;   cc:::::::::::::::c oo:::::::::::oo   n::::n    n::::n  d:::::::::ddd::::d oo:::::::::::oo  r:::::r</span></span>
+<span><span class="co">#&gt;     cccccccccccccccc   ooooooooooo     nnnnnn    nnnnnn   ddddddddd   ddddd   ooooooooooo    rrrrrrr</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   (o o)   (o o)</span></span>
+<span><span class="co">#&gt;  (  V  ) (  V  )</span></span>
+<span><span class="co">#&gt; /--m-m- /--m-m-</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lmweber/diffcyt" class="external-link">diffcyt</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="load-an-example-dataset">Load an example dataset<a class="anchor" aria-label="anchor" href="#load-an-example-dataset"></a>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
+<p><code>cyCONDOR</code> provides several functions for exploratory
+differential analysis of cell population frequencies and marker
+expression. In order to run differential analysis, a pre-processed
+condor object is required, that has been subjected to clustering (and
+metaclustering) or one of the other labeling approaches (see vignettes:
+<code>Clustering and cell annotation</code>,
+<code>Data projection</code> and <code>Cell type prediction</code>)
+implemented in <code>cyCONDOR</code>. Further, the meta data slot
+<code>cell_anno</code> has to contain a variable with unique sample IDs
+and at least one grouping variable with two or more levels,
+e.g. indicating the disease status. Each sample ID needs to be unique
+and assigned to exactly one level of the grouping variable of
+interest.</p>
+<p>Along this line, specifying the condor object, cell population labels
+as well as group and sample ID variables are central for most of the
+functions we are going to use:</p>
+<ul>
+<li>
+<code>fcd =</code> flow cytometry dataset, that has been subjected
+to clustering or cell type label prediction</li>
+<li>
+<code>cluster_slot =</code> clustering slot to use to find variable
+specified in cluster_var</li>
+<li>
+<code>cluster_var =</code> variable in cluster_slot that identifies
+cell population labels to be used (e.g. clusters, metaclusters or
+predicted labels)</li>
+<li>
+<code>group_var =</code> meta variable in <code>cell_anno</code>
+that should be used for the main grouping of the data, e.g. group or
+sample ID variable.</li>
+<li>
+<code>sample_var =</code> meta variable in <code>cell_anno</code>
+containing sample IDs. This argument is not always required and usually
+indicates that the function requires, both sample IDs and group
+information. in those cases the group variable should be provided via
+<code>group_var</code>.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="load-example-data-set">Load example data set<a class="anchor" aria-label="anchor" href="#load-example-data-set"></a>
+</h2>
+<p>In this vignette, we showcase differential analysis with
+<code>cyCONDOR</code> on a data set comprising samples from two
+biological groups - patients (“pat”) and control donors (“ctrl”). Each
+group comprises three PBMC samples measured with flow cytometry. The
+dataset has been annotated by Phenograph clustering and subsequent
+knowledge-based metaclustering prior to this analysis.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/condor_diff.rds"</span><span class="op">)</span></span></code></pre></div>
-<p><code>cyCONDOR</code> provides several ways to investigate the
-difference in cellular frequencies or marker expression.</p>
-</div>
-<div class="section level2">
-<h2 id="cell-frqeuency">Cell Frqeuency<a class="anchor" aria-label="anchor" href="#cell-frqeuency"></a>
-</h2>
-<div class="section level3">
-<h3 id="export-perfecntage-table">Export Perfecntage table<a class="anchor" aria-label="anchor" href="#export-perfecntage-table"></a>
-</h3>
-<p>If you prefer to generate your own plots, <code>cyCONDOR</code> can
-easily export a percentage table for downstream analysis.</p>
+<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/conodr_diff_016.rds"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/df_frequency.html">df_frequency</a></span><span class="op">(</span>classification <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">$</span><span class="va">metaclusters</span>, </span>
-<span>             condition <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Using Freq as value column: use value.var to override.</span></span></code></pre>
-<pre><code><span><span class="co">##         classification  ctrl   pat</span></span>
-<span><span class="co">## 1  Classical Monocytes 22.65 28.10</span></span>
-<span><span class="co">## 2              B cells  3.19  1.30</span></span>
-<span><span class="co">## 3                  CD8 19.33 29.91</span></span>
-<span><span class="co">## 4            NK bright  5.21  4.53</span></span>
-<span><span class="co">## 5                  CD4 35.44 19.64</span></span>
-<span><span class="co">## 6      CD16+ Monocytes  2.75  3.97</span></span>
-<span><span class="co">## 7                  NKT  0.26  5.26</span></span>
-<span><span class="co">## 8               NK dim 10.03  6.62</span></span>
-<span><span class="co">## 9                 pDCs  0.55  0.40</span></span>
-<span><span class="co">## 10           Basophils  0.58  0.27</span></span></code></pre>
+<code class="sourceCode R"><span><span class="co"># Let's check the meta data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample_ID"</span>,<span class="st">"group"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;               sample_ID group</span></span>
+<span><span class="co">#&gt; ID10.fcs_1         ID10   pat</span></span>
+<span><span class="co">#&gt; ID3.fcs_10001       ID3  ctrl</span></span>
+<span><span class="co">#&gt; ID5.fcs_20001       ID5  ctrl</span></span>
+<span><span class="co">#&gt; ID6.fcs_30001       ID6   pat</span></span>
+<span><span class="co">#&gt; ID7.fcs_39050       ID7  ctrl</span></span>
+<span><span class="co">#&gt; ID8.fcs_49050       ID8   pat</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Let's double check that clustering is available</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 1</span></span>
+<span><span class="co">#&gt;  $ phenograph_pca_orig_k_60:'data.frame':    59049 obs. of  3 variables:</span></span>
+<span><span class="co">#&gt;   ..$ Phenograph  : Factor w/ 25 levels "1","2","3","4",..: 1 2 3 4 5 5 6 1 1 5 ...</span></span>
+<span><span class="co">#&gt;   ..$ Description : chr [1:59049] "pca_orig_k60" "pca_orig_k60" "pca_orig_k60" "pca_orig_k60" ...</span></span>
+<span><span class="co">#&gt;   ..$ metaclusters: Factor w/ 11 levels "Classical Monocytes",..: 1 2 3 4 3 3 1 1 1 3 ...</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># visualize metaclustering</span></span>
+<span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"UMAP colored by metaclusters"</span>, </span>
+<span>             facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
+<div class="section level2">
+<h2 id="investigate-cell-population-frequencies">Investigate cell population frequencies<a class="anchor" aria-label="anchor" href="#investigate-cell-population-frequencies"></a>
+</h2>
+<p>In the first section we will focus on differential abundance testing
+of cell population frequencies and how to visualize them.</p>
 <div class="section level3">
-<h3 id="confusion-matrix">Confusion Matrix<a class="anchor" aria-label="anchor" href="#confusion-matrix"></a>
+<h3 id="investigating-counts">Investigating counts<a class="anchor" aria-label="anchor" href="#investigating-counts"></a>
 </h3>
+<p>As in manual gating based approaches, it is important to consider how
+many cells are actually underlying the calculated frequencies. You can
+either look at the cell counts per sample and cell population in table
+format with the <code><a href="../reference/getTable.html">getTable()</a></code> function setting
+<code>output_type = "counts"</code>, or visualize cell numbers with the
+<code><a href="../reference/plot_counts_barplot.html">plot_counts_barplot()</a></code> function.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/confusion_HM.html">confusion_HM</a></span><span class="op">(</span>variables <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">$</span><span class="va">metaclusters</span>, </span>
-<span>             group <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span>, size <span class="op">=</span> <span class="fl">40</span>, </span>
-<span>             title <span class="op">=</span> <span class="st">"Confusion Matrix"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-3-1.png" width="1440"></p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="stacked-barplot">Stacked barplot<a class="anchor" aria-label="anchor" href="#stacked-barplot"></a>
-</h2>
+<code class="sourceCode R"><span><span class="co"># get counts as data frame</span></span>
+<span><span class="va">counts</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/getTable.html">getTable</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                 output_type <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>                 cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                 cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                 group_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
+<span>                 numeric <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="va">counts</span></span>
+<span><span class="co">#&gt;      group_var B cells Basophils CD16+ Monocytes  CD4  CD8 Classical Monocytes</span></span>
+<span><span class="co">#&gt; ID10      ID10     111        13             342 1599 3266                3184</span></span>
+<span><span class="co">#&gt; ID3        ID3     354        80             350 3654 1779                2338</span></span>
+<span><span class="co">#&gt; ID5        ID5     493        35             219 3234 2270                2372</span></span>
+<span><span class="co">#&gt; ID6        ID6     192        24             494 1301 2479                2102</span></span>
+<span><span class="co">#&gt; ID7        ID7     171        59             143 4048 1350                2151</span></span>
+<span><span class="co">#&gt; ID8        ID8      86        25             255 2758 2859                3008</span></span>
+<span><span class="co">#&gt;      Mixed NK bright Nk dim pDCs Unconventional T cells</span></span>
+<span><span class="co">#&gt; ID10     7       317    641   24                    496</span></span>
+<span><span class="co">#&gt; ID3     48       464    825   80                     28</span></span>
+<span><span class="co">#&gt; ID5    248       512    517   66                     34</span></span>
+<span><span class="co">#&gt; ID6     90       667   1242   30                    428</span></span>
+<span><span class="co">#&gt; ID7     10       515   1490   55                      8</span></span>
+<span><span class="co">#&gt; ID8     31       247     79   54                    598</span></span></code></pre></div>
+<p>The <code><a href="../reference/plot_counts_barplot.html">plot_counts_barplot()</a></code> function stacks absolute cell
+numbers of each cell population on top of each other for each group in
+the grouping variable, which can be set via the <code>group_var</code>
+parameter. In this case we would like to see counts per sample
+(<code>group_var = "sample_ID"</code>) and further facet the plot by the
+disease group (<code>facet_var = "group"</code>).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/barplot_frequency.html">barplot_frequency</a></span><span class="op">(</span>x_axes <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span>, </span>
-<span>                  colour <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">$</span><span class="va">metaclusters</span>, </span>
-<span>                  title <span class="op">=</span> <span class="st">"Stacked barplot of cluster frequencies"</span>, </span>
-<span>                  legend_title <span class="op">=</span> <span class="st">"Metaclusters"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<div class="section level3">
-<h3 id="percentages-boxplot">Percentages Boxplot<a class="anchor" aria-label="anchor" href="#percentages-boxplot"></a>
-</h3>
+<code class="sourceCode R"><span><span class="co"># visualize counts as stacked bar plot, faceted by group_var</span></span>
+<span><span class="fu"><a href="../reference/plot_counts_barplot.html">plot_counts_barplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                    facet_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                    facet_by_clustering <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                    facet_ncol <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-7-1.png" width="768"></p>
+<p>A faceting of the plot by cell population can be achieved by setting
+the parameter <code>facet_by_group = T</code>. Note that faceting by
+disease group is gone, this could be achieved by providing a
+<code>facet_var</code> as in the example above.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">box_stat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/boxplot_and_stats.html">boxplot_and_stats</a></span><span class="op">(</span>annotation <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span>, </span>
-<span>                              sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
-<span>                              group_var <span class="op">=</span> <span class="st">"group"</span>, </span>
-<span>                              variable <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">$</span><span class="va">metaclusters</span>, </span>
-<span>                              numeric <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>                              test.type <span class="op">=</span> <span class="st">"t.test"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># visualize counts as stacked bar plot, faceted by clustering</span></span>
+<span><span class="fu"><a href="../reference/plot_counts_barplot.html">plot_counts_barplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                    facet_by_clustering <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>                    facet_ncol <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-8-1.png" width="768"></p>
+</div>
+<div class="section level3">
+<h3 id="investigation-of-cell-population-frequencies">Investigation of cell population frequencies<a class="anchor" aria-label="anchor" href="#investigation-of-cell-population-frequencies"></a>
+</h3>
+<p>Next, we explore the cell population frequencies, for which
+<code>cyCONDOR</code> provides several visualization options.</p>
+<div class="section level4">
+<h4 id="plot-stacked-bar-plot">Plot stacked bar plot<a class="anchor" aria-label="anchor" href="#plot-stacked-bar-plot"></a>
+</h4>
+<p>The <code><a href="../reference/plot_frequency_barplot.html">plot_frequency_barplot()</a></code> generates a barplot, in
+which the proportions of each cell population are stacked on top of each
+other. This provides a quick overview and large proportional shifts can
+easily by spotted.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_frequency_barplot.html">plot_frequency_barplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                       cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                       cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                       group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                       <span class="co">#facet_var = "group"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-9-1.png" width="768"></p>
+<p>We can use the same visualization to show cell population proportions
+on sample level by providing the meta data variable “sample_ID” as
+<code>group_var</code>. An additional grouping (or faceting) of the
+samples can be achieved with providing a meta variable to the parameter
+<code>facet_var</code>. Here we set it to “group” to group by disease
+status.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_frequency_barplot.html">plot_frequency_barplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                       cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                       cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                       group_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                       facet_var <span class="op">=</span> <span class="st">"group"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-10-1.png" width="768"></p>
+</div>
+<div class="section level4">
+<h4 id="plot-box-plots">Plot box plots<a class="anchor" aria-label="anchor" href="#plot-box-plots"></a>
+</h4>
+<p>The <code><a href="../reference/plot_frequency_boxplot.html">plot_frequency_boxplot()</a></code> function generates a list
+of plots, comprising one plot for each cell population in
+<code>cluster_var</code>. Each plot shows cell population frequencies in
+percent as boxplots for all groups provided in <code>group_var</code>.
+Individual values for each sample in <code>sample_var</code> are
+represented as a dot. (Short reminder: sample IDs in
+<code>sample_var</code> need to be uniquely assigned to one level of the
+grouping variable)</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># factor levels can be used to influence plotting order of groupes on the x-axis</span></span>
+<span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span>, levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ctrl"</span>,<span class="st">"pat"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html" class="external-link">ggarrange</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">box_stat</span><span class="op">$</span><span class="va">plot</span>, legend <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-5-1.png" width="1920"></p>
+<span><span class="co"># assign output to object plots</span></span>
+<span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_frequency_boxplot.html">plot_frequency_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                                cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                                cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                                sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
+<span>                                group_var <span class="op">=</span> <span class="st">"group"</span>, </span>
+<span>                                <span class="co">#groups_to_show = c("test"),</span></span>
+<span>                                numeric <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                                color_palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pat"</span><span class="op">=</span><span class="st">"darkorange"</span>,<span class="st">"ctrl"</span><span class="op">=</span><span class="st">"purple"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># the list of plots can be summarized to one graph, by using e.g. the cowplot package.</span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">plots</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
+</div>
+<div class="section level4">
+<h4 id="confusion-matrix">Confusion matrix<a class="anchor" aria-label="anchor" href="#confusion-matrix"></a>
+</h4>
+<p>To get an overview across many cell populations and conditions at
+once, It might be more convenient to look at a heatmap. The function
+<code>confusion_HM()</code> first normalizes each group level provided
+in <code>group_var</code> to 1000 cells. Afterwards, for each cell
+population in <code>group_var</code>, the proportions of each group
+contributing to this population will be calculated. Note that this way,
+we normalize for differences in cell numbers. The uncorrected proportion
+of a group in a cluster might look quite different.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_confusion_HM.html">plot_confusion_HM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                  cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                  cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                  group_var <span class="op">=</span> <span class="st">"group"</span>, size <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-12-1.png" width="768"></p>
+</div>
+<div class="section level4">
+<h4 id="export-frequencies-as-data-frame">Export frequencies as data frame<a class="anchor" aria-label="anchor" href="#export-frequencies-as-data-frame"></a>
+</h4>
+<p>In case you would like to visualize the frequencies yourself or
+perform other statistical tests, the <code><a href="../reference/getTable.html">getTable()</a></code> function
+with <code>output_type = "frequency"</code> can be used to generate a
+data frame of cell population frequencies for all levels in a given
+<code>group_var</code>, e.g. biological group or sample ID. In this
+example, we add another metadata column “group_sample_ID” to have the
+combination of both available.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group_sample_ID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span>,<span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">sample_ID</span>, sep<span class="op">=</span><span class="st">"_"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">frequencies</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/getTable.html">getTable</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                      output_type <span class="op">=</span> <span class="st">"frequency"</span>,</span>
+<span>                      cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                      cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                      group_var <span class="op">=</span> <span class="st">"group_sample_ID"</span>, </span>
+<span>                      numeric <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">frequencies</span></span>
+<span><span class="co">#&gt;          group_var  B cells Basophils CD16+ Monocytes      CD4      CD8</span></span>
+<span><span class="co">#&gt; ctrl_ID3  ctrl_ID3 3.540000 0.8000000        3.500000 36.54000 17.79000</span></span>
+<span><span class="co">#&gt; ctrl_ID5  ctrl_ID5 4.930000 0.3500000        2.190000 32.34000 22.70000</span></span>
+<span><span class="co">#&gt; ctrl_ID7  ctrl_ID7 1.710000 0.5900000        1.430000 40.48000 13.50000</span></span>
+<span><span class="co">#&gt; pat_ID10  pat_ID10 1.110000 0.1300000        3.420000 15.99000 32.66000</span></span>
+<span><span class="co">#&gt; pat_ID6    pat_ID6 2.121781 0.2652227        5.459167 14.37728 27.39529</span></span>
+<span><span class="co">#&gt; pat_ID8    pat_ID8 0.860000 0.2500000        2.550000 27.58000 28.59000</span></span>
+<span><span class="co">#&gt;          Classical Monocytes    Mixed NK bright   Nk dim      pDCs</span></span>
+<span><span class="co">#&gt; ctrl_ID3            23.38000 0.480000   4.64000  8.25000 0.8000000</span></span>
+<span><span class="co">#&gt; ctrl_ID5            23.72000 2.480000   5.12000  5.17000 0.6600000</span></span>
+<span><span class="co">#&gt; ctrl_ID7            21.51000 0.100000   5.15000 14.90000 0.5500000</span></span>
+<span><span class="co">#&gt; pat_ID10            31.84000 0.070000   3.17000  6.41000 0.2400000</span></span>
+<span><span class="co">#&gt; pat_ID6             23.22909 0.994585   7.37098 13.72527 0.3315283</span></span>
+<span><span class="co">#&gt; pat_ID8             30.08000 0.310000   2.47000  0.79000 0.5400000</span></span>
+<span><span class="co">#&gt;          Unconventional T cells</span></span>
+<span><span class="co">#&gt; ctrl_ID3               0.280000</span></span>
+<span><span class="co">#&gt; ctrl_ID5               0.340000</span></span>
+<span><span class="co">#&gt; ctrl_ID7               0.080000</span></span>
+<span><span class="co">#&gt; pat_ID10               4.960000</span></span>
+<span><span class="co">#&gt; pat_ID6                4.729804</span></span>
+<span><span class="co">#&gt; pat_ID8                5.980000</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="differential-testing">Differential testing<a class="anchor" aria-label="anchor" href="#differential-testing"></a>
+</h4>
+<p><code>cyCONDOR</code> provides wrapper functions around frequently
+used statistical tests implemented in the <code>rstatix</code> package
+(<a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">link</a>. The functions
+first calculate cell population frequencies given a condor object and a
+few arguments specifying the cell population annotation (via
+<code>cluster_slot</code> and <code>cluster_var</code>), sample IDs
+(<code>sample_var</code>) and grouping variable (<code>group_var</code>)
+to be used. The user needs to make sure that sample IDs are unique and
+only assigned to one level of the grouping variable. Afterwards the
+function automatically performs the testing and p-value adjustment.</p>
+<p>Tests for two groups:</p>
+<ul>
+<li>
+<code><a href="../reference/frequency_t_test.html">frequency_t_test()</a></code>: parametric, two-sample t-test to
+compare two groups (paired or independent)</li>
+<li>
+<code><a href="../reference/frequency_wilcox_test.html">frequency_wilcox_test()</a></code>: non-parametric, two-sample
+Wilcoxon Test to compare two groups (paired or independent)</li>
+<li>In case of paired testing, a pairing variable
+(<code>pair_var</code>) containing the donor IDs needs to be specified
+and <code>paired_test = T</code> needs to be set.</li>
+</ul>
+<p>Tests for three or more groups:</p>
+<ul>
+<li>
+<code><a href="../reference/frequency_anova_test.html">frequency_anova_test()</a></code>: parametric one-way Anova for
+independent measures to compare three or more groups, with optional
+post-hoc testing utilizing emmeans tests.</li>
+<li>
+<code><a href="../reference/frequency_kruskal_test.html">frequency_kruskal_test()</a></code>: non-parametric Kruskal-Wallis
+Rank Sum Test to compare 3 or more independent groups. Optionally,
+post-hoc testing with Dunne’s Test can be performed.</li>
+<li>
+<code><a href="../reference/frequency_friedman_test.html">frequency_friedman_test()</a></code>: non-parametric Friedman Rank
+Sum Test to compare 3 or more groups of paired data. Optionally,
+post-hoc testing with pairwise Wilcoxon Tests can be performed.</li>
+<li>Whether post-hoc testing should be performed, can be regulated via
+setting the <code>post_hoc_parameter</code> to <code>TRUE</code> or
+<code>FALSE</code>. By default, post-hoc tests are performed for Anova,
+Kruskal-Wallis or Friedman Test with an adjusted p-value &lt;= the
+threshold argument (e.g. kruskal_sig_threshold). P-value adjustment of
+the post-hoc tests is performed per cell population.</li>
+</ul>
+<p>By default, p-value adjustment is performed using the conservative
+“bonferroni” method, but other methods available in the basic R function
+<code><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">stats::p.adjust()</a></code> can be chosen and fed to the cyCONDOR
+functions via arguments. (Note that post-hoc tests have a separate
+argument for this). We recommend to get familiar with the options in the
+<code>p.adjust</code> function at this point.</p>
+<p>Here, we exemplary show how to compare two groups using a t-test:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#double check correctness of sample IDs to group assignment</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample_ID"</span>,<span class="st">"group"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;               sample_ID group</span></span>
+<span><span class="co">#&gt; ID10.fcs_1         ID10   pat</span></span>
+<span><span class="co">#&gt; ID3.fcs_10001       ID3  ctrl</span></span>
+<span><span class="co">#&gt; ID5.fcs_20001       ID5  ctrl</span></span>
+<span><span class="co">#&gt; ID6.fcs_30001       ID6   pat</span></span>
+<span><span class="co">#&gt; ID7.fcs_39050       ID7  ctrl</span></span>
+<span><span class="co">#&gt; ID8.fcs_49050       ID8   pat</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#perform test</span></span>
+<span><span class="va">results_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/frequency_t_test.html">frequency_t_test</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                                   cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                                   cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                                   sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
+<span>                                   group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                                   paired_test <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                                   p.adjust.method <span class="op">=</span> <span class="st">"bonferroni"</span><span class="op">)</span></span>
+<span><span class="va">results_t</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 13</span></span></span>
+<span><span class="co">#&gt;    cluster        .y.   group1 group2    n1    n2 statistic    df       p  p.adj</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> B cells        value ctrl   pat        3     3     2.01   2.67 0.149   1     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Basophils      value ctrl   pat        3     3     2.67   2.43 0.095<span style="text-decoration: underline;">1</span>  1     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CD16+ Monocyt… value ctrl   pat        3     3    -<span style="color: #BB0000;">1.36</span>   3.58 0.252   1     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> CD4            value ctrl   pat        3     3     3.59   3.16 0.034<span style="text-decoration: underline;">1</span>  0.375 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CD8            value ctrl   pat        3     3    -<span style="color: #BB0000;">3.73</span>   3.27 0.028<span style="text-decoration: underline;">9</span>  0.318 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Classical Mon… value ctrl   pat        3     3    -<span style="color: #BB0000;">2.03</span>   2.27 0.164   1     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Mixed          value ctrl   pat        3     3     0.713  2.55 0.536   1     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> NK bright      value ctrl   pat        3     3     0.411  2.05 0.72    1     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Nk dim         value ctrl   pat        3     3     0.522  3.75 0.631   1     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> pDCs           value ctrl   pat        3     3     2.62   3.84 0.061<span style="text-decoration: underline;">5</span>  0.676 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Unconventiona… value ctrl   pat        3     3   -<span style="color: #BB0000;">12.7</span>    2.17 0.004<span style="text-decoration: underline;">47</span> 0.049<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: p.adj.signif &lt;chr&gt;, p.adj_method &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   applied_test &lt;chr&gt;</span></span></span></code></pre></div>
+<p>As usual, there is no “one-solves-it-all” approach for statistical
+testing and it is still necessary to think about whether the given data
+meet the required assumptions for the test or what kind of p-value
+adjustment should be performed. But as mentioned above, the
+<code><a href="../reference/getTable.html">getTable()</a></code> function allows easy extraction of the cell
+population frequencies that can be subsequently subjected to other
+tests, assumption checks or tools.</p>
+<p><code>cyCONDOR</code> also provides an easy way to perform
+differential abundance testing with tests implemented in the package
+<code>diffcyt</code> by <a href="https://www.nature.com/articles/s42003-019-0415-5" class="external-link">Weber et
+al. (2019)</a>. It is important to note, that these abundance tests are
+not based on cell population frequencies but on cell population counts
+as input. For more information read the section
+<code>Differential testing with diffcyt</code>.</p>
+</div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="differential-expression">Differential expression<a class="anchor" aria-label="anchor" href="#differential-expression"></a>
+<h2 id="investigate-differential-expression">Investigate differential expression<a class="anchor" aria-label="anchor" href="#investigate-differential-expression"></a>
 </h2>
 <div class="section level3">
-<h3 id="splitted-heatmap-by-group">Splitted heatmap by group<a class="anchor" aria-label="anchor" href="#splitted-heatmap-by-group"></a>
+<h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/HM_differential_marker.html">HM_differential_marker</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
-<span>                       data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
-<span>                       cluster_method <span class="op">=</span> <span class="st">"Phenograph_pca_orig_k_60"</span>, </span>
-<span>                       cluster_type <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
-<span>                       group_by <span class="op">=</span> <span class="st">"group"</span>,</span>
-<span>                       title <span class="op">=</span> <span class="st">"Figure 5f - Marker expression per cluster and group"</span>, size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-6-1.png" width="1920"></p>
+<p><code>cyCONDOR</code> provides several functions to look at marker
+expression between groups or groups of samples.</p>
+<div class="section level4">
+<h4 id="heatmap-split-by-group">Heatmap split by group<a class="anchor" aria-label="anchor" href="#heatmap-split-by-group"></a>
+</h4>
+<p>Heatmaps provide a convenient overview to show expression of many
+markers for many group and cell population combinations. The
+<code><a href="../reference/plot_marker_group_HM.html">plot_marker_group_HM()</a></code> function calculates mean value for
+each marker, group and cell population combination and performs
+centering and scaling on the data.</p>
+<p>As mentioned in the beginning, the underlying absolute cell numbers
+should be considered when interpreting the expression, especially if the
+clustering or annotation is rather fine grained or larger proportional
+shifts are observed between the groups.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_group_HM.html">plot_marker_group_HM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                     expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>                     cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                     cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                     group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                     size <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>                     title <span class="op">=</span> <span class="st">"Heatmap of expression"</span>, </span>
+<span>                     marker_to_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SSC-A"</span>, <span class="st">"FSC-A"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-16-1.png" width="576"></p>
+</div>
+<div class="section level4">
+<h4 id="violin-plot-split-by-group">Violin plot split by group<a class="anchor" aria-label="anchor" href="#violin-plot-split-by-group"></a>
+</h4>
+<p>In contrast to heatmaps that only show an aggregated expression
+value, violin plots can be used to visualize the distribution of
+expression values. Providing a grouping variable <code>group_var</code>
+to the function <code><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot()</a></code> allows to split
+the violins by a meta variable available in cell_anno, e.g. disease
+group or sample ID. The horizontal line indicates the median
+expression.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span><span class="va">condor</span>,</span>
+<span>                       marker <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD57"</span><span class="op">)</span>,</span>
+<span>                       expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                       cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                       cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                       group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                       color_palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ctrl"</span><span class="op">=</span><span class="st">"purple"</span>,<span class="st">"pat"</span><span class="op">=</span><span class="st">"darkorange"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-17-1.png" width="768"></p>
+<p>If a vector with more than one feature is provided via the
+<code>marker</code> argument, the function returns a list of of plots.
+The plots can be either plotted separately or can by combined, e.g. with
+the <code>cowplot</code> package.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plot.list</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span><span class="va">condor</span>,</span>
+<span>                                  marker <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD27"</span>,<span class="st">"CD127 (IL7RA)"</span><span class="op">)</span>,</span>
+<span>                                  expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                                  cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                                  cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                                  group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                                  color_palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ctrl"</span><span class="op">=</span><span class="st">"purple"</span>,<span class="st">"pat"</span><span class="op">=</span><span class="st">"darkorange"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">plot.list</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-18-1.png" width="576"></p>
+</div>
+<div class="section level4">
+<h4 id="boxplots-of-aggregated-expression">Boxplots of aggregated expression<a class="anchor" aria-label="anchor" href="#boxplots-of-aggregated-expression"></a>
+</h4>
+<p>The function <code><a href="../reference/plot_marker_boxplot.html">plot_marker_boxplot()</a></code> summarizes the
+expression for selected markers for each sample-cluster combination, by
+calculating the median (<code>fun = "median"</code>) or the mean
+(<code>fun = "mean"</code>). The values are grouped by a grouping
+variable <code>group_var</code> and are visualized as box plots with
+each dot representing one sample defined in <code>sample_var</code>.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_boxplot.html">plot_marker_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    <span class="co">#marker = c("CD57","CD8"),</span></span>
+<span>                    expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    facet_by_clustering <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"group"</span>, </span>
+<span>                    sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                    fun <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-19-1.png" width="768"></p>
+<p>By default, the function outputs boxplots for all cell populations
+and markers available. But it is also possible to provide a vector of
+markers via the <code>marker</code> parameter or cell populations via
+<code>cluster_to_show</code>.</p>
+<p>When using <code>facet_by_clustering = T</code>, plots are faceted by
+cell population, while the markers are located on the x-axis.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_boxplot.html">plot_marker_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD57"</span>,<span class="st">"CD8"</span><span class="op">)</span>,</span>
+<span>                    expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    facet_by_clustering <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"group"</span>, </span>
+<span>                    sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                    fun <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-20-1.png" width="768"></p>
+</div>
+<div class="section level4">
+<h4 id="export-aggregated-expression-as-data-frame">Export aggregated expression as data frame<a class="anchor" aria-label="anchor" href="#export-aggregated-expression-as-data-frame"></a>
+</h4>
+<p>For custom visualizations, the <code><a href="../reference/getTable.html">getTable()</a></code> function can
+be used to calculate the median (<code>output_type = "median"</code>) or
+the mean (<code>output_type = "mean"</code>) expression for all
+combinations of cell populations and group variables in
+<code>group_var</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/getTable.html">getTable</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>         output_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
+<span>         cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>         cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>         group_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
+<span>         numeric <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 66 × 30</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   group_var [6]</span></span></span>
+<span><span class="co">#&gt;    group_var cluster   `FSC-A` `SSC-A`  CD38   CD8 `CD195 (CCR5)` `CD94 (KLRD1)`</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ID10      Classica…    4.26    4.03  3.61 1.53            1.60          2.21 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ID10      CD4          4.15    3.54  2.42 2.12            1.86          1.35 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ID10      CD8          4.12    3.66  1.83 3.63            1.96          2.22 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ID10      Nk dim       4.09    3.71  3.24 1.82            1.24          2.74 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ID10      Unconven…    4.14    3.68  1.47 1.95            2.29          1.52 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ID10      CD16+ Mo…    4.22    3.96  1.83 2.01            1.96          2.64 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ID10      NK bright    4.08    3.68  2.88 1.89            1.48          3.22 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ID10      B cells      4.07    3.66  2.63 1.84            1.76          2.08 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ID10      pDCs         4.21    3.81  3.32 1.65            3.53          1.44 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ID10      Basophils    4.18    3.88  4.04 0.990           2.43          0.657</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 56 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more variables: CD45RA &lt;dbl&gt;, `HLA-DR` &lt;dbl&gt;, CD56 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   `CD127 (IL7RA)` &lt;dbl&gt;, CD14 &lt;dbl&gt;, CD64 &lt;dbl&gt;, CD4 &lt;dbl&gt;, IgD &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   CD19 &lt;dbl&gt;, CD16 &lt;dbl&gt;, CD32 &lt;dbl&gt;, `CD197 (CCR7)` &lt;dbl&gt;, CD20 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   CD27 &lt;dbl&gt;, CD15 &lt;dbl&gt;, `PD-1` &lt;dbl&gt;, CD3 &lt;dbl&gt;, CD57 &lt;dbl&gt;, CD25 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   `CD123 (IL3RA)` &lt;dbl&gt;, CD13 &lt;dbl&gt;, CD11c &lt;dbl&gt;</span></span></span></code></pre></div>
+</div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+<h2 id="differential-testing-with-diffcyt">Differential testing with diffcyt<a class="anchor" aria-label="anchor" href="#differential-testing-with-diffcyt"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<p>The <code>diffcyt</code> package (Weber et al.,2019) provides several
+advanced methods to perform exploratory differential analysis on
+high-dimensional cytometry data. The package enables the comparison of
+groups of samples from different biological conditions by providing
+both, methods to test for differential cell population abundance (DA)
+and methods to test differential expression within cell populations
+(differential state (DS) testing).</p>
+<p>In this section, we show how a <code>condor</code> object, that was
+processed and clustered with <code>cyCONDOR</code>, can be converted
+into a <code>SummarizedExperiment</code> object and subsequently give an
+example how this object can be used with functions implemented in
+<code>diffcyt</code>.</p>
+<p>For more details on <code>diffcyt</code>, please refer to the
+<code>diffcyt</code> publication by <a href="https://www.nature.com/articles/s42003-019-0415-5" class="external-link">Weber et
+al. (2019)</a> or the <code>diffcyt</code> <a href="https://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html" class="external-link">Bioconductor
+vignette</a>.</p>
+<p>While the diffcyt publication itself, focused on the analysis of high
+resolution clustering of cytometry data, <code>diffcyt</code> has also
+been used in the Bioconductor workflow <em>cytofWorkflow</em>(Nowicka M,
+Crowell H, Robinson M (2024);<a href="%5BDOI:%2010.18129/B9.bioc.cytofWorkflow">DOI:
+10.18129/B9.bioc.cytofWorkflow</a>) to analyse lower resolution
+annotations based on knowledge-based merging of clusters.</p>
+<p>If you use this workflow in your work please consider citing <a href="XXX">cyCONDOR</a> and <a href="https://www.nature.com/articles/s42003-019-0415-5" class="external-link">Weber et
+al. (2019)</a>.</p>
+<div class="section level3">
+<h3 id="install-packages">Install packages<a class="anchor" aria-label="anchor" href="#install-packages"></a>
+</h3>
+<p>The <code>diffcyt</code> package is installed in the
+<code>cyCONDOR</code> docker image. If code is run in a different
+environment, you may have to install diffcyt.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># #Install 'diffcyt' package from Bioconductor</span></span>
+<span><span class="co"># BiocManager::install("diffcyt")</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="convert-condor-object-to-summarizedexperiment-object">Convert condor object to SummarizedExperiment object<a class="anchor" aria-label="anchor" href="#convert-condor-object-to-summarizedexperiment-object"></a>
+</h3>
+<p>To run <code>diffcyt's</code> differential analysis pipeline on
+high-dimensional cytometry data clustered with <code>cyCONDOR</code>,
+the condor object needs to be converted into a compatible input format
+first. <code>cyCONDOR</code> provides the function
+<code><a href="../reference/prepInputDiffcyt.html">prepInputDiffcyt()</a></code> that generates a
+<code>SummarizedExperiment</code> object, tailored for the use with
+<code>diffcyt</code>.</p>
+<ul>
+<li>
+<code>fcd</code>: condor object, that has been subjected to the
+condor clustering workflow before</li>
+<li>
+<code>cluster_slot</code>: clustering slot from which clustering
+variable in cluster_var will be selected</li>
+<li>
+<code>cluster_typ</code>: variable name of clustering that should be
+used to define cell populations during testing. The variable name will
+change to “cluster_id” since diffcyt requires cluster identifier to be
+stored in the variable “cluster_id”</li>
+<li>
+<code>sample_var</code>: variable name in cell_anno that contains
+unique sample IDs. The variable name will change to “sample_id” since
+diffcyt requires sample IDs to be stored in the variable
+“sample_id”</li>
+<li>
+<code>meta_vars</code>: vector of variables in cell_anno, which
+contain sample level metadata, meaning that each sample ID is associated
+with exactly one level per variable. All variables that the user wants
+to use in the test design need to be listed, e.g. group, donor_id.</li>
+<li>
+<code>marker_state</code>: vector of marker names that should have
+the marker_class “state”</li>
+<li>
+<code>marker_type</code>: vector of marker names that should have
+the marker_class “type”</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># check that clustering or cell label prediction is available</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 1</span></span>
+<span><span class="co">#&gt;  $ phenograph_pca_orig_k_60:'data.frame':    59049 obs. of  3 variables:</span></span>
+<span><span class="co">#&gt;   ..$ Phenograph  : Factor w/ 25 levels "1","2","3","4",..: 1 2 3 4 5 5 6 1 1 5 ...</span></span>
+<span><span class="co">#&gt;   ..$ Description : chr [1:59049] "pca_orig_k60" "pca_orig_k60" "pca_orig_k60" "pca_orig_k60" ...</span></span>
+<span><span class="co">#&gt;   ..$ metaclusters: Factor w/ 11 levels "Classical Monocytes",..: 1 2 3 4 3 3 1 1 1 3 ...</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor_se</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepInputDiffcyt.html">prepInputDiffcyt</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                            cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                            cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                            sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                            meta_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"expfcs_filename"</span>,<span class="st">"group"</span><span class="op">)</span>,</span>
+<span>                            marker_state <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                            marker_type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<p>The function returns a <code>SummarizedExperiment</code> object
+containing:</p>
+<ul>
+<li>metadata, including the experiment_info, which includes all the
+sample-level metadata provided in sample_var and meta_vars. Note that
+sample_var was renamed to “sample_id”</li>
+<li>an assay “exprs”, which contains the feature values from the
+expr_slot “orig”</li>
+<li>rowData, containing cell-level metadata as well as a column
+“cluster_id” containing the cell population labels and sample IDs in
+column “sample_id”</li>
+<li>colData, containing marker names and marker types required for
+<code>diffcyt</code> functions</li>
+</ul>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor_se</span></span>
+<span><span class="co">#&gt; class: SummarizedExperiment </span></span>
+<span><span class="co">#&gt; dim: 59049 28 </span></span>
+<span><span class="co">#&gt; metadata(2): experiment_info n_cells</span></span>
+<span><span class="co">#&gt; assays(1): exprs</span></span>
+<span><span class="co">#&gt; rownames(59049): ID10.fcs_1 ID10.fcs_2 ... ID8.fcs_59048 ID8.fcs_59049</span></span>
+<span><span class="co">#&gt; rowData names(4): sample_id expfcs_filename group cluster_id</span></span>
+<span><span class="co">#&gt; colnames(28): FSC-A SSC-A ... CD13 CD11c</span></span>
+<span><span class="co">#&gt; colData names(3): channel_name marker_name marker_class</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="differential-analysis-workflow-with-diffcyt">Differential analysis workflow with diffcyt<a class="anchor" aria-label="anchor" href="#differential-analysis-workflow-with-diffcyt"></a>
+</h3>
+<p>Next we run the individual functions of the diffcyt analysis
+workflow, similar to the <code>diffcyt</code> <a href="https://bioconductor.org/packages/release/bioc/vignettes/diffcyt/inst/doc/diffcyt_workflow.html" class="external-link">Bioconductor
+vignette</a> provided by the authors of the package.</p>
+<div class="section level4">
+<h4 id="setup-input-for-testing">Setup input for testing<a class="anchor" aria-label="anchor" href="#setup-input-for-testing"></a>
+</h4>
+<p>First, we calculate the cell counts for each sample and cluster
+combination using <code><a href="https://rdrr.io/pkg/diffcyt/man/calcCounts.html" class="external-link">diffcyt::calcCounts()</a></code>. The counts are
+required for all diffcyt tests.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># calculate cell counts</span></span>
+<span><span class="va">d_counts</span> <span class="op">&lt;-</span> <span class="fu">diffcyt</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/diffcyt/man/calcCounts.html" class="external-link">calcCounts</a></span><span class="op">(</span><span class="va">condor_se</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">info</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
-<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.3 LTS</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
-<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## locale:</span></span>
-<span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
-<span><span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
-<span><span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
-<span><span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
-<span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
-<span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## time zone: Etc/UTC</span></span>
-<span><span class="co">## tzcode source: system (glibc)</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## attached base packages:</span></span>
-<span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggpubr_0.6.0   ggplot2_3.4.4  cyCONDOR_0.1.5</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] fs_1.6.3                    destiny_3.14.0             </span></span>
-<span><span class="co">##   [3] matrixStats_1.1.0           bitops_1.0-7               </span></span>
-<span><span class="co">##   [5] devtools_2.4.5              lubridate_1.9.3            </span></span>
-<span><span class="co">##   [7] RColorBrewer_1.1-3          doParallel_1.0.17          </span></span>
-<span><span class="co">##   [9] ggsci_3.0.0                 Rgraphviz_2.44.0           </span></span>
-<span><span class="co">##  [11] profvis_0.3.8               tools_4.3.1                </span></span>
-<span><span class="co">##  [13] backports_1.4.1             utf8_1.2.4                 </span></span>
-<span><span class="co">##  [15] R6_2.5.1                    urlchecker_1.0.1           </span></span>
-<span><span class="co">##  [17] withr_2.5.1                 sp_2.1-1                   </span></span>
-<span><span class="co">##  [19] prettyunits_1.2.0           gridExtra_2.3              </span></span>
-<span><span class="co">##  [21] cli_3.6.1                   Biobase_2.60.0             </span></span>
-<span><span class="co">##  [23] textshaping_0.3.7           ggcyto_1.28.1              </span></span>
-<span><span class="co">##  [25] labeling_0.4.3              sass_0.4.7                 </span></span>
-<span><span class="co">##  [27] robustbase_0.99-0           readr_2.1.4                </span></span>
-<span><span class="co">##  [29] randomForest_4.7-1.1        askpass_1.2.0              </span></span>
-<span><span class="co">##  [31] proxy_0.4-27                slingshot_2.8.0            </span></span>
-<span><span class="co">##  [33] pkgdown_2.0.7               systemfonts_1.0.5          </span></span>
-<span><span class="co">##  [35] foreign_0.8-85              harmony_1.1.0              </span></span>
-<span><span class="co">##  [37] parallelly_1.36.0           sessioninfo_1.2.2          </span></span>
-<span><span class="co">##  [39] readxl_1.4.3                TTR_0.24.3                 </span></span>
-<span><span class="co">##  [41] flowCore_2.12.2             rstudioapi_0.15.0          </span></span>
-<span><span class="co">##  [43] generics_0.1.3              shape_1.4.6                </span></span>
-<span><span class="co">##  [45] car_3.1-2                   dplyr_1.1.3                </span></span>
-<span><span class="co">##  [47] Matrix_1.6-1.1              RProtoBufLib_2.12.1        </span></span>
-<span><span class="co">##  [49] ggbeeswarm_0.7.2            fansi_1.0.5                </span></span>
-<span><span class="co">##  [51] S4Vectors_0.38.2            abind_1.4-5                </span></span>
-<span><span class="co">##  [53] lifecycle_1.0.3             scatterplot3d_0.3-44       </span></span>
-<span><span class="co">##  [55] yaml_2.3.7                  carData_3.0-5              </span></span>
-<span><span class="co">##  [57] SummarizedExperiment_1.30.2 recipes_1.0.8              </span></span>
-<span><span class="co">##  [59] Rtsne_0.16                  grid_4.3.1                 </span></span>
-<span><span class="co">##  [61] promises_1.2.1              crayon_1.5.2               </span></span>
-<span><span class="co">##  [63] miniUI_0.1.1.1              lattice_0.22-5             </span></span>
-<span><span class="co">##  [65] cowplot_1.1.1               pillar_1.9.0               </span></span>
-<span><span class="co">##  [67] knitr_1.44                  GenomicRanges_1.52.1       </span></span>
-<span><span class="co">##  [69] boot_1.3-28.1               future.apply_1.11.0        </span></span>
-<span><span class="co">##  [71] codetools_0.2-19            glue_1.6.2                 </span></span>
-<span><span class="co">##  [73] pcaMethods_1.92.0           data.table_1.14.8          </span></span>
-<span><span class="co">##  [75] remotes_2.4.2.1             vcd_1.4-11                 </span></span>
-<span><span class="co">##  [77] png_0.1-8                   vctrs_0.6.4                </span></span>
-<span><span class="co">##  [79] cellranger_1.1.0            gtable_0.3.4               </span></span>
-<span><span class="co">##  [81] cachem_1.0.8                gower_1.0.1                </span></span>
-<span><span class="co">##  [83] xfun_0.40                   princurve_2.1.6            </span></span>
-<span><span class="co">##  [85] S4Arrays_1.0.6              mime_0.12                  </span></span>
-<span><span class="co">##  [87] prodlim_2023.08.28          RcppEigen_0.3.3.9.4        </span></span>
-<span><span class="co">##  [89] survival_3.5-7              timeDate_4022.108          </span></span>
-<span><span class="co">##  [91] pheatmap_1.0.12             SingleCellExperiment_1.22.0</span></span>
-<span><span class="co">##  [93] iterators_1.0.14            CytoDx_1.20.0              </span></span>
-<span><span class="co">##  [95] cytolib_2.12.1              hardhat_1.3.0              </span></span>
-<span><span class="co">##  [97] lava_1.7.3                  ellipsis_0.3.2             </span></span>
-<span><span class="co">##  [99] ipred_0.9-14                ncdfFlow_2.46.0            </span></span>
-<span><span class="co">## [101] nlme_3.1-163                usethis_2.2.2              </span></span>
-<span><span class="co">## [103] xts_0.13.1                  GenomeInfoDb_1.36.4        </span></span>
-<span><span class="co">## [105] rprojroot_2.0.3             bslib_0.5.1                </span></span>
-<span><span class="co">## [107] irlba_2.3.5.1               vipor_0.4.5                </span></span>
-<span><span class="co">## [109] Rphenograph_0.99.1          rpart_4.1.21               </span></span>
-<span><span class="co">## [111] colorspace_2.1-0            BiocGenerics_0.46.0        </span></span>
-<span><span class="co">## [113] Hmisc_5.1-1                 flowWorkspace_4.12.2       </span></span>
-<span><span class="co">## [115] nnet_7.3-19                 ggrastr_1.0.2              </span></span>
-<span><span class="co">## [117] tidyselect_1.2.0            smoother_1.1               </span></span>
-<span><span class="co">## [119] processx_3.8.2              compiler_4.3.1             </span></span>
-<span><span class="co">## [121] curl_5.1.0                  glmnet_4.1-8               </span></span>
-<span><span class="co">## [123] graph_1.78.0                htmlTable_2.4.2            </span></span>
-<span><span class="co">## [125] desc_1.4.2                  DelayedArray_0.26.7        </span></span>
-<span><span class="co">## [127] checkmate_2.3.0             scales_1.2.1               </span></span>
-<span><span class="co">## [129] DEoptimR_1.1-3              lmtest_0.9-40              </span></span>
-<span><span class="co">## [131] hexbin_1.28.3               RBGL_1.76.0                </span></span>
-<span><span class="co">## [133] callr_3.7.3                 stringr_1.5.0              </span></span>
-<span><span class="co">## [135] digest_0.6.33               rmarkdown_2.25             </span></span>
-<span><span class="co">## [137] XVector_0.40.0              htmltools_0.5.6.1          </span></span>
-<span><span class="co">## [139] pkgconfig_2.0.3             base64enc_0.1-3            </span></span>
-<span><span class="co">## [141] umap_0.2.10.0               sparseMatrixStats_1.12.2   </span></span>
-<span><span class="co">## [143] MatrixGenerics_1.12.3       fastmap_1.1.1              </span></span>
-<span><span class="co">## [145] rlang_1.1.1                 Rmisc_1.5.1                </span></span>
-<span><span class="co">## [147] htmlwidgets_1.6.2           ggthemes_4.2.4             </span></span>
-<span><span class="co">## [149] shiny_1.7.5.1               DelayedMatrixStats_1.22.6  </span></span>
-<span><span class="co">## [151] farver_2.1.1                jquerylib_0.1.4            </span></span>
-<span><span class="co">## [153] zoo_1.8-12                  jsonlite_1.8.7             </span></span>
-<span><span class="co">## [155] ModelMetrics_1.2.2.2        RCurl_1.98-1.13            </span></span>
-<span><span class="co">## [157] magrittr_2.0.3              Formula_1.2-5              </span></span>
-<span><span class="co">## [159] GenomeInfoDbData_1.2.10     munsell_0.5.0              </span></span>
-<span><span class="co">## [161] Rcpp_1.0.11                 TrajectoryUtils_1.8.0      </span></span>
-<span><span class="co">## [163] reticulate_1.34.0           stringi_1.7.12             </span></span>
-<span><span class="co">## [165] pROC_1.18.5                 zlibbioc_1.46.0            </span></span>
-<span><span class="co">## [167] MASS_7.3-60                 plyr_1.8.9                 </span></span>
-<span><span class="co">## [169] pkgbuild_1.4.2              ggrepel_0.9.4              </span></span>
-<span><span class="co">## [171] parallel_4.3.1              listenv_0.9.0              </span></span>
-<span><span class="co">## [173] splines_4.3.1               hms_1.1.3                  </span></span>
-<span><span class="co">## [175] ps_1.7.5                    igraph_1.5.1               </span></span>
-<span><span class="co">## [177] ranger_0.16.0               ggsignif_0.6.4             </span></span>
-<span><span class="co">## [179] RcppHNSW_0.5.0              reshape2_1.4.4             </span></span>
-<span><span class="co">## [181] stats4_4.3.1                pkgload_1.3.3              </span></span>
-<span><span class="co">## [183] XML_3.99-0.15               evaluate_0.22              </span></span>
-<span><span class="co">## [185] rpart.plot_3.1.1            laeken_0.5.2               </span></span>
-<span><span class="co">## [187] tzdb_0.4.0                  foreach_1.5.2              </span></span>
-<span><span class="co">## [189] httpuv_1.6.12               VIM_6.2.2                  </span></span>
-<span><span class="co">## [191] openssl_2.1.1               RANN_2.6.1                 </span></span>
-<span><span class="co">## [193] tidyr_1.3.0                 purrr_1.0.2                </span></span>
-<span><span class="co">## [195] future_1.33.0               broom_1.0.5                </span></span>
-<span><span class="co">## [197] xtable_1.8-4                e1071_1.7-13               </span></span>
-<span><span class="co">## [199] RSpectra_0.16-1             rstatix_0.7.2              </span></span>
-<span><span class="co">## [201] later_1.3.1                 class_7.3-22               </span></span>
-<span><span class="co">## [203] ragg_1.2.6                  tibble_3.2.1               </span></span>
-<span><span class="co">## [205] beeswarm_0.4.0              memoise_2.0.1              </span></span>
-<span><span class="co">## [207] IRanges_2.34.1              cluster_2.1.4              </span></span>
-<span><span class="co">## [209] ggplot.multistats_1.0.0     timechange_0.2.0           </span></span>
-<span><span class="co">## [211] globals_0.16.2              CytoML_2.12.0              </span></span>
-<span><span class="co">## [213] caret_6.0-94</span></span></code></pre>
+<span><span class="co"># inspect object</span></span>
+<span><span class="va">d_counts</span></span>
+<span><span class="co">#&gt; class: SummarizedExperiment </span></span>
+<span><span class="co">#&gt; dim: 11 6 </span></span>
+<span><span class="co">#&gt; metadata(0):</span></span>
+<span><span class="co">#&gt; assays(1): counts</span></span>
+<span><span class="co">#&gt; rownames(11): Classical Monocytes CD4 ... Basophils Mixed</span></span>
+<span><span class="co">#&gt; rowData names(2): cluster_id n_cells</span></span>
+<span><span class="co">#&gt; colnames(6): ID10 ID3 ... ID7 ID8</span></span>
+<span><span class="co">#&gt; colData names(3): sample_id expfcs_filename group</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># inspect counts</span></span>
+<span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assays</a></span><span class="op">(</span><span class="va">d_counts</span><span class="op">)</span><span class="op">$</span><span class="va">counts</span></span>
+<span><span class="co">#&gt;                        ID10  ID3  ID5  ID6  ID7  ID8</span></span>
+<span><span class="co">#&gt; Classical Monocytes    3184 2338 2372 2102 2151 3008</span></span>
+<span><span class="co">#&gt; CD4                    1599 3654 3234 1301 4048 2758</span></span>
+<span><span class="co">#&gt; CD8                    3266 1779 2270 2479 1350 2859</span></span>
+<span><span class="co">#&gt; Nk dim                  641  825  517 1242 1490   79</span></span>
+<span><span class="co">#&gt; Unconventional T cells  496   28   34  428    8  598</span></span>
+<span><span class="co">#&gt; CD16+ Monocytes         342  350  219  494  143  255</span></span>
+<span><span class="co">#&gt; NK bright               317  464  512  667  515  247</span></span>
+<span><span class="co">#&gt; B cells                 111  354  493  192  171   86</span></span>
+<span><span class="co">#&gt; pDCs                     24   80   66   30   55   54</span></span>
+<span><span class="co">#&gt; Basophils                13   80   35   24   59   25</span></span>
+<span><span class="co">#&gt; Mixed                     7   48  248   90   10   31</span></span></code></pre></div>
+<p>In a second step, we calculate the median marker expression for each
+sample and cluster combination using
+<code><a href="https://rdrr.io/pkg/diffcyt/man/calcMedians.html" class="external-link">diffcyt::calcMedians()</a></code>. This data is required for
+differential state testing, since <code>diffcyt</code>’s test are
+performed on the aggregated expression instead of cell level.</p>
+<p>Note, that the output will also contain medians of scatter features,
+if those were available in the “orig” expression data of the condor
+object.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Calculate cluster medians</span></span>
+<span><span class="va">d_medians</span> <span class="op">&lt;-</span> <span class="fu">diffcyt</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/diffcyt/man/calcMedians.html" class="external-link">calcMedians</a></span><span class="op">(</span><span class="va">condor_se</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#inspect medians</span></span>
+<span><span class="va">d_medians</span></span>
+<span><span class="co">#&gt; class: SummarizedExperiment </span></span>
+<span><span class="co">#&gt; dim: 11 6 </span></span>
+<span><span class="co">#&gt; metadata(2): id_type_markers id_state_markers</span></span>
+<span><span class="co">#&gt; assays(28): FSC-A SSC-A ... CD13 CD11c</span></span>
+<span><span class="co">#&gt; rownames(11): Classical Monocytes CD4 ... Basophils Mixed</span></span>
+<span><span class="co">#&gt; rowData names(1): cluster_id</span></span>
+<span><span class="co">#&gt; colnames(6): ID10 ID3 ... ID7 ID8</span></span>
+<span><span class="co">#&gt; colData names(3): sample_id expfcs_filename group</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># inspect medians</span></span>
+<span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assays</a></span><span class="op">(</span><span class="va">d_medians</span><span class="op">)</span><span class="op">$</span><span class="va">CD57</span></span>
+<span><span class="co">#&gt;                             ID10       ID3       ID5       ID6       ID7</span></span>
+<span><span class="co">#&gt; Classical Monocytes    1.2342792 0.9569836 0.8784949 1.1214760 0.9437813</span></span>
+<span><span class="co">#&gt; CD4                    0.8636581 0.7256709 0.6477634 0.8112442 0.6627282</span></span>
+<span><span class="co">#&gt; CD8                    3.2863153 0.8976232 0.9852229 2.3968618 0.7624646</span></span>
+<span><span class="co">#&gt; Nk dim                 3.3696450 3.5735292 3.0539440 3.4984811 3.3147029</span></span>
+<span><span class="co">#&gt; Unconventional T cells 3.8024406 2.7093433 2.7061293 3.3138678 3.3122278</span></span>
+<span><span class="co">#&gt; CD16+ Monocytes        0.7645921 0.7576529 0.7646734 0.9454071 0.5967356</span></span>
+<span><span class="co">#&gt; NK bright              0.7663569 0.8889427 0.7204651 0.8904777 0.7738680</span></span>
+<span><span class="co">#&gt; B cells                0.6241813 0.3338990 0.4309125 0.5653783 0.3539324</span></span>
+<span><span class="co">#&gt; pDCs                   0.9298423 1.0022037 0.7510136 0.9939891 0.7913450</span></span>
+<span><span class="co">#&gt; Basophils              1.2820025 1.0921873 0.9382373 1.2456938 1.3153434</span></span>
+<span><span class="co">#&gt; Mixed                  0.6692602 0.6345080 0.6300146 0.8673538 1.0005692</span></span>
+<span><span class="co">#&gt;                              ID8</span></span>
+<span><span class="co">#&gt; Classical Monocytes    1.2888429</span></span>
+<span><span class="co">#&gt; CD4                    0.7754308</span></span>
+<span><span class="co">#&gt; CD8                    3.2786161</span></span>
+<span><span class="co">#&gt; Nk dim                 2.9819875</span></span>
+<span><span class="co">#&gt; Unconventional T cells 3.7977096</span></span>
+<span><span class="co">#&gt; CD16+ Monocytes        0.8756224</span></span>
+<span><span class="co">#&gt; NK bright              1.0096297</span></span>
+<span><span class="co">#&gt; B cells                0.4325274</span></span>
+<span><span class="co">#&gt; pDCs                   1.0707367</span></span>
+<span><span class="co">#&gt; Basophils              1.2879905</span></span>
+<span><span class="co">#&gt; Mixed                  0.6692396</span></span></code></pre></div>
+<p>Next we prepare a design matrix describing our experimental design.
+In our example, we are interested in the factor “group”, indicating if a
+sample was taken from a patient or control donor. (Note: Some of the
+<code>diffcyt</code> tests require a formula instead of a design
+matrix.)</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">experiment_info</span><span class="op">&lt;-</span><span class="va">condor_se</span><span class="op">@</span><span class="va">metadata</span><span class="op">$</span><span class="va">experiment_info</span></span>
+<span></span>
+<span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu">diffcyt</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/diffcyt/man/createDesignMatrix.html" class="external-link">createDesignMatrix</a></span><span class="op">(</span><span class="va">experiment_info</span>,</span>
+<span>                                      cols_design <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">design</span></span>
+<span><span class="co">#&gt;      (Intercept) grouppat</span></span>
+<span><span class="co">#&gt; ID10           1        1</span></span>
+<span><span class="co">#&gt; ID3            1        0</span></span>
+<span><span class="co">#&gt; ID5            1        0</span></span>
+<span><span class="co">#&gt; ID6            1        1</span></span>
+<span><span class="co">#&gt; ID7            1        0</span></span>
+<span><span class="co">#&gt; ID8            1        1</span></span>
+<span><span class="co">#&gt; attr(,"assign")</span></span>
+<span><span class="co">#&gt; [1] 0 1</span></span>
+<span><span class="co">#&gt; attr(,"contrasts")</span></span>
+<span><span class="co">#&gt; attr(,"contrasts")$group</span></span>
+<span><span class="co">#&gt; [1] "contr.treatment"</span></span></code></pre></div>
+<p>Additionally, <code>diffcyt</code>’s differential testing functions
+also require a contrast matrix specifying which comparisons should be
+performed.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create contrast matrix</span></span>
+<span><span class="va">contrast</span> <span class="op">&lt;-</span> <span class="fu">diffcyt</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/diffcyt/man/createContrast.html" class="external-link">createContrast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># check</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">contrast</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span>, <span class="va">contrast</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    parameters contrast</span></span>
+<span><span class="co">#&gt; 1 (Intercept)        0</span></span>
+<span><span class="co">#&gt; 2    grouppat        1</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="test-differential-abundance">Test differential abundance<a class="anchor" aria-label="anchor" href="#test-differential-abundance"></a>
+</h4>
+<p>After all the input objects are set up, we can perform the
+differential abundance test <code><a href="https://rdrr.io/pkg/diffcyt/man/testDA_edgeR.html" class="external-link">testDA_edgeR()</a></code>, the default
+method for DA testing in <code>diffcyt</code>.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># perform differential abundance test</span></span>
+<span><span class="va">res_DA</span> <span class="op">&lt;-</span> <span class="fu">diffcyt</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/diffcyt/man/testDA_edgeR.html" class="external-link">testDA_edgeR</a></span><span class="op">(</span><span class="va">d_counts</span>, <span class="va">design</span>, <span class="va">contrast</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># table of results ordered by increasing adjusted p-value</span></span>
+<span><span class="fu">diffcyt</span><span class="fu">::</span><span class="fu">topTable</span><span class="op">(</span><span class="va">res_DA</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; DataFrame with 11 rows and 3 columns</span></span>
+<span><span class="co">#&gt;                                    cluster_id       p_val       p_adj</span></span>
+<span><span class="co">#&gt;                                      &lt;factor&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
+<span><span class="co">#&gt; Unconventional T cells Unconventional T cells 3.34055e-11 3.67461e-10</span></span>
+<span><span class="co">#&gt; Basophils              Basophils              1.37570e-02 7.56633e-02</span></span>
+<span><span class="co">#&gt; B cells                B cells                3.35765e-02 1.23114e-01</span></span>
+<span><span class="co">#&gt; CD4                    CD4                    5.33195e-02 1.46629e-01</span></span>
+<span><span class="co">#&gt; CD8                    CD8                    1.04608e-01 1.92753e-01</span></span>
+<span><span class="co">#&gt; pDCs                   pDCs                   1.05138e-01 1.92753e-01</span></span>
+<span><span class="co">#&gt; CD16+ Monocytes        CD16+ Monocytes        2.23765e-01 3.51631e-01</span></span>
+<span><span class="co">#&gt; Mixed                  Mixed                  3.37025e-01 4.63409e-01</span></span>
+<span><span class="co">#&gt; Classical Monocytes    Classical Monocytes    4.51969e-01 5.52406e-01</span></span>
+<span><span class="co">#&gt; Nk dim                 Nk dim                 6.36207e-01 6.99827e-01</span></span>
+<span><span class="co">#&gt; NK bright              NK bright              7.24174e-01 7.24174e-01</span></span></code></pre></div>
+<p>According to the results table, Unconventional T cell show
+differential abundance with an adjusted p-value below 0.05. We can use
+<code>cyCONDOR</code> to visualize the population frequencies per sample
+for this population - note the frequency is used for visualization
+purposes only, <code>diffcyt</code> takes the counts for each cluster
+sample combination as input.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_frequency_boxplot.html">plot_frequency_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                                cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                                cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                                sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                                group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                                numeric <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                                color_palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ctrl"</span><span class="op">=</span><span class="st">"purple"</span>,<span class="st">"pat"</span><span class="op">=</span><span class="st">"darkorange"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plots</span><span class="op">$</span><span class="va">`Unconventional T cells`</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-34-1.png" width="288"></p>
+</div>
+<div class="section level4">
+<h4 id="test-differential-states">Test differential states<a class="anchor" aria-label="anchor" href="#test-differential-states"></a>
+</h4>
+<p>Next, we give an example on how to apply the differential state test
+<code>testDS_LMM</code> from <code>diffcyt</code>.</p>
+<p>This function actually requires a formula instead of design.</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">experiment_info</span><span class="op">&lt;-</span><span class="va">condor_se</span><span class="op">@</span><span class="va">metadata</span><span class="op">$</span><span class="va">experiment_info</span></span>
+<span></span>
+<span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/diffcyt/man/createFormula.html" class="external-link">createFormula</a></span><span class="op">(</span><span class="va">experiment_info</span>, cols_fixed <span class="op">=</span> <span class="st">"group"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">formula</span></span>
+<span><span class="co">#&gt; $formula</span></span>
+<span><span class="co">#&gt; y ~ group</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55e532fb4128&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt;      group</span></span>
+<span><span class="co">#&gt; ID10   pat</span></span>
+<span><span class="co">#&gt; ID3   ctrl</span></span>
+<span><span class="co">#&gt; ID5   ctrl</span></span>
+<span><span class="co">#&gt; ID6    pat</span></span>
+<span><span class="co">#&gt; ID7   ctrl</span></span>
+<span><span class="co">#&gt; ID8    pat</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $random_terms</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<p>It is important to note that the<code>diffcyt</code> workflow
+distinguishes between “type” and “state” markers. “type” markers
+identify cell types and are used for clustering, while “state” markers
+are used to investigate different states, e.g. activation. By default,
+only state markers are tested for differential expression. This clear
+separation avoids that the same data is used twice - for clustering and
+for differential state analysis. On the other hand, a clear distinction
+of type and state markers is often quite difficult, e.g. HLA-DR can be
+used to identify myeloid or B cell populations in peripheral blood, but
+is also upregulated on activated cells.</p>
+<p>During the processing of this dataset, all parameters were used for
+clustering. Due the broad annotation, differential state analysis is
+still of interest here. When working on an high resolution clustering
+based on all markers, this might be different. For example, you could
+have identified a small population of HLA-DR+ T cells already, and a
+frequency or abundance test could capture the difference between your
+biological groups already, while differential state analysis might be
+difficult. Overall, the explicit setup of this analysis strongly depends
+on the used panel and the research question.</p>
+<p>But back to our example. The diffcyt functions require that a
+marker_class is specified for every parameter. Therefor, we should check
+first which marker class has been assigned to the markers when
+converting the data with <code><a href="../reference/prepInputDiffcyt.html">prepInputDiffcyt()</a></code>. Since we
+didn’t specify certain markers in <code>marker_state</code> or
+<code>marker_type</code> when generating <code>condor_se</code> with the
+<code><a href="../reference/prepInputDiffcyt.html">prepInputDiffcyt()</a></code> function, by default all available
+features were classified as “type”.</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#check marker annotation in condor_se</span></span>
+<span><span class="va">marker_info</span><span class="op">&lt;-</span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">condor_se</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">marker_info</span></span>
+<span><span class="co">#&gt;                channel_name   marker_name marker_class</span></span>
+<span><span class="co">#&gt; FSC-A                 FSC-A         FSC-A         type</span></span>
+<span><span class="co">#&gt; SSC-A                 SSC-A         SSC-A         type</span></span>
+<span><span class="co">#&gt; CD38                   CD38          CD38         type</span></span>
+<span><span class="co">#&gt; CD8                     CD8           CD8         type</span></span>
+<span><span class="co">#&gt; CD195 (CCR5)   CD195 (CCR5)  CD195 (CCR5)         type</span></span>
+<span><span class="co">#&gt; CD94 (KLRD1)   CD94 (KLRD1)  CD94 (KLRD1)         type</span></span>
+<span><span class="co">#&gt; CD45RA               CD45RA        CD45RA         type</span></span>
+<span><span class="co">#&gt; HLA-DR               HLA-DR        HLA-DR         type</span></span>
+<span><span class="co">#&gt; CD56                   CD56          CD56         type</span></span>
+<span><span class="co">#&gt; CD127 (IL7RA) CD127 (IL7RA) CD127 (IL7RA)         type</span></span>
+<span><span class="co">#&gt; CD14                   CD14          CD14         type</span></span>
+<span><span class="co">#&gt; CD64                   CD64          CD64         type</span></span>
+<span><span class="co">#&gt; CD4                     CD4           CD4         type</span></span>
+<span><span class="co">#&gt; IgD                     IgD           IgD         type</span></span>
+<span><span class="co">#&gt; CD19                   CD19          CD19         type</span></span>
+<span><span class="co">#&gt; CD16                   CD16          CD16         type</span></span>
+<span><span class="co">#&gt; CD32                   CD32          CD32         type</span></span>
+<span><span class="co">#&gt; CD197 (CCR7)   CD197 (CCR7)  CD197 (CCR7)         type</span></span>
+<span><span class="co">#&gt; CD20                   CD20          CD20         type</span></span>
+<span><span class="co">#&gt; CD27                   CD27          CD27         type</span></span>
+<span><span class="co">#&gt; CD15                   CD15          CD15         type</span></span>
+<span><span class="co">#&gt; PD-1                   PD-1          PD-1         type</span></span>
+<span><span class="co">#&gt; CD3                     CD3           CD3         type</span></span>
+<span><span class="co">#&gt; CD57                   CD57          CD57         type</span></span>
+<span><span class="co">#&gt; CD25                   CD25          CD25         type</span></span>
+<span><span class="co">#&gt; CD123 (IL3RA) CD123 (IL3RA) CD123 (IL3RA)         type</span></span>
+<span><span class="co">#&gt; CD13                   CD13          CD13         type</span></span>
+<span><span class="co">#&gt; CD11c                 CD11c         CD11c         type</span></span></code></pre></div>
+<p>Obviously, we would like to exclude FSC-A and SSC-A from differential
+testing. To do so, we either have to go back and specify marker_state
+and marker_type in <code>prepInputDiffct()</code>. Or we provide the
+<code>diffcyt</code> test with a logical vector of marker to include for
+testing via the <code>markers_to_test</code> argument.</p>
+<p>The original <code>diffcyt</code> workflow was set up for arcsinh
+transformed cyTOF or flow cytometry data. Here, we applied it to a flow
+cytometry dataset that was autological transformed. The observed
+p-values were however very similar to those obtained when using a
+arcsinh transformation (cofactor 150) on this dataset.</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#get logical vector of marker to be tested</span></span>
+<span><span class="va">markers_oi</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assays</a></span><span class="op">(</span><span class="va">d_medians</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SSC-A"</span>,<span class="st">"FSC-A"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># perform differential state analysis</span></span>
+<span><span class="va">res_DS</span> <span class="op">&lt;-</span> <span class="fu">diffcyt</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/diffcyt/man/testDS_LMM.html" class="external-link">testDS_LMM</a></span><span class="op">(</span><span class="va">d_counts</span>, <span class="va">d_medians</span>, <span class="va">formula</span>, <span class="va">contrast</span>,</span>
+<span>                                markers_to_test <span class="op">=</span> <span class="va">markers_oi</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># display table of results ordered by increasing adjusted p-value</span></span>
+<span><span class="fu">diffcyt</span><span class="fu">::</span><span class="fu">topTable</span><span class="op">(</span><span class="va">res_DS</span>, format_vals <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; DataFrame with 20 rows and 4 columns</span></span>
+<span><span class="co">#&gt;                                    cluster_id     marker_id      p_val</span></span>
+<span><span class="co">#&gt;                                      &lt;factor&gt;      &lt;factor&gt;  &lt;numeric&gt;</span></span>
+<span><span class="co">#&gt; CD8                    CD8                    CD94 (KLRD1)  0.00345526</span></span>
+<span><span class="co">#&gt; CD8                    CD8                    CD57          0.00197002</span></span>
+<span><span class="co">#&gt; Classical Monocytes    Classical Monocytes    CD57          0.00571846</span></span>
+<span><span class="co">#&gt; CD8                    CD8                    CD27          0.00978021</span></span>
+<span><span class="co">#&gt; Unconventional T cells Unconventional T cells CD123 (IL3RA) 0.00905320</span></span>
+<span><span class="co">#&gt; ...                                       ...           ...        ...</span></span>
+<span><span class="co">#&gt; Classical Monocytes    Classical Monocytes             CD15  0.0263070</span></span>
+<span><span class="co">#&gt; Classical Monocytes    Classical Monocytes             IgD   0.0492237</span></span>
+<span><span class="co">#&gt; pDCs                   pDCs                            CD19  0.0498908</span></span>
+<span><span class="co">#&gt; Nk dim                 Nk dim                          CD32  0.0464321</span></span>
+<span><span class="co">#&gt; Unconventional T cells Unconventional T cells          CD57  0.0453162</span></span>
+<span><span class="co">#&gt;                            p_adj</span></span>
+<span><span class="co">#&gt;                        &lt;numeric&gt;</span></span>
+<span><span class="co">#&gt; CD8                     0.494102</span></span>
+<span><span class="co">#&gt; CD8                     0.494102</span></span>
+<span><span class="co">#&gt; Classical Monocytes     0.545160</span></span>
+<span><span class="co">#&gt; CD8                     0.559428</span></span>
+<span><span class="co">#&gt; Unconventional T cells  0.559428</span></span>
+<span><span class="co">#&gt; ...                          ...</span></span>
+<span><span class="co">#&gt; Classical Monocytes     0.709578</span></span>
+<span><span class="co">#&gt; Classical Monocytes     0.713439</span></span>
+<span><span class="co">#&gt; pDCs                    0.713439</span></span>
+<span><span class="co">#&gt; Nk dim                  0.713439</span></span>
+<span><span class="co">#&gt; Unconventional T cells  0.713439</span></span></code></pre></div>
+<p>Let’s have a look at the top cluster marker combinations.</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">&lt;-</span><span class="fu">diffcyt</span><span class="fu">::</span><span class="fu">topTable</span><span class="op">(</span><span class="va">res_DS</span>, all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                                    cluster_id     marker_id       p_val</span></span>
+<span><span class="co">#&gt; CD8                                       CD8  CD94 (KLRD1) 0.003455261</span></span>
+<span><span class="co">#&gt; CD8.1                                     CD8          CD57 0.001970022</span></span>
+<span><span class="co">#&gt; Classical Monocytes       Classical Monocytes          CD57 0.005718462</span></span>
+<span><span class="co">#&gt; CD8.2                                     CD8          CD27 0.009780213</span></span>
+<span><span class="co">#&gt; Unconventional T cells Unconventional T cells CD123 (IL3RA) 0.009053205</span></span>
+<span><span class="co">#&gt; pDCs                                     pDCs        CD45RA 0.018106991</span></span>
+<span><span class="co">#&gt;                            p_adj</span></span>
+<span><span class="co">#&gt; CD8                    0.4941023</span></span>
+<span><span class="co">#&gt; CD8.1                  0.4941023</span></span>
+<span><span class="co">#&gt; Classical Monocytes    0.5451600</span></span>
+<span><span class="co">#&gt; CD8.2                  0.5594282</span></span>
+<span><span class="co">#&gt; Unconventional T cells 0.5594282</span></span>
+<span><span class="co">#&gt; pDCs                   0.5753999</span></span></code></pre></div>
+<p>In this case no marker shows an FDR corrected p-value &lt;0.05.</p>
+<p>Nevertheless, it is worth mentioning, that results always require
+visual inspection to set potential findings into context. We can use
+<code>cyCONDOR</code> functions to visualize the median expression.</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_boxplot.html">plot_marker_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                        marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD94 (KLRD1)"</span><span class="op">)</span>,</span>
+<span>                        expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                        cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                        cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                        cluster_to_show <span class="op">=</span> <span class="st">"CD8"</span>,</span>
+<span>                        facet_by_clustering <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                        group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                        sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                        fun <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group_sample_ID</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">sample_ID</span>, sep<span class="op">=</span><span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="va">p2</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                        marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD94 (KLRD1)"</span><span class="op">)</span>,</span>
+<span>                        expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                        cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                        cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                        cluster_to_show <span class="op">=</span> <span class="st">"CD8"</span>,</span>
+<span>                        group_var <span class="op">=</span> <span class="st">"group_sample_ID"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p3</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
+<span>                           expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                           marker <span class="op">=</span> <span class="st">"CD94 (KLRD1)"</span>,</span>
+<span>                           cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                           cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plots</span><span class="op">&lt;-</span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span>,<span class="va">p2</span><span class="op">)</span>,rel_widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">plots</span>,<span class="va">p3</span><span class="op">)</span>,ncol<span class="op">=</span><span class="fl">1</span>,rel_heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-40-1.png" width="700"></p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_boxplot.html">plot_marker_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                        marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD57"</span><span class="op">)</span>,</span>
+<span>                        expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                        cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                        cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                        cluster_to_show <span class="op">=</span> <span class="st">"CD8"</span>,</span>
+<span>                        facet_by_clustering <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                        group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                        sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                        fun <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group_sample_ID</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">sample_ID</span>, sep<span class="op">=</span><span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="va">p2</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                        marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD57"</span><span class="op">)</span>,</span>
+<span>                        expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                        cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                        cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                        cluster_to_show <span class="op">=</span> <span class="st">"CD8"</span>,</span>
+<span>                        group_var <span class="op">=</span> <span class="st">"group_sample_ID"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p3</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
+<span>                           expr_slot <span class="op">=</span><span class="st">"orig"</span>,</span>
+<span>                           marker <span class="op">=</span> <span class="st">"CD57"</span>,</span>
+<span>                           cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                           cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plots</span><span class="op">&lt;-</span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span>,<span class="va">p2</span><span class="op">)</span>,rel_widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">plots</span>,<span class="va">p3</span><span class="op">)</span>,ncol<span class="op">=</span><span class="fl">1</span>,rel_heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Differential_Analysis_files/figure-html/unnamed-chunk-41-1.png" width="700"></p>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -328,7 +1214,7 @@ easily export a percentage table for downstream analysis.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Lorenzo Bonaguro.</p>
+<p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -12,14 +12,10 @@ editor_options:
 
 # Getting Started
 
-This is a basic `cyCONDOR` workflow for data analysis, more detailed
-description of all `cyCONDOR` functionalists and visualization tools can
-be found in the *Articles* section. In this section we will describe how
-to load data from a folder of fcs files, how to perform dimensionality
-reduction and clustering together with some basic visualization of the
-results.
+Here we describe a basic workflow to analyse high-dimensional cytometry data with `cyCONDOR`. More detailed description of all `cyCONDOR` functionalists and visualization tools can be found in the *Articles* section. In this section we will describe how
+to load data from a folder of FCS files, how to perform dimensionality reduction and clustering together with some basic visualization of the results.
 
-We start by loading the cyCONDOR package
+We start by loading the `cyCONDOR` package.
 
 ```{r setup, warning=FALSE, message=FALSE}
 library(cyCONDOR)
@@ -27,294 +23,313 @@ library(cyCONDOR)
 
 # Loading the data
 
-With this function you import the `.fcs` files in R, the `.fcs` files should
-be all stored in a single folder *FCSpath*, and the file names should
-match one column of the annotation file.
+With `prep_fcd()` you import the `.fcs` files to your R session. The `.fcs` files should all
+be stored in a single folder *`data_path`*. Additionally an annotation table text file (*`anno_table`*) has to be provided which contains a column with the file names of the `.fcs` files and optionally addional sample information. This is an example for an *`anno_table`*:
+
+filename          | sample_id         | condition
+----------------- | ----------------- | -----------------
+exp_x_sample1.fcs | sample1           | treatment
+exp_x_sample2.fcs | sample2           | control
+
 
 **Arguments:**
 
-*`FCSpath`*= folder where the `.fcs` files are stored
+*`data_path`* = Folder where the `.fcs` files or `.csv` files are stored
 
-*`ceil`*= Number of cells to use for each file (set to a high number if
-you want to use all available events)
+*`max_cell`* = Number of cells to use for each file 
 
-*`useCSV`* = flag if the input are `.csv` files and not `.fcs`
-(experimental)
+*`useCSV`* = Flag if the input are `.csv` files and not `.fcs` 
 
-*`remove_param`* = Parameters to remove from the transformation,
-"inTime" should be kept
+*`transformation`* = Transformation to perform ("auto_logi", "arcsinh", "clr", "none")
 
-*`anno_table`* = path to the annotation table file "filename_col" = Name
-of the column containing the filename matching with the .fcs files
+*`remove_param`* = Parameters to be removed from the `fcd`, "inTime" should be kept
 
-*`seed`*= seed to be used for the randomization of the events
+*`anno_table`* = Path to the annotation table text file.
+
+*`filename_col`* = Name of the column containing the file name matching with the `.fcs`/`.csv` files
+
 
 ```{r}
-condor <- prep_fcd(FCSpath = "../.test_files/fcs/", 
-                    ceil = 1000, 
+condor <- prep_fcd(data_path = "../.test_files/fcs/", 
+                    max_cell = 1000, 
                     useCSV = FALSE, 
-                    transformation = "a", 
-                    remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "InFile"), 
+                    transformation = "auto_logi", 
+                    remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time"), 
                     anno_table = "../.test_files/metadata.csv", 
-                    filename_col = "filename",
-                    seed = 91)
+                    filename_col = "filename"
+                   )
 
 class(condor)
 ```
 
+For more details on data loading, transformation and the general structure of the `fcd` have a look at **`vignette("Data_Loading_and_Transformation")`** and **`vignette("Other_utilities")`**.
+
+
+
 # Dimensionality Reduction
 
-To reduce the complexity of the dataset we perform first dimensionality reduction, we first perform a principal component analysis (PCA) and use those coordinates for non-linear dimensionality reduction with the UMAP or tSNE algorithms. With this approach we can visualize the complexity of the dataset in a two dimensional space.
+To reduce the complexity of the data set, we first perform a principal component analysis (PCA) and use those coordinates for non-linear dimensionality reduction applying e.g. the UMAP or tSNE algorithm. See **`vignette("Dimensionality_Reduction")`** for further details and alternative methods. With this approach, we can visualize the complexity of the data set in the two dimensional space.
 
 ## PCA
 
 **Arguments:**
 
-*`fcd`* = cyCONDOR dataset
+*`fcd`* = Flow cytometry dataset
 
-*`data_slot`* = name of the data slot to use to calculate the PCA,
-original data (orig) or harmonized data (norm)
-
-*`seed`* = Seed used for the randomization steps
+*`data_slot`* = Data slot to use for the calculation, e.g. `"orig"` or batch corrected `"norm"`
 
 ```{r}
 condor <- runPCA(fcd = condor, 
-                 data_slot = "orig", 
-                 seed = 91)
+                 data_slot = "orig"
+                 )
 ```
 
 ## UMAP
 
 **Arguments:**
 
-*`fcd`* = cyCONDOR dataset
+*`fcd`* = Flow cytometry dataset
 
-*`input type`* = data to use for the calculation of the UMAP, e.g.
+*`input type`* = Data to use for the calculation of the UMAP, e.g.
 "expr" or "pca"
 
-*`data_slot`* = name of the PCA data slot to use to harmonize. If no
-prefix was added the, *orig*.
-
-*`seed`* = Seed used for the randomization steps
-
-*`top_PCA`* = Select the number of PC to use.
+*`data_slot`* = Data slot to use for the calculation, e.g. `"orig"` or batch corrected `"norm"`
 
 ```{r}
 condor <- runUMAP(fcd = condor, 
                   input_type = "pca", 
-                  data_slot = "orig", 
-                  seed = 91)
+                  data_slot = "orig"
+                  )
 ```
 
-### Visualize the UMAP 
+### UMAP Visualization
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
-            param = "group", 
-            order = T, 
-            title = "UMAP colored by group", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE)
+plot_dim_red(fcd= condor,  
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             param = "group", 
+             title = "UMAP colored by group"
+             )
 ```
 
 ## tSNE
 
 **Arguments:**
 
-*`fcd`* = cyCONDOR dataset
+*`fcd`* = Flow cytometry dataset
 
-*`input type`* = data to use for the calculation of the UMAP, e.g.
-"expr" or "pca"
+*`input type`* = Data to use for the calculation, e.g. `"expr"` or `"pca"`
 
-*`data_slot`* = name of the PCA data slot to use to harmonize. If no
-prefix was added the, *orig*.
-
-*`seed`* = Seed used for the randomization steps
-
-*`perplexity`* = Perplexity parameter for the calculation.
+*`data_slot`* = Data slot to use for the calculation, e.g. `"orig"` or batch corrected `"norm"`
 
 ```{r}
 condor <- runtSNE(fcd = condor, 
                   input_type = "pca", 
-                  data_slot = "orig", 
-                  seed = 91, 
-                  perplexity = 30)
+                  data_slot = "orig"
+                  )
 ```
 
-### Visualize the tSNE
+### tSNE visualization
 
 ```{r}
-plot_marker(data = cbind(condor$tSNE$pca_orig, condor$anno$cell_anno), 
-            param = "group", 
-            order = T, 
-            title = "tSNE colored by group", 
-            dim_red = "tSNE", 
-            facet_by_variable = FALSE)
+plot_dim_red(fcd= condor,  
+             reduction_method = "tSNE", 
+             reduction_slot = "pca_orig", 
+             param = "group", 
+             title = "tSNE colored by group"
+             )
 ```
 
 # Clustering
 
-We now group cells with similar marker expression with the Phenograph or FlowSOM clustering algorithms. 
+We group cells with similar marker expression applying the Phenograph or FlowSOM clustering algorithms. For more details see **`vignette("Clustering_and_cell_annotation")`**.
 
-## Phenograph
+## Phenograph clustering
 
 **Arguments:**
 
-*`fcd`* = cyCONDOR dataset.
+*`fcd`* = Flow cytometry dataset
 
-*`input type`* = data to use for the calculation of the UMAP, e.g. "pca"
-(suggested option).
+*`input type`* = Data to use for the calculation of the UMAP, e.g. `"pca"`
 
-*`data_slot`* = name of the PCA data slot to use to harmonize. If no
-prefix was added the, *orig*.
+*`data_slot`* = Data slot to use for the calculation, e.g. `"orig"` or `"norm"`
 
-*`k`* = K value used for clustering.
-
-*`seed`* = Seed used for the randomization steps.
+*`k`* = K value used for clustering
 
 ```{r}
 condor <- runPhenograph(fcd = condor, 
                         input_type = "pca", 
                         data_slot = "orig", 
-                        k = 60, 
-                        seed = 91)
+                        k = 60
+                        )
 ```
 
-### Visualize Phenograph results
+### Visualize Phenograph clustering
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
-            param = "Phenograph", 
-            order = T, 
-            title = "UMAP colored by Phenograph clustering", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE)
+plot_dim_red(fcd= condor,  
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             cluster_slot = "phenograph_pca_orig_k_60",
+             param = "Phenograph",
+             title = "UMAP colored by Phenograph clustering"
+             )
 ```
 
-## FlowSOM
+## FlowSOM clustering
 
 **Arguments:**
 
-*`fcd`* = cyCONDOR dataset.
+*`fcd`* = Flow cytometry dataset
 
-*`input type`* = data to use for the calculation of the UMAP, e.g. "pca"
-(suggested option).
+*`input type`* = Data to use for the calculation, e.g. `"expr"` or `"pca"`.
 
-*`data_slot`* = name of the PCA data slot to use to harmonize. If no
-prefix was added the, *orig*.
+*`data_slot`* = Data slot to use for the calculation, e.g. `"orig"` or `"norm"`
 
-*`num_clusters`* = Number of final clusters.
+*`nClusters`* = Number of final clusters
 
-*`seed`* = Seed used for the randomization steps.
 
 ```{r}
 condor <- runFlowSOM(fcd = condor, 
                      input_type = "expr", 
                      data_slot = "orig", 
-                     num_clusters = 5, 
-                     seed = 91, 
-                     prefix = NULL, 
-                     ret_model = TRUE)
+                     nClusters = 5
+                     )
 ```
 
-### Visualize FlowSOM results
+### Visualize FlowSOM clustering
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$FlowSOM_expr_orig_k_5), 
-            param = "FlowSOM", 
-            order = T, 
-            title = "UMAP colored by Flowsom clustering", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE)
+plot_dim_red(fcd= condor,  
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             cluster_slot = "FlowSOM_expr_orig_k_5",
+             param = "FlowSOM",
+             title = "UMAP colored by FlowSOM clustering"
+             )
 ```
 
-# Data visualization and statistics
 
-We can now visualize the results or the analysi and compare different experimental groups.
+
+# Data visualization 
+
+We can now further visualize our data set to compare the different experimental groups. Below are some examples, for more visualization options check out **`vignette("Data_Visualization")`**.
 
 ## Confusion Matrix
 
 **Arguments:**
 
-*`variable`* = Variable to by used to calculate the confusion.
+*`fcd`* = Flow cytometry data set
 
-*`group`* = Grouping to calculate the relative contribution to the
-variable.
+*`cluster_slot`* = String specifying which clustering slot to use to find variable specified in `cluster_var`
 
-*`title`* = Title for the plot.
+*`cluster_var`* = String specifying variable name in `cluster_slot` that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
 
-```{r}
-confusion_HM(variables = condor$clustering$Phenograph_pca_orig_k_60$Phenograph, 
-             group = condor$anno$cell_anno$group, size = 30, 
-             title = "Confusion Matrix - Metaclusters")
+*`group_var`* = String indicating variable name in cell_anno that defines grouping variable to be used (x-axis), e.g. group or sample ID
+
+```{r, fig.width=7, fig.height=3}
+plot_confusion_HM(fcd = condor,
+                  cluster_slot = "phenograph_pca_orig_k_60", 
+                  cluster_var = "Phenograph",
+                  group_var = "group", 
+                  size = 30
+                  )
 ```
 
-## Barplot Frequencies
+## Barplot of cluster frequencies
 
 **Arguments:**
 
-*`x_axes`* = Grouping of the x axes.
+*`fcd`* = Flow cytometry data set
 
-*`color`* = Stratification to use on the stacked barplot.
+*`cluster_slot`* = String specifying which clustering slot to use to find variable specified in `cluster_var`
 
-*`title`* = Title for the plot.
+*`cluster_var`* = String specifying variable name in `cluster_slot` that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
 
-*`legend_title`* = Title for the legend.
+*`group_var`* = String indicating variable name in cell_anno that defines grouping variable to be used (x-axis), e.g. group or sample ID
+
+*`title`* = Title of the plot, default is "Counts"
 
 ```{r}
-barplot_frequency(x_axes = condor$anno$cell_anno$group, 
-                  colour = condor$clustering$Phenograph_pca_orig_k_60$Phenograph, 
-                  title = "Stacked barplot of metaclusters frequencies", 
-                  legend_title = "Phenograph Cluster - Metaclusters")
+plot_frequency_barplot(fcd = condor,
+                    cluster_slot = "phenograph_pca_orig_k_60",
+                    cluster_var = "Phenograph",
+                    group_var = "group",
+                    title = "Stacked barplot of cluster frequencies" 
+                    )
 ```
 
-## Expression HM
+## Heatmap of protein expression 
 
 **Arguments:**
 
-*`input`* = cbind of the expression table to be used the the grouping
-(eg. clustering).
+*`fcd`* = Flow cytometry data set
 
-*`group`* = column name to be used for the grouping (eg. "Phenograph" or
-"group")
+*`expr_slot`* =  `expr_slot` from which to take marker expression values, default is `"orig"`
 
-*`maxvalue`* = Max scaled expression to be used for the color coding.
+*`cluster_slot`* = String specifying which clustering slot to use to find variable specified in `cluster_var`
 
-*`title`* = Title for the plot.
+*`cluster_var`* = String specifying variable name in `cluster_slot` that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
 
 ```{r, fig.height=5}
-HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
-           group = "Phenograph",
-           maxvalue = NULL, 
-           title = "Marker expression in metaclusters")
+plot_marker_HM(fcd = condor,
+               expr_slot = "orig",
+               marker_to_exclude = c("FSC-A","SSC-A"),
+               cluster_slot = "phenograph_pca_orig_k_60",
+               cluster_var = "Phenograph"
+               )
 ```
 
-## Boxplot and statistics
+## Boxplot of cluster frequency 
 
 **Arguments:**
 
-*`annotation`* = Sample annotation to be used for the plot.
+*`fcd`* = Flow cytometry data set
 
-*`sample_var`* = Column name containing the sample IDs.
+*`cluster_slot`* = String specifying which clustering slot to use to find variable specified in `cluster_var`
 
-*`group_var`* = Column name defining the grouping for plotting.
+*`cluster_var`* = String specifying variable name in `cluster_slot` that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels)
 
-*`variable`* = Variable used to stratify the plotting.
+*`sample_var`* = String indicating variable name in cell_anno that defines sample IDs to be used
 
-*`numeric`* = Logical if the grouping is numeric.
+*`group_var`* = String indicating variable name in cell_anno that should be used to group samples in `sample_var`
 
-*`test.type`* = Test to be performed. (see need some development here)
+*`numeric`* = Logical, if `TRUE` numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if `FALSE` alphabetical ordering is applied.
 
-```{r}
-box_stat <- boxplot_and_stats(annotation = condor$anno$cell_anno, 
-                              sample_var = "sample_ID", 
-                              group_var = "group", 
-                              variable = condor$clustering$Phenograph_pca_orig_k_60$Phenograph, 
-                              numeric = FALSE, 
-                              test.type = "t.test")
+```{r, fig.width=2, fig.height=4}
+plots <- plot_frequency_boxplot(fcd = condor,
+                                cluster_slot = "phenograph_pca_orig_k_60", 
+                                cluster_var = "Phenograph",
+                                sample_var = "sample_ID", 
+                                group_var = "group", 
+                                numeric = T
+                                )
 
-box_stat$plot$Cluster_7
+plots$Cluster_7
 ```
+
+
+
+# What is next?
+
+Depending on your data set `cyCONDOR` offers various options to continue with your analysis:
+
+  - Try out more data visualization options: **`vignette("Data_Visualization")`**
+  
+  - Exploratory differential analysis of cell population frequencies and marker expression: **`vignette("Differential_Analysis"`**
+  
+  - See **`vignette("Batch_correction")`** for more details on how to handle batch effects within `cyCONDOR`
+  
+  - If you have a high number of samples recorded with the same panel, check out our data projection workflow for conveniently assigning clusters and metaclusters: **`vignette("Data_Projection")`**
+  
+  - Train a machine learning classifier: **`vignette("Machine_learning_classifier)`**
+  
+  - Calculate cell trajectories and pseudotime: **`vignette("Pseudotime_analysis")`**
+  
+  - Import your FlowJo gating hierarchy into your `fcd`: **`vignette("Load_a_FlowJo_workspace.Rmd")`**
+  
+
 
 # Session Info
 
@@ -323,3 +338,5 @@ info <- sessionInfo()
 
 info
 ```
+
+

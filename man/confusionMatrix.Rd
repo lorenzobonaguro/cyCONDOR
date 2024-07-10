@@ -20,3 +20,6 @@ Calculate a confusion matrix
 \details{
 confusionMatrix
 }
+\references{
+code for this function was obtained from the R package ArchR (https://github.com/GreenleafLab/ArchR/blob/master/R/HelperUtils.R)
+}

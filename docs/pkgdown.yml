@@ -10,12 +10,14 @@ articles:
   Data_Visualization: Data_Visualization.html
   Differential_Analysis: Differential_Analysis.html
   Dimensionality_Reduction: Dimensionality_Reduction.html
+  How_to_run_cyCONDOR_as_container: How_to_run_cyCONDOR_as_container.html
   Load_a_FlowJo_workspace: Load_a_FlowJo_workspace.html
   Machine_learning_classifier: Machine_learning_classifier.html
   Other_utilities: Other_utilities.html
+  Prepare_data_for_cyCONDOR_analysis: Prepare_data_for_cyCONDOR_analysis.html
   Pseudotime_analysis: Pseudotime_analysis.html
   cyCONDOR: cyCONDOR.html
-last_built: 2024-02-17T07:44Z
+last_built: 2024-07-10T09:55Z
 urls:
   reference: https://lorenzobonaguro.github.io/cyCONDOR/reference
   article: https://lorenzobonaguro.github.io/cyCONDOR/articles

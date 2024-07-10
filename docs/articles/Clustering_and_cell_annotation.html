@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,18 +44,20 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a>
+    <a class="dropdown-item" href="../articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a>
     <a class="dropdown-item" href="../articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a>
     <a class="dropdown-item" href="../articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a>
     <a class="dropdown-item" href="../articles/Dimensionality_Reduction.html">Dimensionality Reduction</a>
     <a class="dropdown-item" href="../articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a>
     <a class="dropdown-item" href="../articles/Batch_correction.html">Batch correction</a>
     <a class="dropdown-item" href="../articles/Data_Visualization.html">Data Visualization</a>
-    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis</a>
+    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a>
     <a class="dropdown-item" href="../articles/Pseudotime_analysis.html">Pseudotime analysis</a>
     <a class="dropdown-item" href="../articles/Data_Projection.html">Data Projection</a>
     <a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a>
     <a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a>
-    <a class="dropdown-item" href="../articles/Other_utilities.html">Other utilities</a>
+    <a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a>
   </div>
 </li>
 <li class="nav-item">
@@ -96,26 +98,59 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lorenzobonaguro/condor" class="external-link">cyCONDOR</a></span><span class="op">)</span></span></code></pre></div>
-<p>In this vignette we showcase some <code>cyCONDOR</code> functions for
-clustering and cell annotation</p>
+<p>In this vignette we showcase <code>cyCONDOR</code> functions for
+clustering and cell annotation.</p>
 <div class="section level2">
-<h2 id="load-example-cycondor-object">Load example cyCONDOR object<a class="anchor" aria-label="anchor" href="#load-example-cycondor-object"></a>
+<h2 id="load-an-example-dataset">Load an example dataset<a class="anchor" aria-label="anchor" href="#load-an-example-dataset"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/condor_example.rds"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/conodr_example_016.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>cyCONDOR</code> ecosystem provides different clustering
-methods, Phenograph and FlowSOM. It also provide convenient functions
-to</p>
+methods, Phenograph and FlowSOM. It also provides a convenient way to
+assign cell annotations to the clustered object.</p>
+<p>The clustering functions take the <code>condor</code> object as
+<code>fcd</code> input and the matrix to be used for the calculation of
+the clusters as <code>data_slot</code> input (e.g. <code>orig</code> or
+<code>norm</code>). We recommend using the PCA coordinates as
+<code>input_type</code> to compensate for fluctuations in the expression
+data. By defining a <code>prefix</code> which gets incorporated into the
+slot name of the output, each function can be run with different
+settings and the results will be saved accordingly. The functions return
+a fcd with an additional data frame corresponding to the calculated
+clustering saved in <code>fcd$clustering</code>. The name of the output
+consists of the <code>prefix</code> (if given), the clustering method
+and the <code>data_slot</code>.</p>
+<p>Additionally, when using the expression matrix as input, the user has
+the option to specifically state which markers should be used for the
+calculation by listing them under <code>markers</code>. The list can be
+either written out manually or be extracted directly from the
+<code>condor</code> object using the implemented functions
+<code>measured_markers</code> and <code>used_markers</code> By default
+all available markers from the condor object are used. If the
+<code>discard</code> option is set to TRUE, all markers
+<strong>except</strong> the ones listed under <code>markers</code> are
+used for calculation. This enables the exclusion of single markers. When
+using <code>pca</code> as input is possible to specify the number of PCs
+to be used.</p>
 </div>
 <div class="section level2">
 <h2 id="phenograph-clustering">Phenograph clustering<a class="anchor" aria-label="anchor" href="#phenograph-clustering"></a>
 </h2>
-<p>Phenograpg takes as input the <code>condor</code> object and the
-matrix to be used to the calculation of the clusters. We reccoment using
-the PCA coordinates as for non-linear dimensionality reduction. The
-<code>k</code> parameter define the number of nearest neighbors to be
-used for the nearest-neighbor graph. A seed can be set to ensure
+<p><code>runPhenograph</code> is based on the package
+<code>Rphenoannoy</code>, an optimized version of
+<code>Rphenograph</code>. This clustering method is designed for
+high-dimensional single-cell data analysis incorporating the approximate
+k-nearest neighbor (kNN) technique for graph construction. The
+<code>k</code> parameter defines the number of nearest neighbors to be
+used for the nearest-neighbor graph, with higher values resulting in
+fewer clusters. It can be useful to try out different settings here to
+get the desired cluster resolution. A seed can be set to ensure
 reproducibility of the clustering.</p>
+<p>For more details see: Chen H (2015). “Rphenograph: R implementation
+of the phenograph algorithm”. R package version 0.99.1. <a href="https://github.com/JinmiaoChenLab/Rphenograph" class="external-link uri">https://github.com/JinmiaoChenLab/Rphenograph</a> Stuchly J
+(2020). “Rphenoannoy: R implementation of the phenograph algorithm -
+approximate KNN modification, based on Rphenograph package”. R package
+version 0.1.0. <a href="https://github.com/stuchly/Rphenoannoy" class="external-link uri">https://github.com/stuchly/Rphenoannoy</a></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPhenograph.html">runPhenograph</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                        input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
@@ -125,101 +160,110 @@ reproducibility of the clustering.</p>
 <pre><code><span><span class="co">## Run Rphenograph starts:</span></span>
 <span><span class="co">##   -Input data of 59049 rows and 28 columns</span></span>
 <span><span class="co">##   -k is set to 60</span></span></code></pre>
-<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 38.931 s</span></span>
+<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 47.457 s</span></span>
 <span><span class="co">##   Compute jaccard coefficient between nearest-neighbor sets...</span></span></code></pre>
 <pre><code><span><span class="co">## Presorting knn...</span></span></code></pre>
-<pre><code><span><span class="co">## presorting DONE ~ 2.956 s</span></span>
+<pre><code><span><span class="co">## presorting DONE ~ 2.883 s</span></span>
 <span><span class="co">##   Start jaccard</span></span>
-<span><span class="co">## DONE ~ 3.261 s</span></span>
-<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 2.146 s</span></span>
-<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 16.744 s</span></span></code></pre>
-<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 61.082s.</span></span></code></pre>
+<span><span class="co">## DONE ~ 3.314 s</span></span>
+<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 3.249 s</span></span>
+<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 12.549 s</span></span></code></pre>
+<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 66.569s.</span></span></code></pre>
 <pre><code><span><span class="co">##   Return a community class</span></span>
-<span><span class="co">##   -Modularity value: 0.8727603 </span></span>
-<span><span class="co">##   -Number of clusters: 23</span></span></code></pre>
+<span><span class="co">##   -Modularity value: 0.8749651 </span></span>
+<span><span class="co">##   -Number of clusters: 25</span></span></code></pre>
+<p>The output of the phenograph clustering can be accessed with
+<code>condor$clustering$phenograph_pca_orig_k_60</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="flowsom-clustering">FlowSOM clustering<a class="anchor" aria-label="anchor" href="#flowsom-clustering"></a>
 </h2>
-<p>FlowsOM provide a fast algorithm to cluster a high number of cells.
-The FlowSOM function takes the condor object as input and the matrix to
-be used to the calculation of the cluters. We reccoment using the PCA
-coordinates as for non-linear dimensionality reduction. The
-<code>num_cluster</code> parameter defines the final number of clusters
-to be generated. A seed can be set to ensure reproducibility of the
-clustering.</p>
+<p><code>runFlowSOM</code> provides a fast algorithm to cluster a high
+number of cells. The <code>nClusters</code> parameter defines the final
+number of clusters to be generated. A seed can be set to ensure
+reproducibility of the clustering.</p>
+<p>For more details see: Van Gassen S et al. (2015) “FlowSOM: Using
+self-organizing maps for visualization and interpretation of cytometry
+data.” Cytom Part J Int Soc Anal Cytol 87: 636-645. <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625" class="external-link uri">https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625</a></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFlowSOM.html">runFlowSOM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                     input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
 <span>                     data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
-<span>                     num_clusters <span class="op">=</span> <span class="fl">15</span>, </span>
+<span>                     nClusters <span class="op">=</span> <span class="fl">15</span>, </span>
 <span>                     seed <span class="op">=</span> <span class="fl">91</span>, </span>
 <span>                     ret_model <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Building SOM</span></span></code></pre>
 <pre><code><span><span class="co">## Mapping data to SOM</span></span></code></pre>
 <pre><code><span><span class="co">## Building MST</span></span></code></pre>
+<p>The output of the FlowSOM clustering can be accessed with
+<code>condor$clustering$FlowSOM_pca_orig_k_60</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="metaclustering">Metaclustering<a class="anchor" aria-label="anchor" href="#metaclustering"></a>
 </h2>
 <p>Each cluster can be now labeled according to the specific cell type
-with the metaclustering function. This function takes as input the
-condor object and the clustering slot to be names. The name_out is the
-name of the new column containing the cell types. The metacluster
-parameter is a named vector where the content is the selected cell types
-and the names are the original cluster names.</p>
+with the <code>metaclustering</code> function. This function takes the
+condor object (<code>fcd</code>) and the <code>cluster_slot</code> as
+input. The <code>cluster_var_new</code> parameter names the new column
+containing the cell types. The <code>metacluster</code> parameter is a
+named vector acting as translation table to annotate each cell
+cluster.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/metaclustering.html">metaclustering</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
-<span>                         clustering <span class="op">=</span> <span class="st">"Phenograph_pca_orig_k_60"</span>, </span>
-<span>                         name_col <span class="op">=</span> <span class="st">"Phenograph"</span>, </span>
-<span>                         name_out <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
-<span>                         metaclusters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>, </span>
-<span>                                          <span class="st">"2"</span> <span class="op">=</span> <span class="st">"B cells"</span>, </span>
-<span>                                          <span class="st">"3"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA+ CD127-"</span>, </span>
-<span>                                          <span class="st">"4"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA+ CD127-"</span>, </span>
-<span>                                          <span class="st">"5"</span> <span class="op">=</span> <span class="st">"NK bright"</span>, </span>
-<span>                                          <span class="st">"6"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA- CD127+"</span>, </span>
-<span>                                          <span class="st">"7"</span> <span class="op">=</span> <span class="st">"CD4 CD45RA+ CD127+"</span>, </span>
-<span>                                          <span class="st">"8"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA+ CD127+"</span>, </span>
-<span>                                          <span class="st">"9"</span> <span class="op">=</span> <span class="st">"CD4 CD127-"</span>, </span>
-<span>                                          <span class="st">"10"</span> <span class="op">=</span> <span class="st">"CD16- Monocytes"</span>, </span>
-<span>                                          <span class="st">"11"</span> <span class="op">=</span> <span class="st">"CD4 CD45RA- CD127+"</span>, </span>
-<span>                                          <span class="st">"12"</span> <span class="op">=</span> <span class="st">"Unconventional T cells"</span>, </span>
-<span>                                          <span class="st">"13"</span> <span class="op">=</span> <span class="st">"NK dim"</span>,</span>
-<span>                                          <span class="st">"14"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>,</span>
-<span>                                          <span class="st">"15"</span> <span class="op">=</span> <span class="st">"pDCs"</span>,</span>
-<span>                                          <span class="st">"16"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>,</span>
-<span>                                          <span class="st">"17"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>,</span>
-<span>                                          <span class="st">"18"</span> <span class="op">=</span> <span class="st">"CD4 CD25+"</span>,</span>
-<span>                                          <span class="st">"19"</span> <span class="op">=</span> <span class="st">"Unconventional T cells"</span>,</span>
-<span>                                          <span class="st">"20"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA- CD127+"</span>,</span>
-<span>                                          <span class="st">"21"</span> <span class="op">=</span> <span class="st">"Basophils"</span>,</span>
-<span>                                          <span class="st">"22"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA- CD127+"</span>,</span>
-<span>                                          <span class="st">"23"</span> <span class="op">=</span> <span class="st">"NK bright"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                         cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                         cluster_var <span class="op">=</span> <span class="st">"Phenograph"</span>, </span>
+<span>                         cluster_var_new <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                         metaclusters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>,</span>
+<span>                                          <span class="st">"2"</span> <span class="op">=</span> <span class="st">"CD4 CD45RA+ CD127+"</span>,</span>
+<span>                                          <span class="st">"3"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA+ CD127+"</span>, </span>
+<span>                                          <span class="st">"4"</span> <span class="op">=</span> <span class="st">"NK dim"</span>,</span>
+<span>                                          <span class="st">"5"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA+ CD127-"</span>,</span>
+<span>                                          <span class="st">"6"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>,</span>
+<span>                                          <span class="st">"7"</span> <span class="op">=</span> <span class="st">"Unconventional T cells"</span>, </span>
+<span>                                          <span class="st">"8"</span> <span class="op">=</span> <span class="st">"CD4 CD45RA- CD127+"</span>,</span>
+<span>                                          <span class="st">"9"</span> <span class="op">=</span> <span class="st">"CD16+ Monocytes"</span>,</span>
+<span>                                          <span class="st">"10"</span> <span class="op">=</span> <span class="st">"CD4 CD127-"</span>,</span>
+<span>                                          <span class="st">"11"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>, </span>
+<span>                                          <span class="st">"12"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA- CD127+"</span>, </span>
+<span>                                          <span class="st">"13"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA- CD127+"</span>,</span>
+<span>                                          <span class="st">"14"</span> <span class="op">=</span> <span class="st">"NK bright"</span>,</span>
+<span>                                          <span class="st">"15"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA+ CD127-"</span>,</span>
+<span>                                          <span class="st">"16"</span> <span class="op">=</span> <span class="st">"CD4 CD25+"</span>,</span>
+<span>                                          <span class="st">"17"</span> <span class="op">=</span> <span class="st">"B cells"</span>,</span>
+<span>                                          <span class="st">"18"</span> <span class="op">=</span> <span class="st">"Unconventional T cells"</span>,</span>
+<span>                                          <span class="st">"19"</span> <span class="op">=</span> <span class="st">"Classical Monocytes"</span>,</span>
+<span>                                          <span class="st">"20"</span> <span class="op">=</span> <span class="st">"pDCs"</span>,</span>
+<span>                                          <span class="st">"21"</span> <span class="op">=</span> <span class="st">"CD8 CD45RA+ CD127+"</span>,</span>
+<span>                                          <span class="st">"22"</span> <span class="op">=</span> <span class="st">"Basophils"</span>,</span>
+<span>                                          <span class="st">"23"</span> <span class="op">=</span> <span class="st">"Mixed"</span>,</span>
+<span>                                          <span class="st">"24"</span> <span class="op">=</span> <span class="st">"B cells"</span>,</span>
+<span>                                          <span class="st">"25"</span> <span class="op">=</span> <span class="st">"NK bright"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    cluster            metacluster</span></span>
 <span><span class="co">## 1        1    Classical Monocytes</span></span>
-<span><span class="co">## 2        2                B cells</span></span>
-<span><span class="co">## 3        3     CD8 CD45RA+ CD127-</span></span>
-<span><span class="co">## 4        4     CD8 CD45RA+ CD127-</span></span>
-<span><span class="co">## 5        5              NK bright</span></span>
-<span><span class="co">## 6        6     CD8 CD45RA- CD127+</span></span>
-<span><span class="co">## 7        7     CD4 CD45RA+ CD127+</span></span>
-<span><span class="co">## 8        8     CD8 CD45RA+ CD127+</span></span>
-<span><span class="co">## 9        9             CD4 CD127-</span></span>
-<span><span class="co">## 10      10        CD16- Monocytes</span></span>
-<span><span class="co">## 11      11     CD4 CD45RA- CD127+</span></span>
-<span><span class="co">## 12      12 Unconventional T cells</span></span>
-<span><span class="co">## 13      13                 NK dim</span></span>
-<span><span class="co">## 14      14    Classical Monocytes</span></span>
-<span><span class="co">## 15      15                   pDCs</span></span>
-<span><span class="co">## 16      16    Classical Monocytes</span></span>
-<span><span class="co">## 17      17    Classical Monocytes</span></span>
-<span><span class="co">## 18      18              CD4 CD25+</span></span>
-<span><span class="co">## 19      19 Unconventional T cells</span></span>
-<span><span class="co">## 20      20     CD8 CD45RA- CD127+</span></span>
-<span><span class="co">## 21      21              Basophils</span></span>
-<span><span class="co">## 22      22     CD8 CD45RA- CD127+</span></span>
-<span><span class="co">## 23      23              NK bright</span></span></code></pre>
+<span><span class="co">## 2        2     CD4 CD45RA+ CD127+</span></span>
+<span><span class="co">## 3        3     CD8 CD45RA+ CD127+</span></span>
+<span><span class="co">## 4        4                 NK dim</span></span>
+<span><span class="co">## 5        5     CD8 CD45RA+ CD127-</span></span>
+<span><span class="co">## 6        6    Classical Monocytes</span></span>
+<span><span class="co">## 7        7 Unconventional T cells</span></span>
+<span><span class="co">## 8        8     CD4 CD45RA- CD127+</span></span>
+<span><span class="co">## 9        9        CD16+ Monocytes</span></span>
+<span><span class="co">## 10      10             CD4 CD127-</span></span>
+<span><span class="co">## 11      11    Classical Monocytes</span></span>
+<span><span class="co">## 12      12     CD8 CD45RA- CD127+</span></span>
+<span><span class="co">## 13      13     CD8 CD45RA- CD127+</span></span>
+<span><span class="co">## 14      14              NK bright</span></span>
+<span><span class="co">## 15      15     CD8 CD45RA+ CD127-</span></span>
+<span><span class="co">## 16      16              CD4 CD25+</span></span>
+<span><span class="co">## 17      17                B cells</span></span>
+<span><span class="co">## 18      18 Unconventional T cells</span></span>
+<span><span class="co">## 19      19    Classical Monocytes</span></span>
+<span><span class="co">## 20      20                   pDCs</span></span>
+<span><span class="co">## 21      21     CD8 CD45RA+ CD127+</span></span>
+<span><span class="co">## 22      22              Basophils</span></span>
+<span><span class="co">## 23      23                  Mixed</span></span>
+<span><span class="co">## 24      24                B cells</span></span>
+<span><span class="co">## 25      25              NK bright</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
@@ -251,120 +295,130 @@ and the names are the original cluster names.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] cyCONDOR_0.1.5</span></span>
+<span><span class="co">## [1] cyCONDOR_0.1.6</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] fs_1.6.3                    destiny_3.14.0             </span></span>
-<span><span class="co">##   [3] matrixStats_1.1.0           bitops_1.0-7               </span></span>
-<span><span class="co">##   [5] devtools_2.4.5              lubridate_1.9.3            </span></span>
-<span><span class="co">##   [7] RColorBrewer_1.1-3          doParallel_1.0.17          </span></span>
-<span><span class="co">##   [9] ggsci_3.0.0                 Rgraphviz_2.44.0           </span></span>
-<span><span class="co">##  [11] profvis_0.3.8               tools_4.3.1                </span></span>
-<span><span class="co">##  [13] backports_1.4.1             utf8_1.2.4                 </span></span>
-<span><span class="co">##  [15] R6_2.5.1                    urlchecker_1.0.1           </span></span>
-<span><span class="co">##  [17] withr_2.5.1                 sp_2.1-1                   </span></span>
-<span><span class="co">##  [19] prettyunits_1.2.0           gridExtra_2.3              </span></span>
-<span><span class="co">##  [21] cli_3.6.1                   Biobase_2.60.0             </span></span>
-<span><span class="co">##  [23] textshaping_0.3.7           ggcyto_1.28.1              </span></span>
-<span><span class="co">##  [25] sass_0.4.7                  robustbase_0.99-0          </span></span>
-<span><span class="co">##  [27] readr_2.1.4                 randomForest_4.7-1.1       </span></span>
-<span><span class="co">##  [29] askpass_1.2.0               proxy_0.4-27               </span></span>
-<span><span class="co">##  [31] slingshot_2.8.0             pkgdown_2.0.7              </span></span>
-<span><span class="co">##  [33] systemfonts_1.0.5           foreign_0.8-85             </span></span>
-<span><span class="co">##  [35] colorRamps_2.3.1            harmony_1.1.0              </span></span>
-<span><span class="co">##  [37] parallelly_1.36.0           sessioninfo_1.2.2          </span></span>
-<span><span class="co">##  [39] readxl_1.4.3                TTR_0.24.3                 </span></span>
-<span><span class="co">##  [41] flowCore_2.12.2             rstudioapi_0.15.0          </span></span>
-<span><span class="co">##  [43] generics_0.1.3              shape_1.4.6                </span></span>
-<span><span class="co">##  [45] car_3.1-2                   dplyr_1.1.3                </span></span>
-<span><span class="co">##  [47] Matrix_1.6-1.1              RProtoBufLib_2.12.1        </span></span>
-<span><span class="co">##  [49] ggbeeswarm_0.7.2            fansi_1.0.5                </span></span>
-<span><span class="co">##  [51] S4Vectors_0.38.2            abind_1.4-5                </span></span>
-<span><span class="co">##  [53] lifecycle_1.0.3             scatterplot3d_0.3-44       </span></span>
-<span><span class="co">##  [55] yaml_2.3.7                  carData_3.0-5              </span></span>
-<span><span class="co">##  [57] SummarizedExperiment_1.30.2 recipes_1.0.8              </span></span>
-<span><span class="co">##  [59] Rtsne_0.16                  grid_4.3.1                 </span></span>
-<span><span class="co">##  [61] promises_1.2.1              crayon_1.5.2               </span></span>
-<span><span class="co">##  [63] miniUI_0.1.1.1              lattice_0.22-5             </span></span>
-<span><span class="co">##  [65] cowplot_1.1.1               pillar_1.9.0               </span></span>
-<span><span class="co">##  [67] knitr_1.44                  GenomicRanges_1.52.1       </span></span>
-<span><span class="co">##  [69] boot_1.3-28.1               future.apply_1.11.0        </span></span>
-<span><span class="co">##  [71] codetools_0.2-19            glue_1.6.2                 </span></span>
-<span><span class="co">##  [73] pcaMethods_1.92.0           data.table_1.14.8          </span></span>
-<span><span class="co">##  [75] remotes_2.4.2.1             vcd_1.4-11                 </span></span>
-<span><span class="co">##  [77] png_0.1-8                   vctrs_0.6.4                </span></span>
-<span><span class="co">##  [79] cellranger_1.1.0            gtable_0.3.4               </span></span>
-<span><span class="co">##  [81] Rphenoannoy_0.1.0           cachem_1.0.8               </span></span>
-<span><span class="co">##  [83] gower_1.0.1                 xfun_0.40                  </span></span>
-<span><span class="co">##  [85] princurve_2.1.6             S4Arrays_1.0.6             </span></span>
-<span><span class="co">##  [87] mime_0.12                   prodlim_2023.08.28         </span></span>
-<span><span class="co">##  [89] RcppEigen_0.3.3.9.4         ConsensusClusterPlus_1.64.0</span></span>
-<span><span class="co">##  [91] survival_3.5-7              timeDate_4022.108          </span></span>
-<span><span class="co">##  [93] pheatmap_1.0.12             SingleCellExperiment_1.22.0</span></span>
-<span><span class="co">##  [95] iterators_1.0.14            CytoDx_1.20.0              </span></span>
-<span><span class="co">##  [97] cytolib_2.12.1              hardhat_1.3.0              </span></span>
-<span><span class="co">##  [99] lava_1.7.3                  ellipsis_0.3.2             </span></span>
-<span><span class="co">## [101] ipred_0.9-14                ncdfFlow_2.46.0            </span></span>
-<span><span class="co">## [103] nlme_3.1-163                usethis_2.2.2              </span></span>
-<span><span class="co">## [105] xts_0.13.1                  GenomeInfoDb_1.36.4        </span></span>
-<span><span class="co">## [107] rprojroot_2.0.3             bslib_0.5.1                </span></span>
-<span><span class="co">## [109] irlba_2.3.5.1               vipor_0.4.5                </span></span>
-<span><span class="co">## [111] Rphenograph_0.99.1          rpart_4.1.21               </span></span>
-<span><span class="co">## [113] colorspace_2.1-0            BiocGenerics_0.46.0        </span></span>
-<span><span class="co">## [115] Hmisc_5.1-1                 flowWorkspace_4.12.2       </span></span>
-<span><span class="co">## [117] nnet_7.3-19                 ggrastr_1.0.2              </span></span>
-<span><span class="co">## [119] tidyselect_1.2.0            smoother_1.1               </span></span>
-<span><span class="co">## [121] processx_3.8.2              compiler_4.3.1             </span></span>
-<span><span class="co">## [123] curl_5.1.0                  glmnet_4.1-8               </span></span>
-<span><span class="co">## [125] graph_1.78.0                htmlTable_2.4.2            </span></span>
-<span><span class="co">## [127] desc_1.4.2                  DelayedArray_0.26.7        </span></span>
-<span><span class="co">## [129] checkmate_2.3.0             scales_1.2.1               </span></span>
-<span><span class="co">## [131] DEoptimR_1.1-3              lmtest_0.9-40              </span></span>
-<span><span class="co">## [133] hexbin_1.28.3               RBGL_1.76.0                </span></span>
-<span><span class="co">## [135] callr_3.7.3                 stringr_1.5.0              </span></span>
-<span><span class="co">## [137] digest_0.6.33               rmarkdown_2.25             </span></span>
-<span><span class="co">## [139] XVector_0.40.0              htmltools_0.5.6.1          </span></span>
-<span><span class="co">## [141] pkgconfig_2.0.3             base64enc_0.1-3            </span></span>
-<span><span class="co">## [143] umap_0.2.10.0               sparseMatrixStats_1.12.2   </span></span>
-<span><span class="co">## [145] MatrixGenerics_1.12.3       fastmap_1.1.1              </span></span>
-<span><span class="co">## [147] rlang_1.1.1                 Rmisc_1.5.1                </span></span>
-<span><span class="co">## [149] htmlwidgets_1.6.2           ggthemes_4.2.4             </span></span>
-<span><span class="co">## [151] shiny_1.7.5.1               DelayedMatrixStats_1.22.6  </span></span>
-<span><span class="co">## [153] farver_2.1.1                jquerylib_0.1.4            </span></span>
-<span><span class="co">## [155] zoo_1.8-12                  jsonlite_1.8.7             </span></span>
-<span><span class="co">## [157] ModelMetrics_1.2.2.2        RCurl_1.98-1.13            </span></span>
-<span><span class="co">## [159] magrittr_2.0.3              Formula_1.2-5              </span></span>
-<span><span class="co">## [161] GenomeInfoDbData_1.2.10     munsell_0.5.0              </span></span>
-<span><span class="co">## [163] Rcpp_1.0.11                 ggnewscale_0.4.9           </span></span>
-<span><span class="co">## [165] TrajectoryUtils_1.8.0       reticulate_1.34.0          </span></span>
-<span><span class="co">## [167] stringi_1.7.12              pROC_1.18.5                </span></span>
-<span><span class="co">## [169] zlibbioc_1.46.0             MASS_7.3-60                </span></span>
-<span><span class="co">## [171] plyr_1.8.9                  pkgbuild_1.4.2             </span></span>
-<span><span class="co">## [173] ggrepel_0.9.4               parallel_4.3.1             </span></span>
-<span><span class="co">## [175] listenv_0.9.0               splines_4.3.1              </span></span>
-<span><span class="co">## [177] hms_1.1.3                   ps_1.7.5                   </span></span>
-<span><span class="co">## [179] igraph_1.5.1                ggpubr_0.6.0               </span></span>
-<span><span class="co">## [181] ranger_0.16.0               ggsignif_0.6.4             </span></span>
-<span><span class="co">## [183] RcppHNSW_0.5.0              reshape2_1.4.4             </span></span>
-<span><span class="co">## [185] stats4_4.3.1                pkgload_1.3.3              </span></span>
-<span><span class="co">## [187] XML_3.99-0.15               evaluate_0.22              </span></span>
-<span><span class="co">## [189] rpart.plot_3.1.1            laeken_0.5.2               </span></span>
-<span><span class="co">## [191] tweenr_2.0.2                tzdb_0.4.0                 </span></span>
-<span><span class="co">## [193] foreach_1.5.2               httpuv_1.6.12              </span></span>
-<span><span class="co">## [195] VIM_6.2.2                   polyclip_1.10-6            </span></span>
-<span><span class="co">## [197] openssl_2.1.1               RANN_2.6.1                 </span></span>
-<span><span class="co">## [199] tidyr_1.3.0                 purrr_1.0.2                </span></span>
-<span><span class="co">## [201] future_1.33.0               ggplot2_3.4.4              </span></span>
-<span><span class="co">## [203] ggforce_0.4.1               broom_1.0.5                </span></span>
-<span><span class="co">## [205] xtable_1.8-4                e1071_1.7-13               </span></span>
-<span><span class="co">## [207] RSpectra_0.16-1             rstatix_0.7.2              </span></span>
-<span><span class="co">## [209] later_1.3.1                 class_7.3-22               </span></span>
-<span><span class="co">## [211] ragg_1.2.6                  tibble_3.2.1               </span></span>
-<span><span class="co">## [213] FlowSOM_2.8.0               beeswarm_0.4.0             </span></span>
-<span><span class="co">## [215] memoise_2.0.1               IRanges_2.34.1             </span></span>
-<span><span class="co">## [217] cluster_2.1.4               ggplot.multistats_1.0.0    </span></span>
-<span><span class="co">## [219] timechange_0.2.0            globals_0.16.2             </span></span>
-<span><span class="co">## [221] CytoML_2.12.0               caret_6.0-94</span></span></code></pre>
+<span><span class="co">##   [1] IRanges_2.34.1              Rmisc_1.5.1                </span></span>
+<span><span class="co">##   [3] urlchecker_1.0.1            nnet_7.3-19                </span></span>
+<span><span class="co">##   [5] CytoNorm_2.0.1              TH.data_1.1-2              </span></span>
+<span><span class="co">##   [7] vctrs_0.6.4                 digest_0.6.33              </span></span>
+<span><span class="co">##   [9] png_0.1-8                   shape_1.4.6                </span></span>
+<span><span class="co">##  [11] proxy_0.4-27                slingshot_2.8.0            </span></span>
+<span><span class="co">##  [13] ggrepel_0.9.4               parallelly_1.36.0          </span></span>
+<span><span class="co">##  [15] MASS_7.3-60                 pkgdown_2.0.7              </span></span>
+<span><span class="co">##  [17] reshape2_1.4.4              httpuv_1.6.12              </span></span>
+<span><span class="co">##  [19] foreach_1.5.2               BiocGenerics_0.46.0        </span></span>
+<span><span class="co">##  [21] withr_2.5.1                 ggrastr_1.0.2              </span></span>
+<span><span class="co">##  [23] xfun_0.40                   ggpubr_0.6.0               </span></span>
+<span><span class="co">##  [25] ellipsis_0.3.2              survival_3.5-7             </span></span>
+<span><span class="co">##  [27] memoise_2.0.1               hexbin_1.28.3              </span></span>
+<span><span class="co">##  [29] ggbeeswarm_0.7.2            RProtoBufLib_2.12.1        </span></span>
+<span><span class="co">##  [31] princurve_2.1.6             profvis_0.3.8              </span></span>
+<span><span class="co">##  [33] ggsci_3.0.0                 systemfonts_1.0.5          </span></span>
+<span><span class="co">##  [35] ragg_1.2.6                  zoo_1.8-12                 </span></span>
+<span><span class="co">##  [37] GlobalOptions_0.1.2         DEoptimR_1.1-3             </span></span>
+<span><span class="co">##  [39] Formula_1.2-5               prettyunits_1.2.0          </span></span>
+<span><span class="co">##  [41] promises_1.2.1              scatterplot3d_0.3-44       </span></span>
+<span><span class="co">##  [43] rstatix_0.7.2               globals_0.16.2             </span></span>
+<span><span class="co">##  [45] ps_1.7.5                    rstudioapi_0.15.0          </span></span>
+<span><span class="co">##  [47] miniUI_0.1.1.1              generics_0.1.3             </span></span>
+<span><span class="co">##  [49] ggcyto_1.28.1               base64enc_0.1-3            </span></span>
+<span><span class="co">##  [51] processx_3.8.2              curl_5.1.0                 </span></span>
+<span><span class="co">##  [53] S4Vectors_0.38.2            zlibbioc_1.46.0            </span></span>
+<span><span class="co">##  [55] flowWorkspace_4.12.2        polyclip_1.10-6            </span></span>
+<span><span class="co">##  [57] randomForest_4.7-1.1        GenomeInfoDbData_1.2.10    </span></span>
+<span><span class="co">##  [59] RBGL_1.76.0                 ncdfFlow_2.46.0            </span></span>
+<span><span class="co">##  [61] RcppEigen_0.3.3.9.4         xtable_1.8-4               </span></span>
+<span><span class="co">##  [63] stringr_1.5.0               desc_1.4.2                 </span></span>
+<span><span class="co">##  [65] doParallel_1.0.17           evaluate_0.22              </span></span>
+<span><span class="co">##  [67] S4Arrays_1.0.6              hms_1.1.3                  </span></span>
+<span><span class="co">##  [69] glmnet_4.1-8                GenomicRanges_1.52.1       </span></span>
+<span><span class="co">##  [71] irlba_2.3.5.1               colorspace_2.1-0           </span></span>
+<span><span class="co">##  [73] harmony_1.1.0               reticulate_1.34.0          </span></span>
+<span><span class="co">##  [75] readxl_1.4.3                magrittr_2.0.3             </span></span>
+<span><span class="co">##  [77] lmtest_0.9-40               readr_2.1.4                </span></span>
+<span><span class="co">##  [79] Rgraphviz_2.44.0            later_1.3.1                </span></span>
+<span><span class="co">##  [81] lattice_0.22-5              future.apply_1.11.0        </span></span>
+<span><span class="co">##  [83] robustbase_0.99-0           XML_3.99-0.15              </span></span>
+<span><span class="co">##  [85] cowplot_1.1.1               matrixStats_1.1.0          </span></span>
+<span><span class="co">##  [87] xts_0.13.1                  class_7.3-22               </span></span>
+<span><span class="co">##  [89] Hmisc_5.1-1                 pillar_1.9.0               </span></span>
+<span><span class="co">##  [91] nlme_3.1-163                iterators_1.0.14           </span></span>
+<span><span class="co">##  [93] compiler_4.3.1              RSpectra_0.16-1            </span></span>
+<span><span class="co">##  [95] stringi_1.7.12              gower_1.0.1                </span></span>
+<span><span class="co">##  [97] minqa_1.2.6                 SummarizedExperiment_1.30.2</span></span>
+<span><span class="co">##  [99] lubridate_1.9.3             devtools_2.4.5             </span></span>
+<span><span class="co">## [101] CytoML_2.12.0               plyr_1.8.9                 </span></span>
+<span><span class="co">## [103] crayon_1.5.2                abind_1.4-5                </span></span>
+<span><span class="co">## [105] locfit_1.5-9.8              sp_2.1-1                   </span></span>
+<span><span class="co">## [107] sandwich_3.0-2              pcaMethods_1.92.0          </span></span>
+<span><span class="co">## [109] dplyr_1.1.3                 codetools_0.2-19           </span></span>
+<span><span class="co">## [111] multcomp_1.4-25             textshaping_0.3.7          </span></span>
+<span><span class="co">## [113] recipes_1.0.8               openssl_2.1.1              </span></span>
+<span><span class="co">## [115] Rphenograph_0.99.1          TTR_0.24.3                 </span></span>
+<span><span class="co">## [117] bslib_0.5.1                 e1071_1.7-13               </span></span>
+<span><span class="co">## [119] destiny_3.14.0              GetoptLong_1.0.5           </span></span>
+<span><span class="co">## [121] ggplot.multistats_1.0.0     mime_0.12                  </span></span>
+<span><span class="co">## [123] splines_4.3.1               circlize_0.4.15            </span></span>
+<span><span class="co">## [125] Rcpp_1.0.11                 sparseMatrixStats_1.12.2   </span></span>
+<span><span class="co">## [127] cellranger_1.1.0            knitr_1.44                 </span></span>
+<span><span class="co">## [129] utf8_1.2.4                  clue_0.3-65                </span></span>
+<span><span class="co">## [131] lme4_1.1-35.1               fs_1.6.3                   </span></span>
+<span><span class="co">## [133] listenv_0.9.0               checkmate_2.3.0            </span></span>
+<span><span class="co">## [135] DelayedMatrixStats_1.22.6   pkgbuild_1.4.2             </span></span>
+<span><span class="co">## [137] ggsignif_0.6.4              tibble_3.2.1               </span></span>
+<span><span class="co">## [139] Matrix_1.6-1.1              rpart.plot_3.1.1           </span></span>
+<span><span class="co">## [141] callr_3.7.3                 tzdb_0.4.0                 </span></span>
+<span><span class="co">## [143] tweenr_2.0.2                pkgconfig_2.0.3            </span></span>
+<span><span class="co">## [145] pheatmap_1.0.12             tools_4.3.1                </span></span>
+<span><span class="co">## [147] cachem_1.0.8                smoother_1.1               </span></span>
+<span><span class="co">## [149] fastmap_1.1.1               rmarkdown_2.25             </span></span>
+<span><span class="co">## [151] scales_1.2.1                grid_4.3.1                 </span></span>
+<span><span class="co">## [153] usethis_2.2.2               broom_1.0.5                </span></span>
+<span><span class="co">## [155] sass_0.4.7                  graph_1.78.0               </span></span>
+<span><span class="co">## [157] carData_3.0-5               RANN_2.6.1                 </span></span>
+<span><span class="co">## [159] rpart_4.1.21                farver_2.1.1               </span></span>
+<span><span class="co">## [161] yaml_2.3.7                  MatrixGenerics_1.12.3      </span></span>
+<span><span class="co">## [163] foreign_0.8-85              ggthemes_4.2.4             </span></span>
+<span><span class="co">## [165] cli_3.6.1                   purrr_1.0.2                </span></span>
+<span><span class="co">## [167] stats4_4.3.1                lifecycle_1.0.3            </span></span>
+<span><span class="co">## [169] uwot_0.1.16                 askpass_1.2.0              </span></span>
+<span><span class="co">## [171] caret_6.0-94                Biobase_2.60.0             </span></span>
+<span><span class="co">## [173] mvtnorm_1.2-3               lava_1.7.3                 </span></span>
+<span><span class="co">## [175] sessioninfo_1.2.2           backports_1.4.1            </span></span>
+<span><span class="co">## [177] cytolib_2.12.1              timechange_0.2.0           </span></span>
+<span><span class="co">## [179] gtable_0.3.4                rjson_0.2.21               </span></span>
+<span><span class="co">## [181] umap_0.2.10.0               ggridges_0.5.4             </span></span>
+<span><span class="co">## [183] Rphenoannoy_0.1.0           parallel_4.3.1             </span></span>
+<span><span class="co">## [185] pROC_1.18.5                 limma_3.56.2               </span></span>
+<span><span class="co">## [187] jsonlite_1.8.7              edgeR_3.42.4               </span></span>
+<span><span class="co">## [189] RcppHNSW_0.5.0              bitops_1.0-7               </span></span>
+<span><span class="co">## [191] ggplot2_3.4.4               Rtsne_0.16                 </span></span>
+<span><span class="co">## [193] FlowSOM_2.8.0               ranger_0.16.0              </span></span>
+<span><span class="co">## [195] flowCore_2.12.2             jquerylib_0.1.4            </span></span>
+<span><span class="co">## [197] timeDate_4022.108           shiny_1.7.5.1              </span></span>
+<span><span class="co">## [199] ConsensusClusterPlus_1.64.0 htmltools_0.5.6.1          </span></span>
+<span><span class="co">## [201] diffcyt_1.20.0              glue_1.6.2                 </span></span>
+<span><span class="co">## [203] XVector_0.40.0              VIM_6.2.2                  </span></span>
+<span><span class="co">## [205] RCurl_1.98-1.13             rprojroot_2.0.3            </span></span>
+<span><span class="co">## [207] gridExtra_2.3               boot_1.3-28.1              </span></span>
+<span><span class="co">## [209] TrajectoryUtils_1.8.0       igraph_1.5.1               </span></span>
+<span><span class="co">## [211] R6_2.5.1                    tidyr_1.3.0                </span></span>
+<span><span class="co">## [213] SingleCellExperiment_1.22.0 vcd_1.4-11                 </span></span>
+<span><span class="co">## [215] cluster_2.1.4               pkgload_1.3.3              </span></span>
+<span><span class="co">## [217] GenomeInfoDb_1.36.4         ipred_0.9-14               </span></span>
+<span><span class="co">## [219] nloptr_2.0.3                DelayedArray_0.26.7        </span></span>
+<span><span class="co">## [221] tidyselect_1.2.0            vipor_0.4.5                </span></span>
+<span><span class="co">## [223] htmlTable_2.4.2             ggforce_0.4.1              </span></span>
+<span><span class="co">## [225] CytoDx_1.20.0               car_3.1-2                  </span></span>
+<span><span class="co">## [227] future_1.33.0               ModelMetrics_1.2.2.2       </span></span>
+<span><span class="co">## [229] munsell_0.5.0               laeken_0.5.2               </span></span>
+<span><span class="co">## [231] data.table_1.14.8           htmlwidgets_1.6.2          </span></span>
+<span><span class="co">## [233] ComplexHeatmap_2.16.0       RColorBrewer_1.1-3         </span></span>
+<span><span class="co">## [235] rlang_1.1.1                 remotes_2.4.2.1            </span></span>
+<span><span class="co">## [237] colorRamps_2.3.1            ggnewscale_0.4.9           </span></span>
+<span><span class="co">## [239] fansi_1.0.5                 hardhat_1.3.0              </span></span>
+<span><span class="co">## [241] beeswarm_0.4.0              prodlim_2023.08.28</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -374,7 +428,7 @@ and the names are the original cluster names.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Lorenzo Bonaguro.</p>
+<p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner.</p>
 </div>
 
 <div class="pkgdown-footer-right">

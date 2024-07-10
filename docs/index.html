@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,18 +46,20 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a>
+    <a class="dropdown-item" href="articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a>
     <a class="dropdown-item" href="articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a>
     <a class="dropdown-item" href="articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a>
     <a class="dropdown-item" href="articles/Dimensionality_Reduction.html">Dimensionality Reduction</a>
     <a class="dropdown-item" href="articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a>
     <a class="dropdown-item" href="articles/Batch_correction.html">Batch correction</a>
     <a class="dropdown-item" href="articles/Data_Visualization.html">Data Visualization</a>
-    <a class="dropdown-item" href="articles/Differential_Analysis.html">Differential Analysis</a>
+    <a class="dropdown-item" href="articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a>
     <a class="dropdown-item" href="articles/Pseudotime_analysis.html">Pseudotime analysis</a>
     <a class="dropdown-item" href="articles/Data_Projection.html">Data Projection</a>
     <a class="dropdown-item" href="articles/Machine_learning_classifier.html">Machine learning classifier</a>
     <a class="dropdown-item" href="articles/Cell_type_prediction.html">Cell type prediction</a>
-    <a class="dropdown-item" href="articles/Other_utilities.html">Other utilities</a>
+    <a class="dropdown-item" href="articles/Other_utilities.html">Introduction to the condor object and other utilities</a>
   </div>
 </li>
 <li class="nav-item">
@@ -90,27 +92,38 @@
 <div class="section level2">
 <h2 id="how-to-use">How to use<a class="anchor" aria-label="anchor" href="#how-to-use"></a>
 </h2>
+<p><strong>You can find the detailed documentation of cyCONDOR <a href="https://lorenzobonaguro.github.io/cyCONDOR/">here</a></strong></p>
 <p>We recommend using <code>cyCONDOR</code> from our pre-build <code>Docker</code> container <a href="https://hub.docker.com/r/lorenzobonaguro/condor" class="external-link">lorenzobonaguro/condor</a>, the latest version of the image can be pulled with:</p>
-<pre><code>docker pull lorenzobonaguro/cycondor:latest</code></pre>
+<pre><code>docker pull lorenzobonaguro/cycondor:v016</code></pre>
 <p>To run the image you can then follow the following script</p>
 <pre><code>docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:latest</code></pre>
-<p>If you plan to run the image on <code>Singularity</code> instead of <code>Docker</code> feel free to contact us for support in the configuration.</p>
+lorenzobonaguro/cycondor:v016</code></pre>
+<p>You can then access RStudio from your web browser at the address</p>
+<pre><code>http://localhost:[YOURPORT]/</code></pre>
+<p>If you are starting the Docker container from a remote server exchange the <code>localhost</code> with the IP address or domain name of the server as exemplified below:</p>
+<pre><code>http://[SERVERNAME]:[YOURPORT]/</code></pre>
+<p>A detailed guide on how to get started with Docker and how to run cyCONDOR as <code>Singulariy</code> container are provided in the vignette: <code><a href="articles/How_to_run_cyCONDOR_as_container.html">vignette("How_to_run_cyCONDOR_as_container")</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="how-to-install-locally">How to install locally<a class="anchor" aria-label="anchor" href="#how-to-install-locally"></a>
 </h2>
 <p>The tools was tested with <code>R v4.3.X</code>, older version should be compatible but were not tested</p>
-<p>To install <code>cyCONDOR</code> locally first you need to install all the dependencies, from R execute the following. This script will install add dependencies from Bioconductor, CRAN and GitHub. For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)</p>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://github.com/lorenzobonaguro/cyCONDOR/blob/master/inst/install_locally_script.R"</span>, </span>
-<span>              destfile <span class="op">=</span> <span class="st">"install_locally_script.R"</span><span class="op">)</span></span>
+<p>To install <code>cyCONDOR</code> you can follow few steps describe here below.</p>
+<p><strong>IMPORTANT:</strong> For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)</p>
+<p>First install <code>Bioconductor</code>, if you are sure <code>Bioconductor</code> is already installed in your system you can skip this step.</p>
+<pre><code><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span>update <span class="op">=</span> <span class="cn">T</span>, ask <span class="op">=</span> <span class="cn">F</span>, version <span class="op">=</span> <span class="st">"3.17"</span><span class="op">)</span></span></code></pre>
+<p>Next we install two dependencies which are only available on GitHub</p>
+<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JinmiaoChenLab/Rphenograph"</span>, <span class="st">"stuchly/Rphenoannoy"</span>, <span class="st">"saeyslab/CytoNorm@362ac08"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
+<p>Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.</p>
+<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_url.html" class="external-link">install_url</a></span><span class="op">(</span><span class="st">"https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v016/cyCONDOR_0.1.6.tar.gz"</span>,</span>
+<span>                      repos <span class="op">=</span> <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/repositories.html" class="external-link">repositories</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre>
+<p>Alternatively those steps could be automated with the following code</p>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R"</span>, destfile <span class="op">=</span> <span class="st">"install_locally_script.R"</span><span class="op">)</span></span>
 <span>              </span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="va">install_locally_script.R</span><span class="op">)</span></span></code></pre>
-<p>Then install the latest release of <code>cyCONDOR</code> with:</p>
-<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_url.html" class="external-link">install_url</a></span><span class="op">(</span><span class="st">"https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v015/cyCONDOR_0.1.5.tar.gz"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="key-cycondor-features-include">Key cyCONDOR features include:<a class="anchor" aria-label="anchor" href="#key-cycondor-features-include"></a>
@@ -131,7 +144,7 @@ lorenzobonaguro/cycondor:latest</code></pre>
 <h2 id="how-to-cite-cycondor">How to cite cyCONDOR<a class="anchor" aria-label="anchor" href="#how-to-cite-cycondor"></a>
 </h2>
 <blockquote>
-<p><strong>Unveiling the Power of High-Dimensional Cytometry Data with condor</strong>, in preparation</p>
+<p><a href="https://www.biorxiv.org/content/10.1101/2024.02.29.582727v1" class="external-link"><strong>Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR</strong></a></p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -169,7 +182,10 @@ lorenzobonaguro/cycondor:latest</code></pre>
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Lorenzo Bonaguro <br><small class="roles"> Maintainer </small>  </li>
+<li>Lorenzo Bonaguro <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Charlotte Kroeger <br><small class="roles"> Author </small>  </li>
+<li>Sophie Mueller <br><small class="roles"> Author </small>  </li>
+<li>Jacqueline Leidner <br><small class="roles"> Author </small>  </li>
 </ul>
 </div>
 
@@ -181,7 +197,7 @@ lorenzobonaguro/cycondor:latest</code></pre>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Lorenzo Bonaguro.</p>
+<p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner.</p>
 </div>
 
 <div class="pkgdown-footer-right">

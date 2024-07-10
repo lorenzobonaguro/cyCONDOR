@@ -1,33 +1,44 @@
 #' learnUMAP
 #'
 #' @title learnUMAP
-#' @description Uses the model calculated with *runUMAP* to project new samples
-#' @param fcd flow cytometry dataset.
-#' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca".
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param model Data associated with an existing embedding.
-#' @param n_epochs Number of epochs to use during the optimization of the embedded coordinates. A value between 30 - 100 is a reasonable trade off between speed and thoroughness. By default, this value is set to one third the number of epochs used to build the model.
+#' @description Projects new samples on a UMAP calculated previously for a reference data set with the same parameters as the new sample. Before executing this function, \code{\link{runUMAP}} needs to be run with \code{ret_model = TRUE} for the reference data set.
+#' @param fcd Flow cytometry dataset for which the UMAP coordinates should be predicted.
+#' @param input_type Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}. This should be the same which has been used for calculating the UMAP of the reference data set.
+#' @param data_slot Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added. This should be the same which has been used for calculating the UMAP of the reference data set.
+#' @param fcd_model Flow cytometry reference data set containing data associated with an existing embedding in \code{fcd_model$extras}.
+#' @param nEpochs Number of epochs to use during the optimization of the embedded coordinates. A value between 30 - 100 is a reasonable trade off between speed and thoroughness. By default, this value is set to one third the number of epochs used to build the model.
 #' @param prefix Prefix for the name of the dimensionality reduction.
-#' @param n_threads Number of threads to use, (except during stochastic gradient descent). Default is half the number of concurrent threads supported by the system.
-#' @param seed Seed to be used.
-#' @return learnUMAP
+#' @param nThreads Number of threads to use, (except during stochastic gradient descent). By default \code{nThreads = 32}.
+#' @param seed A seed is set for reproducibility.
+#' @details \code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using code{\link{runUMAP}}.
+#' @return \code{learnUMAP()} returns a \code{fcd} with the predicted UMAP coordinates saved in \code{fcd$umap$expr_orig}, if no \code{prefix} was set.
 #'
 #' @export
 learnUMAP <- function(fcd,
                       input_type,
                       data_slot,
-                      model,
-                      n_epochs = 100,
+                      fcd_model,
+                      nEpochs = 100,
                       prefix = NULL,
-                      n_threads = 32,
-                      seed) {
+                      nThreads = 32,
+                      seed = 91) {
+
+  #check if fcd_model contains the model
+  if (!"umap_model" %in% names(fcd_model[["extras"]])) {
+    stop("Your fcd_model does not contain a 'umap_model' in the 'extras' slot. Rerun 'runUMAP' for your fcd_model with 'ret_model = TRUE'.")
+  }
+
+  #check if the column order of fcd and fcd_model
+  if(identical(colnames(fcd[[input_type]][[data_slot]]), colnames(fcd_model[[input_type]][[data_slot]]))== FALSE){
+    stop("fcd test does not have the same column order as fcd_model")
+  }
 
   set.seed(seed)
 
   umapMat <- uwot::umap_transform(X = fcd[[input_type]][[data_slot]],
-                                  model = model,
-                                  n_epochs = n_epochs,
-                                  n_threads = n_threads)
+                                  model = fcd_model[["extras"]][["umap_model"]],
+                                  n_epochs = nEpochs,
+                                  n_threads = nThreads)
 
   colnames(umapMat) <- c("UMAP1", "UMAP2")
 
@@ -42,38 +53,41 @@ learnUMAP <- function(fcd,
 #' train_transfer_model
 #'
 #' @title train_transfer_model
-#' @description Train a machine learning model to transfer cell label (this function implement the *caret* workflow)
+#' @description Train a machine learning model to transfer cell labels (this function implements the \code{caret} workflow)
 #' @param fcd flow cytometry dataset.
-#' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca".
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param label Vector with the labels to be used for the label transfer.
-#' @param method A string specifying which classification or regression model to use. Possible values are found using names(getModelInfo()). See http://topepo.github.io/caret/train-models-by-tag.html. A list of functions can also be passed for a custom model function. See http://topepo.github.io/caret/using-your-own-model-in-train.html for details.
-#' @param tuneLength An integer denoting the amount of granularity in the tuning parameter grid. By default, this argument is the number of levels for each tuning parameters that should be generated by train. If trainControl has the option search = "random", this is the maximum number of tuning parameter combinations that will be generated by the random search. (NOTE: If given, this argument must be named.)
-#' @param trControl A list of values that define how this function acts. See trainControl and http://topepo.github.io/caret/using-your-own-model-in-train.html. (NOTE: If given, this argument must be named.)
-#' @param seed Seed to be used.
+#' @param input_type Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}.
+#' @param data_slot Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added.
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in \code{cluster_var}.
+#' @param cluster_var string specifying variable name in \code{cluster_slot} that identifies cell population labels to be used (e.g. clusters or metaclusters).
+#' @param method A string specifying which classification or regression model to use, by default \code{method = "knn"}. See \code{\link[caret]{train}} for possible values.
+#' @param tuneLength An integer denoting the amount of granularity in the tuning parameter grid, default \code{tuneLength = 5}.
+#' @param trControl A list of values that define how this function acts, default \code{trControl = caret::trainControl(method = "cv")}. See \code{\link[caret]{trainControl}} and <http://topepo.github.io/caret/using-your-own-model-in-train.html>.
+#' @param seed A seed is set for reproducibility.
 #' @import caret
 #' @import randomForest
-#' @return train_transfer_model
+#' @details The \code{train_transfer_model} uses \code{\link[caret]{train}}.
+#' @return \code{train_transfer_model} returns a \code{fcd} with the model and associated visualizations saved in \code{fcd$extras$lt_model}.
 #'
 #' @export
 train_transfer_model <- function(fcd,
                                  input_type,
                                  data_slot,
-                                 label,
+                                 cluster_slot,
+                                 cluster_var,
                                  method = "knn",
                                  tuneLength = 5,
-                                 trControl = trainControl(method = "cv"),
-                                 seed) {
+                                 trControl = caret::trainControl(method = "cv"),
+                                 seed = 91) {
 
   container <- list()
 
   set.seed(seed)
 
-  model <- train(x = fcd[[input_type]][[data_slot]],
-                 y = factor(label),
-                 method = method,
-                 tuneLength = tuneLength,
-                 trControl = trControl)
+  model <- caret::train(x = fcd[[input_type]][[data_slot]],
+                        y = factor(fcd[["clustering"]][[cluster_slot]][[cluster_var]]),
+                        method = method,
+                        tuneLength = tuneLength,
+                        trControl = trControl)
 
   performance <- ggplot(model) +
     geom_errorbar(data = model$results, aes(ymin = Accuracy - AccuracySD, ymax = Accuracy + AccuracySD), width = 0.4) +
@@ -82,7 +96,7 @@ train_transfer_model <- function(fcd,
   features <- plot(varImp(model))
 
   container[["lt_model"]] <- model
-  container[["performace_plot"]] <- performance
+  container[["performance_plot"]] <- performance
   container[["features_plot"]] <- features
 
   fcd[["extras"]][["lt_model"]] <- container
@@ -93,27 +107,32 @@ train_transfer_model <- function(fcd,
 #' predict_labels
 #'
 #' @title predict_labels
-#' @description Uses the model generated with *train_transfer_model* to predict the labels of new samples
+#' @description Uses the model generated with \code{\link{train_transfer_model}} to predict the labels of new samples.
 #' @param fcd flow cytometry dataset.
 #' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca".
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param model_object Caret model to the used for the label transfer.
-#' @param label Label for the output column of the condor object.
-#' @param seed Seed to be used.
+#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, \code{orig}.
+#' @param fcd_model flow cytometry dataset containing Caret model for the label transfer.
+#' @param label Label for the output column of the condor object which is saved in the clustering slot of the \code{fcd}.
+#' @param seed A seed is set for reproducibility.
 #' @return predict_labels
 #'
 #' @export
 predict_labels <- function(fcd,
                            input_type,
                            data_slot,
-                           model_object,
+                           fcd_model,
                            label = "predicted_labels",
-                           seed) {
+                           seed = 91) {
+
+  #check if fcd_model contains the model
+  if (!"lt_model" %in% names(fcd_model[["extras"]])) {
+    stop("Your fcd_model does not contain 'lt_model' in the 'extras' slot. Run 'train_transfer_model' with your fcd_model first.")
+  }
 
   set.seed(seed)
 
   fcd[["clustering"]][[label]] <- data.frame(Description = "predicted",
-                                             predicted_label = predict(model_object$extras$lt_model$lt_model,
+                                             predicted_label = predict(fcd_model$extras$lt_model$lt_model,
                                                                        newdata = fcd[[input_type]][[data_slot]]))
 
   return(fcd)

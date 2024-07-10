@@ -1,13 +1,13 @@
-#' Print Welcome Message and ASCII Art upon Loading `ggvolc`
+#' Print Welcome Message and ASCII Art upon Loading this function is inspired by the developers of the `ggvolc` package
 #'
-#' This function is executed when the `condor` package is attached to the R session.
+#' This function is executed when the `cyCONDOR` package is attached to the R session.
 #' It prints a welcome message and an ASCII representation related to the package.
 #'
 #' @name condor-onAttach
 #' @keywords internal
 #' @importFrom utils packageDescription
 .onAttach <- function(libname, pkgname) {
-  welcome_msg <- paste("Welcome to", packageDescription("cyCONDOR")$Package, "version", packageDescription("cyCONDOR")$Version, "!")
+  welcome_msg <- paste0("Welcome to ", packageDescription("cyCONDOR")$Package, " version ", packageDescription("cyCONDOR")$Version, "!")
   ascii_art <- "
 
                                                                    dddddddd
@@ -50,5 +50,7 @@ if (getRversion() >= "2.15.1") {
                            "gs", "filename_col", "umap_name", "prcomp", "input_scale",
                            "colorRampPalette", "model.matrix", "trainControl",
                            "train", "Accuracy", "AccuracySD", "varImp", "..level..",
-                           "DC_1", "DC_2", "PC1", "PC2", "X", "Y", "color")) # Add other variables as needed
+                           "DC_1", "DC_2", "PC1", "PC2", "X", "Y", "color", "comparison_result",
+                           "variable", "value", "condor", "expfcs_filename", ".", "level",
+                           "data_path", "max_cell", "seed")) # Add other variables as needed
 }

@@ -12,95 +12,203 @@ editor_options:
 
 ```{r setup, warning=FALSE, message=FALSE}
 library(cyCONDOR)
+library(ggplot2)
+library(ggrastr)
+library(lisi)
 ```
 
-With the `cyCONDOR` ecosystem we implemented `harmony` for batch correction. The correction can be applied to both the expression values and principal components. In this vignette we exemplify a workflow to correct for experimental data in the dataset.
+In this vignette we exemplify a workflow to correct for a batch effect induced by performing experiments (including cell preparation, staining and recording of flow cytometry data) on different dates. The example data set used in this vignette consists of peripheral blood mononuclear cells (PBMCs) from healthy donors.
 
-# Loading the data
+# 1 cyCONDOR dimensionality reduction workflow
 
-We stat by loading the data.
+This first part describes the general `cyCONDOR` data processing and dimensionality reduction workflow (see `vignettes("Data loading and transformation")` and `vignettes("Dimensionality Reduction")` for more details) until the closer inspection of the data set and identification of a technical batch effect. 
 
+## Loading the data
+
+We start by loading the data.
 ```{r}
-condor <- prep_fcd(FCSpath = "../../../Figure 3 - Batch Correction/data/CureDem/all/", 
-                   ceil = 500, 
-                   useCSV = FALSE, 
-                   transformation = "a", 
-                   remove_param = c("InFile", "Time"), 
-                   anno_table = "../../../Figure 3 - Batch Correction/data/CureDem/all.csv", 
-                   filename_col = "filename",
-                   seed = 91)
+condor <- prep_fcd(data_path = "../../../Figure 3 - Batch Correction/data/CureDem/all/",
+                   max_cell = 500,
+                   useCSV = FALSE,
+                   transformation = "auto_logi",
+                   remove_param = c("Time", "FSC-H", "SSC-H"),
+                   anno_table = "../../../Figure 3 - Batch Correction/data/CureDem/all.csv",
+                   filename_col = "filename"
+)
 
-# Set the data as factor
+# set the date as factor for visualization purposes
 condor$anno$cell_anno$exp <- as.factor(condor$anno$cell_anno$exp)
 ```
 
-# Dimensionality Reduction
+## Dimensionality Reduction
+Next, we perform dimensionality reduction calculating the principal components (PCs) and the UMAP based on the PCs.
 
-## PCA
 ```{r}
 condor <- runPCA(fcd = condor, 
-                 data_slot = "orig", 
-                 seed = 91)
-```
+                 data_slot = "orig")
 
-## UMAP
-```{r}
 condor <- runUMAP(fcd = condor, 
                   input_type = "pca", 
-                  data_slot = "orig", 
-                  seed = 91)
+                  data_slot = "orig")
 ```
 
-We can now visualize the batch by plotting the UMAP coordinates coloring the plot by experimental date.
+## Inspection of batch effect
+We can now visualize the batch effect in this data set by plotting the UMAP coordinates and coloring the cells by the experiment date.
+```{r}
+plot_dim_red(fcd= condor,  
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             param = "exp", 
+             title = "Original UMAP")
+```
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
-            param = "exp", 
-            order = T, 
-            title = "Original UMAP", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE, 
-            color_discrete = c("#1C75BC", "#BE1E2D", "#8DC63F", "#92278F", "#F15A29"))
+plot_dim_red(fcd= condor,  
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             param = "exp", 
+             title = "Original UMAP",
+             facet_by_variable = TRUE)
 ```
 
-# Batch correction
 
-We can now correct the fluorescence intensities or the principal components. Correction directly on the fluorescence intensities should be performed carefully if you plan to compare the expression in different groups downstream.
+# 2 Batch correction
 
-## Correct Intensities
-```{r, warning=FALSE}
-condor <- harmonize_intensities(fcd = condor, 
-                                batch = c("exp"), 
-                                seed = 91)
-```
+Within the `cyCONDOR` ecosystem we implemented [harmony](https://doi.org/10.1038/s41592-019-0619-0) and [CytoNorm](https://doi.org/10.1002/cyto.a.23904) for batch correction. The correction can be applied either to the protein expression values (fluorescence intensities) or to the principal components. There is no 'magic bullet' for batch correction and each of these methods needs to be used with care to correct for the batch effect but not the underlying biological effects. Therefore, each of the here described methods should always be validated by inspecting the expression of hallmark markers. 
 
-## Correct Principal Components
+If you use this workflow in your work please consider citing [cyCONDOR](XXX) and [harmony](https://doi.org/10.1038/s41592-019-0619-0) or [CytoNorm](https://doi.org/10.1002/cyto.a.23904).
+
+## 2.1 Correct Principal Components 
+
+To use the `harmony` algorithm for correcting the principal components, we use the `harmonize_PCA()` and define the batch variable `batch_var`, in this example the experiment date 'exp'. 
 ```{r, warning=FALSE}
 condor <- harmonize_PCA(fcd = condor, 
-                        batch = c("exp"), 
-                        data_slot = "orig", 
-                        seed = 91)
+                        batch_var = c("exp"), 
+                        data_slot = "orig")
+```
+The harmonized PCs are saved in `condor$pca$norm`.
+```{r}
+condor$pca$norm[1:10, 1:5]
 ```
 
-## Repeat dimensionality reduction
 
-With the corrected PC coordinates we can not run again the UMAP function.
+### Repeat dimensionality reduction
 
+We can now recalculate the UMAP based on the harmonized PCs. For this we select `input_type = "pca"` and `data_slot = "norm"`.
 ```{r}
 condor <- runUMAP(fcd = condor, 
                   input_type = "pca", 
-                  data_slot = "norm", 
-                  seed = 91)
+                  data_slot = "norm",
+                  prefix= NULL)
 ```
 
-### Visualize the results
+Unless a prefix has been set, the new UMAP coordinates calculated based on the harmonized PCs can be accessed via `condor$umap$pca_norm`.
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_norm, condor$anno$cell_anno), 
-            param = "exp", 
-            order = T, 
-            title = "Harmonized UMAP", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE, color_discrete = c("#1C75BC", "#BE1E2D", "#8DC63F", "#92278F", "#F15A29"))
+condor$umap$pca_norm[1:5,]
+```
+
+### Visualization of the data integration results
+
+#### UMAP
+
+For a first inspection of the data integration, we can visualize the results by plotting the new UMAP coordinates and coloring the cells by the experiment date. The UMAP shows no strong separation of the cells by the experiment date anymore. To further inspect the data integration results, the expression of cell type lineage markers should be assessed. This is highly dependent on the markers measured in the flow cytometry data set and therefore not included in this vignette. 
+```{r}
+plot_dim_red(fcd= condor,  
+             reduction_method = "umap", 
+             reduction_slot = "pca_norm", 
+             param = "exp", 
+             title = "Harmonized UMAP")
+```
+
+```{r}
+plot_dim_red(fcd= condor,  
+             reduction_method = "umap", 
+             reduction_slot = "pca_norm", 
+             param = "exp", 
+             title = "Harmonized UMAP",
+             facet= TRUE)
+```
+
+#### LISI score
+
+To further inspect the data integration result, we can calculate the [Local Inverse Simpson’s Index (LISI) score](https://doi.org/10.1038/s41592-019-0619-0). The LISI score can be used to assess the degree of mixing among the cells from the different batches in the UMAP space.
+
+```{r, fig.height=5, fig.width=5}
+#prepare pre batch correction data set
+pre_batch <- cbind(condor$umap$pca_orig, condor$anno$cell_anno)
+#calculate LISI score for batch variable 'exp'
+res_pre <- compute_lisi(pre_batch[,c(1,2)], pre_batch, c('exp'))
+colnames(res_pre) <- "lisi"
+#combine LISI score with cell annotation
+lisi_mat_pre <- cbind(pre_batch, res_pre)
+lisi_mat_pre$type <- "pre"
+
+#prepare ppost batch correction data set
+post_batch <- cbind(condor$umap$pca_norm, condor$anno$cell_anno)
+#calculate LISI score for batch variable 'exp'
+res_post <- compute_lisi(post_batch[,c(1,2)], post_batch, c('exp'))
+colnames(res_post) <- "lisi"
+#combine LISI score with cell annotation
+lisi_mat_post <- cbind(post_batch, res_post)
+lisi_mat_post$type <- "post"
+
+#combine pre and post batch matrices 
+lisi_mat <- rbind(lisi_mat_post, lisi_mat_pre)
+lisi_mat$type <- factor(lisi_mat$type, levels = c("pre", "post"))
+
+#visualization 
+p <- ggplot(data = lisi_mat, aes(y = lisi, x = type, fill = type)) +
+  geom_jitter_rast(alpha = 0.01, scale =0.5) +
+  geom_violin(alpha = 0.8) +
+  scale_fill_manual(values= c("#1C75BC", "#BE1E2D"))+
+  theme_bw() +
+  theme(aspect.ratio = 2, panel.grid = element_blank(),
+        text= element_text(size=16, color= "black")) + 
+  xlab("")+
+  ylab("LISI score")
+p
+```
+
+## 2.2 Correct fluorescent intensities 
+
+As an alternative to correcting the embedding, the fluorescent intensities can be directly corrected using `harmony` or `CytoNorm`. However, direct correction of fluorescence intensities should be used with caution, if biological differences between groups or conditions are planned to be compared in the downstream analysis.
+
+### Correct fluorescent intensities with harmony 
+
+To use the `harmony` algorithm for correcting the intensities, we use the `harmonize_intensities()` and define the batch variable `batch_var`, in this case 'exp'.
+```{r, warning=FALSE}
+condor <- harmonize_intensities(fcd = condor, 
+                                batch_var = c("exp"))
+```
+
+The harmonized intensities are saved in `condor$expr$norm`.
+
+### Correct fluorescent intensities with CytoNorm
+
+Another approach for correcting the fluorescence intensities is the application of the [CytoNorm algorithm](https://github.com/saeyslab/CytoNorm) within the `cyCONDOR` ecosystem. For a detailed description of `CytoNorm` see [Van Gassen et al., 2019](https://doi.org/10.1002/cyto.a.23904). 
+
+As a first step, the batch effect is learnt from reference samples provided by the user. The control samples should contain the whole range of expression values of the markers in the panel. For example in the case of a stimulation experiment including unstimulated and stimulated samples as control samples improved estimation of the batch effect ([Van Gassen et al., 2019](https://doi.org/10.1002/cyto.a.23904)). Ideally the samples used as reference samples were stained and recorded along the other samples within each batch. Depending on your data set, it is also possible to use all samples contained in your data set as reference samples to train the model and learn the differences between the batches as shown in the example below. 
+
+#### Training the model
+
+Here, a model is trained on all samples contained in the data set. For this we need to provide the name of the batch variable `batch_var` and optionally parameters which should not be included for the training as well as different parameters for clustering the cells with FlowSOM (`FlowSom_param`). Here, we use all markers present in the `fcd` and perform the training with the default parameters for `FlowSom_param`. The number of desired FlowSOM metaclusters is defined by `nClus` and should be adjusted according to your data set, see [Van Gassen et al., 2019](https://doi.org/10.1002/cyto.a.23904) for more details.
+
+```{r, message=FALSE, warning=FALSE}
+condor <- train_cytonorm(fcd = condor,
+                         batch_var = "exp",
+                         remove_param = NULL,
+                         FlowSOM_param = list(nCells = 5000, xdim = 5, ydim = 5, nClus = 10, scale = FALSE), 
+                         seed = 91)
+```
+
+#### Normalization of data with trained model
+
+Next the trained model saved within your `fcd` is used to normalize all samples present in your `fcd`. The fcs files with the normalized expression values can be saved, if `keep_fcs` is set to `TRUE`. 
+```{r, warning=FALSE}
+condor <- run_cytonorm(fcd = condor,
+                       files = NULL,
+                       batch_var = "exp",
+                       keep_fcs = FALSE)
 ```
 
 # Session Info

@@ -8,15 +8,17 @@ runUMAP(
   fcd,
   input_type,
   data_slot,
-  n_neighbors = 15,
-  n_components = 2,
+  nNeighbors = 15,
+  nComponents = 2,
   min_dist = 0.2,
   metric = "euclidean",
-  seed,
+  seed = 91,
   prefix = NULL,
-  n_threads = 32,
-  top_PCA = ncol(fcd[[input_type]][[data_slot]]),
-  ret_model = FALSE
+  nThreads = 32,
+  nPC = ncol(fcd[[input_type]][[data_slot]]),
+  ret_model = FALSE,
+  markers = colnames(fcd$expr[[data_slot]]),
+  discard = FALSE
 )
 }
 \arguments{
@@ -24,32 +26,39 @@ runUMAP(
 
 \item{input_type}{data to use for the calculation of the UMAP, e.g. "expr" or "pca".}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{data slot to use for the calculation of the UMAP, e.g. "orig" or "norm".}
 
-\item{n_neighbors}{n_neighbors.}
+\item{nNeighbors}{Number of items that define the neighborhood around each point. Default = 15.}
 
-\item{n_components}{n_components.}
+\item{nComponents}{Number of components for UMAP calculation. Default = 2.}
 
-\item{min_dist}{min_dist.}
+\item{min_dist}{Min_dist for UMAP calculation. Default = 0.2.}
 
-\item{metric}{metric.}
+\item{metric}{Metric for UMAP calculation. Default = "euclidean".}
 
-\item{seed}{Seed used for the randomization steps.}
+\item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix for the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
-\item{n_threads}{Number of threads to be used in the UMAP calculation.}
+\item{nThreads}{Number of threads to be used in the UMAP calculation. Default = 32.}
 
-\item{top_PCA}{Number of PCA used in the UMAP calculation.}
+\item{nPC}{Number of PCs used in the UMAP calculation. Default = All.}
 
-\item{ret_model}{LOGICAL if the UMAP model should be saved for future projection of the data.}
+\item{ret_model}{LOGICAL if the UMAP model should be saved for future projection of the data using \code{\link{learnUMAP}}.}
+
+\item{markers}{Vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.}
+
+\item{discard}{LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.}
 }
 \value{
-runUMAP
+The function returns a fcd including a data frame with the UMAP coordinates saved in \code{fcd$umap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 }
 \description{
-Run a UMAP dimensionality reduction.
+Perform a UMAP dimensionality reduction on the expression values or pca results.
 }
 \details{
 runUMAP
+
+
+See [Melville J (2023). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R package version 0.1.16](https://github.com/jlmelville/uwot) for more details on the umap method.
 }

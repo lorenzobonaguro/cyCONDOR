@@ -4,18 +4,18 @@
 \alias{filter_fcd}
 \title{filter_fcd}
 \usage{
-filter_fcd(fcdataset, cell_ids)
+filter_fcd(fcd, cell_ids)
 }
 \arguments{
-\item{fcdataset}{Flow cytometry dataset to be filtered.}
+\item{fcd}{Flow cytometry dataset to be filtered.}
 
 \item{cell_ids}{Row names of the cells to be filtered, should be provided as vector.}
 }
 \value{
-filter the flowframe according to specific cell IDs
+The function returns a fcd filtered on the specified cell IDs.
 }
 \description{
-Filter a fcd according to selected cell IDs
+Filters a fcd according to selected cell IDs
 }
 \details{
 filter_fcd

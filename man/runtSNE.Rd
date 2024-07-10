@@ -8,36 +8,45 @@ runtSNE(
   fcd,
   input_type,
   data_slot,
-  perplexity,
-  seed,
+  perplexity = 30,
+  seed = 91,
   prefix = NULL,
-  n_threads = 1,
-  top_PCA = ncol(fcd[[input_type]][[data_slot]])
+  nThreads = 1,
+  nPC = ncol(fcd$pca[[data_slot]]),
+  markers = colnames(fcd$expr[[data_slot]]),
+  discard = FALSE
 )
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{data to use for the calculation, e.g. "pca" (suggested option).}
+\item{input_type}{data to use for the calculation, e.g. "expr" or "pca" (suggested: "pca").}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{data slot to use for the calculation, e.g. "orig" or "norm".}
 
-\item{perplexity}{Perplexity used for tSNE calculation (see Rtsne documentation for details).}
+\item{perplexity}{Value that controls how many nearest neighbors are taken into account when constructing the embedding (see Rtsne documentation for details).}
 
-\item{seed}{Seed used for the randomization steps.}
+\item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix of the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
-\item{n_threads}{Number of threads to be used in the tSNE calculation.}
+\item{nThreads}{Number of threads to be used in the tSNE calculation.}
 
-\item{top_PCA}{Number of principal components to use for the analysis.}
+\item{nPC}{Number of principal components to use for the analysis.}
+
+\item{markers}{Vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.}
+
+\item{discard}{Boolean to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.}
 }
 \value{
-tSNE cohordinates
+The function returns a fcd including a data frame with the tSNE coordinates saved in \code{fcd$tSNE}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 }
 \description{
-Calculate tSNE dimensionality reduction..
+Calculate tSNE dimensionality reduction.
 }
 \details{
 runtSNE
+
+
+See [Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation], (https://github.com/jkrijthe/Rtsne) for more details on the Rtsne method.
 }

@@ -9,32 +9,41 @@ runDM(
   input_type,
   data_slot,
   k = 10,
-  seed,
+  seed = 91,
   prefix = NULL,
-  top_PCA = ncol(fcd[[input_type]][[data_slot]])
+  nPC = ncol(fcd[[input_type]][[data_slot]]),
+  markers = colnames(fcd$expr[[data_slot]]),
+  discard = FALSE
 )
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
 
-\item{input_type}{data to use for the calculation of the UMAP, e.g. "pca" (suggested option).}
+\item{input_type}{data to use for the calculation, e.g. "expr" or "pca".}
 
-\item{data_slot}{name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.}
+\item{data_slot}{data slot to use for the calculation, e.g. "orig" or "norm".}
 
-\item{k}{K used for the analysis.}
+\item{k}{K used for the analysis. Default = 10.}
 
-\item{seed}{Seed used for the randomization steps.}
+\item{seed}{A seed is set for reproducibility.}
 
-\item{prefix}{Prefix of the output.}
+\item{prefix}{Optional prefix for the slot name of the output.}
 
-\item{top_PCA}{Number of principal components to use for the analysis.}
+\item{nPC}{Number of principal components to use for the analysis. Default = All.}
+
+\item{markers}{Vector of marker names to include or exclude from DM calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.}
+
+\item{discard}{LOGICAL if the markers specified should be included, "False", or excluded, "True", from the DM calculation. Default = F.}
 }
 \value{
-runDM
+The function returns a fcd including a data frame with the DM coordinates saved in \code{fcd$diffmap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 }
 \description{
 Run Diffusion Map dimensionality reduction.
 }
 \details{
 runDM
+
+
+See [Philipp Angerer et al. (2015): destiny: diffusion maps for large-scale single-cell data in R. Helmholtz-Zentrum München.] (http://bioinformatics.oxfordjournals.org/content/32/8/1241)
 }

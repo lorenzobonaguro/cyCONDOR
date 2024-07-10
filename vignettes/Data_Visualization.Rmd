@@ -10,164 +10,429 @@ editor_options:
     wrap: 72
 ---
 
+Date: 24.06.2024 
+
 ```{r setup, warning=FALSE, message=FALSE}
 library(cyCONDOR)
 ```
 
-cyCONDOR provides several function to visualize the result of the analysis, following some examples on how to use them.
+`cyCONDOR` provides several functions to visualize the results of `cyCONDOR`´s dimensionality reduction and clustering workflows. 
 
 # Load an example dataset
+
+In this vignette, we will use a flow cytometry dataset of six PBMC samples taken from three patients and three control. The data was transformed and subjected to several dimensionality reduction methods as well as clustering and metaclustering using `cyCONDOR`(see vignettes: `Data loading and transformation`, `Dimensionality Reduction`, `Clustering and cell annotation`).
+
 ```{r}
-condor <- readRDS("../.test_files/condor_example.rds")
+condor <- readRDS("../.test_files/conodr_example_016.rds")
 ```
 
-# Plot the results of dimensionality reduction and clustering
+```{r}
+#Let's checkout the content of the object
+str(condor[!names(condor) %in% "extras"])
+```
+
+# Visualize the results of dimensionality reduction and clustering
+
+`cyCONDOR` comes with several methods to perform dimensionality reduction. Two dimensional representations of each reduction method can be visualized using the `plot_dim_red()` function. 
+
+The function requires the user to specify a condor object, the reduction method (e.g. pca, umap or tSNE) and the name of the actual reduction_slot, e.g. "orig". Further, a variable needs to be provided to the parameter `param`, which is used to color the dots. 
 
 ## PCA
+
+Let's plot the first two Principle components of the PCA and color by the meta variable "group".
+
 ```{r}
-plot_marker(data = cbind(condor$pca$orig, condor$anno$cell_anno), 
-            param = "group", 
-            order = T, 
-            title = "UMAP colored by group", 
-            dim_red = "PCA", 
-            facet_by_variable = FALSE)
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "pca",
+             reduction_slot = "orig",
+             cluster_slot = NULL,
+             param = "group",
+             title = "PCA")
 ```
 
 ## tSNE
+
+Changing `reduction_method = "tSNE"` and `reduction_slot = "pca_orig"`, results in a plot of the tSNE.
+
 ```{r}
-plot_marker(data = cbind(condor$tSNE$pca_orig, condor$anno$cell_anno), 
-            param = "group", 
-            order = T, 
-            title = "tSNE colored by group", 
-            dim_red = "tSNE", 
-            facet_by_variable = FALSE)
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "tSNE",
+             reduction_slot = "pca_orig",
+             cluster_slot = NULL,
+             param = "group",
+             title = "tSNE")
 ```
 
 ## UMAP
+
+Similiarly, `reduction_method = "umap"` and `reduction_slot = "pca_orig"`, gives us a the UMAP representation that was calculated on the PCA on the transformed expression data. 
+
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
-            param = "group", 
-            order = T, 
-            title = "UMAP colored by group", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE)
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = NULL,
+             param = "group",
+             title = "UMAP")
 ```
 
 ## Colored by Phenograph, FlowSOM clustering or metaclusters
-```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
-            param = "Phenograph", 
-            order = T, 
-            title = "UMAP colored by Phenograph clusters", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE)
+
+Instead of meta variables available in the `cell_anno` slot, it is also possible to overlay cell population identities, determined by `cyCONDOR's` clustering or cell label implementations. 
+In this case, the function additionally requires the specification of a `cluster_slot` as input, to define were `param` should be taken from. 
+
+In the following example, we will visualize the cluster identities (`param = "Phenograph"`) and the related metaclustering annotation (`param = "metaclusters"`) in the `cluster_slot` "phenograph_pca_orig_k_60".
+
+```{r, fig.height=5, fig.width=12}
+p1<-plot_dim_red(fcd = condor,
+                 expr_slot = NULL,
+                 reduction_method = "umap",
+                 reduction_slot = "pca_orig",
+                 cluster_slot = "phenograph_pca_orig_k_60",
+                 param = "Phenograph",
+                 title = "UMAP colored by Phenograph clusters")
+
+p2<-plot_dim_red(fcd = condor,
+                 expr_slot = NULL,
+                 reduction_method = "umap",
+                 reduction_slot = "pca_orig",
+                 cluster_slot = "phenograph_pca_orig_k_60",
+                 param = "metaclusters",
+                 title = "UMAP colored by metaclusters")
+
+cowplot::plot_grid(plotlist = list(p1,p2),align = "v")
 ```
 
+In the same manner, FlowSOM results can be plotted on the dimensionality reduction.
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$FlowSOM_pca_orig_k_15), 
-            param = "FlowSOM", 
-            order = T, 
-            title = "UMAP colored by FlowSOM clusters", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE)
-```
-
-```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
-            param = "metaclusters", 
-            order = T, 
-            title = "UMAP colored by metaclusters", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE)
-```
-
-## Export the plot as raster image
-```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
-            param = "metaclusters", 
-            order = T, 
-            title = "UMAP colored by metaclusters", 
-            dim_red = "UMAP", 
-            facet_by_variable = FALSE, 
-            raster = TRUE)
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = "FlowSOM_pca_orig_k_15",
+             param = "FlowSOM",
+             title = "UMAP colored by FlowSOM clusters")
 ```
 
 ## Split plot by a variable
-```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
-            param = "group", 
-            order = T, 
-            title = "UMAP colored by group", 
-            dim_red = "UMAP", 
-            facet_by_variable = TRUE)
-```
+
+Sometimes it comes in handy to split the dimensionality reduction by a variable, e.g. group, sample ID or experimental batches. In the `plot_dim_red()` function this can be achieved via the `facet_by_variable` parameter. 
+
+Setting `facet_by_variable = T`, will split the plot by the variable provided in `param`.
 
 ```{r}
-plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno, condor$clustering$Phenograph_pca_orig_k_60), 
-            param = "metaclusters", 
-            order = T, 
-            title = "UMAP colored by metaclusters", 
-            dim_red = "UMAP", 
-            facet_by_variable = "group")
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = NULL,
+             param = "group",
+             facet_by_variable = T,
+             title = "UMAP")
 ```
 
-# Density plot
-```{r, fig.width=15}
-plot_density(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
-             param = "group", 
-             title = "Figure S2d - Density Map", 
-             dim_red = "UMAP", 
-             dot_size = 0.2, 
-             alpha = 0.2, color_density = c("Greys", "Reds"))
+Providing `facet_by_variable` with a different variable than specified in `param`, will keep the coloring by the variable in `param`, but splits the plot by the faceting variable. Note, that in case clustering variables are used, a `cluster_slot` needs to be provided as well.
+
+```{r}
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = "phenograph_pca_orig_k_60",
+             param = "metaclusters",
+             facet_by_variable = "group",
+             title = "UMAP colored by metaclusters")
+```
+
+## Export the plot as raster image
+
+Visualizing hundred thousands of events can be demanding. Using `raster = T`, the function will generate a raster image, instead of plotting each event individually. 
+
+```{r}
+plot_dim_red(fcd = condor,
+             expr_slot = NULL,
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = "FlowSOM_pca_orig_k_15",
+             param = "FlowSOM",
+             raster = T,
+             title = "UMAP colored by FlowSOM clusters")
 ```
 
 
-# Heatmap of marker expression
+# Visualization of marker expression
+
+In the next section, we will go through some examples of how marker expression can be visualized with `cyCONDOR`.
+Since this is most interesting, when the data are already clustered, almost all functions require cluster or cell label information obtained via `cyCONDOR's` clustering or cell label prediction workflows. Only the function, `plot_dim_red()`, can be used without any cell population labels. 
+
+## Marker expression overlayed on dimensionality reduction
+
+To overlay marker expression values on the dimensionality reduction, we can use the `plot_dim_red()` function introduced in the section before. Instead of a `clustering_slot`, the `expression_slot` in which the expression values are stored needs to be specified and the marker to be visualized is given to the parameter `param`.
+
+In large data sets, the dimensionality reduction can be "crowded" and it might be useful to order the cells by their expression. Setting `order = T`, will plot the cells with the highest expression at the top. 
+
+```{r}
+p1<-plot_dim_red(fcd = condor,
+                 expr_slot = "orig",
+                 reduction_method = "umap",
+                 reduction_slot = "pca_orig",
+                 cluster_slot = NULL,
+                 param = "CD3",
+                 order = F, #default
+                 title = "CD3 expression - random order")
+
+p2<-plot_dim_red(fcd = condor,
+                 expr_slot = "orig",
+                 reduction_method = "umap",
+                 reduction_slot = "pca_orig",
+                 cluster_slot = NULL,
+                 param = "CD3", 
+                 order = T,
+                 title = "CD3 expression - ordered")
+
+cowplot::plot_grid(plotlist = list(p1,p2),align = "v")
+```
+
+As above a `facet_by_variable` can be used to split the plot by another variable. 
+
+```{r}
+plot_dim_red(fcd = condor,
+             expr_slot = "orig",
+             reduction_method = "umap",
+             reduction_slot = "pca_orig",
+             cluster_slot = NULL,
+             param = "CD3",
+             facet_by_variable = "group",
+             title = "CD3 expression split by group")
+```
+
+## Heatmap of marker expression
+
+Heatmap visualizations are useful to get a fast overview across many markers and cell populations. 
+The `plot_marker_HM()` function calculates the mean transformed expression for each cell population and marker combination. The means are centered and scaled for each marker and subsequently visualized as heatmap.  
+
+However, it should be mention that this comes with certain draw backs:
+1) the distribution of the expression is not considered when looking at the mean and
+2) the actual expression level is somewhat obscured by the row-wise scaling.
+
 ```{r, fig.width=7, fig.height=7}
-HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
-           group = "metaclusters",
-           maxvalue = NULL, 
-           title = "Marker expression in metaclusters")
+plot_marker_HM(fcd = condor,
+               expr_slot = "orig",
+               marker_to_exclude = c("FSC-A","SSC-A"),
+               cluster_slot = "phenograph_pca_orig_k_60",
+               cluster_var = "metaclusters")
 ```
 
-# Visualize the loadings of the PCs
-```{r}
-PC_loadings(fcd = condor, data_slot = "orig", number = 1)
+By setting `cluster_rows = T` and `cluster_cols`, rows and columns get clustered. 
+
+```{r, fig.width=8, fig.height=8}
+plot_marker_HM(fcd = condor,
+               expr_slot = "orig",
+               marker_to_exclude = c("FSC-A","SSC-A"),
+               cluster_slot = "phenograph_pca_orig_k_60",
+               cluster_var = "metaclusters",
+               cluster_rows = T,
+               cluster_cols = T)
 ```
 
-# Violinplot of marker expression
-```{r}
-violinplot_marker(fcd = condor, 
-                  data_slot = "orig", 
-                  cluster_method = "Phenograph_pca_orig_k_60", 
-                  cluster_type = "metaclusters", marker = "CD56")
+The function `plot_marker_group_HM` works very similarly with the addition that a meta variable available in `cell_anno` is provided and used to further split the columns by the levels of that meta variable. In the following example, we are interested whether mean expression of phenotaping markers like CD3 or CD19 is stable across the different samples by using `group_var = sample_ID`.
+
+```{r, fig.width=7, fig.height=10}
+plot_marker_group_HM(fcd = condor,
+                     expr_slot = "orig",
+                     marker_to_exclude = c("FSC-A","SSC-A"),
+                     cluster_slot = "phenograph_pca_orig_k_60",
+                     cluster_var = "metaclusters",
+                     group_var = "sample_ID")
 ```
 
-# Classical cytometry dotplot
-```{r}
-dotplot_cyto(data = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
-             subset = TRUE,
-             annotation = condor$clustering$Phenograph_pca_orig_k_60$metaclusters, 
-             subset_char = c("NK bright", "NK dim"), 
-             color_by = condor$clustering$Phenograph_pca_orig_k_60$metacluster, 
-             x = "CD16", 
-             y = "CD56", 
-             title = "NK cells Dotplot")
+## Plot mean expression as boxplots
+
+Instead of as a heatmap, the mean (or median) expression can be visualized as boxplots with each sample being represented by a dot. 
+For this, the `plot_marker_boxplot` requires the user to specify a variable containing sample IDs in `sample_var` and a grouping variable in `group_var`. Each sample ID should be uniquely associated with one level in `group_var`. The grouping variable could for example be the disease status or the batch variable. Since the data has no batch and we are not yet interested in differences in our biological groups (see `vignette("Differential Analysis")`, we are using the variable "experiment_name" in the following chunk to get an overview about the expression in our samples. 
+
+```{r, fig.width=7, fig.height=7}
+condor$anno$cell_anno$experiment_name <-"test_data"
+
+plot_marker_boxplot(fcd = condor,
+                    expr_slot = "orig", 
+                    cluster_slot = "phenograph_pca_orig_k_60", 
+                    cluster_var = "metaclusters",
+                    group_var = "experiment_name",
+                    sample_var = "sample_ID", 
+                    marker = c("CD3","CD4","CD8","CD14","CD19","HLA-DR"),
+                    fun = "mean",
+                    facet_ncol = 3,
+                    dot_size = 1)
 ```
 
-# Densityplot marker
+By default the function will generate boxplots for all marker and cell population combinations, which depending on the panel size can be too much to inspect at once. With the parameters `marker` the user can select the markers of interest, while `cluster_to_show` allows to subset to certain cell populations present in the given `cluster_var`. Further, it is possible to calculate the median expression instead of mean by using `fun = "median"`.
+
+## Distribution of expression
+
+Besides visualizing aggregated expression, `cyCONDOR` also provides different visualization options to investigate the distribution of marker expression across all cells in a population.
+
+`plot_marker_ridgeplot()` and `plot_marker_violinplot()`, both visualize the density distribution of a marker for each cell population in `cluster_var` and therefor provide insights whether a marker is homogeneously expressed in a certain cluster (or cell population) or whether only a part of the cells is expressing the marker highly or lowly. These plots can be very useful, when inspecting and annotating clusters, since they e.g. enable the detection of smaller subsets or contamination in a cluster of cells, which is not visible in a heatmap.
+
+`plot_marker_density()` and (optionally) `plot_marker_violinplot()` further split the distributions by meta variables present in the `cell_anno` slot, which can help to investigate technical and/or bioligical influencing factors. 
+
+### Ridgeline plot
+
+`plot_marker_ridgeplot()` visualizes a density distribution of the expression for each cell population in `cluster_var` for a marker specified in `marker`. 
+
 ```{r}
-densityplot_marker(data = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
-                   marker = "CD3", 
-                   split_by = NULL, 
-                   color_by = "metaclusters", 
-                   title = "CD3 expression")
+plot_marker_ridgeplot(fcd = condor,
+                      expr_slot = "orig", 
+                      cluster_slot = "phenograph_pca_orig_k_60", 
+                      cluster_var = "metaclusters", 
+                      marker = "CD3")
 ```
+
+In case more than one marker are specified, the function returns a list of plots - one plot for each marker.
+
+```{r, fig.width=9, fig.height=7}
+plot.list<- plot_marker_ridgeplot(fcd = condor,
+                      expr_slot = "orig", 
+                      cluster_slot = "phenograph_pca_orig_k_60", 
+                      cluster_var = "metaclusters", 
+                      marker = c("CD3","CD4"))
+
+cowplot::plot_grid(plotlist = plot.list,align = "v")
+```
+
+### Violin plot
+
+The `plot_marker_violinplot` requires the same input as `plot_marker_ridgeplot`. But the density distribution of marker expression is visualized as violins for each cell population and the populations are shown next to each other instead of being vertically stacked.
+
+```{r}
+plot_marker_violinplot(fcd = condor, 
+                       expr_slot = "orig", 
+                       cluster_slot = "phenograph_pca_orig_k_60", 
+                       cluster_var = "metaclusters", 
+                       marker = "CD56")
+```
+
+Again, provided with several marker names, the function returns a list of plots.
+
+```{r, fig.width=9, fig.height=7}
+plot.list<-plot_marker_violinplot(fcd = condor, 
+                                  expr_slot = "orig", 
+                                  cluster_slot = "phenograph_pca_orig_k_60", 
+                                  cluster_var = "metaclusters", 
+                                  marker = c("CD3","CD56","HLA-DR","CD19"))
+
+cowplot::plot_grid(plotlist = plot.list,align = "hv")
+```
+
+As a site note, `plot_marker_violinplot()` optionally can be given a grouping variable `group_var` which is used to split each violin plot by. This can be useful when looking at biological groups or batch variables.
+
+### Density plot
+
+The `plot_marker_density()` can be used to compare expression distributions between different levels in a given `group_var`. This can for example be applied to investigate homogeneity of staining and measuring procedure between samples or experimental days. 
+
+```{r, fig.width=7, fig.height=7}
+plot_marker_density(fcd = condor,
+                    expr_slot = "orig", 
+                    cluster_slot = "phenograph_pca_orig_k_60", 
+                    cluster_var = "metaclusters",
+                    group_var = "sample_ID",
+                    marker = "CD57")
+```
+
+## Classical cytometry dotplot
+
+Finally, using `plot_marker_dotplot()` a scatter plot of two markers can be generated to investigate the relation of their expression.
+The marker on the x-axis is specified in `marker_x`, while the marker on the y-axis is specified in `marker_y`.
+
+```{r}
+plot_marker_dotplot(fcd = condor, 
+                    expr_slot = "orig",
+                    marker_x = "CD3",
+                    marker_y = "CD19",
+                    cluster_slot = "phenograph_pca_orig_k_60",
+                    cluster_var = "metaclusters", 
+                    dot_size = 0.5)
+```
+
+
+# Inspection of cell counts
+
+As always, it is important to consider how many cells are actually underlying visualizations that conceal the actual cells behind aggregated expression values (mean/median) or density distributions. `cyCONDOR` provides functions to quickly assess cell counts. 
+
+You can either look at the cell counts per sample and cell population in table format with the `getTable()` function setting `output_type = "counts"`, or visualize cell numbers with the `plot_counts_barplot()` function.
+
+```{r}
+# get counts as data frame
+counts<-getTable(fcd = condor,
+                 output_type = "counts",
+                 cluster_slot = "phenograph_pca_orig_k_60", 
+                 cluster_var = "metaclusters", 
+                 group_var = "sample_ID", 
+                 numeric = F)
+counts
+
+# get cells per cluster_var
+colSums(counts[,c(-1)])
+```
+
+The `plot_counts_barplot()` function stacks absolute cell numbers of each cell population on top of each other for each group in the grouping variable, which can be set via the `group_var` parameter.
+
+```{r}
+# visualize counts as stacked bar plot, faceted by clustering
+plot_counts_barplot(fcd = condor,
+                    cluster_slot = "phenograph_pca_orig_k_60",
+                    cluster_var = "metaclusters",
+                    group_var = "sample_ID",
+                    facet_by_clustering = F,
+                    facet_ncol = 5
+)
+```
+
+A faceting of the plot by cell population can be achieved by setting the parameter `facet_by_group = T`.
+
+```{r, fig.height=7, fig.width=10}
+# visualize counts as stacked bar plot, faceted by clustering
+plot_counts_barplot(fcd = condor,
+                    cluster_slot = "phenograph_pca_orig_k_60",
+                    cluster_var = "metaclusters",
+                    group_var = "sample_ID",
+                    facet_by_clustering = T,
+                    facet_ncol = 5
+)
+```
+
+# Others
+
+## Visualize the loadings of PCs
+
+`PC_loadings()` can be used to visualize the loadings for each principle component. 
+
+```{r}
+PC_loadings(fcd = condor, data_slot = "orig")
+```
+
+## Density plot
+
+```{r, fig.height=4, fig.width=10}
+plot_dim_density(fcd = condor,
+                 reduction_method = "umap",
+                 reduction_slot = "pca_orig",
+                 group_var = "group",
+                 color_density = c("Greys", "Reds"))
+```
+
+
+# MORE visualization?
+
+In this vignette, we mostly focused on visualizations that are useful to investigate clusterings and support annotation of cell populations. However, biological questions often revolve around comparing different biological groups of samples. 
+To get some inspirations how those can be visualized, check out the `vignette("Differential Analysis")`!
 
 # Session Info
+
 ```{r}
 info <- sessionInfo()
-
 info
 ```
-

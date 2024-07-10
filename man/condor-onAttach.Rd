@@ -3,12 +3,12 @@
 \name{condor-onAttach}
 \alias{condor-onAttach}
 \alias{.onAttach}
-\title{Print Welcome Message and ASCII Art upon Loading `ggvolc`}
+\title{Print Welcome Message and ASCII Art upon Loading this function is inspired by the developers of the `ggvolc` package}
 \usage{
 .onAttach(libname, pkgname)
 }
 \description{
-This function is executed when the `condor` package is attached to the R session.
+This function is executed when the `cyCONDOR` package is attached to the R session.
 It prints a welcome message and an ASCII representation related to the package.
 }
 \keyword{internal}

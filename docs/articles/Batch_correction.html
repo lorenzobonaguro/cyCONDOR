@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,18 +44,20 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a>
+    <a class="dropdown-item" href="../articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a>
     <a class="dropdown-item" href="../articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a>
     <a class="dropdown-item" href="../articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a>
     <a class="dropdown-item" href="../articles/Dimensionality_Reduction.html">Dimensionality Reduction</a>
     <a class="dropdown-item" href="../articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a>
     <a class="dropdown-item" href="../articles/Batch_correction.html">Batch correction</a>
     <a class="dropdown-item" href="../articles/Data_Visualization.html">Data Visualization</a>
-    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis</a>
+    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a>
     <a class="dropdown-item" href="../articles/Pseudotime_analysis.html">Pseudotime analysis</a>
     <a class="dropdown-item" href="../articles/Data_Projection.html">Data Projection</a>
     <a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a>
     <a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a>
-    <a class="dropdown-item" href="../articles/Other_utilities.html">Other utilities</a>
+    <a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a>
   </div>
 </li>
 <li class="nav-item">
@@ -95,29 +97,39 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lorenzobonaguro/condor" class="external-link">cyCONDOR</a></span><span class="op">)</span></span></code></pre></div>
-<p>With the <code>cyCONDOR</code> ecosystem we implemented
-<code>harmony</code> for batch correction. The correction can be applied
-to both the expression values and principal components. In this vignette
-we exemplify a workflow to correct for experimental data in the
-dataset.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lorenzobonaguro/condor" class="external-link">cyCONDOR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/VPetukhov/ggrastr" class="external-link">ggrastr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">lisi</span><span class="op">)</span></span></code></pre></div>
+<p>In this vignette we exemplify a workflow to correct for a batch
+effect induced by performing experiments (including cell preparation,
+staining and recording of flow cytometry data) on different dates. The
+example data set used in this vignette consists of peripheral blood
+mononuclear cells (PBMCs) from healthy donors.</p>
 <div class="section level2">
-<h2 id="loading-the-data">Loading the data<a class="anchor" aria-label="anchor" href="#loading-the-data"></a>
+<h2 id="cycondor-dimensionality-reduction-workflow">1 cyCONDOR dimensionality reduction workflow<a class="anchor" aria-label="anchor" href="#cycondor-dimensionality-reduction-workflow"></a>
 </h2>
-<p>We stat by loading the data.</p>
+<p>This first part describes the general <code>cyCONDOR</code> data
+processing and dimensionality reduction workflow (see
+<code>vignettes("Data loading and transformation")</code> and
+<code>vignettes("Dimensionality Reduction")</code> for more details)
+until the closer inspection of the data set and identification of a
+technical batch effect.</p>
+<div class="section level3">
+<h3 id="loading-the-data">Loading the data<a class="anchor" aria-label="anchor" href="#loading-the-data"></a>
+</h3>
+<p>We start by loading the data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_fcd.html">prep_fcd</a></span><span class="op">(</span>FCSpath <span class="op">=</span> <span class="st">"../../../Figure 3 - Batch Correction/data/CureDem/all/"</span>, </span>
-<span>                   ceil <span class="op">=</span> <span class="fl">500</span>, </span>
-<span>                   useCSV <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>                   transformation <span class="op">=</span> <span class="st">"a"</span>, </span>
-<span>                   remove_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"InFile"</span>, <span class="st">"Time"</span><span class="op">)</span>, </span>
-<span>                   anno_table <span class="op">=</span> <span class="st">"../../../Figure 3 - Batch Correction/data/CureDem/all.csv"</span>, </span>
-<span>                   filename_col <span class="op">=</span> <span class="st">"filename"</span>,</span>
-<span>                   seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_fcd.html">prep_fcd</a></span><span class="op">(</span>data_path <span class="op">=</span> <span class="st">"../../../Figure 3 - Batch Correction/data/CureDem/all/"</span>,</span>
+<span>                   max_cell <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>                   useCSV <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                   transformation <span class="op">=</span> <span class="st">"auto_logi"</span>,</span>
+<span>                   remove_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Time"</span>, <span class="st">"FSC-H"</span>, <span class="st">"SSC-H"</span><span class="op">)</span>,</span>
+<span>                   anno_table <span class="op">=</span> <span class="st">"../../../Figure 3 - Batch Correction/data/CureDem/all.csv"</span>,</span>
+<span>                   filename_col <span class="op">=</span> <span class="st">"filename"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "FSC-A w= 0 t= 236683.234375"</span></span>
-<span><span class="co">## [1] "FSC-H w= 0 t= 233432.015625"</span></span>
 <span><span class="co">## [1] "SSC-A w= 0 t= 120710.2578125"</span></span>
-<span><span class="co">## [1] "SSC-H w= 0 t= 115739.640625"</span></span>
 <span><span class="co">## [1] "CD45RA w= 0.619815584596749 t= 429350.9375"</span></span>
 <span><span class="co">## [1] "CD94 w= 1.4860323537846 t= 11631.6865234375"</span></span>
 <span><span class="co">## [1] "CD195 w= 1.66165589411889 t= 4130.611328125"</span></span>
@@ -145,70 +157,67 @@ dataset.</p>
 <span><span class="co">## [1] "CD123 w= 1.05931173666699 t= 76943.0234375"</span></span>
 <span><span class="co">## [1] "CD25 w= 1.21053626207997 t= 68929.3125"</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Set the data as factor</span></span>
+<code class="sourceCode R"><span><span class="co"># set the date as factor for visualization purposes</span></span>
 <span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">exp</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="dimensionality-reduction">Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#dimensionality-reduction"></a>
-</h2>
 <div class="section level3">
-<h3 id="pca">PCA<a class="anchor" aria-label="anchor" href="#pca"></a>
+<h3 id="dimensionality-reduction">Dimensionality Reduction<a class="anchor" aria-label="anchor" href="#dimensionality-reduction"></a>
 </h3>
+<p>Next, we perform dimensionality reduction calculating the principal
+components (PCs) and the UMAP based on the PCs.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
-<span>                 data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
-<span>                 seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
+<span>                 data_slot <span class="op">=</span> <span class="st">"orig"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
+<span>                  input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
+<span>                  data_slot <span class="op">=</span> <span class="st">"orig"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="umap">UMAP<a class="anchor" aria-label="anchor" href="#umap"></a>
+<h3 id="inspection-of-batch-effect">Inspection of batch effect<a class="anchor" aria-label="anchor" href="#inspection-of-batch-effect"></a>
 </h3>
+<p>We can now visualize the batch effect in this data set by plotting
+the UMAP coordinates and coloring the cells by the experiment date.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
-<span>                  input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
-<span>                  data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
-<span>                  seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
-<p>We can now visualize the batch by plotting the UMAP coordinates
-coloring the plot by experimental date.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
+<span>             param <span class="op">=</span> <span class="st">"exp"</span>, </span>
+<span>             title <span class="op">=</span> <span class="st">"Original UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Batch_correction_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"exp"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"Original UMAP"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>            color_discrete <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#1C75BC"</span>, <span class="st">"#BE1E2D"</span>, <span class="st">"#8DC63F"</span>, <span class="st">"#92278F"</span>, <span class="st">"#F15A29"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
+<span>             param <span class="op">=</span> <span class="st">"exp"</span>, </span>
+<span>             title <span class="op">=</span> <span class="st">"Original UMAP"</span>,</span>
+<span>             facet_by_variable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Batch_correction_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="batch-correction">Batch correction<a class="anchor" aria-label="anchor" href="#batch-correction"></a>
+<h2 id="batch-correction">2 Batch correction<a class="anchor" aria-label="anchor" href="#batch-correction"></a>
 </h2>
-<p>We can now correct the fluorescence intensities or the principal
-components. Correction directly on the fluorescence intensities should
-be performed carefully if you plan to compare the expression in
-different groups downstream.</p>
+<p>Within the <code>cyCONDOR</code> ecosystem we implemented <a href="https://doi.org/10.1038/s41592-019-0619-0" class="external-link">harmony</a> and <a href="https://doi.org/10.1002/cyto.a.23904" class="external-link">CytoNorm</a> for batch
+correction. The correction can be applied either to the protein
+expression values (fluorescence intensities) or to the principal
+components. There is no ‘magic bullet’ for batch correction and each of
+these methods needs to be used with care to correct for the batch effect
+but not the underlying biological effects. Therefore, each of the here
+described methods should always be validated by inspecting the
+expression of hallmark markers.</p>
+<p>If you use this workflow in your work please consider citing <a href="XXX">cyCONDOR</a> and <a href="https://doi.org/10.1038/s41592-019-0619-0" class="external-link">harmony</a> or <a href="https://doi.org/10.1002/cyto.a.23904" class="external-link">CytoNorm</a>.</p>
 <div class="section level3">
-<h3 id="correct-intensities">Correct Intensities<a class="anchor" aria-label="anchor" href="#correct-intensities"></a>
+<h3 id="correct-principal-components">2.1 Correct Principal Components<a class="anchor" aria-label="anchor" href="#correct-principal-components"></a>
 </h3>
+<p>To use the <code>harmony</code> algorithm for correcting the
+principal components, we use the <code><a href="../reference/harmonize_PCA.html">harmonize_PCA()</a></code> and define
+the batch variable <code>batch_var</code>, in this example the
+experiment date ‘exp’.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonize_intensities.html">harmonize_intensities</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
-<span>                                batch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp"</span><span class="op">)</span>, </span>
-<span>                                seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Transposing data matrix</span></span></code></pre>
-<pre><code><span><span class="co">## Initializing state using k-means centroids initialization</span></span></code></pre>
-<pre><code><span><span class="co">## Harmony 1/10</span></span></code></pre>
-<pre><code><span><span class="co">## Harmony 2/10</span></span></code></pre>
-<pre><code><span><span class="co">## Harmony 3/10</span></span></code></pre>
-<pre><code><span><span class="co">## Harmony converged after 3 iterations</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="correct-principal-components">Correct Principal Components<a class="anchor" aria-label="anchor" href="#correct-principal-components"></a>
-</h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonize_PCA.html">harmonize_PCA</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
-<span>                        batch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp"</span><span class="op">)</span>, </span>
-<span>                        data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
-<span>                        seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
+<span>                        batch_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp"</span><span class="op">)</span>, </span>
+<span>                        data_slot <span class="op">=</span> <span class="st">"orig"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Transposing data matrix</span></span></code></pre>
 <pre><code><span><span class="co">## Initializing state using k-means centroids initialization</span></span></code></pre>
 <pre><code><span><span class="co">## Harmony 1/10</span></span></code></pre>
@@ -219,35 +228,284 @@ different groups downstream.</p>
 <pre><code><span><span class="co">## Harmony 6/10</span></span></code></pre>
 <pre><code><span><span class="co">## Harmony 7/10</span></span></code></pre>
 <pre><code><span><span class="co">## Harmony converged after 7 iterations</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="repeat-dimensionality-reduction">Repeat dimensionality reduction<a class="anchor" aria-label="anchor" href="#repeat-dimensionality-reduction"></a>
-</h3>
-<p>With the corrected PC coordinates we can not run again the UMAP
-function.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<p>The harmonized PCs are saved in <code>condor$pca$norm</code>.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">pca</span><span class="op">$</span><span class="va">norm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##                                                                           PC1</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1  -1.1366675</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_2   3.6644012</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_3   2.4084209</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_4   0.2216334</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_5   3.7184420</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_6   3.7217632</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_7   2.4474169</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_8  -2.7793225</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_9   1.8133915</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_10  4.0265809</span></span>
+<span><span class="co">##                                                                           PC2</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1  -3.4624610</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_2   1.4990914</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_3  -0.2008533</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_4  -1.0498486</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_5  -0.1274135</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_6   0.7872670</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_7   1.1856915</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_8   1.0500470</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_9  -2.3469980</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_10  0.6143970</span></span>
+<span><span class="co">##                                                                           PC3</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1  -1.6953916</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_2   0.3315178</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_3   0.5562826</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_4  -0.1512992</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_5  -0.1128416</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_6   0.5681361</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_7  -0.7625211</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_8  -0.6801728</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_9  -1.0648298</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_10  0.7935678</span></span>
+<span><span class="co">##                                                                            PC4</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1   1.88612893</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_2  -0.71703164</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_3   2.50713060</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_4   0.81109320</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_5   0.80766039</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_6   0.72652862</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_7   0.60679898</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_8  -0.84180911</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_9   0.21054986</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_10 -0.06402865</span></span>
+<span><span class="co">##                                                                            PC5</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1   0.95925264</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_2   0.27537428</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_3   1.46456636</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_4  -2.28436215</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_5   1.21457968</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_6  -0.35067378</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_7   1.11939274</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_8   0.72285975</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_9  -1.69663626</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_10  0.03348906</span></span></code></pre>
+<div class="section level4">
+<h4 id="repeat-dimensionality-reduction">Repeat dimensionality reduction<a class="anchor" aria-label="anchor" href="#repeat-dimensionality-reduction"></a>
+</h4>
+<p>We can now recalculate the UMAP based on the harmonized PCs. For this
+we select <code>input_type = "pca"</code> and
+<code>data_slot = "norm"</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                  input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
-<span>                  data_slot <span class="op">=</span> <span class="st">"norm"</span>, </span>
-<span>                  seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
+<span>                  data_slot <span class="op">=</span> <span class="st">"norm"</span>,</span>
+<span>                  prefix<span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<p>Unless a prefix has been set, the new UMAP coordinates calculated
+based on the harmonized PCs can be accessed via
+<code>condor$umap$pca_norm</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_norm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##                                                                       UMAP1</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1 -3.707570</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_2 -4.884564</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_3 -5.692166</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_4 -6.726507</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_5 -6.848187</span></span>
+<span><span class="co">##                                                                        UMAP2</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1 -12.651143</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_2  10.020984</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_3   7.914641</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_4  -3.255706</span></span>
+<span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_5   7.687574</span></span></code></pre>
+</div>
 <div class="section level4">
-<h4 id="visualize-the-results">Visualize the results<a class="anchor" aria-label="anchor" href="#visualize-the-results"></a>
+<h4 id="visualization-of-the-data-integration-results">Visualization of the data integration results<a class="anchor" aria-label="anchor" href="#visualization-of-the-data-integration-results"></a>
 </h4>
+<div class="section level5">
+<h5 id="umap">UMAP<a class="anchor" aria-label="anchor" href="#umap"></a>
+</h5>
+<p>For a first inspection of the data integration, we can visualize the
+results by plotting the new UMAP coordinates and coloring the cells by
+the experiment date. The UMAP shows no strong separation of the cells by
+the experiment date anymore. To further inspect the data integration
+results, the expression of cell type lineage markers should be assessed.
+This is highly dependent on the markers measured in the flow cytometry
+data set and therefore not included in this vignette.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_norm"</span>, </span>
+<span>             param <span class="op">=</span> <span class="st">"exp"</span>, </span>
+<span>             title <span class="op">=</span> <span class="st">"Harmonized UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Batch_correction_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_norm"</span>, </span>
+<span>             param <span class="op">=</span> <span class="st">"exp"</span>, </span>
+<span>             title <span class="op">=</span> <span class="st">"Harmonized UMAP"</span>,</span>
+<span>             facet<span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Batch_correction_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+</div>
+<div class="section level5">
+<h5 id="lisi-score">LISI score<a class="anchor" aria-label="anchor" href="#lisi-score"></a>
+</h5>
+<p>To further inspect the data integration result, we can calculate the
+<a href="https://doi.org/10.1038/s41592-019-0619-0" class="external-link">Local Inverse
+Simpson’s Index (LISI) score</a>. The LISI score can be used to assess
+the degree of mixing among the cells from the different batches in the
+UMAP space.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#prepare pre batch correction data set</span></span>
+<span><span class="va">pre_batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span></span>
+<span><span class="co">#calculate LISI score for batch variable 'exp'</span></span>
+<span><span class="va">res_pre</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lisi/man/compute_lisi.html" class="external-link">compute_lisi</a></span><span class="op">(</span><span class="va">pre_batch</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, <span class="va">pre_batch</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'exp'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">res_pre</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"lisi"</span></span>
+<span><span class="co">#combine LISI score with cell annotation</span></span>
+<span><span class="va">lisi_mat_pre</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">pre_batch</span>, <span class="va">res_pre</span><span class="op">)</span></span>
+<span><span class="va">lisi_mat_pre</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="st">"pre"</span></span>
+<span></span>
+<span><span class="co">#prepare ppost batch correction data set</span></span>
+<span><span class="va">post_batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_norm</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span></span>
+<span><span class="co">#calculate LISI score for batch variable 'exp'</span></span>
+<span><span class="va">res_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lisi/man/compute_lisi.html" class="external-link">compute_lisi</a></span><span class="op">(</span><span class="va">post_batch</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, <span class="va">post_batch</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'exp'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">res_post</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"lisi"</span></span>
+<span><span class="co">#combine LISI score with cell annotation</span></span>
+<span><span class="va">lisi_mat_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">post_batch</span>, <span class="va">res_post</span><span class="op">)</span></span>
+<span><span class="va">lisi_mat_post</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="st">"post"</span></span>
+<span></span>
+<span><span class="co">#combine pre and post batch matrices </span></span>
+<span><span class="va">lisi_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">lisi_mat_post</span>, <span class="va">lisi_mat_pre</span><span class="op">)</span></span>
+<span><span class="va">lisi_mat</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">lisi_mat</span><span class="op">$</span><span class="va">type</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pre"</span>, <span class="st">"post"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#visualization </span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lisi_mat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">lisi</span>, x <span class="op">=</span> <span class="va">type</span>, fill <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggrastr/man/geom_jitter_rast.html" class="external-link">geom_jitter_rast</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.01</span>, scale <span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_violin.html" class="external-link">geom_violin</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#1C75BC"</span>, <span class="st">"#BE1E2D"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">2</span>, panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        text<span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">16</span>, color<span class="op">=</span> <span class="st">"black"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"LISI score"</span><span class="op">)</span></span>
+<span><span class="va">p</span></span></code></pre></div>
+<p><img src="Batch_correction_files/figure-html/unnamed-chunk-11-1.png" width="480"></p>
+</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="correct-fluorescent-intensities">2.2 Correct fluorescent intensities<a class="anchor" aria-label="anchor" href="#correct-fluorescent-intensities"></a>
+</h3>
+<p>As an alternative to correcting the embedding, the fluorescent
+intensities can be directly corrected using <code>harmony</code> or
+<code>CytoNorm</code>. However, direct correction of fluorescence
+intensities should be used with caution, if biological differences
+between groups or conditions are planned to be compared in the
+downstream analysis.</p>
+<div class="section level4">
+<h4 id="correct-fluorescent-intensities-with-harmony">Correct fluorescent intensities with harmony<a class="anchor" aria-label="anchor" href="#correct-fluorescent-intensities-with-harmony"></a>
+</h4>
+<p>To use the <code>harmony</code> algorithm for correcting the
+intensities, we use the <code><a href="../reference/harmonize_intensities.html">harmonize_intensities()</a></code> and define
+the batch variable <code>batch_var</code>, in this case ‘exp’.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_norm</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"exp"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"Harmonized UMAP"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span>, color_discrete <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#1C75BC"</span>, <span class="st">"#BE1E2D"</span>, <span class="st">"#8DC63F"</span>, <span class="st">"#92278F"</span>, <span class="st">"#F15A29"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Batch_correction_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonize_intensities.html">harmonize_intensities</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
+<span>                                batch_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Transposing data matrix</span></span></code></pre>
+<pre><code><span><span class="co">## Initializing state using k-means centroids initialization</span></span></code></pre>
+<pre><code><span><span class="co">## Harmony 1/10</span></span></code></pre>
+<pre><code><span><span class="co">## Harmony 2/10</span></span></code></pre>
+<pre><code><span><span class="co">## Harmony 3/10</span></span></code></pre>
+<pre><code><span><span class="co">## Harmony converged after 3 iterations</span></span></code></pre>
+<p>The harmonized intensities are saved in
+<code>condor$expr$norm</code>.</p>
+</div>
+<div class="section level4">
+<h4 id="correct-fluorescent-intensities-with-cytonorm">Correct fluorescent intensities with CytoNorm<a class="anchor" aria-label="anchor" href="#correct-fluorescent-intensities-with-cytonorm"></a>
+</h4>
+<p>Another approach for correcting the fluorescence intensities is the
+application of the <a href="https://github.com/saeyslab/CytoNorm" class="external-link">CytoNorm algorithm</a>
+within the <code>cyCONDOR</code> ecosystem. For a detailed description
+of <code>CytoNorm</code> see <a href="https://doi.org/10.1002/cyto.a.23904" class="external-link">Van Gassen et al.,
+2019</a>.</p>
+<p>As a first step, the batch effect is learnt from reference samples
+provided by the user. The control samples should contain the whole range
+of expression values of the markers in the panel. For example in the
+case of a stimulation experiment including unstimulated and stimulated
+samples as control samples improved estimation of the batch effect (<a href="https://doi.org/10.1002/cyto.a.23904" class="external-link">Van Gassen et al.,
+2019</a>). Ideally the samples used as reference samples were stained
+and recorded along the other samples within each batch. Depending on
+your data set, it is also possible to use all samples contained in your
+data set as reference samples to train the model and learn the
+differences between the batches as shown in the example below.</p>
+<div class="section level5">
+<h5 id="training-the-model">Training the model<a class="anchor" aria-label="anchor" href="#training-the-model"></a>
+</h5>
+<p>Here, a model is trained on all samples contained in the data set.
+For this we need to provide the name of the batch variable
+<code>batch_var</code> and optionally parameters which should not be
+included for the training as well as different parameters for clustering
+the cells with FlowSOM (<code>FlowSom_param</code>). Here, we use all
+markers present in the <code>fcd</code> and perform the training with
+the default parameters for <code>FlowSom_param</code>. The number of
+desired FlowSOM metaclusters is defined by <code>nClus</code> and should
+be adjusted according to your data set, see <a href="https://doi.org/10.1002/cyto.a.23904" class="external-link">Van Gassen et al., 2019</a>
+for more details.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/train_cytonorm.html">train_cytonorm</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                         batch_var <span class="op">=</span> <span class="st">"exp"</span>,</span>
+<span>                         remove_param <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                         FlowSOM_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nCells <span class="op">=</span> <span class="fl">5000</span>, xdim <span class="op">=</span> <span class="fl">5</span>, ydim <span class="op">=</span> <span class="fl">5</span>, nClus <span class="op">=</span> <span class="fl">10</span>, scale <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, </span>
+<span>                         seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level5">
+<h5 id="normalization-of-data-with-trained-model">Normalization of data with trained model<a class="anchor" aria-label="anchor" href="#normalization-of-data-with-trained-model"></a>
+</h5>
+<p>Next the trained model saved within your <code>fcd</code> is used to
+normalize all samples present in your <code>fcd</code>. The fcs files
+with the normalized expression values can be saved, if
+<code>keep_fcs</code> is set to <code>TRUE</code>.</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_cytonorm.html">run_cytonorm</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                       files <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                       batch_var <span class="op">=</span> <span class="st">"exp"</span>,</span>
+<span>                       keep_fcs <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## start normalization</span></span></code></pre>
+<pre><code><span><span class="co">## adding normalized expression data to fcd</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "FSC-A w= 0 t= 236683.234375"</span></span>
+<span><span class="co">## [1] "SSC-A w= 0 t= 120710.2578125"</span></span>
+<span><span class="co">## [1] "CD45RA w= 1.28372894517545 t= 413451.40625"</span></span>
+<span><span class="co">## [1] "CD94 w= 0 t= 5495767.5"</span></span>
+<span><span class="co">## [1] "CD195 w= 1.3643781468727 t= 9353.5498046875"</span></span>
+<span><span class="co">## [1] "CD8 w= 0.376958119580248 t= 1458606"</span></span>
+<span><span class="co">## [1] "CD38 w= 0.909028390620816 t= 228419.9375"</span></span>
+<span><span class="co">## [1] "CD127 w= 1.65645785858407 t= 5435.8681640625"</span></span>
+<span><span class="co">## [1] "CD56 w= 1.38525405037206 t= 49117.98046875"</span></span>
+<span><span class="co">## [1] "HLA-DR w= 1.20349552373243 t= 111646.203125"</span></span>
+<span><span class="co">## [1] "CD32 w= 0.654932163457751 t= 124508.890625"</span></span>
+<span><span class="co">## [1] "CD16 w= 1.44678717203973 t= 31502.130859375"</span></span>
+<span><span class="co">## [1] "CD19 w= 1.15734623069537 t= 35528.9140625"</span></span>
+<span><span class="co">## [1] "IgD w= 1.34388830510485 t= 26800.48046875"</span></span>
+<span><span class="co">## [1] "CD4 w= 0 t= 907408128"</span></span>
+<span><span class="co">## [1] "CD64 w= 1.47434329294997 t= 38018.50390625"</span></span>
+<span><span class="co">## [1] "CD14 w= 1.36521822802214 t= 45824.7109375"</span></span>
+<span><span class="co">## [1] "CD57 w= 0.185968937486871 t= 2002867.25"</span></span>
+<span><span class="co">## [1] "CD3 w= 0.738811897973633 t= 305460.625"</span></span>
+<span><span class="co">## [1] "PD-1 w= 1.97095869122428 t= 1557.71496582031"</span></span>
+<span><span class="co">## [1] "CD15 w= 0.372455838085952 t= 1328023.875"</span></span>
+<span><span class="co">## [1] "CD27 w= 1.16235575549204 t= 43546.55078125"</span></span>
+<span><span class="co">## [1] "CD20 w= 1.25890573526447 t= 33785.08984375"</span></span>
+<span><span class="co">## [1] "CD197 w= 1.7672132052799 t= 3997.00146484375"</span></span>
+<span><span class="co">## [1] "CD11c w= 1.22877882636404 t= 11238.1728515625"</span></span>
+<span><span class="co">## [1] "CD13 w= 1.15327394382129 t= 32426.138671875"</span></span>
+<span><span class="co">## [1] "CD123 w= 0.948317227864253 t= 99314.6796875"</span></span>
+<span><span class="co">## [1] "CD25 w= 1.09330533882027 t= 116415.7578125"</span></span></code></pre>
+<pre><code><span><span class="co">## removing temporary fcs files</span></span></code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">info</span></span></code></pre></div>
@@ -274,118 +532,131 @@ function.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] cyCONDOR_0.1.5</span></span>
+<span><span class="co">## [1] lisi_1.0       ggrastr_1.0.2  ggplot2_3.4.4  cyCONDOR_0.1.6</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] fs_1.6.3                    destiny_3.14.0             </span></span>
-<span><span class="co">##   [3] matrixStats_1.1.0           bitops_1.0-7               </span></span>
-<span><span class="co">##   [5] devtools_2.4.5              lubridate_1.9.3            </span></span>
-<span><span class="co">##   [7] RColorBrewer_1.1-3          doParallel_1.0.17          </span></span>
-<span><span class="co">##   [9] ggsci_3.0.0                 Rgraphviz_2.44.0           </span></span>
-<span><span class="co">##  [11] profvis_0.3.8               tools_4.3.1                </span></span>
-<span><span class="co">##  [13] backports_1.4.1             utf8_1.2.4                 </span></span>
-<span><span class="co">##  [15] R6_2.5.1                    uwot_0.1.16                </span></span>
-<span><span class="co">##  [17] urlchecker_1.0.1            withr_2.5.1                </span></span>
-<span><span class="co">##  [19] sp_2.1-1                    prettyunits_1.2.0          </span></span>
-<span><span class="co">##  [21] gridExtra_2.3               cli_3.6.1                  </span></span>
-<span><span class="co">##  [23] Biobase_2.60.0              textshaping_0.3.7          </span></span>
-<span><span class="co">##  [25] ggcyto_1.28.1               labeling_0.4.3             </span></span>
-<span><span class="co">##  [27] sass_0.4.7                  robustbase_0.99-0          </span></span>
-<span><span class="co">##  [29] readr_2.1.4                 randomForest_4.7-1.1       </span></span>
-<span><span class="co">##  [31] askpass_1.2.0               proxy_0.4-27               </span></span>
-<span><span class="co">##  [33] slingshot_2.8.0             pkgdown_2.0.7              </span></span>
-<span><span class="co">##  [35] systemfonts_1.0.5           foreign_0.8-85             </span></span>
-<span><span class="co">##  [37] harmony_1.1.0               parallelly_1.36.0          </span></span>
-<span><span class="co">##  [39] sessioninfo_1.2.2           readxl_1.4.3               </span></span>
-<span><span class="co">##  [41] TTR_0.24.3                  flowCore_2.12.2            </span></span>
-<span><span class="co">##  [43] rstudioapi_0.15.0           generics_0.1.3             </span></span>
-<span><span class="co">##  [45] shape_1.4.6                 car_3.1-2                  </span></span>
-<span><span class="co">##  [47] dplyr_1.1.3                 Matrix_1.6-1.1             </span></span>
-<span><span class="co">##  [49] RProtoBufLib_2.12.1         ggbeeswarm_0.7.2           </span></span>
-<span><span class="co">##  [51] fansi_1.0.5                 S4Vectors_0.38.2           </span></span>
-<span><span class="co">##  [53] abind_1.4-5                 lifecycle_1.0.3            </span></span>
-<span><span class="co">##  [55] scatterplot3d_0.3-44        yaml_2.3.7                 </span></span>
-<span><span class="co">##  [57] carData_3.0-5               SummarizedExperiment_1.30.2</span></span>
-<span><span class="co">##  [59] recipes_1.0.8               Rtsne_0.16                 </span></span>
-<span><span class="co">##  [61] grid_4.3.1                  promises_1.2.1             </span></span>
-<span><span class="co">##  [63] crayon_1.5.2                miniUI_0.1.1.1             </span></span>
-<span><span class="co">##  [65] lattice_0.22-5              cowplot_1.1.1              </span></span>
-<span><span class="co">##  [67] pillar_1.9.0                knitr_1.44                 </span></span>
-<span><span class="co">##  [69] GenomicRanges_1.52.1        boot_1.3-28.1              </span></span>
-<span><span class="co">##  [71] future.apply_1.11.0         codetools_0.2-19           </span></span>
-<span><span class="co">##  [73] glue_1.6.2                  pcaMethods_1.92.0          </span></span>
-<span><span class="co">##  [75] data.table_1.14.8           remotes_2.4.2.1            </span></span>
-<span><span class="co">##  [77] vcd_1.4-11                  png_0.1-8                  </span></span>
-<span><span class="co">##  [79] vctrs_0.6.4                 cellranger_1.1.0           </span></span>
-<span><span class="co">##  [81] gtable_0.3.4                cachem_1.0.8               </span></span>
-<span><span class="co">##  [83] gower_1.0.1                 xfun_0.40                  </span></span>
-<span><span class="co">##  [85] princurve_2.1.6             S4Arrays_1.0.6             </span></span>
-<span><span class="co">##  [87] mime_0.12                   prodlim_2023.08.28         </span></span>
-<span><span class="co">##  [89] RcppEigen_0.3.3.9.4         survival_3.5-7             </span></span>
-<span><span class="co">##  [91] timeDate_4022.108           pheatmap_1.0.12            </span></span>
-<span><span class="co">##  [93] SingleCellExperiment_1.22.0 iterators_1.0.14           </span></span>
-<span><span class="co">##  [95] CytoDx_1.20.0               cytolib_2.12.1             </span></span>
-<span><span class="co">##  [97] hardhat_1.3.0               lava_1.7.3                 </span></span>
-<span><span class="co">##  [99] ellipsis_0.3.2              ipred_0.9-14               </span></span>
-<span><span class="co">## [101] ncdfFlow_2.46.0             nlme_3.1-163               </span></span>
-<span><span class="co">## [103] usethis_2.2.2               xts_0.13.1                 </span></span>
-<span><span class="co">## [105] RcppAnnoy_0.0.21            GenomeInfoDb_1.36.4        </span></span>
-<span><span class="co">## [107] rprojroot_2.0.3             bslib_0.5.1                </span></span>
-<span><span class="co">## [109] irlba_2.3.5.1               vipor_0.4.5                </span></span>
-<span><span class="co">## [111] Rphenograph_0.99.1          rpart_4.1.21               </span></span>
-<span><span class="co">## [113] colorspace_2.1-0            BiocGenerics_0.46.0        </span></span>
-<span><span class="co">## [115] Hmisc_5.1-1                 flowWorkspace_4.12.2       </span></span>
-<span><span class="co">## [117] nnet_7.3-19                 ggrastr_1.0.2              </span></span>
-<span><span class="co">## [119] tidyselect_1.2.0            smoother_1.1               </span></span>
-<span><span class="co">## [121] processx_3.8.2              compiler_4.3.1             </span></span>
-<span><span class="co">## [123] curl_5.1.0                  glmnet_4.1-8               </span></span>
-<span><span class="co">## [125] graph_1.78.0                htmlTable_2.4.2            </span></span>
-<span><span class="co">## [127] desc_1.4.2                  DelayedArray_0.26.7        </span></span>
-<span><span class="co">## [129] checkmate_2.3.0             scales_1.2.1               </span></span>
-<span><span class="co">## [131] DEoptimR_1.1-3              lmtest_0.9-40              </span></span>
-<span><span class="co">## [133] hexbin_1.28.3               RBGL_1.76.0                </span></span>
-<span><span class="co">## [135] callr_3.7.3                 stringr_1.5.0              </span></span>
-<span><span class="co">## [137] digest_0.6.33               rmarkdown_2.25             </span></span>
-<span><span class="co">## [139] RhpcBLASctl_0.23-42         XVector_0.40.0             </span></span>
-<span><span class="co">## [141] htmltools_0.5.6.1           pkgconfig_2.0.3            </span></span>
-<span><span class="co">## [143] base64enc_0.1-3             umap_0.2.10.0              </span></span>
-<span><span class="co">## [145] sparseMatrixStats_1.12.2    MatrixGenerics_1.12.3      </span></span>
-<span><span class="co">## [147] fastmap_1.1.1               rlang_1.1.1                </span></span>
-<span><span class="co">## [149] Rmisc_1.5.1                 htmlwidgets_1.6.2          </span></span>
-<span><span class="co">## [151] ggthemes_4.2.4              shiny_1.7.5.1              </span></span>
-<span><span class="co">## [153] DelayedMatrixStats_1.22.6   farver_2.1.1               </span></span>
-<span><span class="co">## [155] jquerylib_0.1.4             zoo_1.8-12                 </span></span>
-<span><span class="co">## [157] jsonlite_1.8.7              ModelMetrics_1.2.2.2       </span></span>
-<span><span class="co">## [159] RCurl_1.98-1.13             magrittr_2.0.3             </span></span>
-<span><span class="co">## [161] Formula_1.2-5               GenomeInfoDbData_1.2.10    </span></span>
-<span><span class="co">## [163] munsell_0.5.0               Rcpp_1.0.11                </span></span>
-<span><span class="co">## [165] TrajectoryUtils_1.8.0       reticulate_1.34.0          </span></span>
-<span><span class="co">## [167] stringi_1.7.12              pROC_1.18.5                </span></span>
-<span><span class="co">## [169] zlibbioc_1.46.0             MASS_7.3-60                </span></span>
-<span><span class="co">## [171] plyr_1.8.9                  pkgbuild_1.4.2             </span></span>
-<span><span class="co">## [173] ggrepel_0.9.4               parallel_4.3.1             </span></span>
-<span><span class="co">## [175] listenv_0.9.0               splines_4.3.1              </span></span>
-<span><span class="co">## [177] hms_1.1.3                   ps_1.7.5                   </span></span>
-<span><span class="co">## [179] igraph_1.5.1                ggpubr_0.6.0               </span></span>
-<span><span class="co">## [181] ranger_0.16.0               ggsignif_0.6.4             </span></span>
-<span><span class="co">## [183] RcppHNSW_0.5.0              reshape2_1.4.4             </span></span>
-<span><span class="co">## [185] stats4_4.3.1                pkgload_1.3.3              </span></span>
-<span><span class="co">## [187] XML_3.99-0.15               evaluate_0.22              </span></span>
-<span><span class="co">## [189] rpart.plot_3.1.1            laeken_0.5.2               </span></span>
-<span><span class="co">## [191] tzdb_0.4.0                  foreach_1.5.2              </span></span>
-<span><span class="co">## [193] httpuv_1.6.12               VIM_6.2.2                  </span></span>
-<span><span class="co">## [195] openssl_2.1.1               RANN_2.6.1                 </span></span>
-<span><span class="co">## [197] tidyr_1.3.0                 purrr_1.0.2                </span></span>
-<span><span class="co">## [199] future_1.33.0               ggplot2_3.4.4              </span></span>
-<span><span class="co">## [201] broom_1.0.5                 xtable_1.8-4               </span></span>
-<span><span class="co">## [203] e1071_1.7-13                RSpectra_0.16-1            </span></span>
-<span><span class="co">## [205] rstatix_0.7.2               later_1.3.1                </span></span>
-<span><span class="co">## [207] class_7.3-22                ragg_1.2.6                 </span></span>
-<span><span class="co">## [209] tibble_3.2.1                beeswarm_0.4.0             </span></span>
-<span><span class="co">## [211] memoise_2.0.1               IRanges_2.34.1             </span></span>
-<span><span class="co">## [213] cluster_2.1.4               ggplot.multistats_1.0.0    </span></span>
-<span><span class="co">## [215] timechange_0.2.0            globals_0.16.2             </span></span>
-<span><span class="co">## [217] CytoML_2.12.0               caret_6.0-94</span></span></code></pre>
+<span><span class="co">##   [1] IRanges_2.34.1              Rmisc_1.5.1                </span></span>
+<span><span class="co">##   [3] urlchecker_1.0.1            nnet_7.3-19                </span></span>
+<span><span class="co">##   [5] CytoNorm_2.0.1              TH.data_1.1-2              </span></span>
+<span><span class="co">##   [7] vctrs_0.6.4                 digest_0.6.33              </span></span>
+<span><span class="co">##   [9] png_0.1-8                   shape_1.4.6                </span></span>
+<span><span class="co">##  [11] proxy_0.4-27                slingshot_2.8.0            </span></span>
+<span><span class="co">##  [13] ggrepel_0.9.4               parallelly_1.36.0          </span></span>
+<span><span class="co">##  [15] MASS_7.3-60                 pkgdown_2.0.7              </span></span>
+<span><span class="co">##  [17] reshape2_1.4.4              httpuv_1.6.12              </span></span>
+<span><span class="co">##  [19] foreach_1.5.2               BiocGenerics_0.46.0        </span></span>
+<span><span class="co">##  [21] withr_2.5.1                 xfun_0.40                  </span></span>
+<span><span class="co">##  [23] ggpubr_0.6.0                ellipsis_0.3.2             </span></span>
+<span><span class="co">##  [25] survival_3.5-7              memoise_2.0.1              </span></span>
+<span><span class="co">##  [27] hexbin_1.28.3               ggbeeswarm_0.7.2           </span></span>
+<span><span class="co">##  [29] RProtoBufLib_2.12.1         princurve_2.1.6            </span></span>
+<span><span class="co">##  [31] profvis_0.3.8               ggsci_3.0.0                </span></span>
+<span><span class="co">##  [33] systemfonts_1.0.5           ragg_1.2.6                 </span></span>
+<span><span class="co">##  [35] zoo_1.8-12                  GlobalOptions_0.1.2        </span></span>
+<span><span class="co">##  [37] DEoptimR_1.1-3              Formula_1.2-5              </span></span>
+<span><span class="co">##  [39] prettyunits_1.2.0           promises_1.2.1             </span></span>
+<span><span class="co">##  [41] scatterplot3d_0.3-44        rstatix_0.7.2              </span></span>
+<span><span class="co">##  [43] globals_0.16.2              ps_1.7.5                   </span></span>
+<span><span class="co">##  [45] rstudioapi_0.15.0           miniUI_0.1.1.1             </span></span>
+<span><span class="co">##  [47] generics_0.1.3              ggcyto_1.28.1              </span></span>
+<span><span class="co">##  [49] base64enc_0.1-3             processx_3.8.2             </span></span>
+<span><span class="co">##  [51] curl_5.1.0                  S4Vectors_0.38.2           </span></span>
+<span><span class="co">##  [53] zlibbioc_1.46.0             flowWorkspace_4.12.2       </span></span>
+<span><span class="co">##  [55] polyclip_1.10-6             randomForest_4.7-1.1       </span></span>
+<span><span class="co">##  [57] GenomeInfoDbData_1.2.10     RBGL_1.76.0                </span></span>
+<span><span class="co">##  [59] ncdfFlow_2.46.0             RcppEigen_0.3.3.9.4        </span></span>
+<span><span class="co">##  [61] xtable_1.8-4                stringr_1.5.0              </span></span>
+<span><span class="co">##  [63] desc_1.4.2                  doParallel_1.0.17          </span></span>
+<span><span class="co">##  [65] evaluate_0.22               S4Arrays_1.0.6             </span></span>
+<span><span class="co">##  [67] hms_1.1.3                   glmnet_4.1-8               </span></span>
+<span><span class="co">##  [69] GenomicRanges_1.52.1        irlba_2.3.5.1              </span></span>
+<span><span class="co">##  [71] colorspace_2.1-0            harmony_1.1.0              </span></span>
+<span><span class="co">##  [73] reticulate_1.34.0           readxl_1.4.3               </span></span>
+<span><span class="co">##  [75] magrittr_2.0.3              lmtest_0.9-40              </span></span>
+<span><span class="co">##  [77] readr_2.1.4                 Rgraphviz_2.44.0           </span></span>
+<span><span class="co">##  [79] later_1.3.1                 lattice_0.22-5             </span></span>
+<span><span class="co">##  [81] future.apply_1.11.0         robustbase_0.99-0          </span></span>
+<span><span class="co">##  [83] XML_3.99-0.15               cowplot_1.1.1              </span></span>
+<span><span class="co">##  [85] matrixStats_1.1.0           RcppAnnoy_0.0.21           </span></span>
+<span><span class="co">##  [87] xts_0.13.1                  class_7.3-22               </span></span>
+<span><span class="co">##  [89] Hmisc_5.1-1                 pillar_1.9.0               </span></span>
+<span><span class="co">##  [91] nlme_3.1-163                iterators_1.0.14           </span></span>
+<span><span class="co">##  [93] compiler_4.3.1              RSpectra_0.16-1            </span></span>
+<span><span class="co">##  [95] stringi_1.7.12              gower_1.0.1                </span></span>
+<span><span class="co">##  [97] minqa_1.2.6                 SummarizedExperiment_1.30.2</span></span>
+<span><span class="co">##  [99] lubridate_1.9.3             devtools_2.4.5             </span></span>
+<span><span class="co">## [101] CytoML_2.12.0               plyr_1.8.9                 </span></span>
+<span><span class="co">## [103] crayon_1.5.2                abind_1.4-5                </span></span>
+<span><span class="co">## [105] locfit_1.5-9.8              sp_2.1-1                   </span></span>
+<span><span class="co">## [107] sandwich_3.0-2              pcaMethods_1.92.0          </span></span>
+<span><span class="co">## [109] dplyr_1.1.3                 codetools_0.2-19           </span></span>
+<span><span class="co">## [111] multcomp_1.4-25             textshaping_0.3.7          </span></span>
+<span><span class="co">## [113] recipes_1.0.8               openssl_2.1.1              </span></span>
+<span><span class="co">## [115] Rphenograph_0.99.1          TTR_0.24.3                 </span></span>
+<span><span class="co">## [117] bslib_0.5.1                 e1071_1.7-13               </span></span>
+<span><span class="co">## [119] destiny_3.14.0              GetoptLong_1.0.5           </span></span>
+<span><span class="co">## [121] ggplot.multistats_1.0.0     mime_0.12                  </span></span>
+<span><span class="co">## [123] splines_4.3.1               circlize_0.4.15            </span></span>
+<span><span class="co">## [125] Rcpp_1.0.11                 sparseMatrixStats_1.12.2   </span></span>
+<span><span class="co">## [127] cellranger_1.1.0            knitr_1.44                 </span></span>
+<span><span class="co">## [129] utf8_1.2.4                  clue_0.3-65                </span></span>
+<span><span class="co">## [131] lme4_1.1-35.1               fs_1.6.3                   </span></span>
+<span><span class="co">## [133] listenv_0.9.0               checkmate_2.3.0            </span></span>
+<span><span class="co">## [135] DelayedMatrixStats_1.22.6   pkgbuild_1.4.2             </span></span>
+<span><span class="co">## [137] ggsignif_0.6.4              tibble_3.2.1               </span></span>
+<span><span class="co">## [139] Matrix_1.6-1.1              rpart.plot_3.1.1           </span></span>
+<span><span class="co">## [141] callr_3.7.3                 tzdb_0.4.0                 </span></span>
+<span><span class="co">## [143] tweenr_2.0.2                pkgconfig_2.0.3            </span></span>
+<span><span class="co">## [145] pheatmap_1.0.12             tools_4.3.1                </span></span>
+<span><span class="co">## [147] cachem_1.0.8                RhpcBLASctl_0.23-42        </span></span>
+<span><span class="co">## [149] smoother_1.1                fastmap_1.1.1              </span></span>
+<span><span class="co">## [151] rmarkdown_2.25              scales_1.2.1               </span></span>
+<span><span class="co">## [153] grid_4.3.1                  usethis_2.2.2              </span></span>
+<span><span class="co">## [155] broom_1.0.5                 sass_0.4.7                 </span></span>
+<span><span class="co">## [157] graph_1.78.0                carData_3.0-5              </span></span>
+<span><span class="co">## [159] RANN_2.6.1                  rpart_4.1.21               </span></span>
+<span><span class="co">## [161] farver_2.1.1                yaml_2.3.7                 </span></span>
+<span><span class="co">## [163] MatrixGenerics_1.12.3       foreign_0.8-85             </span></span>
+<span><span class="co">## [165] ggthemes_4.2.4              cli_3.6.1                  </span></span>
+<span><span class="co">## [167] purrr_1.0.2                 stats4_4.3.1               </span></span>
+<span><span class="co">## [169] lifecycle_1.0.3             uwot_0.1.16                </span></span>
+<span><span class="co">## [171] askpass_1.2.0               caret_6.0-94               </span></span>
+<span><span class="co">## [173] Biobase_2.60.0              mvtnorm_1.2-3              </span></span>
+<span><span class="co">## [175] lava_1.7.3                  sessioninfo_1.2.2          </span></span>
+<span><span class="co">## [177] backports_1.4.1             cytolib_2.12.1             </span></span>
+<span><span class="co">## [179] timechange_0.2.0            gtable_0.3.4               </span></span>
+<span><span class="co">## [181] rjson_0.2.21                umap_0.2.10.0              </span></span>
+<span><span class="co">## [183] ggridges_0.5.4              parallel_4.3.1             </span></span>
+<span><span class="co">## [185] pROC_1.18.5                 limma_3.56.2               </span></span>
+<span><span class="co">## [187] jsonlite_1.8.7              edgeR_3.42.4               </span></span>
+<span><span class="co">## [189] RcppHNSW_0.5.0              bitops_1.0-7               </span></span>
+<span><span class="co">## [191] Rtsne_0.16                  FlowSOM_2.8.0              </span></span>
+<span><span class="co">## [193] ranger_0.16.0               flowCore_2.12.2            </span></span>
+<span><span class="co">## [195] jquerylib_0.1.4             timeDate_4022.108          </span></span>
+<span><span class="co">## [197] shiny_1.7.5.1               ConsensusClusterPlus_1.64.0</span></span>
+<span><span class="co">## [199] htmltools_0.5.6.1           diffcyt_1.20.0             </span></span>
+<span><span class="co">## [201] glue_1.6.2                  XVector_0.40.0             </span></span>
+<span><span class="co">## [203] VIM_6.2.2                   RCurl_1.98-1.13            </span></span>
+<span><span class="co">## [205] rprojroot_2.0.3             gridExtra_2.3              </span></span>
+<span><span class="co">## [207] boot_1.3-28.1               TrajectoryUtils_1.8.0      </span></span>
+<span><span class="co">## [209] igraph_1.5.1                R6_2.5.1                   </span></span>
+<span><span class="co">## [211] tidyr_1.3.0                 SingleCellExperiment_1.22.0</span></span>
+<span><span class="co">## [213] labeling_0.4.3              vcd_1.4-11                 </span></span>
+<span><span class="co">## [215] cluster_2.1.4               pkgload_1.3.3              </span></span>
+<span><span class="co">## [217] GenomeInfoDb_1.36.4         ipred_0.9-14               </span></span>
+<span><span class="co">## [219] nloptr_2.0.3                DelayedArray_0.26.7        </span></span>
+<span><span class="co">## [221] tidyselect_1.2.0            vipor_0.4.5                </span></span>
+<span><span class="co">## [223] htmlTable_2.4.2             ggforce_0.4.1              </span></span>
+<span><span class="co">## [225] CytoDx_1.20.0               car_3.1-2                  </span></span>
+<span><span class="co">## [227] future_1.33.0               ModelMetrics_1.2.2.2       </span></span>
+<span><span class="co">## [229] munsell_0.5.0               laeken_0.5.2               </span></span>
+<span><span class="co">## [231] data.table_1.14.8           htmlwidgets_1.6.2          </span></span>
+<span><span class="co">## [233] ComplexHeatmap_2.16.0       RColorBrewer_1.1-3         </span></span>
+<span><span class="co">## [235] rlang_1.1.1                 remotes_2.4.2.1            </span></span>
+<span><span class="co">## [237] colorRamps_2.3.1            Cairo_1.6-1                </span></span>
+<span><span class="co">## [239] ggnewscale_0.4.9            fansi_1.0.5                </span></span>
+<span><span class="co">## [241] hardhat_1.3.0               beeswarm_0.4.0             </span></span>
+<span><span class="co">## [243] prodlim_2023.08.28</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -395,7 +666,7 @@ function.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Lorenzo Bonaguro.</p>
+<p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner.</p>
 </div>
 
 <div class="pkgdown-footer-right">

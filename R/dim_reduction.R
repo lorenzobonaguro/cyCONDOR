@@ -1,78 +1,207 @@
+#' runPCA
+#'
+#' @title runPCA
+#' @description Performs a Principal Component Analysis (PCA) on the expression matrix specified in \code{data_slot}.
+#' @param fcd flow cytometry dataset.
+#' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
+#' @param seed A seed is set for reproducibility.
+#' @param prefix Optional prefix for the slot name of the output.
+#' @param markers Vector of marker names to include or exclude from the calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
+#' @param discard LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.
+#'
+#' @import stats
+#' @import dplyr
+#'
+#' @details
+#' The calculation of the PC is based on the function \code{\link[stats]{prcomp}} from the R Stats Package. See the RDocumentation (https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/prcomp) for more details.
+#'
+#' @return The function returns a fcd with a Principle Components (PC) data frame saved in \code{fcd$pca}. The name of the output consists of the prefix (if given) and the data slot.
+#'
+#' @export
+
+
+
+runPCA <- function(fcd,
+                   data_slot = "orig",
+                   seed = 91,
+                   prefix =  NULL,
+                   markers = colnames(fcd$expr[["orig"]]),
+                   discard = FALSE){
+  set.seed(seed)
+
+  # see if selected markers are present in condor_object
+  for (single in markers){
+    if (!single %in% colnames(fcd[["expr"]][["orig"]])){
+      stop(paste("ERROR:",single, "not found in present markers."))
+
+    }
+  }
+
+  # calculate PC
+  if (discard == FALSE){              # (discard == F -> keep markers (default = all))
+
+    tmp <- stats::prcomp(fcd$expr[[data_slot]][, colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
+
+  } else if (discard == TRUE) {       # (discard == T -> discard markers, error if markers are not specified)
+
+    if (length(markers) == length(colnames(fcd$expr[["orig"]]))){     # error code if no markers for removal are specified
+
+      stop("No markers specified. Specify markers to be removed or set 'discard = F'.")
+
+
+    } else {
+
+      tmp <- stats::prcomp(fcd$expr[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
+
+    }
+  }
+
+  # save rotated values of PCs in "pca"-slot of condor
+  fcd[["pca"]][[paste(sub("^_", "", paste(prefix, data_slot, sep = "_")))]] <- tmp$x
+
+  #save used markeres in "extras$markers"-slot
+  fcd[["extras"]][["markers"]][[paste("pca", sub("^_", "", paste(prefix, data_slot,"markers", sep = "_")), sep = "_")]] <- dimnames(tmp$rotation)[[1]]
+
+
+
+  return(fcd)
+}
+
+
+
 #' runUMAP
 #'
 #' @title runUMAP
-#' @description Run a UMAP dimensionality reduction.
+#' @description Perform a UMAP dimensionality reduction on the expression values or pca results.
+#'
 #' @param fcd flow cytometry dataset.
 #' @param input_type data to use for the calculation of the UMAP, e.g. "expr" or "pca".
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param n_neighbors n_neighbors.
-#' @param n_components n_components.
-#' @param min_dist min_dist.
-#' @param metric metric.
-#' @param seed Seed used for the randomization steps.
-#' @param prefix Prefix for the output.
-#' @param n_threads Number of threads to be used in the UMAP calculation.
-#' @param top_PCA Number of PCA used in the UMAP calculation.
-#' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data.
+#' @param data_slot data slot to use for the calculation of the UMAP, e.g. "orig" or "norm".
+#' @param nNeighbors Number of items that define the neighborhood around each point. Default = 15.
+#' @param nComponents Number of components for UMAP calculation. Default = 2.
+#' @param min_dist Min_dist for UMAP calculation. Default = 0.2.
+#' @param metric Metric for UMAP calculation. Default = "euclidean".
+#' @param seed A seed is set for reproducibility.
+#' @param prefix Optional prefix for the slot name of the output.
+#' @param nThreads Number of threads to be used in the UMAP calculation. Default = 32.
+#' @param nPC Number of PCs used in the UMAP calculation. Default = All.
+#' @param ret_model LOGICAL if the UMAP model should be saved for future projection of the data using \code{\link{learnUMAP}}.
+#' @param markers Vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
+#' @param discard LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.
+#'
 #' @import umap
-#' @import Rtsne
-#' @return runUMAP
+#' @import uwot
+#'
+#' @details
+#' See [Melville J (2023). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R package version 0.1.16](https://github.com/jlmelville/uwot) for more details on the umap method.
+#'
+#'
+#' @return The function returns a fcd including a data frame with the UMAP coordinates saved in \code{fcd$umap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
-runUMAP <- function (fcd,
-                     input_type,
-                     data_slot,
-                     n_neighbors = 15,
-                     n_components = 2,
-                     min_dist = 0.2,
-                     metric = "euclidean",
-                     seed,
-                     prefix = NULL,
-                     n_threads = 32,
-                     top_PCA = ncol(fcd[[input_type]][[data_slot]]),
-                     ret_model = FALSE) {
 
+runUMAP <- function(fcd,
+                         input_type,
+                         data_slot,
+                         nNeighbors = 15,
+                         nComponents = 2,
+                         min_dist = 0.2,
+                         metric = "euclidean",
+                         seed = 91,
+                         prefix = NULL,
+                         nThreads = 32,
+                         nPC = ncol(fcd[[input_type]][[data_slot]]),
+                         ret_model = FALSE,
+                         markers = colnames(fcd$expr[[data_slot]]),
+                         discard = FALSE)
+{
   set.seed(seed)
 
-  umap_model <- uwot::umap(X = fcd[[input_type]][[data_slot]][,1:top_PCA],
-                           n_neighbors = n_neighbors,
-                           n_components = n_components,
+  # see if selected markers are present in condor_object , if input_type = "expr"
+  if (input_type == "expr"){
+    for (single in markers){
+      if (!single %in% colnames(fcd[["expr"]][["orig"]])){
+        stop(paste("ERROR:",single, "not found in expr markers."))
+
+      }
+    }
+
+    # define markers to use
+    if (discard == FALSE){              # (discard == F -> keep specified markers (default = all))
+
+      UMAP_markers <- markers
+    }
+
+    else if (discard == TRUE) {       # (discard == T -> discard specified markers, error if no markers are specified)
+
+      if (length(markers) == length(colnames(fcd$expr[[data_slot]]))){
+
+        stop("ERROR: No markers specified. Specify markers to be removed or set 'discard = F'.")
+
+      }
+
+      else {
+
+        UMAP_markers <- setdiff(colnames(fcd$expr[[data_slot]]), markers)
+
+      }
+    }
+
+    #define fcd subset for UMAP calculation
+    data1 <- fcd$expr[[data_slot]][, colnames(fcd$expr[[data_slot]]) %in% UMAP_markers, drop = F]
+
+
+
+  }
+
+  if (input_type == "pca") {
+
+    #define fcd subset for UMAP calculations and get used markers of PCA analysis
+    data1 <- fcd$pca[[data_slot]][,1:nPC]
+    UMAP_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
+  }
+  # calculate UMAP (changed reference to x)
+  umap_model <- uwot::umap(X = data1,
+                           n_neighbors = nNeighbors,
+                           n_components = nComponents,
                            min_dist = min_dist,
                            metric = metric,
-                           n_threads = n_threads,
+                           n_threads = nThreads,
                            ret_model = ret_model)
 
+
+
+  # original code no changes
   if (ret_model == FALSE) {
-
     umapMat <- umap_model
-
-  } else {
-
+  }
+  else {
     umapMat <- umap_model$embedding
-
   }
 
   colnames(umapMat) <- c("UMAP1", "UMAP2")
 
-  umap_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
 
-  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
+  #name the object
+  umap_name <- sub("^_", "", paste(prefix, input_type, data_slot, sep = "_"))
 
-    suffix <- paste0("top", top_PCA)
-
+  if (nPC < ncol(fcd[[input_type]][[data_slot]])) {
+    suffix <- paste0("top", nPC)
     umap_name <- paste(umap_name, suffix, sep = "_")
   }
 
+  #save the UMAP and model
   fcd[["umap"]][[umap_name]] <- umapMat
 
   if (ret_model == TRUE) {
-
     fcd[["extras"]][["umap_model"]] <- umap_model
-
   }
 
-  return(fcd)
+  #save used markers in "extras"-slot
+  fcd[["extras"]][["markers"]][[paste("umap", paste(umap_name,"markers", sep = "_"), sep = "_")]] <- UMAP_markers
 
+
+  return(fcd)
 }
 
 #' runDM
@@ -80,100 +209,226 @@ runUMAP <- function (fcd,
 #' @title runDM
 #' @description Run Diffusion Map dimensionality reduction.
 #' @param fcd flow cytometry dataset.
-#' @param input_type data to use for the calculation of the UMAP, e.g. "pca" (suggested option).
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param k K used for the analysis.
-#' @param seed Seed used for the randomization steps.
-#' @param prefix Prefix of the output.
-#' @param top_PCA Number of principal components to use for the analysis.
+#' @param input_type data to use for the calculation, e.g. "expr" or "pca".
+#' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
+#' @param k K used for the analysis. Default = 10.
+#' @param seed A seed is set for reproducibility.
+#' @param prefix Optional prefix for the slot name of the output.
+#' @param nPC Number of principal components to use for the analysis. Default = All.
+#' @param markers Vector of marker names to include or exclude from DM calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
+#' @param discard LOGICAL if the markers specified should be included, "False", or excluded, "True", from the DM calculation. Default = F.
+#'
 #' @import destiny
 #' @import SingleCellExperiment
 #' @import slingshot
-#' @return runDM
+#' @import dplyr
+#'
+#' @details
+#' See [Philipp Angerer et al. (2015): destiny: diffusion maps for large-scale single-cell data in R. Helmholtz-Zentrum München.] (http://bioinformatics.oxfordjournals.org/content/32/8/1241)
+#'
+#'
+#' @return The function returns a fcd including a data frame with the DM coordinates saved in \code{fcd$diffmap}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
-runDM <- function(fcd,
-                  input_type,
-                  data_slot,
-                  k = 10,
-                  seed,
-                  prefix = NULL,
-                  top_PCA = ncol(fcd[[input_type]][[data_slot]])) {
 
+runDM <- function (fcd,
+                   input_type,
+                   data_slot,
+                   k = 10,
+                   seed = 91,
+                   prefix = NULL,
+                   nPC = ncol(fcd[[input_type]][[data_slot]]),
+                   markers = colnames(fcd$expr[[data_slot]]),
+                   discard = FALSE)
+{
   set.seed(91)
 
-  dm <- DiffusionMap(fcd[[input_type]][[data_slot]][,1:top_PCA],
-                     vars = NULL,
-                     k=k, suppress_dpt = TRUE, verbose=TRUE, n_pcs = NA)
+  # see if selected markers are present in condor_object , if input_type = "expr"
+  if (input_type == "expr"){
+    for (single in markers){
+      if (!single %in% colnames(fcd$expr[[data_slot]])){
+        stop(paste("ERROR:",single, "not found in expr markers."))
 
-  dm <- cbind(dm$DC1, dm$DC2, dm$DC3)
-  colnames(dm) <- c("DC_1", "DC_2", "DC_3")
+      }
+    }
 
-  dm_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
+    # define markers to use
+    if (discard == FALSE){              # (discard == F -> keep specified markers (default = all))
 
-  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
+      dm_markers <- markers
+    }
 
-    suffix <- paste0("top", top_PCA)
+    else if (discard == TRUE) {       # (discard == T -> discard specified markers, error if no markers are specified)
 
-    dm_name <- paste(umap_name, suffix, sep = "_")
+      if (length(markers) == length(colnames(fcd$expr[[data_slot]]))){
+
+        stop("ERROR: No markers specified. Specify markers to be removed or set 'discard = F'.")
+
+      }
+
+      else {
+
+        dm_markers <- setdiff(colnames(fcd$expr[[data_slot]]), markers)
+
+      }
+    }
+
+    #define fcd subset for DM calculation
+    data1 <- fcd$expr[[data_slot]][, colnames(fcd$expr[[data_slot]]) %in% dm_markers, drop = F]
+
+
+
   }
 
+  if (input_type == "pca") {
+
+    #define fcd subset for DM calculations and get used markers of PCA analysis
+    data1 <- fcd$pca[[data_slot]][,1:nPC]
+    dm_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
+  }
+
+  # calculate DM (changes to fcd (now data1))
+
+  dm <- DiffusionMap(data1,
+                     vars = NULL,
+                     k = k,
+                     suppress_dpt = TRUE,
+                     verbose = TRUE,
+                     n_pcs = NA)
+
+  dm <- cbind(dm$DC1, dm$DC2, dm$DC3)
+
+  colnames(dm) <- c("DC_1", "DC_2", "DC_3")
+
+  #name the object
+  dm_name <- sub("^_", "", paste(prefix, input_type, data_slot,sep = "_"))
+
+  if (nPC < ncol(fcd[[input_type]][[data_slot]])) {
+
+    suffix <- paste0("top", nPC)
+
+    dm_name <- paste(dm_name, suffix, sep = "_")
+
+  }
+
+  #save the DM
   fcd[["diffmap"]][[dm_name]] <- dm
 
-  return(fcd)
+  #save used markers in "extras"-slot
+  fcd[["extras"]][["markers"]][[paste("diffmap", paste(dm_name,"markers", sep = "_"), sep = "_")]] <- dm_markers
 
+  return(fcd)
 }
 
 #' runtSNE
 #'
 #' @title runtSNE
-#' @description Calculate tSNE dimensionality reduction..
+#' @description Calculate tSNE dimensionality reduction.
 #' @param fcd flow cytometry dataset.
-#' @param input_type data to use for the calculation, e.g. "pca" (suggested option).
-#' @param data_slot name of the PCA data slot to use to harmonize. If no prefix was added the, *orig*.
-#' @param perplexity Perplexity used for tSNE calculation (see Rtsne documentation for details).
-#' @param seed Seed used for the randomization steps.
-#' @param prefix Prefix of the output.
-#' @param n_threads Number of threads to be used in the tSNE calculation.
-#' @param top_PCA Number of principal components to use for the analysis.
-#' @return tSNE cohordinates
+#' @param input_type data to use for the calculation, e.g. "expr" or "pca" (suggested: "pca").
+#' @param data_slot data slot to use for the calculation, e.g. "orig" or "norm".
+#' @param perplexity Value that controls how many nearest neighbors are taken into account when constructing the embedding (see Rtsne documentation for details).
+#' @param seed A seed is set for reproducibility.
+#' @param prefix Optional prefix for the slot name of the output.
+#' @param nThreads Number of threads to be used in the tSNE calculation.
+#' @param nPC Number of principal components to use for the analysis.
+#' @param markers Vector of marker names to include or exclude from UMAP calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
+#' @param discard Boolean to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP calculation. Default = F.
+#'
+#' @import Rtsne
+#'
+#' @details
+#' See [Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation], (https://github.com/jkrijthe/Rtsne) for more details on the Rtsne method.
+#'
+#'
+#' @return The function returns a fcd including a data frame with the tSNE coordinates saved in \code{fcd$tSNE}. The name of the output consists of the prefix (if given) and the data slot. If a \code{nPC} is given it will be added to the output name.
 #'
 #' @export
-runtSNE <- function(fcd,
-                    input_type,
-                    data_slot,
-                    perplexity,
-                    seed,
-                    prefix = NULL,
-                    n_threads = 1,
-                    top_PCA = ncol(fcd[[input_type]][[data_slot]])) {
 
+runtSNE <- function (fcd,
+                         input_type, # expr o. pca
+                         data_slot,  # orig, norm or "prefix"-orig/nrom
+                         perplexity = 30,
+                         seed = 91,
+                         prefix = NULL, # new prefix for tSNE DimRed
+                         nThreads = 1,
+                         nPC = ncol(fcd$pca[[data_slot]]),
+                         markers = colnames(fcd$expr[[data_slot]]),
+                         discard = FALSE)
+{
   set.seed(seed)
 
-  tSNE_df <- Rtsne(X = fcd[[input_type]][[data_slot]][,1:top_PCA],
+  # see if selected markers are present in condor_object , if input_type = "expr"
+  if (input_type == "expr"){
+    for (single in markers){
+      if (!single %in% colnames(fcd[["expr"]][["orig"]])){
+        stop(paste("ERROR:",single, "not found in expr markers."))
+
+      }
+    }
+
+    # define markers to use
+    if (discard == FALSE){              # (discard == F -> keep specified markers (default = all))
+
+      tSNE_markers <- markers
+    }
+
+    else if (discard == TRUE) {       # (discard == T -> discard specified markers, error if no markers are specified)
+
+      if (length(markers) == length(colnames(fcd$expr[[data_slot]]))){
+
+        stop("ERROR: No markers specified. Specify markers to be removed or set 'discard = F'.")
+
+      }
+
+      else {
+
+        tSNE_markers <- setdiff(colnames(fcd$expr[[data_slot]]), markers)
+
+      }
+    }
+
+    #define fcd subset for tSNE calculation
+    data1 <- fcd$expr[[data_slot]][, colnames(fcd$expr[[data_slot]]) %in% tSNE_markers, drop = F]
+
+
+
+  }
+  if (input_type == "pca"){
+
+    #define fcd subset for tSNE calculations and get used markers of PCA analysis
+
+    data1 <- fcd$pca[[data_slot]][,1:nPC]
+    tSNE_markers <- used_markers(fcd,  input_type = "pca", data_slot = data_slot, mute = T)
+  }
+
+  tSNE_df <- Rtsne::Rtsne(X = data1,
                    dims = 2,
                    perplexity = perplexity,
                    check_duplicates = F,
                    verbose = T,
-                   num_threads = n_threads,
+                   num_threads = nThreads,
                    pca = FALSE)
 
   tSNE_df <- tSNE_df$Y
-
   colnames(tSNE_df) <- c("tSNE1", "tSNE2")
-
   rownames(tSNE_df) <- rownames(fcd[[input_type]][[data_slot]])
 
-  tSNE_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
+  tSNE_name <- sub("^_", "", paste(prefix, input_type, data_slot, sep = "_"))
 
-  if (top_PCA < ncol(fcd[[input_type]][[data_slot]])) {
+  if (nPC < ncol(fcd[[input_type]][[data_slot]])) {
 
-    suffix <- paste0("top", top_PCA)
+    suffix <- paste0("top", nPC)
 
     tSNE_name <- paste(tSNE_name, suffix, sep = "_")
+
   }
 
   fcd[["tSNE"]][[tSNE_name]] <- tSNE_df
+
+  #save used markers in "extras"-slot
+  fcd[["extras"]][["markers"]][[paste("tSNE", paste(tSNE_name,"markers", sep = "_"), sep = "_")]] <- tSNE_markers
+
 
   return(fcd)
 }

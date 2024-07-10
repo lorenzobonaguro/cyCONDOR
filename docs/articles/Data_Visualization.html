@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,18 +44,20 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a>
+    <a class="dropdown-item" href="../articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a>
     <a class="dropdown-item" href="../articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a>
     <a class="dropdown-item" href="../articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a>
     <a class="dropdown-item" href="../articles/Dimensionality_Reduction.html">Dimensionality Reduction</a>
     <a class="dropdown-item" href="../articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a>
     <a class="dropdown-item" href="../articles/Batch_correction.html">Batch correction</a>
     <a class="dropdown-item" href="../articles/Data_Visualization.html">Data Visualization</a>
-    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis</a>
+    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a>
     <a class="dropdown-item" href="../articles/Pseudotime_analysis.html">Pseudotime analysis</a>
     <a class="dropdown-item" href="../articles/Data_Projection.html">Data Projection</a>
     <a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a>
     <a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a>
-    <a class="dropdown-item" href="../articles/Other_utilities.html">Other utilities</a>
+    <a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a>
   </div>
 </li>
 <li class="nav-item">
@@ -94,194 +96,640 @@
 
     
     
+<p>Date: 24.06.2024</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lorenzobonaguro/condor" class="external-link">cyCONDOR</a></span><span class="op">)</span></span></code></pre></div>
-<p>cyCONDOR provides several function to visualize the result of the
-analysis, following some examples on how to use them.</p>
+<p><code>cyCONDOR</code> provides several functions to visualize the
+results of <code>cyCONDOR</code>´s dimensionality reduction and
+clustering workflows.</p>
 <div class="section level2">
 <h2 id="load-an-example-dataset">Load an example dataset<a class="anchor" aria-label="anchor" href="#load-an-example-dataset"></a>
 </h2>
+<p>In this vignette, we will use a flow cytometry dataset of six PBMC
+samples taken from three patients and three control. The data was
+transformed and subjected to several dimensionality reduction methods as
+well as clustering and metaclustering using <code>cyCONDOR</code>(see
+vignettes: <code>Data loading and transformation</code>,
+<code>Dimensionality Reduction</code>,
+<code>Clustering and cell annotation</code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/condor_example.rds"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/conodr_example_016.rds"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Let's checkout the content of the object</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">condor</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">condor</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"extras"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## List of 6</span></span>
+<span><span class="co">##  $ expr      :List of 1</span></span>
+<span><span class="co">##   ..$ orig:'data.frame': 59049 obs. of  28 variables:</span></span>
+<span><span class="co">##   .. ..$ FSC-A        : num [1:59049] 4.38 4.22 4.27 4.18 4.08 ...</span></span>
+<span><span class="co">##   .. ..$ SSC-A        : num [1:59049] 3.91 3.24 3.42 3.62 3.7 ...</span></span>
+<span><span class="co">##   .. ..$ CD38         : num [1:59049] 3.61 3.12 3.71 2.9 2.06 ...</span></span>
+<span><span class="co">##   .. ..$ CD8          : num [1:59049] 0.869 2.118 3.802 2.748 3.868 ...</span></span>
+<span><span class="co">##   .. ..$ CD195 (CCR5) : num [1:59049] 2.281 1.199 0.816 1.5 3.303 ...</span></span>
+<span><span class="co">##   .. ..$ CD94 (KLRD1) : num [1:59049] 2.32 2.24 1.78 2.57 2.18 ...</span></span>
+<span><span class="co">##   .. ..$ CD45RA       : num [1:59049] 3.33 3.63 2.49 3.93 4.14 ...</span></span>
+<span><span class="co">##   .. ..$ HLA-DR       : num [1:59049] 3.173 1.595 3.066 0.973 0.62 ...</span></span>
+<span><span class="co">##   .. ..$ CD56         : num [1:59049] 1.43 2.25 1.72 3.28 1.48 ...</span></span>
+<span><span class="co">##   .. ..$ CD127 (IL7RA): num [1:59049] 1.03 3.16 1.17 1.58 3.1 ...</span></span>
+<span><span class="co">##   .. ..$ CD14         : num [1:59049] 3.96 2.14 1.47 1.21 1.92 ...</span></span>
+<span><span class="co">##   .. ..$ CD64         : num [1:59049] 2.475 0.462 0.85 1.075 0.981 ...</span></span>
+<span><span class="co">##   .. ..$ CD4          : num [1:59049] 2.658 3.886 0.209 1.135 0.499 ...</span></span>
+<span><span class="co">##   .. ..$ IgD          : num [1:59049] 0.932 0.438 1.488 0.694 1.486 ...</span></span>
+<span><span class="co">##   .. ..$ CD19         : num [1:59049] 1.822 1.583 0.813 1.703 0.357 ...</span></span>
+<span><span class="co">##   .. ..$ CD16         : num [1:59049] 1.658 0.863 0.838 2.828 1.325 ...</span></span>
+<span><span class="co">##   .. ..$ CD32         : num [1:59049] 2.476 0.743 1.056 0.887 0.756 ...</span></span>
+<span><span class="co">##   .. ..$ CD197 (CCR7) : num [1:59049] 1.4012 2.6245 0.0844 0.9996 1.2096 ...</span></span>
+<span><span class="co">##   .. ..$ CD20         : num [1:59049] 0.724 1.289 1.672 1.371 1.623 ...</span></span>
+<span><span class="co">##   .. ..$ CD27         : num [1:59049] 1.737 3.89 3.564 0.638 0.622 ...</span></span>
+<span><span class="co">##   .. ..$ CD15         : num [1:59049] 0.844 0.549 0.632 1.258 2.04 ...</span></span>
+<span><span class="co">##   .. ..$ PD-1         : num [1:59049] 0.0514 0.9102 0.9839 0.4781 1.7587 ...</span></span>
+<span><span class="co">##   .. ..$ CD3          : num [1:59049] 0.964 4.006 3.746 1.788 3.875 ...</span></span>
+<span><span class="co">##   .. ..$ CD57         : num [1:59049] 1.277 0.531 1.006 3.039 3.004 ...</span></span>
+<span><span class="co">##   .. ..$ CD25         : num [1:59049] 1.709 2.032 1.833 1.187 0.937 ...</span></span>
+<span><span class="co">##   .. ..$ CD123 (IL3RA): num [1:59049] 2.32 1.14 1.13 1.11 1.28 ...</span></span>
+<span><span class="co">##   .. ..$ CD13         : num [1:59049] 2.388 0.817 0.703 0.861 0.707 ...</span></span>
+<span><span class="co">##   .. ..$ CD11c        : num [1:59049] 3.792 0.645 2.025 0.668 1.946 ...</span></span>
+<span><span class="co">##  $ anno      :List of 1</span></span>
+<span><span class="co">##   ..$ cell_anno:'data.frame':    59049 obs. of  3 variables:</span></span>
+<span><span class="co">##   .. ..$ expfcs_filename: Factor w/ 6 levels "ID10.fcs","ID3.fcs",..: 1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">##   .. ..$ sample_ID      : chr [1:59049] "ID10" "ID10" "ID10" "ID10" ...</span></span>
+<span><span class="co">##   .. ..$ group          : chr [1:59049] "pat" "pat" "pat" "pat" ...</span></span>
+<span><span class="co">##  $ pca       :List of 1</span></span>
+<span><span class="co">##   ..$ orig: num [1:59049, 1:28] -4.593 2.011 0.741 0.601 1.685 ...</span></span>
+<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">##   .. .. ..$ : chr [1:59049] "ID10.fcs_1" "ID10.fcs_2" "ID10.fcs_3" "ID10.fcs_4" ...</span></span>
+<span><span class="co">##   .. .. ..$ : chr [1:28] "PC1" "PC2" "PC3" "PC4" ...</span></span>
+<span><span class="co">##  $ umap      :List of 1</span></span>
+<span><span class="co">##   ..$ pca_orig: num [1:59049, 1:2] -9.19 1.6 5.45 3.97 2.5 ...</span></span>
+<span><span class="co">##   .. ..- attr(*, "scaled:center")= num [1:2] -0.126 -0.253</span></span>
+<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">##   .. .. ..$ : chr [1:59049] "ID10.fcs_1" "ID10.fcs_2" "ID10.fcs_3" "ID10.fcs_4" ...</span></span>
+<span><span class="co">##   .. .. ..$ : chr [1:2] "UMAP1" "UMAP2"</span></span>
+<span><span class="co">##  $ tSNE      :List of 1</span></span>
+<span><span class="co">##   ..$ pca_orig: num [1:59049, 1:2] 18.26 -11.83 -24.09 5.71 -10.98 ...</span></span>
+<span><span class="co">##   .. ..- attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">##   .. .. ..$ : chr [1:59049] "ID10.fcs_1" "ID10.fcs_2" "ID10.fcs_3" "ID10.fcs_4" ...</span></span>
+<span><span class="co">##   .. .. ..$ : chr [1:2] "tSNE1" "tSNE2"</span></span>
+<span><span class="co">##  $ clustering:List of 2</span></span>
+<span><span class="co">##   ..$ phenograph_pca_orig_k_60:'data.frame': 59049 obs. of  3 variables:</span></span>
+<span><span class="co">##   .. ..$ Phenograph  : Factor w/ 25 levels "1","2","3","4",..: 1 2 3 4 5 5 6 1 1 5 ...</span></span>
+<span><span class="co">##   .. ..$ Description : chr [1:59049] "pca_orig_k60" "pca_orig_k60" "pca_orig_k60" "pca_orig_k60" ...</span></span>
+<span><span class="co">##   .. ..$ metaclusters: Factor w/ 16 levels "Classical Monocytes",..: 1 2 3 4 5 5 1 1 1 5 ...</span></span>
+<span><span class="co">##   ..$ FlowSOM_pca_orig_k_15   :'data.frame': 59049 obs. of  2 variables:</span></span>
+<span><span class="co">##   .. ..$ FlowSOM    : Factor w/ 15 levels "1","2","3","4",..: 12 11 4 2 3 3 12 12 12 3 ...</span></span>
+<span><span class="co">##   .. ..$ Description: chr [1:59049] "pca_orig_k15" "pca_orig_k15" "pca_orig_k15" "pca_orig_k15" ...</span></span></code></pre>
 </div>
 <div class="section level2">
-<h2 id="plot-the-results-of-dimensionality-reduction-and-clustering">Plot the results of dimensionality reduction and clustering<a class="anchor" aria-label="anchor" href="#plot-the-results-of-dimensionality-reduction-and-clustering"></a>
+<h2 id="visualize-the-results-of-dimensionality-reduction-and-clustering">Visualize the results of dimensionality reduction and
+clustering<a class="anchor" aria-label="anchor" href="#visualize-the-results-of-dimensionality-reduction-and-clustering"></a>
 </h2>
+<p><code>cyCONDOR</code> comes with several methods to perform
+dimensionality reduction. Two dimensional representations of each
+reduction method can be visualized using the <code><a href="../reference/plot_dim_red.html">plot_dim_red()</a></code>
+function.</p>
+<p>The function requires the user to specify a condor object, the
+reduction method (e.g. pca, umap or tSNE) and the name of the actual
+reduction_slot, e.g. “orig”. Further, a variable needs to be provided to
+the parameter <code>param</code>, which is used to color the dots.</p>
 <div class="section level3">
 <h3 id="pca">PCA<a class="anchor" aria-label="anchor" href="#pca"></a>
 </h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">pca</span><span class="op">$</span><span class="va">orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"group"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by group"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"PCA"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p>Let’s plot the first two Principle components of the PCA and color by
+the meta variable “group”.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"pca"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="tsne">tSNE<a class="anchor" aria-label="anchor" href="#tsne"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">tSNE</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"group"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"tSNE colored by group"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"tSNE"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p>Changing <code>reduction_method = "tSNE"</code> and
+<code>reduction_slot = "pca_orig"</code>, results in a plot of the
+tSNE.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"tSNE"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"tSNE"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="umap">UMAP<a class="anchor" aria-label="anchor" href="#umap"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"group"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by group"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p>Similiarly, <code>reduction_method = "umap"</code> and
+<code>reduction_slot = "pca_orig"</code>, gives us a the UMAP
+representation that was calculated on the PCA on the transformed
+expression data.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="colored-by-phenograph-flowsom-clustering-or-metaclusters">Colored by Phenograph, FlowSOM clustering or metaclusters<a class="anchor" aria-label="anchor" href="#colored-by-phenograph-flowsom-clustering-or-metaclusters"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"Phenograph"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by Phenograph clusters"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">FlowSOM_pca_orig_k_15</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"FlowSOM"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by FlowSOM clusters"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p>Instead of meta variables available in the <code>cell_anno</code>
+slot, it is also possible to overlay cell population identities,
+determined by <code>cyCONDOR's</code> clustering or cell label
+implementations. In this case, the function additionally requires the
+specification of a <code>cluster_slot</code> as input, to define were
+<code>param</code> should be taken from.</p>
+<p>In the following example, we will visualize the cluster identities
+(<code>param = "Phenograph"</code>) and the related metaclustering
+annotation (<code>param = "metaclusters"</code>) in the
+<code>cluster_slot</code> “phenograph_pca_orig_k_60”.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by metaclusters"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-</div>
-<div class="section level3">
-<h3 id="export-the-plot-as-raster-image">Export the plot as raster image<a class="anchor" aria-label="anchor" href="#export-the-plot-as-raster-image"></a>
-</h3>
+<code class="sourceCode R"><span><span class="va">p1</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                 expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                 reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>                 reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>                 cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                 param <span class="op">=</span> <span class="st">"Phenograph"</span>,</span>
+<span>                 title <span class="op">=</span> <span class="st">"UMAP colored by Phenograph clusters"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                 expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                 reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>                 reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>                 cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                 param <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                 title <span class="op">=</span> <span class="st">"UMAP colored by metaclusters"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span>,<span class="va">p2</span><span class="op">)</span>,align <span class="op">=</span> <span class="st">"v"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-6-1.png" width="1152"></p>
+<p>In the same manner, FlowSOM results can be plotted on the
+dimensionality reduction.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by metaclusters"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>            raster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="st">"FlowSOM_pca_orig_k_15"</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"FlowSOM"</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"UMAP colored by FlowSOM clusters"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="split-plot-by-a-variable">Split plot by a variable<a class="anchor" aria-label="anchor" href="#split-plot-by-a-variable"></a>
 </h3>
+<p>Sometimes it comes in handy to split the dimensionality reduction by
+a variable, e.g. group, sample ID or experimental batches. In the
+<code><a href="../reference/plot_dim_red.html">plot_dim_red()</a></code> function this can be achieved via the
+<code>facet_by_variable</code> parameter.</p>
+<p>Setting <code>facet_by_variable = T</code>, will split the plot by
+the variable provided in <code>param</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"group"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by group"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>             facet_by_variable <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p>Providing <code>facet_by_variable</code> with a different variable
+than specified in <code>param</code>, will keep the coloring by the
+variable in <code>param</code>, but splits the plot by the faceting
+variable. Note, that in case clustering variables are used, a
+<code>cluster_slot</code> needs to be provided as well.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker.html">plot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">)</span>, </span>
-<span>            param <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
-<span>            order <span class="op">=</span> <span class="cn">T</span>, </span>
-<span>            title <span class="op">=</span> <span class="st">"UMAP colored by metaclusters"</span>, </span>
-<span>            dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>            facet_by_variable <span class="op">=</span> <span class="st">"group"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>             facet_by_variable <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"UMAP colored by metaclusters"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="export-the-plot-as-raster-image">Export the plot as raster image<a class="anchor" aria-label="anchor" href="#export-the-plot-as-raster-image"></a>
+</h3>
+<p>Visualizing hundred thousands of events can be demanding. Using
+<code>raster = T</code>, the function will generate a raster image,
+instead of plotting each event individually.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="st">"FlowSOM_pca_orig_k_15"</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"FlowSOM"</span>,</span>
+<span>             raster <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"UMAP colored by FlowSOM clusters"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Data_Visualization_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="density-plot">Density plot<a class="anchor" aria-label="anchor" href="#density-plot"></a>
+<h2 id="visualization-of-marker-expression">Visualization of marker expression<a class="anchor" aria-label="anchor" href="#visualization-of-marker-expression"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span>, </span>
-<span>             param <span class="op">=</span> <span class="st">"group"</span>, </span>
-<span>             title <span class="op">=</span> <span class="st">"Figure S2d - Density Map"</span>, </span>
-<span>             dim_red <span class="op">=</span> <span class="st">"UMAP"</span>, </span>
-<span>             dot_size <span class="op">=</span> <span class="fl">0.2</span>, </span>
-<span>             alpha <span class="op">=</span> <span class="fl">0.2</span>, color_density <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greys"</span>, <span class="st">"Reds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: The dot-dot notation (`..level..`) was deprecated in ggplot2 3.4.0.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please use `after_stat(level)` instead.</span></span>
+<p>In the next section, we will go through some examples of how marker
+expression can be visualized with <code>cyCONDOR</code>. Since this is
+most interesting, when the data are already clustered, almost all
+functions require cluster or cell label information obtained via
+<code>cyCONDOR's</code> clustering or cell label prediction workflows.
+Only the function, <code><a href="../reference/plot_dim_red.html">plot_dim_red()</a></code>, can be used without any
+cell population labels.</p>
+<div class="section level3">
+<h3 id="marker-expression-overlayed-on-dimensionality-reduction">Marker expression overlayed on dimensionality reduction<a class="anchor" aria-label="anchor" href="#marker-expression-overlayed-on-dimensionality-reduction"></a>
+</h3>
+<p>To overlay marker expression values on the dimensionality reduction,
+we can use the <code><a href="../reference/plot_dim_red.html">plot_dim_red()</a></code> function introduced in the
+section before. Instead of a <code>clustering_slot</code>, the
+<code>expression_slot</code> in which the expression values are stored
+needs to be specified and the marker to be visualized is given to the
+parameter <code>param</code>.</p>
+<p>In large data sets, the dimensionality reduction can be “crowded” and
+it might be useful to order the cells by their expression. Setting
+<code>order = T</code>, will plot the cells with the highest expression
+at the top.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                 expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>                 reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>                 reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>                 cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                 param <span class="op">=</span> <span class="st">"CD3"</span>,</span>
+<span>                 order <span class="op">=</span> <span class="cn">F</span>, <span class="co">#default</span></span>
+<span>                 title <span class="op">=</span> <span class="st">"CD3 expression - random order"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                 expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>                 reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>                 reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>                 cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                 param <span class="op">=</span> <span class="st">"CD3"</span>, </span>
+<span>                 order <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>                 title <span class="op">=</span> <span class="st">"CD3 expression - ordered"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span>,<span class="va">p2</span><span class="op">)</span>,align <span class="op">=</span> <span class="st">"v"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p>As above a <code>facet_by_variable</code> can be used to split the
+plot by another variable.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>             expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>             cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>             param <span class="op">=</span> <span class="st">"CD3"</span>,</span>
+<span>             facet_by_variable <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>             title <span class="op">=</span> <span class="st">"CD3 expression split by group"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="heatmap-of-marker-expression">Heatmap of marker expression<a class="anchor" aria-label="anchor" href="#heatmap-of-marker-expression"></a>
+</h3>
+<p>Heatmap visualizations are useful to get a fast overview across many
+markers and cell populations. The <code><a href="../reference/plot_marker_HM.html">plot_marker_HM()</a></code> function
+calculates the mean transformed expression for each cell population and
+marker combination. The means are centered and scaled for each marker
+and subsequently visualized as heatmap.</p>
+<p>However, it should be mention that this comes with certain draw
+backs: 1) the distribution of the expression is not considered when
+looking at the mean and 2) the actual expression level is somewhat
+obscured by the row-wise scaling.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_HM.html">plot_marker_HM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>               expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>               marker_to_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-A"</span>,<span class="st">"SSC-A"</span><span class="op">)</span>,</span>
+<span>               cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>               cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-13-1.png" width="672"></p>
+<p>By setting <code>cluster_rows = T</code> and
+<code>cluster_cols</code>, rows and columns get clustered.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_HM.html">plot_marker_HM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>               expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>               marker_to_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-A"</span>,<span class="st">"SSC-A"</span><span class="op">)</span>,</span>
+<span>               cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>               cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>               cluster_rows <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>               cluster_cols <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-14-1.png" width="768"></p>
+<p>The function <code>plot_marker_group_HM</code> works very similarly
+with the addition that a meta variable available in
+<code>cell_anno</code> is provided and used to further split the columns
+by the levels of that meta variable. In the following example, we are
+interested whether mean expression of phenotaping markers like CD3 or
+CD19 is stable across the different samples by using
+<code>group_var = sample_ID</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_group_HM.html">plot_marker_group_HM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                     expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>                     marker_to_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-A"</span>,<span class="st">"SSC-A"</span><span class="op">)</span>,</span>
+<span>                     cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                     cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                     group_var <span class="op">=</span> <span class="st">"sample_ID"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-15-1.png" width="672"></p>
+</div>
+<div class="section level3">
+<h3 id="plot-mean-expression-as-boxplots">Plot mean expression as boxplots<a class="anchor" aria-label="anchor" href="#plot-mean-expression-as-boxplots"></a>
+</h3>
+<p>Instead of as a heatmap, the mean (or median) expression can be
+visualized as boxplots with each sample being represented by a dot. For
+this, the <code>plot_marker_boxplot</code> requires the user to specify
+a variable containing sample IDs in <code>sample_var</code> and a
+grouping variable in <code>group_var</code>. Each sample ID should be
+uniquely associated with one level in <code>group_var</code>. The
+grouping variable could for example be the disease status or the batch
+variable. Since the data has no batch and we are not yet interested in
+differences in our biological groups (see
+<code>vignette("Differential Analysis")</code>, we are using the
+variable “experiment_name” in the following chunk to get an overview
+about the expression in our samples.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">experiment_name</span> <span class="op">&lt;-</span><span class="st">"test_data"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_marker_boxplot.html">plot_marker_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    expr_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"experiment_name"</span>,</span>
+<span>                    sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
+<span>                    marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>,<span class="st">"CD4"</span>,<span class="st">"CD8"</span>,<span class="st">"CD14"</span>,<span class="st">"CD19"</span>,<span class="st">"HLA-DR"</span><span class="op">)</span>,</span>
+<span>                    fun <span class="op">=</span> <span class="st">"mean"</span>,</span>
+<span>                    facet_ncol <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                    dot_size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-16-1.png" width="672"></p>
+<p>By default the function will generate boxplots for all marker and
+cell population combinations, which depending on the panel size can be
+too much to inspect at once. With the parameters <code>marker</code> the
+user can select the markers of interest, while
+<code>cluster_to_show</code> allows to subset to certain cell
+populations present in the given <code>cluster_var</code>. Further, it
+is possible to calculate the median expression instead of mean by using
+<code>fun = "median"</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="distribution-of-expression">Distribution of expression<a class="anchor" aria-label="anchor" href="#distribution-of-expression"></a>
+</h3>
+<p>Besides visualizing aggregated expression, <code>cyCONDOR</code> also
+provides different visualization options to investigate the distribution
+of marker expression across all cells in a population.</p>
+<p><code><a href="../reference/plot_marker_ridgeplot.html">plot_marker_ridgeplot()</a></code> and
+<code><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot()</a></code>, both visualize the density
+distribution of a marker for each cell population in
+<code>cluster_var</code> and therefor provide insights whether a marker
+is homogeneously expressed in a certain cluster (or cell population) or
+whether only a part of the cells is expressing the marker highly or
+lowly. These plots can be very useful, when inspecting and annotating
+clusters, since they e.g. enable the detection of smaller subsets or
+contamination in a cluster of cells, which is not visible in a
+heatmap.</p>
+<p><code><a href="../reference/plot_marker_density.html">plot_marker_density()</a></code> and (optionally)
+<code><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot()</a></code> further split the distributions by
+meta variables present in the <code>cell_anno</code> slot, which can
+help to investigate technical and/or bioligical influencing factors.</p>
+<div class="section level4">
+<h4 id="ridgeline-plot">Ridgeline plot<a class="anchor" aria-label="anchor" href="#ridgeline-plot"></a>
+</h4>
+<p><code><a href="../reference/plot_marker_ridgeplot.html">plot_marker_ridgeplot()</a></code> visualizes a density
+distribution of the expression for each cell population in
+<code>cluster_var</code> for a marker specified in
+<code>marker</code>.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_ridgeplot.html">plot_marker_ridgeplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                      expr_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
+<span>                      cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                      cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                      marker <span class="op">=</span> <span class="st">"CD3"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: `expand_scale()` was deprecated in ggplot2 3.3.0.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please use `expansion()` instead.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">cyCONDOR</span> package.</span></span>
 <span><span class="co">##   Please report the issue to the authors.</span></span>
 <span><span class="co">## <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
 <span><span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">## <span style="color: #555555;">generated.</span></span></span></code></pre>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-11-1.png" width="1440"></p>
+<pre><code><span><span class="co">## Picking joint bandwidth of 0.0733</span></span></code></pre>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
+<p>In case more than one marker are specified, the function returns a
+list of plots - one plot for each marker.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plot.list</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_marker_ridgeplot.html">plot_marker_ridgeplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                      expr_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
+<span>                      cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                      cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                      marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>,<span class="st">"CD4"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">plot.list</span>,align <span class="op">=</span> <span class="st">"v"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Picking joint bandwidth of 0.0733</span></span></code></pre>
+<pre><code><span><span class="co">## Picking joint bandwidth of 0.0737</span></span></code></pre>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-18-1.png" width="864"></p>
+</div>
+<div class="section level4">
+<h4 id="violin-plot">Violin plot<a class="anchor" aria-label="anchor" href="#violin-plot"></a>
+</h4>
+<p>The <code>plot_marker_violinplot</code> requires the same input as
+<code>plot_marker_ridgeplot</code>. But the density distribution of
+marker expression is visualized as violins for each cell population and
+the populations are shown next to each other instead of being vertically
+stacked.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
+<span>                       expr_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
+<span>                       cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                       cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                       marker <span class="op">=</span> <span class="st">"CD56"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<p>Again, provided with several marker names, the function returns a
+list of plots.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plot.list</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
+<span>                                  expr_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
+<span>                                  cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                                  cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                                  marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>,<span class="st">"CD56"</span>,<span class="st">"HLA-DR"</span>,<span class="st">"CD19"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">plot.list</span>,align <span class="op">=</span> <span class="st">"hv"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-20-1.png" width="864"></p>
+<p>As a site note, <code><a href="../reference/plot_marker_violinplot.html">plot_marker_violinplot()</a></code> optionally can
+be given a grouping variable <code>group_var</code> which is used to
+split each violin plot by. This can be useful when looking at biological
+groups or batch variables.</p>
+</div>
+<div class="section level4">
+<h4 id="density-plot">Density plot<a class="anchor" aria-label="anchor" href="#density-plot"></a>
+</h4>
+<p>The <code><a href="../reference/plot_marker_density.html">plot_marker_density()</a></code> can be used to compare
+expression distributions between different levels in a given
+<code>group_var</code>. This can for example be applied to investigate
+homogeneity of staining and measuring procedure between samples or
+experimental days.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_density.html">plot_marker_density</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    expr_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                    marker <span class="op">=</span> <span class="st">"CD57"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-21-1.png" width="672"></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="classical-cytometry-dotplot">Classical cytometry dotplot<a class="anchor" aria-label="anchor" href="#classical-cytometry-dotplot"></a>
+</h3>
+<p>Finally, using <code><a href="../reference/plot_marker_dotplot.html">plot_marker_dotplot()</a></code> a scatter plot of
+two markers can be generated to investigate the relation of their
+expression. The marker on the x-axis is specified in
+<code>marker_x</code>, while the marker on the y-axis is specified in
+<code>marker_y</code>.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_dotplot.html">plot_marker_dotplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
+<span>                    expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
+<span>                    marker_x <span class="op">=</span> <span class="st">"CD3"</span>,</span>
+<span>                    marker_y <span class="op">=</span> <span class="st">"CD19"</span>,</span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                    dot_size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-22-1.png" width="700"></p>
+</div>
 </div>
 <div class="section level2">
-<h2 id="heatmap-of-marker-expression">Heatmap of marker expression<a class="anchor" aria-label="anchor" href="#heatmap-of-marker-expression"></a>
+<h2 id="inspection-of-cell-counts">Inspection of cell counts<a class="anchor" aria-label="anchor" href="#inspection-of-cell-counts"></a>
 </h2>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/HM_markers.html">HM_markers</a></span><span class="op">(</span>input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">expr</span><span class="op">$</span><span class="va">orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">)</span>, </span>
-<span>           group <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
-<span>           maxvalue <span class="op">=</span> <span class="cn">NULL</span>, </span>
-<span>           title <span class="op">=</span> <span class="st">"Marker expression in metaclusters"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
+<p>As always, it is important to consider how many cells are actually
+underlying visualizations that conceal the actual cells behind
+aggregated expression values (mean/median) or density distributions.
+<code>cyCONDOR</code> provides functions to quickly assess cell
+counts.</p>
+<p>You can either look at the cell counts per sample and cell population
+in table format with the <code><a href="../reference/getTable.html">getTable()</a></code> function setting
+<code>output_type = "counts"</code>, or visualize cell numbers with the
+<code><a href="../reference/plot_counts_barplot.html">plot_counts_barplot()</a></code> function.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get counts as data frame</span></span>
+<span><span class="va">counts</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/getTable.html">getTable</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                 output_type <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>                 cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                 cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
+<span>                 group_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
+<span>                 numeric <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="va">counts</span></span></code></pre></div>
+<pre><code><span><span class="co">##      group_var B cells Basophils CD16+ Monocytes CD4 CD127- CD4 CD25+</span></span>
+<span><span class="co">## ID10      ID10     111        13             342        365       101</span></span>
+<span><span class="co">## ID3        ID3     354        80             350        500       324</span></span>
+<span><span class="co">## ID5        ID5     493        35             219        485       202</span></span>
+<span><span class="co">## ID6        ID6     192        24             494        263       312</span></span>
+<span><span class="co">## ID7        ID7     171        59             143        875       126</span></span>
+<span><span class="co">## ID8        ID8      86        25             255        533       114</span></span>
+<span><span class="co">##      CD4 CD45RA- CD127+ CD4 CD45RA+ CD127+ CD8 CD45RA- CD127+</span></span>
+<span><span class="co">## ID10                564                569                461</span></span>
+<span><span class="co">## ID3                1837                993                472</span></span>
+<span><span class="co">## ID5                1614                933                727</span></span>
+<span><span class="co">## ID6                 535                191                500</span></span>
+<span><span class="co">## ID7                1572               1475                974</span></span>
+<span><span class="co">## ID8                 613               1498                333</span></span>
+<span><span class="co">##      CD8 CD45RA+ CD127- CD8 CD45RA+ CD127+ Classical Monocytes Mixed NK bright</span></span>
+<span><span class="co">## ID10               2123                682                3184     7       317</span></span>
+<span><span class="co">## ID3                 142               1165                2338    48       464</span></span>
+<span><span class="co">## ID5                 623                920                2372   248       512</span></span>
+<span><span class="co">## ID6                1085                894                2102    90       667</span></span>
+<span><span class="co">## ID7                  68                308                2151    10       515</span></span>
+<span><span class="co">## ID8                1829                697                3008    31       247</span></span>
+<span><span class="co">##      NK dim pDCs Unconventional T cells</span></span>
+<span><span class="co">## ID10    641   24                    496</span></span>
+<span><span class="co">## ID3     825   80                     28</span></span>
+<span><span class="co">## ID5     517   66                     34</span></span>
+<span><span class="co">## ID6    1242   30                    428</span></span>
+<span><span class="co">## ID7    1490   55                      8</span></span>
+<span><span class="co">## ID8      79   54                    598</span></span></code></pre>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get cells per cluster_var</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">counts</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                B cells              Basophils        CD16+ Monocytes </span></span>
+<span><span class="co">##                   1407                    236                   1803 </span></span>
+<span><span class="co">##             CD4 CD127-              CD4 CD25+     CD4 CD45RA- CD127+ </span></span>
+<span><span class="co">##                   3021                   1179                   6735 </span></span>
+<span><span class="co">##     CD4 CD45RA+ CD127+     CD8 CD45RA- CD127+     CD8 CD45RA+ CD127- </span></span>
+<span><span class="co">##                   5659                   3467                   5870 </span></span>
+<span><span class="co">##     CD8 CD45RA+ CD127+    Classical Monocytes                  Mixed </span></span>
+<span><span class="co">##                   4666                  15155                    434 </span></span>
+<span><span class="co">##              NK bright                 NK dim                   pDCs </span></span>
+<span><span class="co">##                   2722                   4794                    309 </span></span>
+<span><span class="co">## Unconventional T cells </span></span>
+<span><span class="co">##                   1592</span></span></code></pre>
+<p>The <code><a href="../reference/plot_counts_barplot.html">plot_counts_barplot()</a></code> function stacks absolute cell
+numbers of each cell population on top of each other for each group in
+the grouping variable, which can be set via the <code>group_var</code>
+parameter.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># visualize counts as stacked bar plot, faceted by clustering</span></span>
+<span><span class="fu"><a href="../reference/plot_counts_barplot.html">plot_counts_barplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                    facet_by_clustering <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                    facet_ncol <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-24-1.png" width="700"></p>
+<p>A faceting of the plot by cell population can be achieved by setting
+the parameter <code>facet_by_group = T</code>.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># visualize counts as stacked bar plot, faceted by clustering</span></span>
+<span><span class="fu"><a href="../reference/plot_counts_barplot.html">plot_counts_barplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
+<span>                    cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                    group_var <span class="op">=</span> <span class="st">"sample_ID"</span>,</span>
+<span>                    facet_by_clustering <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>                    facet_ncol <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-25-1.png" width="960"></p>
 </div>
 <div class="section level2">
-<h2 id="visualize-the-loadings-of-the-pcs">Visualize the loadings of the PCs<a class="anchor" aria-label="anchor" href="#visualize-the-loadings-of-the-pcs"></a>
+<h2 id="others">Others<a class="anchor" aria-label="anchor" href="#others"></a>
 </h2>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PC_loadings.html">PC_loadings</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, data_slot <span class="op">=</span> <span class="st">"orig"</span>, number <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<div class="section level3">
+<h3 id="visualize-the-loadings-of-pcs">Visualize the loadings of PCs<a class="anchor" aria-label="anchor" href="#visualize-the-loadings-of-pcs"></a>
+</h3>
+<p><code><a href="../reference/PC_loadings.html">PC_loadings()</a></code> can be used to visualize the loadings for
+each principle component.</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PC_loadings.html">PC_loadings</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, data_slot <span class="op">=</span> <span class="st">"orig"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="density-plot-1">Density plot<a class="anchor" aria-label="anchor" href="#density-plot-1"></a>
+</h3>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_density.html">plot_dim_density</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                 reduction_method <span class="op">=</span> <span class="st">"umap"</span>,</span>
+<span>                 reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>,</span>
+<span>                 group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                 color_density <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Greys"</span>, <span class="st">"Reds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-27-1.png" width="960"></p>
+</div>
 </div>
 <div class="section level2">
-<h2 id="violinplot-of-marker-expression">Violinplot of marker expression<a class="anchor" aria-label="anchor" href="#violinplot-of-marker-expression"></a>
+<h2 id="more-visualization">MORE visualization?<a class="anchor" aria-label="anchor" href="#more-visualization"></a>
 </h2>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/violinplot_marker.html">violinplot_marker</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
-<span>                  data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
-<span>                  cluster_method <span class="op">=</span> <span class="st">"Phenograph_pca_orig_k_60"</span>, </span>
-<span>                  cluster_type <span class="op">=</span> <span class="st">"metaclusters"</span>, marker <span class="op">=</span> <span class="st">"CD56"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
-</div>
-<div class="section level2">
-<h2 id="classical-cytometry-dotplot">Classical cytometry dotplot<a class="anchor" aria-label="anchor" href="#classical-cytometry-dotplot"></a>
-</h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/dotplot_cyto.html">dotplot_cyto</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">expr</span><span class="op">$</span><span class="va">orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">)</span>, </span>
-<span>             subset <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>             annotation <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">$</span><span class="va">metaclusters</span>, </span>
-<span>             subset_char <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NK bright"</span>, <span class="st">"NK dim"</span><span class="op">)</span>, </span>
-<span>             color_by <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">$</span><span class="va">metacluster</span>, </span>
-<span>             x <span class="op">=</span> <span class="st">"CD16"</span>, </span>
-<span>             y <span class="op">=</span> <span class="st">"CD56"</span>, </span>
-<span>             title <span class="op">=</span> <span class="st">"NK cells Dotplot"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-</div>
-<div class="section level2">
-<h2 id="densityplot-marker">Densityplot marker<a class="anchor" aria-label="anchor" href="#densityplot-marker"></a>
-</h2>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/densityplot_marker.html">densityplot_marker</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">expr</span><span class="op">$</span><span class="va">orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">Phenograph_pca_orig_k_60</span><span class="op">)</span>, </span>
-<span>                   marker <span class="op">=</span> <span class="st">"CD3"</span>, </span>
-<span>                   split_by <span class="op">=</span> <span class="cn">NULL</span>, </span>
-<span>                   color_by <span class="op">=</span> <span class="st">"metaclusters"</span>, </span>
-<span>                   title <span class="op">=</span> <span class="st">"CD3 expression"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Data_Visualization_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
+<p>In this vignette, we mostly focused on visualizations that are useful
+to investigate clusterings and support annotation of cell populations.
+However, biological questions often revolve around comparing different
+biological groups of samples. To get some inspirations how those can be
+visualized, check out the
+<code>vignette("Differential Analysis")</code>!</p>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
 <span><span class="va">info</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
@@ -306,118 +754,131 @@ analysis, following some examples on how to use them.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] cyCONDOR_0.1.5</span></span>
+<span><span class="co">## [1] cyCONDOR_0.1.6</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] fs_1.6.3                    destiny_3.14.0             </span></span>
-<span><span class="co">##   [3] matrixStats_1.1.0           bitops_1.0-7               </span></span>
-<span><span class="co">##   [5] devtools_2.4.5              lubridate_1.9.3            </span></span>
-<span><span class="co">##   [7] RColorBrewer_1.1-3          doParallel_1.0.17          </span></span>
-<span><span class="co">##   [9] ggsci_3.0.0                 Rgraphviz_2.44.0           </span></span>
-<span><span class="co">##  [11] profvis_0.3.8               tools_4.3.1                </span></span>
-<span><span class="co">##  [13] backports_1.4.1             utf8_1.2.4                 </span></span>
-<span><span class="co">##  [15] R6_2.5.1                    urlchecker_1.0.1           </span></span>
-<span><span class="co">##  [17] withr_2.5.1                 sp_2.1-1                   </span></span>
-<span><span class="co">##  [19] prettyunits_1.2.0           gridExtra_2.3              </span></span>
-<span><span class="co">##  [21] cli_3.6.1                   Biobase_2.60.0             </span></span>
-<span><span class="co">##  [23] textshaping_0.3.7           Cairo_1.6-1                </span></span>
-<span><span class="co">##  [25] ggcyto_1.28.1               isoband_0.2.7              </span></span>
-<span><span class="co">##  [27] labeling_0.4.3              sass_0.4.7                 </span></span>
-<span><span class="co">##  [29] robustbase_0.99-0           readr_2.1.4                </span></span>
-<span><span class="co">##  [31] randomForest_4.7-1.1        askpass_1.2.0              </span></span>
-<span><span class="co">##  [33] proxy_0.4-27                slingshot_2.8.0            </span></span>
-<span><span class="co">##  [35] pkgdown_2.0.7               systemfonts_1.0.5          </span></span>
-<span><span class="co">##  [37] foreign_0.8-85              harmony_1.1.0              </span></span>
-<span><span class="co">##  [39] parallelly_1.36.0           sessioninfo_1.2.2          </span></span>
-<span><span class="co">##  [41] readxl_1.4.3                TTR_0.24.3                 </span></span>
-<span><span class="co">##  [43] flowCore_2.12.2             rstudioapi_0.15.0          </span></span>
-<span><span class="co">##  [45] generics_0.1.3              shape_1.4.6                </span></span>
-<span><span class="co">##  [47] car_3.1-2                   dplyr_1.1.3                </span></span>
-<span><span class="co">##  [49] Matrix_1.6-1.1              RProtoBufLib_2.12.1        </span></span>
-<span><span class="co">##  [51] ggbeeswarm_0.7.2            fansi_1.0.5                </span></span>
-<span><span class="co">##  [53] S4Vectors_0.38.2            abind_1.4-5                </span></span>
-<span><span class="co">##  [55] lifecycle_1.0.3             scatterplot3d_0.3-44       </span></span>
-<span><span class="co">##  [57] yaml_2.3.7                  carData_3.0-5              </span></span>
-<span><span class="co">##  [59] SummarizedExperiment_1.30.2 recipes_1.0.8              </span></span>
-<span><span class="co">##  [61] Rtsne_0.16                  grid_4.3.1                 </span></span>
-<span><span class="co">##  [63] promises_1.2.1              crayon_1.5.2               </span></span>
-<span><span class="co">##  [65] miniUI_0.1.1.1              lattice_0.22-5             </span></span>
-<span><span class="co">##  [67] cowplot_1.1.1               pillar_1.9.0               </span></span>
-<span><span class="co">##  [69] knitr_1.44                  GenomicRanges_1.52.1       </span></span>
-<span><span class="co">##  [71] boot_1.3-28.1               future.apply_1.11.0        </span></span>
-<span><span class="co">##  [73] codetools_0.2-19            glue_1.6.2                 </span></span>
-<span><span class="co">##  [75] pcaMethods_1.92.0           data.table_1.14.8          </span></span>
-<span><span class="co">##  [77] remotes_2.4.2.1             vcd_1.4-11                 </span></span>
-<span><span class="co">##  [79] png_0.1-8                   vctrs_0.6.4                </span></span>
-<span><span class="co">##  [81] cellranger_1.1.0            gtable_0.3.4               </span></span>
-<span><span class="co">##  [83] cachem_1.0.8                gower_1.0.1                </span></span>
-<span><span class="co">##  [85] xfun_0.40                   princurve_2.1.6            </span></span>
-<span><span class="co">##  [87] S4Arrays_1.0.6              mime_0.12                  </span></span>
-<span><span class="co">##  [89] prodlim_2023.08.28          RcppEigen_0.3.3.9.4        </span></span>
-<span><span class="co">##  [91] survival_3.5-7              timeDate_4022.108          </span></span>
-<span><span class="co">##  [93] pheatmap_1.0.12             SingleCellExperiment_1.22.0</span></span>
-<span><span class="co">##  [95] iterators_1.0.14            CytoDx_1.20.0              </span></span>
-<span><span class="co">##  [97] cytolib_2.12.1              hardhat_1.3.0              </span></span>
-<span><span class="co">##  [99] lava_1.7.3                  ellipsis_0.3.2             </span></span>
-<span><span class="co">## [101] ipred_0.9-14                ncdfFlow_2.46.0            </span></span>
-<span><span class="co">## [103] nlme_3.1-163                usethis_2.2.2              </span></span>
-<span><span class="co">## [105] xts_0.13.1                  GenomeInfoDb_1.36.4        </span></span>
-<span><span class="co">## [107] rprojroot_2.0.3             bslib_0.5.1                </span></span>
-<span><span class="co">## [109] irlba_2.3.5.1               vipor_0.4.5                </span></span>
-<span><span class="co">## [111] Rphenograph_0.99.1          rpart_4.1.21               </span></span>
-<span><span class="co">## [113] colorspace_2.1-0            BiocGenerics_0.46.0        </span></span>
-<span><span class="co">## [115] Hmisc_5.1-1                 flowWorkspace_4.12.2       </span></span>
-<span><span class="co">## [117] nnet_7.3-19                 ggrastr_1.0.2              </span></span>
-<span><span class="co">## [119] tidyselect_1.2.0            smoother_1.1               </span></span>
-<span><span class="co">## [121] processx_3.8.2              compiler_4.3.1             </span></span>
-<span><span class="co">## [123] curl_5.1.0                  glmnet_4.1-8               </span></span>
-<span><span class="co">## [125] graph_1.78.0                htmlTable_2.4.2            </span></span>
-<span><span class="co">## [127] desc_1.4.2                  DelayedArray_0.26.7        </span></span>
-<span><span class="co">## [129] checkmate_2.3.0             scales_1.2.1               </span></span>
-<span><span class="co">## [131] DEoptimR_1.1-3              lmtest_0.9-40              </span></span>
-<span><span class="co">## [133] hexbin_1.28.3               RBGL_1.76.0                </span></span>
-<span><span class="co">## [135] callr_3.7.3                 stringr_1.5.0              </span></span>
-<span><span class="co">## [137] digest_0.6.33               rmarkdown_2.25             </span></span>
-<span><span class="co">## [139] XVector_0.40.0              htmltools_0.5.6.1          </span></span>
-<span><span class="co">## [141] pkgconfig_2.0.3             base64enc_0.1-3            </span></span>
-<span><span class="co">## [143] umap_0.2.10.0               sparseMatrixStats_1.12.2   </span></span>
-<span><span class="co">## [145] MatrixGenerics_1.12.3       fastmap_1.1.1              </span></span>
-<span><span class="co">## [147] rlang_1.1.1                 Rmisc_1.5.1                </span></span>
-<span><span class="co">## [149] htmlwidgets_1.6.2           ggthemes_4.2.4             </span></span>
-<span><span class="co">## [151] shiny_1.7.5.1               DelayedMatrixStats_1.22.6  </span></span>
-<span><span class="co">## [153] farver_2.1.1                jquerylib_0.1.4            </span></span>
-<span><span class="co">## [155] zoo_1.8-12                  jsonlite_1.8.7             </span></span>
-<span><span class="co">## [157] ModelMetrics_1.2.2.2        RCurl_1.98-1.13            </span></span>
-<span><span class="co">## [159] magrittr_2.0.3              Formula_1.2-5              </span></span>
-<span><span class="co">## [161] GenomeInfoDbData_1.2.10     munsell_0.5.0              </span></span>
-<span><span class="co">## [163] Rcpp_1.0.11                 TrajectoryUtils_1.8.0      </span></span>
-<span><span class="co">## [165] reticulate_1.34.0           stringi_1.7.12             </span></span>
-<span><span class="co">## [167] pROC_1.18.5                 zlibbioc_1.46.0            </span></span>
-<span><span class="co">## [169] MASS_7.3-60                 plyr_1.8.9                 </span></span>
-<span><span class="co">## [171] pkgbuild_1.4.2              ggrepel_0.9.4              </span></span>
-<span><span class="co">## [173] parallel_4.3.1              listenv_0.9.0              </span></span>
-<span><span class="co">## [175] splines_4.3.1               hms_1.1.3                  </span></span>
-<span><span class="co">## [177] ps_1.7.5                    igraph_1.5.1               </span></span>
-<span><span class="co">## [179] ggpubr_0.6.0                ranger_0.16.0              </span></span>
-<span><span class="co">## [181] ggsignif_0.6.4              RcppHNSW_0.5.0             </span></span>
-<span><span class="co">## [183] reshape2_1.4.4              stats4_4.3.1               </span></span>
-<span><span class="co">## [185] pkgload_1.3.3               XML_3.99-0.15              </span></span>
-<span><span class="co">## [187] evaluate_0.22               rpart.plot_3.1.1           </span></span>
-<span><span class="co">## [189] laeken_0.5.2                tzdb_0.4.0                 </span></span>
-<span><span class="co">## [191] foreach_1.5.2               httpuv_1.6.12              </span></span>
-<span><span class="co">## [193] VIM_6.2.2                   openssl_2.1.1              </span></span>
-<span><span class="co">## [195] RANN_2.6.1                  tidyr_1.3.0                </span></span>
-<span><span class="co">## [197] purrr_1.0.2                 future_1.33.0              </span></span>
-<span><span class="co">## [199] ggplot2_3.4.4               broom_1.0.5                </span></span>
-<span><span class="co">## [201] xtable_1.8-4                e1071_1.7-13               </span></span>
-<span><span class="co">## [203] RSpectra_0.16-1             rstatix_0.7.2              </span></span>
-<span><span class="co">## [205] later_1.3.1                 class_7.3-22               </span></span>
-<span><span class="co">## [207] ragg_1.2.6                  tibble_3.2.1               </span></span>
-<span><span class="co">## [209] beeswarm_0.4.0              memoise_2.0.1              </span></span>
-<span><span class="co">## [211] IRanges_2.34.1              cluster_2.1.4              </span></span>
-<span><span class="co">## [213] ggplot.multistats_1.0.0     timechange_0.2.0           </span></span>
-<span><span class="co">## [215] globals_0.16.2              CytoML_2.12.0              </span></span>
-<span><span class="co">## [217] caret_6.0-94</span></span></code></pre>
+<span><span class="co">##   [1] IRanges_2.34.1              Rmisc_1.5.1                </span></span>
+<span><span class="co">##   [3] urlchecker_1.0.1            nnet_7.3-19                </span></span>
+<span><span class="co">##   [5] CytoNorm_2.0.1              TH.data_1.1-2              </span></span>
+<span><span class="co">##   [7] vctrs_0.6.4                 digest_0.6.33              </span></span>
+<span><span class="co">##   [9] png_0.1-8                   shape_1.4.6                </span></span>
+<span><span class="co">##  [11] proxy_0.4-27                slingshot_2.8.0            </span></span>
+<span><span class="co">##  [13] ggrepel_0.9.4               parallelly_1.36.0          </span></span>
+<span><span class="co">##  [15] MASS_7.3-60                 pkgdown_2.0.7              </span></span>
+<span><span class="co">##  [17] reshape2_1.4.4              httpuv_1.6.12              </span></span>
+<span><span class="co">##  [19] foreach_1.5.2               BiocGenerics_0.46.0        </span></span>
+<span><span class="co">##  [21] withr_2.5.1                 ggrastr_1.0.2              </span></span>
+<span><span class="co">##  [23] xfun_0.40                   ggpubr_0.6.0               </span></span>
+<span><span class="co">##  [25] ellipsis_0.3.2              survival_3.5-7             </span></span>
+<span><span class="co">##  [27] memoise_2.0.1               hexbin_1.28.3              </span></span>
+<span><span class="co">##  [29] ggbeeswarm_0.7.2            RProtoBufLib_2.12.1        </span></span>
+<span><span class="co">##  [31] princurve_2.1.6             profvis_0.3.8              </span></span>
+<span><span class="co">##  [33] ggsci_3.0.0                 systemfonts_1.0.5          </span></span>
+<span><span class="co">##  [35] ragg_1.2.6                  zoo_1.8-12                 </span></span>
+<span><span class="co">##  [37] GlobalOptions_0.1.2         DEoptimR_1.1-3             </span></span>
+<span><span class="co">##  [39] Formula_1.2-5               prettyunits_1.2.0          </span></span>
+<span><span class="co">##  [41] promises_1.2.1              scatterplot3d_0.3-44       </span></span>
+<span><span class="co">##  [43] rstatix_0.7.2               globals_0.16.2             </span></span>
+<span><span class="co">##  [45] ps_1.7.5                    rstudioapi_0.15.0          </span></span>
+<span><span class="co">##  [47] miniUI_0.1.1.1              generics_0.1.3             </span></span>
+<span><span class="co">##  [49] ggcyto_1.28.1               base64enc_0.1-3            </span></span>
+<span><span class="co">##  [51] processx_3.8.2              curl_5.1.0                 </span></span>
+<span><span class="co">##  [53] S4Vectors_0.38.2            zlibbioc_1.46.0            </span></span>
+<span><span class="co">##  [55] flowWorkspace_4.12.2        polyclip_1.10-6            </span></span>
+<span><span class="co">##  [57] randomForest_4.7-1.1        GenomeInfoDbData_1.2.10    </span></span>
+<span><span class="co">##  [59] RBGL_1.76.0                 ncdfFlow_2.46.0            </span></span>
+<span><span class="co">##  [61] RcppEigen_0.3.3.9.4         xtable_1.8-4               </span></span>
+<span><span class="co">##  [63] stringr_1.5.0               desc_1.4.2                 </span></span>
+<span><span class="co">##  [65] doParallel_1.0.17           evaluate_0.22              </span></span>
+<span><span class="co">##  [67] S4Arrays_1.0.6              hms_1.1.3                  </span></span>
+<span><span class="co">##  [69] glmnet_4.1-8                GenomicRanges_1.52.1       </span></span>
+<span><span class="co">##  [71] irlba_2.3.5.1               colorspace_2.1-0           </span></span>
+<span><span class="co">##  [73] isoband_0.2.7               harmony_1.1.0              </span></span>
+<span><span class="co">##  [75] reticulate_1.34.0           readxl_1.4.3               </span></span>
+<span><span class="co">##  [77] magrittr_2.0.3              lmtest_0.9-40              </span></span>
+<span><span class="co">##  [79] readr_2.1.4                 Rgraphviz_2.44.0           </span></span>
+<span><span class="co">##  [81] later_1.3.1                 lattice_0.22-5             </span></span>
+<span><span class="co">##  [83] future.apply_1.11.0         robustbase_0.99-0          </span></span>
+<span><span class="co">##  [85] XML_3.99-0.15               cowplot_1.1.1              </span></span>
+<span><span class="co">##  [87] matrixStats_1.1.0           xts_0.13.1                 </span></span>
+<span><span class="co">##  [89] class_7.3-22                Hmisc_5.1-1                </span></span>
+<span><span class="co">##  [91] pillar_1.9.0                nlme_3.1-163               </span></span>
+<span><span class="co">##  [93] iterators_1.0.14            compiler_4.3.1             </span></span>
+<span><span class="co">##  [95] RSpectra_0.16-1             stringi_1.7.12             </span></span>
+<span><span class="co">##  [97] gower_1.0.1                 minqa_1.2.6                </span></span>
+<span><span class="co">##  [99] SummarizedExperiment_1.30.2 lubridate_1.9.3            </span></span>
+<span><span class="co">## [101] devtools_2.4.5              CytoML_2.12.0              </span></span>
+<span><span class="co">## [103] plyr_1.8.9                  crayon_1.5.2               </span></span>
+<span><span class="co">## [105] abind_1.4-5                 locfit_1.5-9.8             </span></span>
+<span><span class="co">## [107] sp_2.1-1                    sandwich_3.0-2             </span></span>
+<span><span class="co">## [109] pcaMethods_1.92.0           dplyr_1.1.3                </span></span>
+<span><span class="co">## [111] codetools_0.2-19            multcomp_1.4-25            </span></span>
+<span><span class="co">## [113] textshaping_0.3.7           recipes_1.0.8              </span></span>
+<span><span class="co">## [115] openssl_2.1.1               Rphenograph_0.99.1         </span></span>
+<span><span class="co">## [117] TTR_0.24.3                  bslib_0.5.1                </span></span>
+<span><span class="co">## [119] e1071_1.7-13                destiny_3.14.0             </span></span>
+<span><span class="co">## [121] GetoptLong_1.0.5            ggplot.multistats_1.0.0    </span></span>
+<span><span class="co">## [123] mime_0.12                   splines_4.3.1              </span></span>
+<span><span class="co">## [125] circlize_0.4.15             Rcpp_1.0.11                </span></span>
+<span><span class="co">## [127] sparseMatrixStats_1.12.2    cellranger_1.1.0           </span></span>
+<span><span class="co">## [129] knitr_1.44                  utf8_1.2.4                 </span></span>
+<span><span class="co">## [131] clue_0.3-65                 lme4_1.1-35.1              </span></span>
+<span><span class="co">## [133] fs_1.6.3                    listenv_0.9.0              </span></span>
+<span><span class="co">## [135] checkmate_2.3.0             DelayedMatrixStats_1.22.6  </span></span>
+<span><span class="co">## [137] pkgbuild_1.4.2              ggsignif_0.6.4             </span></span>
+<span><span class="co">## [139] tibble_3.2.1                Matrix_1.6-1.1             </span></span>
+<span><span class="co">## [141] rpart.plot_3.1.1            callr_3.7.3                </span></span>
+<span><span class="co">## [143] tzdb_0.4.0                  tweenr_2.0.2               </span></span>
+<span><span class="co">## [145] pkgconfig_2.0.3             pheatmap_1.0.12            </span></span>
+<span><span class="co">## [147] tools_4.3.1                 cachem_1.0.8               </span></span>
+<span><span class="co">## [149] smoother_1.1                fastmap_1.1.1              </span></span>
+<span><span class="co">## [151] rmarkdown_2.25              scales_1.2.1               </span></span>
+<span><span class="co">## [153] grid_4.3.1                  usethis_2.2.2              </span></span>
+<span><span class="co">## [155] broom_1.0.5                 sass_0.4.7                 </span></span>
+<span><span class="co">## [157] graph_1.78.0                carData_3.0-5              </span></span>
+<span><span class="co">## [159] RANN_2.6.1                  rpart_4.1.21               </span></span>
+<span><span class="co">## [161] farver_2.1.1                yaml_2.3.7                 </span></span>
+<span><span class="co">## [163] MatrixGenerics_1.12.3       foreign_0.8-85             </span></span>
+<span><span class="co">## [165] ggthemes_4.2.4              cli_3.6.1                  </span></span>
+<span><span class="co">## [167] purrr_1.0.2                 stats4_4.3.1               </span></span>
+<span><span class="co">## [169] lifecycle_1.0.3             uwot_0.1.16                </span></span>
+<span><span class="co">## [171] askpass_1.2.0               caret_6.0-94               </span></span>
+<span><span class="co">## [173] Biobase_2.60.0              mvtnorm_1.2-3              </span></span>
+<span><span class="co">## [175] lava_1.7.3                  sessioninfo_1.2.2          </span></span>
+<span><span class="co">## [177] backports_1.4.1             cytolib_2.12.1             </span></span>
+<span><span class="co">## [179] timechange_0.2.0            gtable_0.3.4               </span></span>
+<span><span class="co">## [181] rjson_0.2.21                umap_0.2.10.0              </span></span>
+<span><span class="co">## [183] ggridges_0.5.4              parallel_4.3.1             </span></span>
+<span><span class="co">## [185] pROC_1.18.5                 limma_3.56.2               </span></span>
+<span><span class="co">## [187] jsonlite_1.8.7              edgeR_3.42.4               </span></span>
+<span><span class="co">## [189] RcppHNSW_0.5.0              bitops_1.0-7               </span></span>
+<span><span class="co">## [191] ggplot2_3.4.4               Rtsne_0.16                 </span></span>
+<span><span class="co">## [193] FlowSOM_2.8.0               ranger_0.16.0              </span></span>
+<span><span class="co">## [195] flowCore_2.12.2             jquerylib_0.1.4            </span></span>
+<span><span class="co">## [197] timeDate_4022.108           shiny_1.7.5.1              </span></span>
+<span><span class="co">## [199] ConsensusClusterPlus_1.64.0 htmltools_0.5.6.1          </span></span>
+<span><span class="co">## [201] diffcyt_1.20.0              glue_1.6.2                 </span></span>
+<span><span class="co">## [203] XVector_0.40.0              VIM_6.2.2                  </span></span>
+<span><span class="co">## [205] RCurl_1.98-1.13             rprojroot_2.0.3            </span></span>
+<span><span class="co">## [207] gridExtra_2.3               boot_1.3-28.1              </span></span>
+<span><span class="co">## [209] TrajectoryUtils_1.8.0       igraph_1.5.1               </span></span>
+<span><span class="co">## [211] R6_2.5.1                    tidyr_1.3.0                </span></span>
+<span><span class="co">## [213] SingleCellExperiment_1.22.0 labeling_0.4.3             </span></span>
+<span><span class="co">## [215] vcd_1.4-11                  cluster_2.1.4              </span></span>
+<span><span class="co">## [217] pkgload_1.3.3               GenomeInfoDb_1.36.4        </span></span>
+<span><span class="co">## [219] ipred_0.9-14                nloptr_2.0.3               </span></span>
+<span><span class="co">## [221] DelayedArray_0.26.7         tidyselect_1.2.0           </span></span>
+<span><span class="co">## [223] vipor_0.4.5                 htmlTable_2.4.2            </span></span>
+<span><span class="co">## [225] ggforce_0.4.1               CytoDx_1.20.0              </span></span>
+<span><span class="co">## [227] car_3.1-2                   future_1.33.0              </span></span>
+<span><span class="co">## [229] ModelMetrics_1.2.2.2        munsell_0.5.0              </span></span>
+<span><span class="co">## [231] laeken_0.5.2                data.table_1.14.8          </span></span>
+<span><span class="co">## [233] htmlwidgets_1.6.2           ComplexHeatmap_2.16.0      </span></span>
+<span><span class="co">## [235] RColorBrewer_1.1-3          rlang_1.1.1                </span></span>
+<span><span class="co">## [237] remotes_2.4.2.1             colorRamps_2.3.1           </span></span>
+<span><span class="co">## [239] Cairo_1.6-1                 ggnewscale_0.4.9           </span></span>
+<span><span class="co">## [241] fansi_1.0.5                 hardhat_1.3.0              </span></span>
+<span><span class="co">## [243] beeswarm_0.4.0              prodlim_2023.08.28</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -427,7 +888,7 @@ analysis, following some examples on how to use them.</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Lorenzo Bonaguro.</p>
+<p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner.</p>
 </div>
 
 <div class="pkgdown-footer-right">
