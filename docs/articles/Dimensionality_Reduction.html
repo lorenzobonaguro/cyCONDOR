@@ -115,9 +115,9 @@ markers should be used for the calculation by listing them under
 extracted directly from the <code>condor</code> object using the
 implemented functions <code>measured_markers</code> and
 <code>used_markers</code> By default all available markers from the
-condor object are used. If the <code>discard</code> option is set to
-TRUE, all markers <strong>except</strong> the ones listed under
-<code>markers</code> are used for calculation. This enables the
+<code>condor</code> object are used. If the <code>discard</code> option
+is set to TRUE, all markers <strong>except</strong> the ones listed
+under <code>markers</code> are used for calculation. This enables the
 exclusion of single markers. When using <code>pca</code> as input is
 possible to specify the number of PCs to be used.</p>
 <p>By defining a <code>prefix</code> which gets incorporated into the
@@ -128,17 +128,18 @@ corresponding to the chosen dimensionality reduction method saved in
 <code>fcd$reduction_method</code>. The name of the output consists of
 the <code>prefix</code> (if given) and the <code>data_slot</code>.</p>
 <div class="section level2">
-<h2 id="marker-selection-using-the-marker-and-discard-variables">Marker selection using the ‘marker’ and ‘discard’ variables<a class="anchor" aria-label="anchor" href="#marker-selection-using-the-marker-and-discard-variables"></a>
+<h2 id="marker-selection-using-the-marker-and-discard-variables">Marker selection using the <code>marker</code> and
+<code>discard</code> variables<a class="anchor" aria-label="anchor" href="#marker-selection-using-the-marker-and-discard-variables"></a>
 </h2>
 <p>It is possible to specify the markers which should be the basis for
-the calculation using a combination of the ‘markers’ variable and the
-<code>discard</code> flag in all dimensionality reduction functions.
-<code>markers</code> takes a vector of marker names as an input that
-should be included (positive selection) or excluded (negative
+the calculation using a combination of the <code>markers</code> variable
+and the <code>discard</code> flag in all dimensionality reduction
+functions. <code>markers</code> takes a vector of marker names as an
+input that should be included (positive selection) or excluded (negative
 selection). The user can choose to either discard the specified markers
-by setting the ‘discard’ flag to TRUE (negative selection) or to keep
-only the specified markers by using the default setting of the ‘discard’
-flag (positive selection).</p>
+by setting the <code>discard</code> flag to TRUE (negative selection) or
+to keep only the specified markers by using the default setting of the
+<code>discard</code> flag (positive selection).</p>
 <p>The marker names should correspond to a specific column in the
 expression table and can be given manually or can be extracted from the
 condor object using the <code>cyCONDOR</code> function
@@ -149,7 +150,7 @@ overwriting a previously calculated matrix.</p>
 reduction functions but we only demonstrate it for PCA.</p>
 </div>
 <div class="section level2">
-<h2 id="load-example-cycondor-object">Load example cyCONDOR object<a class="anchor" aria-label="anchor" href="#load-example-cycondor-object"></a>
+<h2 id="load-an-example-dataset">Load an example dataset<a class="anchor" aria-label="anchor" href="#load-an-example-dataset"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/conodr_example_016.rds"</span><span class="op">)</span></span></code></pre></div>
@@ -166,7 +167,7 @@ reduction functions but we only demonstrate it for PCA.</p>
 <p>The output data frame of the PCA can be accessed with
 <code>condor$pca$orig</code>.</p>
 <p>As a demonstration the following code shows a positive and negative
-selection with the corresponding ‘discard’ flag setting.</p>
+selection with the corresponding <code>discard</code> flag setting.</p>
 <div class="section level4">
 <h4 id="pca-positive-selection-specifying-the-markers-to-be-used-as-basis-for-the-calculation">PCA (Positive selection: Specifying the markers to be used as basis
 for the calculation)<a class="anchor" aria-label="anchor" href="#pca-positive-selection-specifying-the-markers-to-be-used-as-basis-for-the-calculation"></a>

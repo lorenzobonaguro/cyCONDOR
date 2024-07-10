@@ -102,7 +102,7 @@
 showcase some useful <code>cyCONDOR</code> functions to interact with
 it.</p>
 <div class="section level2">
-<h2 id="load-example-condor-object">Load example <code>condor</code> object<a class="anchor" aria-label="anchor" href="#load-example-condor-object"></a>
+<h2 id="load-an-example-dataset">Load an example dataset<a class="anchor" aria-label="anchor" href="#load-an-example-dataset"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/condor_example_016_misc.rds"</span><span class="op">)</span></span></code></pre></div>
@@ -120,16 +120,20 @@ acquiring or analysis (expression, cell metadata, dimensionality
 reduction, clustering and extras).</p>
 <p><br></p>
 <p><img src="../reference/figures/condor_object_structure.png" alt="drawing" width="500"></p>
-<p><em>graphic of the condor object structure. The hierarchical levels
+<p><em>Graphic of the condor object structure. The hierarchical levels
 are depicted as columns and the the major sections are colored
 in.</em></p>
-<p>##Hierarchical structure</p>
-<p>The <em>1st level</em> describes the data types and methods present
-in the object followed by the <em>2nd level</em> specifying separate
-data slots for the actual data stored as data frames (df). The <em>3rd
-level</em> contains the variables (column names) of the respective
-df.</p>
-<p>##Overview of the 5 sections of a <code>condor</code> object</p>
+<div class="section level3">
+<h3 id="hierarchical-structure">Hierarchical structure<a class="anchor" aria-label="anchor" href="#hierarchical-structure"></a>
+</h3>
+<p>The 1st level describes the data types and methods present in the
+object followed by the 2nd level specifying separate data slots for the
+actual data stored as data frames (df). The 3rd level contains the
+variables (column names) of the respective df.</p>
+</div>
+<div class="section level3">
+<h3 id="overview-of-the-5-sections-of-a-condor-object">Overview of the 5 sections of a <code>condor</code> object<a class="anchor" aria-label="anchor" href="#overview-of-the-5-sections-of-a-condor-object"></a>
+</h3>
 <p>The data types <code>$expr</code> and <code>$anno</code> are created
 while data loading and transformation of the <code>condor</code> object
 is performed and serve as the basis for further data analysis.</p>
@@ -180,6 +184,7 @@ later saved under the variable (<code>metaclusters</code>).</p>
 <p><code>$extra</code> contains all additional data to be stored
 (e.g. parameters of data loading, lists of markers, dimensionality
 reduction or clustering models for future data projection).</p>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -312,9 +317,10 @@ doubled between the two objects the merging can not be facilitated.</p>
 <div class="section level3">
 <h3 id="subset-a-condor-object">Subset a <code>condor</code> object<a class="anchor" aria-label="anchor" href="#subset-a-condor-object"></a>
 </h3>
-<p>The ‘subset_fcd’ function subsets the <code>condor</code> object to a
-specific number of randomly selected cells specified with the
-<code>size</code> parameter. A seed can be set for reproducibility.</p>
+<p>The <code>subset_fcd</code> function subsets the <code>condor</code>
+object to a specific number of randomly selected cells specified with
+the <code>size</code> parameter. A seed can be set for
+reproducibility.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_fcd.html">subset_fcd</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                            size <span class="op">=</span> <span class="fl">5000</span>,</span>

@@ -23,6 +23,8 @@ This workflow can be applied to any type of HDFC data, nevertheless the interpre
 
 If you use this workflow in your work please consider citing [cyCONDOR](XXX) and [Street et al. (2018)](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4772-0).
 
+cyCONDOR implementation of `slingshot` follows the tutorial from the [NBIS tutorial](https://nbisweden.github.io/workshop-archive/workshop-scRNAseq/2020-01-27/labs/compiled/slingshot/slingshot.html)
+
 ## Load an example dataset
 
 We start here by loading an example `condor` object already annotated.

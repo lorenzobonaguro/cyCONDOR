@@ -101,7 +101,7 @@
 <p>In this vignette we showcase <code>cyCONDOR</code> functions for
 clustering and cell annotation.</p>
 <div class="section level2">
-<h2 id="load-example-cycondor-object">Load example cyCONDOR object<a class="anchor" aria-label="anchor" href="#load-example-cycondor-object"></a>
+<h2 id="load-an-example-dataset">Load an example dataset<a class="anchor" aria-label="anchor" href="#load-an-example-dataset"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../.test_files/conodr_example_016.rds"</span><span class="op">)</span></span></code></pre></div>
@@ -160,15 +160,15 @@ version 0.1.0. <a href="https://github.com/stuchly/Rphenoannoy" class="external-
 <pre><code><span><span class="co">## Run Rphenograph starts:</span></span>
 <span><span class="co">##   -Input data of 59049 rows and 28 columns</span></span>
 <span><span class="co">##   -k is set to 60</span></span></code></pre>
-<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 42.765 s</span></span>
+<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 47.457 s</span></span>
 <span><span class="co">##   Compute jaccard coefficient between nearest-neighbor sets...</span></span></code></pre>
 <pre><code><span><span class="co">## Presorting knn...</span></span></code></pre>
-<pre><code><span><span class="co">## presorting DONE ~ 2.712 s</span></span>
+<pre><code><span><span class="co">## presorting DONE ~ 2.883 s</span></span>
 <span><span class="co">##   Start jaccard</span></span>
-<span><span class="co">## DONE ~ 3.109 s</span></span>
-<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 2.489 s</span></span>
-<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 11.452 s</span></span></code></pre>
-<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 59.815s.</span></span></code></pre>
+<span><span class="co">## DONE ~ 3.314 s</span></span>
+<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 3.249 s</span></span>
+<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 12.549 s</span></span></code></pre>
+<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 66.569s.</span></span></code></pre>
 <pre><code><span><span class="co">##   Return a community class</span></span>
 <span><span class="co">##   -Modularity value: 0.8749651 </span></span>
 <span><span class="co">##   -Number of clusters: 25</span></span></code></pre>
