@@ -17,5 +17,5 @@ BiocManager::install(update = T, ask = F, version = "3.17")
 devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy", "saeyslab/CytoNorm@362ac08"))
 
 # Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.
-devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v015/cyCONDOR_0.1.5.tar.gz",
+devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v016/cyCONDOR_0.1.6.tar.gz",
                       repos = BiocManager::repositories())
