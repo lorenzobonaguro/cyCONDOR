@@ -1,7 +1,7 @@
 Package: cyCONDOR
 Type: Package
 Title: Flow Cytometry data analysis toolbox
-Version: 0.1.6
+Version: 0.2.0-1
 Authors@R: c(
   person(given = "Lorenzo", family = "Bonaguro", email = "lorenzo.bonaguro@dzne.de", role = c("aut", "cre")),
   person(given = "Charlotte", family = "Kroeger", email = "charlotte.kroeger@dzne.de", role = "aut"),
