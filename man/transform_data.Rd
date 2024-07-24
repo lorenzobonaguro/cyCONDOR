@@ -4,7 +4,7 @@
 \alias{transform_data}
 \title{transform_data}
 \usage{
-transform_data(keep, transformation, original_data)
+transform_data(keep, transformation, original_data, verbose, cofactor = 5)
 }
 \arguments{
 \item{keep}{Vector of the parameter to keep in the analysis.}
@@ -12,6 +12,10 @@ transform_data(keep, transformation, original_data)
 \item{transformation}{transformation to perform.}
 
 \item{original_data}{Original data}
+
+\item{verbose}{Logical, if TRUE the transformation parameters are printed.}
+
+\item{cofactor}{cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.}
 }
 \value{
 transformed flow cytometry dataset

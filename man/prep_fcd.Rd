@@ -14,7 +14,14 @@ prep_fcd(
   filename_col,
   seed = 91,
   separator_anno = ",",
-  separator_fc_csv = ","
+  separator_fc_csv = ",",
+  simple_names = TRUE,
+  truncate_max_range = FALSE,
+  emptyValue = TRUE,
+  ignore.text.offset = FALSE,
+  verbose = FALSE,
+  cross_path_with_anno = FALSE,
+  cofactor = 5
 )
 }
 \arguments{
@@ -37,6 +44,20 @@ prep_fcd(
 \item{separator_anno}{Separator used in the annotation file, by default \code{separator_anno = ","}.}
 
 \item{separator_fc_csv}{Separator used in the cytometry data .csv files, by default \code{separator_anno = ","}.}
+
+\item{simple_names}{If TRUE only the channel description is used to name the column, if FALSE both channel name and description are pasted together.}
+
+\item{truncate_max_range}{From FlowCore: logical type. Default is FALSE. can be optionally turned off to avoid truncating the extreme positive value to the instrument measurement range .i.e.'$PnR'.}
+
+\item{emptyValue}{From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.}
+
+\item{ignore.text.offset}{From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.}
+
+\item{verbose}{Default FALSE, if TRUE the at each file loaded something is printed in the screen.}
+
+\item{cross_path_with_anno}{Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.}
+
+\item{cofactor}{cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.}
 }
 \value{
 An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.

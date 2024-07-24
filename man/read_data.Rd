@@ -4,16 +4,48 @@
 \alias{read_data}
 \title{read_data}
 \usage{
-read_data(FCSpath, max_cells, useCSV, separator)
+read_data(
+  data_path,
+  max_cells,
+  useCSV,
+  separator,
+  simple_names,
+  truncate_max_range,
+  emptyValue,
+  ignore.text.offset,
+  verbose,
+  cross_path_with_anno,
+  anno_table,
+  separator_anno,
+  filename_col
+)
 }
 \arguments{
-\item{FCSpath}{Path to the .fcs files.}
+\item{data_path}{Path to the .fcs or .csv files.}
 
 \item{max_cells}{number of cells to subset.}
 
 \item{useCSV}{Logical, if input is .csv and not .fcs.}
 
 \item{separator}{Separator used the flow csv files (if loading from csv).}
+
+\item{simple_names}{If TRUE only the channel description is used to name the column, if FALSE both channel name and description are pasted together.}
+
+\item{truncate_max_range}{From FlowCore: logical type. Default is FALSE. can be optionally turned off to avoid truncating the extreme positive value to the instrument measurement range .i.e.'$PnR'.}
+
+\item{emptyValue}{From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.}
+
+\item{ignore.text.offset}{From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.}
+
+\item{verbose}{Default FALSE, if TRUE the at each file loaded something is printed in the screen.}
+
+\item{cross_path_with_anno}{Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.}
+
+\item{anno_table}{Passed from 'prep_fcd'}
+
+\item{separator_anno}{Passed from 'prep_fcd'}
+
+\item{filename_col}{Passed from 'prep_fcs'}
 }
 \value{
 load flow cytometry dataset
