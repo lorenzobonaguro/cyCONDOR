@@ -238,7 +238,7 @@ transform_data <- function(keep,
 #' @param data_path Folder where the .fcs files or .csv files are stored.
 #' @param max_cell Number of cells to use for each file (set to a high number if you want to use all available events).
 #' @param useCSV Flag if the input are .csv files and not .fcs (experimental).
-#' @param transformation Transformation to perform. Select one of the following: \code{"auto_log"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).
+#' @param transformation Transformation to perform. Select one of the following: \code{"auto_logi"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).
 #' @param remove_param Parameters to be removed from the \code{fcd}, "inTime" should be kept.
 #' @param anno_table Path to the annotation table text file. The annotation table should contain one column with the file names of all .fcs or .csv files to read in and optionally additional columns with further sample information (e.g. "sample_id", "condition").
 #' @param filename_col Name of the column of the \code{anno_table} containing the file name matching with the .fcs/.csv files.
@@ -366,7 +366,8 @@ prep_fcd <- function(data_path,
                                           seed = seed,
                                           separator_anno = separator_anno,
                                           separator_fc_csv = separator_fc_csv,
-                                          prep_function = "prep_fcd")
+                                          prep_function = "prep_fcd",
+                                          version = packageDescription("cyCONDOR")$Version)
 
   class(fcd) <- "flow_cytometry_dataframe"
 
@@ -504,14 +505,15 @@ prep_fjw <- function(data_gs,
 
   #save import parameters
   fcd[["extras"]][["prep_param"]] <- list(max_cell = 1000000000, #set to a high number to read in all events
-                                              inverse.transform = inverse.transform,
-                                              transformation = transformation,
-                                              remove_param = remove_param,
-                                              merge_anno = merge_anno,
-                                              anno_table = anno_table,
-                                              filename_col= filename_col,
-                                              separator_anno = separator_anno,
-                                              prep_function = "prep_fjw")
+                                          inverse.transform = inverse.transform,
+                                          transformation = transformation,
+                                          remove_param = remove_param,
+                                          merge_anno = merge_anno,
+                                          anno_table = anno_table,
+                                          filename_col= filename_col,
+                                          separator_anno = separator_anno,
+                                          prep_function = "prep_fjw",
+                                          version = packageDescription("cyCONDOR")$Version)
 
 
   class(fcd) <- "flow_cytometry_dataframe"
