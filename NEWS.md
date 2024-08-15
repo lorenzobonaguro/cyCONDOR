@@ -1,3 +1,10 @@
+# cyCONDOR 0.2.0
+* Bump of major version for official release and publication
+* Changed order of events in the `prep_fcd` function. This makes the process faster (especially in smaller machines) and reduces the usage of memory.
+* Added function `subset_fcd_byparam`. This function allows to randomly subset a `condor` object proportionally across a selected parameter. For example is not possible to randomly subset `n` cells from each samples.
+* Included more professionalization in the `read_fcd` function. This allows the user to customize few aspects of the `condor` object
+* Included `cyCONDOR` version in the `condor` object under the `extras` slot. This enables the user to trace the version used for the analysis.
+
 # cyCONDOR 0.1.6
 
 * Reorganization of existing visualization functions including harmonization of function names and function arguments, utilization of `condor` object as main input object and addition of more extensive documentation and error messages.

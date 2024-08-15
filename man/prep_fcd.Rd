@@ -31,7 +31,7 @@ prep_fcd(
 
 \item{useCSV}{Flag if the input are .csv files and not .fcs (experimental).}
 
-\item{transformation}{Transformation to perform. Select one of the following: \code{"auto_log"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).}
+\item{transformation}{Transformation to perform. Select one of the following: \code{"auto_logi"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).}
 
 \item{remove_param}{Parameters to be removed from the \code{fcd}, "inTime" should be kept.}
 

@@ -9,7 +9,7 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 **You can find the detailed documentation of cyCONDOR [here](https://lorenzobonaguro.github.io/cyCONDOR/)**
 
-We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/condor](https://hub.docker.com/r/lorenzobonaguro/condor), the latest version of the image can be pulled with:
+We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/cycondor](https://hub.docker.com/r/lorenzobonaguro/cycondor), the latest version of the image can be pulled with:
 ```
 docker pull lorenzobonaguro/cycondor:v016
 ```
