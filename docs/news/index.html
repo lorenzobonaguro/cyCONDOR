@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,14 @@
       <small>Source: <a href="https://github.com/lorenzobonaguro/condor/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="cycondor-020">cyCONDOR 0.2.0<a class="anchor" aria-label="anchor" href="#cycondor-020"></a></h2>
+<ul><li>Bump of major version for official release and publication</li>
+<li>Changed order of events in the <code>prep_fcd</code> function. This makes the process faster (especially in smaller machines) and reduces the usage of memory.</li>
+<li>Added function <code>subset_fcd_byparam</code>. This function allows to randomly subset a <code>condor</code> object proportionally across a selected parameter. For example is not possible to randomly subset <code>n</code> cells from each samples.</li>
+<li>Included more professionalization in the <code>read_fcd</code> function. This allows the user to customize few aspects of the <code>condor</code> object</li>
+<li>Included <code>cyCONDOR</code> version in the <code>condor</code> object under the <code>extras</code> slot. This enables the user to trace the version used for the analysis.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.6" id="cycondor-016">cyCONDOR 0.1.6<a class="anchor" aria-label="anchor" href="#cycondor-016"></a></h2>
 <ul><li>Reorganization of existing visualization functions including harmonization of function names and function arguments, utilization of <code>condor</code> object as main input object and addition of more extensive documentation and error messages.</li>

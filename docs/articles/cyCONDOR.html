@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -163,38 +163,9 @@ files</p>
 <span>                    remove_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-H"</span>, <span class="st">"SSC-H"</span>, <span class="st">"FSC-W"</span>, <span class="st">"SSC-W"</span>, <span class="st">"Time"</span><span class="op">)</span>, </span>
 <span>                    anno_table <span class="op">=</span> <span class="st">"../.test_files/metadata.csv"</span>, </span>
 <span>                    filename_col <span class="op">=</span> <span class="st">"filename"</span></span>
-<span>                   <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "FSC-A w= 0 t= 189614.25"</span></span>
-<span><span class="co">## [1] "SSC-A w= 0 t= 159321.1875"</span></span>
-<span><span class="co">## [1] "CD38 w= 1.10110198739295 t= 12272.0419921875"</span></span>
-<span><span class="co">## [1] "CD8 w= 1.52711662134285 t= 6956.49267578125"</span></span>
-<span><span class="co">## [1] "CD195 (CCR5) w= 1.4729172443128 t= 9256.8984375"</span></span>
-<span><span class="co">## [1] "CD94 (KLRD1) w= 1.1757008573567 t= 41627.87890625"</span></span>
-<span><span class="co">## [1] "CD45RA w= 0.502241293373956 t= 200441.765625"</span></span>
-<span><span class="co">## [1] "HLA-DR w= 0.995131824637099 t= 33856.6328125"</span></span>
-<span><span class="co">## [1] "CD56 w= 1.0844643477736 t= 35806.97265625"</span></span>
-<span><span class="co">## [1] "CD127 (IL7RA) w= 1.37679964552824 t= 12671.8828125"</span></span>
-<span><span class="co">## [1] "CD14 w= 1.2705293186811 t= 15767.8935546875"</span></span>
-<span><span class="co">## [1] "CD64 w= 0.942822493858364 t= 339462.875"</span></span>
-<span><span class="co">## [1] "CD4 w= 0.857314653224896 t= 194516.96875"</span></span>
-<span><span class="co">## [1] "IgD w= 1.10694870905783 t= 54382.5546875"</span></span>
-<span><span class="co">## [1] "CD19 w= 1.18758039492952 t= 43935.375"</span></span>
-<span><span class="co">## [1] "CD16 w= 0.910056426448899 t= 183188.46875"</span></span>
-<span><span class="co">## [1] "CD32 w= 1.44828802695921 t= 6092.5078125"</span></span>
-<span><span class="co">## [1] "CD197 (CCR7) w= 1.57848859227314 t= 2589.53173828125"</span></span>
-<span><span class="co">## [1] "CD20 w= 1.16465534964918 t= 40245"</span></span>
-<span><span class="co">## [1] "CD27 w= 1.3193182761341 t= 20148.978515625"</span></span>
-<span><span class="co">## [1] "CD15 w= 1.56304218964616 t= 15318.5224609375"</span></span>
-<span><span class="co">## [1] "PD-1 w= 1.9717913384639 t= 2481.6201171875"</span></span>
-<span><span class="co">## [1] "live_dead w= 1.96359215476197 t= 2067.53076171875"</span></span>
-<span><span class="co">## [1] "CD3 w= 1.2371183320154 t= 35094.96484375"</span></span>
-<span><span class="co">## [1] "CD57 w= 0.456517766313048 t= 256492.5"</span></span>
-<span><span class="co">## [1] "CD25 w= 1.08103750635452 t= 14778.49609375"</span></span>
-<span><span class="co">## [1] "CD123 (IL3RA) w= 1.17168323594488 t= 52138.60546875"</span></span>
-<span><span class="co">## [1] "CD13 w= 1.08980446579641 t= 100691.4921875"</span></span>
-<span><span class="co">## [1] "CD11c w= 1.01858653919909 t= 46644.93359375"</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">condor</span><span class="op">)</span></span></code></pre></div>
+<span>                   <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">condor</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "flow_cytometry_dataframe"</span></span></code></pre>
 <p>For more details on data loading, transformation and the general
 structure of the <code>fcd</code> have a look at
@@ -220,7 +191,7 @@ space.</p>
 <p><em><code>data_slot</code></em> = Data slot to use for the
 calculation, e.g. <code>"orig"</code> or batch corrected
 <code>"norm"</code></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                 data_slot <span class="op">=</span> <span class="st">"orig"</span></span>
 <span>                 <span class="op">)</span></span></code></pre></div>
@@ -235,7 +206,7 @@ the UMAP, e.g. “expr” or “pca”</p>
 <p><em><code>data_slot</code></em> = Data slot to use for the
 calculation, e.g. <code>"orig"</code> or batch corrected
 <code>"norm"</code></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                  input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
 <span>                  data_slot <span class="op">=</span> <span class="st">"orig"</span></span>
@@ -243,7 +214,7 @@ calculation, e.g. <code>"orig"</code> or batch corrected
 <div class="section level4">
 <h4 id="umap-visualization">UMAP Visualization<a class="anchor" aria-label="anchor" href="#umap-visualization"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
@@ -263,7 +234,7 @@ e.g. <code>"expr"</code> or <code>"pca"</code></p>
 <p><em><code>data_slot</code></em> = Data slot to use for the
 calculation, e.g. <code>"orig"</code> or batch corrected
 <code>"norm"</code></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runtSNE.html">runtSNE</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                  input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
 <span>                  data_slot <span class="op">=</span> <span class="st">"orig"</span></span>
@@ -274,33 +245,33 @@ calculation, e.g. <code>"orig"</code> or batch corrected
 <span><span class="co">## Computing input similarities...</span></span>
 <span><span class="co">## Building tree...</span></span>
 <span><span class="co">##  - point 10000 of 10000</span></span>
-<span><span class="co">## Done in 4.06 seconds (sparsity = 0.013027)!</span></span>
+<span><span class="co">## Done in 2.93 seconds (sparsity = 0.013027)!</span></span>
 <span><span class="co">## Learning embedding...</span></span>
-<span><span class="co">## Iteration 50: error is 96.832296 (50 iterations in 1.71 seconds)</span></span>
-<span><span class="co">## Iteration 100: error is 84.589965 (50 iterations in 2.89 seconds)</span></span>
-<span><span class="co">## Iteration 150: error is 81.308503 (50 iterations in 1.60 seconds)</span></span>
-<span><span class="co">## Iteration 200: error is 80.502378 (50 iterations in 1.72 seconds)</span></span>
-<span><span class="co">## Iteration 250: error is 80.156805 (50 iterations in 1.62 seconds)</span></span>
-<span><span class="co">## Iteration 300: error is 3.166519 (50 iterations in 1.43 seconds)</span></span>
-<span><span class="co">## Iteration 350: error is 2.840701 (50 iterations in 1.28 seconds)</span></span>
-<span><span class="co">## Iteration 400: error is 2.653973 (50 iterations in 1.55 seconds)</span></span>
-<span><span class="co">## Iteration 450: error is 2.531473 (50 iterations in 1.50 seconds)</span></span>
-<span><span class="co">## Iteration 500: error is 2.444583 (50 iterations in 1.32 seconds)</span></span>
-<span><span class="co">## Iteration 550: error is 2.378906 (50 iterations in 1.31 seconds)</span></span>
-<span><span class="co">## Iteration 600: error is 2.328042 (50 iterations in 1.45 seconds)</span></span>
-<span><span class="co">## Iteration 650: error is 2.287705 (50 iterations in 1.37 seconds)</span></span>
-<span><span class="co">## Iteration 700: error is 2.255558 (50 iterations in 1.26 seconds)</span></span>
-<span><span class="co">## Iteration 750: error is 2.229873 (50 iterations in 1.87 seconds)</span></span>
-<span><span class="co">## Iteration 800: error is 2.210205 (50 iterations in 1.46 seconds)</span></span>
-<span><span class="co">## Iteration 850: error is 2.197058 (50 iterations in 1.55 seconds)</span></span>
-<span><span class="co">## Iteration 900: error is 2.188463 (50 iterations in 1.53 seconds)</span></span>
-<span><span class="co">## Iteration 950: error is 2.181792 (50 iterations in 1.46 seconds)</span></span>
-<span><span class="co">## Iteration 1000: error is 2.176606 (50 iterations in 1.36 seconds)</span></span>
-<span><span class="co">## Fitting performed in 31.25 seconds.</span></span></code></pre>
+<span><span class="co">## Iteration 50: error is 96.832296 (50 iterations in 1.49 seconds)</span></span>
+<span><span class="co">## Iteration 100: error is 84.589965 (50 iterations in 2.13 seconds)</span></span>
+<span><span class="co">## Iteration 150: error is 81.308503 (50 iterations in 1.35 seconds)</span></span>
+<span><span class="co">## Iteration 200: error is 80.502378 (50 iterations in 1.37 seconds)</span></span>
+<span><span class="co">## Iteration 250: error is 80.156805 (50 iterations in 1.37 seconds)</span></span>
+<span><span class="co">## Iteration 300: error is 3.166519 (50 iterations in 1.27 seconds)</span></span>
+<span><span class="co">## Iteration 350: error is 2.840701 (50 iterations in 1.22 seconds)</span></span>
+<span><span class="co">## Iteration 400: error is 2.653973 (50 iterations in 1.21 seconds)</span></span>
+<span><span class="co">## Iteration 450: error is 2.531473 (50 iterations in 1.18 seconds)</span></span>
+<span><span class="co">## Iteration 500: error is 2.444583 (50 iterations in 1.18 seconds)</span></span>
+<span><span class="co">## Iteration 550: error is 2.378906 (50 iterations in 1.18 seconds)</span></span>
+<span><span class="co">## Iteration 600: error is 2.328042 (50 iterations in 1.15 seconds)</span></span>
+<span><span class="co">## Iteration 650: error is 2.287705 (50 iterations in 1.14 seconds)</span></span>
+<span><span class="co">## Iteration 700: error is 2.255558 (50 iterations in 1.15 seconds)</span></span>
+<span><span class="co">## Iteration 750: error is 2.229873 (50 iterations in 1.21 seconds)</span></span>
+<span><span class="co">## Iteration 800: error is 2.210205 (50 iterations in 1.19 seconds)</span></span>
+<span><span class="co">## Iteration 850: error is 2.197058 (50 iterations in 1.26 seconds)</span></span>
+<span><span class="co">## Iteration 900: error is 2.188463 (50 iterations in 1.21 seconds)</span></span>
+<span><span class="co">## Iteration 950: error is 2.181792 (50 iterations in 1.23 seconds)</span></span>
+<span><span class="co">## Iteration 1000: error is 2.176606 (50 iterations in 1.22 seconds)</span></span>
+<span><span class="co">## Fitting performed in 25.73 seconds.</span></span></code></pre>
 <div class="section level4">
 <h4 id="tsne-visualization">tSNE visualization<a class="anchor" aria-label="anchor" href="#tsne-visualization"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"tSNE"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
@@ -327,7 +298,7 @@ the UMAP, e.g. <code>"pca"</code></p>
 <p><em><code>data_slot</code></em> = Data slot to use for the
 calculation, e.g. <code>"orig"</code> or <code>"norm"</code></p>
 <p><em><code>k</code></em> = K value used for clustering</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPhenograph.html">runPhenograph</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                        input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
 <span>                        data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
@@ -336,22 +307,22 @@ calculation, e.g. <code>"orig"</code> or <code>"norm"</code></p>
 <pre><code><span><span class="co">## Run Rphenograph starts:</span></span>
 <span><span class="co">##   -Input data of 10000 rows and 29 columns</span></span>
 <span><span class="co">##   -k is set to 60</span></span></code></pre>
-<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 6.049 s</span></span>
+<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 5.037 s</span></span>
 <span><span class="co">##   Compute jaccard coefficient between nearest-neighbor sets...</span></span></code></pre>
 <pre><code><span><span class="co">## Presorting knn...</span></span></code></pre>
-<pre><code><span><span class="co">## presorting DONE ~ 0.421 s</span></span>
+<pre><code><span><span class="co">## presorting DONE ~ 0.362 s</span></span>
 <span><span class="co">##   Start jaccard</span></span>
-<span><span class="co">## DONE ~ 0.559 s</span></span>
-<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 0.239 s</span></span>
-<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 1.362 s</span></span></code></pre>
-<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 8.20899999999997s.</span></span></code></pre>
+<span><span class="co">## DONE ~ 0.528 s</span></span>
+<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 0.204 s</span></span>
+<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 0.843 s</span></span></code></pre>
+<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 6.61200000000001s.</span></span></code></pre>
 <pre><code><span><span class="co">##   Return a community class</span></span>
 <span><span class="co">##   -Modularity value: 0.8355073 </span></span>
 <span><span class="co">##   -Number of clusters: 13</span></span></code></pre>
 <div class="section level4">
 <h4 id="visualize-phenograph-clustering">Visualize Phenograph clustering<a class="anchor" aria-label="anchor" href="#visualize-phenograph-clustering"></a>
 </h4>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
@@ -372,7 +343,7 @@ e.g. <code>"expr"</code> or <code>"pca"</code>.</p>
 <p><em><code>data_slot</code></em> = Data slot to use for the
 calculation, e.g. <code>"orig"</code> or <code>"norm"</code></p>
 <p><em><code>nClusters</code></em> = Number of final clusters</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFlowSOM.html">runFlowSOM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                     input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
 <span>                     data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
@@ -384,7 +355,7 @@ calculation, e.g. <code>"orig"</code> or <code>"norm"</code></p>
 <div class="section level4">
 <h4 id="visualize-flowsom-clustering">Visualize FlowSOM clustering<a class="anchor" aria-label="anchor" href="#visualize-flowsom-clustering"></a>
 </h4>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
@@ -417,7 +388,7 @@ be used (e.g. clusters, metaclusters or predicted labels)</p>
 <p><em><code>group_var</code></em> = String indicating variable name in
 cell_anno that defines grouping variable to be used (x-axis), e.g. group
 or sample ID</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_confusion_HM.html">plot_confusion_HM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
 <span>                  cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
 <span>                  cluster_var <span class="op">=</span> <span class="st">"Phenograph"</span>,</span>
@@ -442,7 +413,7 @@ cell_anno that defines grouping variable to be used (x-axis), e.g. group
 or sample ID</p>
 <p><em><code>title</code></em> = Title of the plot, default is
 “Counts”</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_frequency_barplot.html">plot_frequency_barplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
 <span>                    cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>,</span>
 <span>                    cluster_var <span class="op">=</span> <span class="st">"Phenograph"</span>,</span>
@@ -464,7 +435,7 @@ clustering slot to use to find variable specified in
 <p><em><code>cluster_var</code></em> = String specifying variable name
 in <code>cluster_slot</code> that identifies cell population labels to
 be used (e.g. clusters, metaclusters or predicted labels)</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_marker_HM.html">plot_marker_HM</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
 <span>               expr_slot <span class="op">=</span> <span class="st">"orig"</span>,</span>
 <span>               marker_to_exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-A"</span>,<span class="st">"SSC-A"</span><span class="op">)</span>,</span>
@@ -493,7 +464,7 @@ cell_anno that should be used to group samples in
 levels in cluster_var are ordered in increasing order and “Cluster_” is
 pasted before number, if <code>FALSE</code> alphabetical ordering is
 applied.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_frequency_boxplot.html">plot_frequency_boxplot</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
 <span>                                cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
 <span>                                cluster_var <span class="op">=</span> <span class="st">"Phenograph"</span>,</span>
@@ -535,7 +506,7 @@ clusters and metaclusters:
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">info</span></span></code></pre></div>
@@ -562,7 +533,7 @@ clusters and metaclusters:
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] cyCONDOR_0.1.6</span></span>
+<span><span class="co">## [1] cyCONDOR_0.2.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] IRanges_2.34.1              Rmisc_1.5.1                </span></span>

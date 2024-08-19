@@ -455,7 +455,7 @@ prep_fjw <- function(data_gs,
      stop(paste0(transformation, " is not a valid transformation method"))
     }
 
-    trans_data <- transform_data(keep = keep, transformation = transformation, original_data = raw_data)
+    trans_data <- transform_data(keep = keep, transformation = transformation, original_data = raw_data, verbose = TRUE)
 
     ## Clean the dataframe
     df <- cbind(trans_data, data[, !colnames(data) %in% fs[[1]]@parameters$desc])

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,13 +73,27 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_data</span><span class="op">(</span><span class="va">FCSpath</span>, <span class="va">max_cells</span>, <span class="va">useCSV</span>, <span class="va">separator</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_data</span><span class="op">(</span></span>
+<span>  <span class="va">data_path</span>,</span>
+<span>  <span class="va">max_cells</span>,</span>
+<span>  <span class="va">useCSV</span>,</span>
+<span>  <span class="va">separator</span>,</span>
+<span>  <span class="va">simple_names</span>,</span>
+<span>  <span class="va">truncate_max_range</span>,</span>
+<span>  <span class="va">emptyValue</span>,</span>
+<span>  <span class="va">ignore.text.offset</span>,</span>
+<span>  <span class="va">verbose</span>,</span>
+<span>  <span class="va">cross_path_with_anno</span>,</span>
+<span>  <span class="va">anno_table</span>,</span>
+<span>  <span class="va">separator_anno</span>,</span>
+<span>  <span class="va">filename_col</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>FCSpath</dt>
-<dd><p>Path to the .fcs files.</p></dd>
+    <dl><dt>data_path</dt>
+<dd><p>Path to the .fcs or .csv files.</p></dd>
 
 
 <dt>max_cells</dt>
@@ -92,6 +106,42 @@
 
 <dt>separator</dt>
 <dd><p>Separator used the flow csv files (if loading from csv).</p></dd>
+
+
+<dt>simple_names</dt>
+<dd><p>If TRUE only the channel description is used to name the column, if FALSE both channel name and description are pasted together.</p></dd>
+
+
+<dt>truncate_max_range</dt>
+<dd><p>From FlowCore: logical type. Default is FALSE. can be optionally turned off to avoid truncating the extreme positive value to the instrument measurement range .i.e.'$PnR'.</p></dd>
+
+
+<dt>emptyValue</dt>
+<dd><p>From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.</p></dd>
+
+
+<dt>ignore.text.offset</dt>
+<dd><p>From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Default FALSE, if TRUE the at each file loaded something is printed in the screen.</p></dd>
+
+
+<dt>cross_path_with_anno</dt>
+<dd><p>Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.</p></dd>
+
+
+<dt>anno_table</dt>
+<dd><p>Passed from 'prep_fcd'</p></dd>
+
+
+<dt>separator_anno</dt>
+<dd><p>Passed from 'prep_fcd'</p></dd>
+
+
+<dt>filename_col</dt>
+<dd><p>Passed from 'prep_fcs'</p></dd>
 
 </dl></div>
     <div class="section level2">

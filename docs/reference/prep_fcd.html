@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,14 @@
 <span>  <span class="va">filename_col</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">91</span>,</span>
 <span>  separator_anno <span class="op">=</span> <span class="st">","</span>,</span>
-<span>  separator_fc_csv <span class="op">=</span> <span class="st">","</span></span>
+<span>  separator_fc_csv <span class="op">=</span> <span class="st">","</span>,</span>
+<span>  simple_names <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  truncate_max_range <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  emptyValue <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ignore.text.offset <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cross_path_with_anno <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cofactor <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -102,7 +109,7 @@
 
 
 <dt>transformation</dt>
-<dd><p>Transformation to perform. Select one of the following: <code>"auto_log"</code> (autologicle, recommended for flow cytometry data), <code>"arcsinh"</code> (arcsinh transformation with cofactor 5), <code>"clr"</code> (centered-log-ratio) or <code>"none"</code> (no transformation).</p></dd>
+<dd><p>Transformation to perform. Select one of the following: <code>"auto_logi"</code> (autologicle, recommended for flow cytometry data), <code>"arcsinh"</code> (arcsinh transformation with cofactor 5), <code>"clr"</code> (centered-log-ratio) or <code>"none"</code> (no transformation).</p></dd>
 
 
 <dt>remove_param</dt>
@@ -127,6 +134,34 @@
 
 <dt>separator_fc_csv</dt>
 <dd><p>Separator used in the cytometry data .csv files, by default <code>separator_anno = ","</code>.</p></dd>
+
+
+<dt>simple_names</dt>
+<dd><p>If TRUE only the channel description is used to name the column, if FALSE both channel name and description are pasted together.</p></dd>
+
+
+<dt>truncate_max_range</dt>
+<dd><p>From FlowCore: logical type. Default is FALSE. can be optionally turned off to avoid truncating the extreme positive value to the instrument measurement range .i.e.'$PnR'.</p></dd>
+
+
+<dt>emptyValue</dt>
+<dd><p>From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.</p></dd>
+
+
+<dt>ignore.text.offset</dt>
+<dd><p>From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Default FALSE, if TRUE the at each file loaded something is printed in the screen.</p></dd>
+
+
+<dt>cross_path_with_anno</dt>
+<dd><p>Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.</p></dd>
+
+
+<dt>cofactor</dt>
+<dd><p>cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -95,6 +95,7 @@ reference:
   - filter_fcd
   - merge_condor
   - subset_fcd
+  - subset_fcd_byparam
   - checkInput
   - measured_markers
 

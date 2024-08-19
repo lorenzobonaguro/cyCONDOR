@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,37 +127,9 @@ technical batch effect.</p>
 <span>                   remove_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Time"</span>, <span class="st">"FSC-H"</span>, <span class="st">"SSC-H"</span><span class="op">)</span>,</span>
 <span>                   anno_table <span class="op">=</span> <span class="st">"../../../Figure 3 - Batch Correction/data/CureDem/all.csv"</span>,</span>
 <span>                   filename_col <span class="op">=</span> <span class="st">"filename"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "FSC-A w= 0 t= 236683.234375"</span></span>
-<span><span class="co">## [1] "SSC-A w= 0 t= 120710.2578125"</span></span>
-<span><span class="co">## [1] "CD45RA w= 0.619815584596749 t= 429350.9375"</span></span>
-<span><span class="co">## [1] "CD94 w= 1.4860323537846 t= 11631.6865234375"</span></span>
-<span><span class="co">## [1] "CD195 w= 1.66165589411889 t= 4130.611328125"</span></span>
-<span><span class="co">## [1] "CD8 w= 1.43133125083526 t= 13017.7783203125"</span></span>
-<span><span class="co">## [1] "CD38 w= 0.9078314785672 t= 238438.640625"</span></span>
-<span><span class="co">## [1] "CD127 w= 1.61043943780282 t= 8294.6943359375"</span></span>
-<span><span class="co">## [1] "CD56 w= 1.43459861851513 t= 35375.5234375"</span></span>
-<span><span class="co">## [1] "HLA-DR w= 1.14147297180623 t= 135416"</span></span>
-<span><span class="co">## [1] "CD32 w= 0.959076404951356 t= 136873.734375"</span></span>
-<span><span class="co">## [1] "CD16 w= 1.43439289304696 t= 41259.5390625"</span></span>
-<span><span class="co">## [1] "CD19 w= 1.18655091580258 t= 34469.0234375"</span></span>
-<span><span class="co">## [1] "IgD w= 1.34536191660514 t= 28455.314453125"</span></span>
-<span><span class="co">## [1] "CD4 w= 1.1425337801458 t= 60363.95703125"</span></span>
-<span><span class="co">## [1] "CD64 w= 1.48055028211318 t= 38030.31640625"</span></span>
-<span><span class="co">## [1] "CD14 w= 1.39116882945933 t= 46475.16015625"</span></span>
-<span><span class="co">## [1] "CD57 w= 0.496463352171743 t= 494907.96875"</span></span>
-<span><span class="co">## [1] "CD3 w= 1.2896107550081 t= 28773.83203125"</span></span>
-<span><span class="co">## [1] "PD-1 w= 1.9827542779936 t= 1738.4873046875"</span></span>
-<span><span class="co">## [1] "CD15 w= 1.05758504700725 t= 70389.734375"</span></span>
-<span><span class="co">## [1] "CD27 w= 1.17524180346192 t= 44399.75390625"</span></span>
-<span><span class="co">## [1] "CD20 w= 1.2754614644789 t= 36587.04296875"</span></span>
-<span><span class="co">## [1] "CD197 w= 1.76107715151015 t= 4197.44140625"</span></span>
-<span><span class="co">## [1] "CD11c w= 1.2102561120213 t= 12093.9306640625"</span></span>
-<span><span class="co">## [1] "CD13 w= 1.15588209117963 t= 33960.2578125"</span></span>
-<span><span class="co">## [1] "CD123 w= 1.05931173666699 t= 76943.0234375"</span></span>
-<span><span class="co">## [1] "CD25 w= 1.21053626207997 t= 68929.3125"</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># set the date as factor for visualization purposes</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># set the date as factor for visualization purposes</span></span>
 <span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">exp</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -165,7 +137,7 @@ technical batch effect.</p>
 </h3>
 <p>Next, we perform dimensionality reduction calculating the principal
 components (PCs) and the UMAP based on the PCs.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPCA.html">runPCA</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                 data_slot <span class="op">=</span> <span class="st">"orig"</span><span class="op">)</span></span>
 <span></span>
@@ -178,14 +150,14 @@ components (PCs) and the UMAP based on the PCs.</p>
 </h3>
 <p>We can now visualize the batch effect in this data set by plotting
 the UMAP coordinates and coloring the cells by the experiment date.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
 <span>             param <span class="op">=</span> <span class="st">"exp"</span>, </span>
 <span>             title <span class="op">=</span> <span class="st">"Original UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Batch_correction_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_orig"</span>, </span>
@@ -214,7 +186,7 @@ expression of hallmark markers.</p>
 principal components, we use the <code><a href="../reference/harmonize_PCA.html">harmonize_PCA()</a></code> and define
 the batch variable <code>batch_var</code>, in this example the
 experiment date ‘exp’.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonize_PCA.html">harmonize_PCA</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                        batch_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp"</span><span class="op">)</span>, </span>
 <span>                        data_slot <span class="op">=</span> <span class="st">"orig"</span><span class="op">)</span></span></code></pre></div>
@@ -229,7 +201,7 @@ experiment date ‘exp’.</p>
 <pre><code><span><span class="co">## Harmony 7/10</span></span></code></pre>
 <pre><code><span><span class="co">## Harmony converged after 7 iterations</span></span></code></pre>
 <p>The harmonized PCs are saved in <code>condor$pca$norm</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">pca</span><span class="op">$</span><span class="va">norm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                                                           PC1</span></span>
 <span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1  -1.1366675</span></span>
@@ -292,7 +264,7 @@ experiment date ‘exp’.</p>
 <p>We can now recalculate the UMAP based on the harmonized PCs. For this
 we select <code>input_type = "pca"</code> and
 <code>data_slot = "norm"</code>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                  input_type <span class="op">=</span> <span class="st">"pca"</span>, </span>
 <span>                  data_slot <span class="op">=</span> <span class="st">"norm"</span>,</span>
@@ -300,7 +272,7 @@ we select <code>input_type = "pca"</code> and
 <p>Unless a prefix has been set, the new UMAP coordinates calculated
 based on the harmonized PCs can be accessed via
 <code>condor$umap$pca_norm</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_norm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                                                       UMAP1</span></span>
 <span><span class="co">## 20230322_AB_20220406_DH_193223821_193363_E2_Live_cells_comp.fcs_1 -3.707570</span></span>
@@ -328,14 +300,14 @@ the experiment date anymore. To further inspect the data integration
 results, the expression of cell type lineage markers should be assessed.
 This is highly dependent on the markers measured in the flow cytometry
 data set and therefore not included in this vignette.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_norm"</span>, </span>
 <span>             param <span class="op">=</span> <span class="st">"exp"</span>, </span>
 <span>             title <span class="op">=</span> <span class="st">"Harmonized UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Batch_correction_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor</span>,  </span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
 <span>             reduction_slot <span class="op">=</span> <span class="st">"pca_norm"</span>, </span>
@@ -352,7 +324,7 @@ data set and therefore not included in this vignette.</p>
 Simpson’s Index (LISI) score</a>. The LISI score can be used to assess
 the degree of mixing among the cells from the different batches in the
 UMAP space.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#prepare pre batch correction data set</span></span>
 <span><span class="va">pre_batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pca_orig</span>, <span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">)</span></span>
 <span><span class="co">#calculate LISI score for batch variable 'exp'</span></span>
@@ -405,7 +377,7 @@ downstream analysis.</p>
 <p>To use the <code>harmony</code> algorithm for correcting the
 intensities, we use the <code><a href="../reference/harmonize_intensities.html">harmonize_intensities()</a></code> and define
 the batch variable <code>batch_var</code>, in this case ‘exp’.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonize_intensities.html">harmonize_intensities</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                                batch_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Transposing data matrix</span></span></code></pre>
@@ -448,7 +420,7 @@ the default parameters for <code>FlowSom_param</code>. The number of
 desired FlowSOM metaclusters is defined by <code>nClus</code> and should
 be adjusted according to your data set, see <a href="https://doi.org/10.1002/cyto.a.23904" class="external-link">Van Gassen et al., 2019</a>
 for more details.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/train_cytonorm.html">train_cytonorm</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
 <span>                         batch_var <span class="op">=</span> <span class="st">"exp"</span>,</span>
 <span>                         remove_param <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -462,41 +434,13 @@ for more details.</p>
 normalize all samples present in your <code>fcd</code>. The fcs files
 with the normalized expression values can be saved, if
 <code>keep_fcs</code> is set to <code>TRUE</code>.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_cytonorm.html">run_cytonorm</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
 <span>                       files <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                       batch_var <span class="op">=</span> <span class="st">"exp"</span>,</span>
 <span>                       keep_fcs <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## start normalization</span></span></code></pre>
 <pre><code><span><span class="co">## adding normalized expression data to fcd</span></span></code></pre>
-<pre><code><span><span class="co">## [1] "FSC-A w= 0 t= 236683.234375"</span></span>
-<span><span class="co">## [1] "SSC-A w= 0 t= 120710.2578125"</span></span>
-<span><span class="co">## [1] "CD45RA w= 1.28372894517545 t= 413451.40625"</span></span>
-<span><span class="co">## [1] "CD94 w= 0 t= 5495767.5"</span></span>
-<span><span class="co">## [1] "CD195 w= 1.3643781468727 t= 9353.5498046875"</span></span>
-<span><span class="co">## [1] "CD8 w= 0.376958119580248 t= 1458606"</span></span>
-<span><span class="co">## [1] "CD38 w= 0.909028390620816 t= 228419.9375"</span></span>
-<span><span class="co">## [1] "CD127 w= 1.65645785858407 t= 5435.8681640625"</span></span>
-<span><span class="co">## [1] "CD56 w= 1.38525405037206 t= 49117.98046875"</span></span>
-<span><span class="co">## [1] "HLA-DR w= 1.20349552373243 t= 111646.203125"</span></span>
-<span><span class="co">## [1] "CD32 w= 0.654932163457751 t= 124508.890625"</span></span>
-<span><span class="co">## [1] "CD16 w= 1.44678717203973 t= 31502.130859375"</span></span>
-<span><span class="co">## [1] "CD19 w= 1.15734623069537 t= 35528.9140625"</span></span>
-<span><span class="co">## [1] "IgD w= 1.34388830510485 t= 26800.48046875"</span></span>
-<span><span class="co">## [1] "CD4 w= 0 t= 907408128"</span></span>
-<span><span class="co">## [1] "CD64 w= 1.47434329294997 t= 38018.50390625"</span></span>
-<span><span class="co">## [1] "CD14 w= 1.36521822802214 t= 45824.7109375"</span></span>
-<span><span class="co">## [1] "CD57 w= 0.185968937486871 t= 2002867.25"</span></span>
-<span><span class="co">## [1] "CD3 w= 0.738811897973633 t= 305460.625"</span></span>
-<span><span class="co">## [1] "PD-1 w= 1.97095869122428 t= 1557.71496582031"</span></span>
-<span><span class="co">## [1] "CD15 w= 0.372455838085952 t= 1328023.875"</span></span>
-<span><span class="co">## [1] "CD27 w= 1.16235575549204 t= 43546.55078125"</span></span>
-<span><span class="co">## [1] "CD20 w= 1.25890573526447 t= 33785.08984375"</span></span>
-<span><span class="co">## [1] "CD197 w= 1.7672132052799 t= 3997.00146484375"</span></span>
-<span><span class="co">## [1] "CD11c w= 1.22877882636404 t= 11238.1728515625"</span></span>
-<span><span class="co">## [1] "CD13 w= 1.15327394382129 t= 32426.138671875"</span></span>
-<span><span class="co">## [1] "CD123 w= 0.948317227864253 t= 99314.6796875"</span></span>
-<span><span class="co">## [1] "CD25 w= 1.09330533882027 t= 116415.7578125"</span></span></code></pre>
 <pre><code><span><span class="co">## removing temporary fcs files</span></span></code></pre>
 </div>
 </div>
@@ -505,7 +449,7 @@ with the normalized expression values can be saved, if
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">info</span></span></code></pre></div>
@@ -532,7 +476,7 @@ with the normalized expression values can be saved, if
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] lisi_1.0       ggrastr_1.0.2  ggplot2_3.4.4  cyCONDOR_0.1.6</span></span>
+<span><span class="co">## [1] lisi_1.0       ggrastr_1.0.2  ggplot2_3.4.4  cyCONDOR_0.2.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] IRanges_2.34.1              Rmisc_1.5.1                </span></span>
