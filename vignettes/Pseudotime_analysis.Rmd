@@ -66,7 +66,7 @@ condor <- runPseudotime(fcd = condor,
                         reduction_slot = "pca_orig",
                         cluster_slot= "phenograph_filter_pca_orig_k_10",
                         cluster_var = "metaclusters",
-                        approx_points = 5)
+                        approx_points = NULL)
 ```
 
 The output of is saved in `condor$pseudotime$slingshot_umap_pca_orig`.
@@ -84,7 +84,7 @@ condor <- runPseudotime(fcd = condor,
                         reduction_slot = "pca_orig",
                         cluster_slot= "phenograph_filter_pca_orig_k_10",
                         cluster_var = "metaclusters",
-                        approx_points = 5,
+                        approx_points = NULL,
                         start.clus =  "CMPs",)
 ```
 
@@ -105,7 +105,7 @@ for (i in unique(condor$clustering$phenograph_filter_pca_orig_k_10$metaclusters)
                           reduction_slot = "pca_orig",
                           cluster_slot= "phenograph_filter_pca_orig_k_10",
                           cluster_var = "metaclusters",
-                          approx_points = 5,
+                          approx_points = NULL,
                           start.clus =  i)
   
 }
@@ -167,7 +167,7 @@ pheatmap(mat = expression,
          annotation_row = anno[, c("metaclusters", "Lineage2")], 
          annotation_colors = my_colour, 
          breaks = scaleColors(expression, maxvalue = 2)[["breaks"]], 
-         color = scaleColors(expression, maxvalue = 2)[["color"]], main = "Figure 4f - Heatmap Monocytes pseudotime")
+         color = scaleColors(expression, maxvalue = 2)[["color"]], main = "Heatmap Monocytes pseudotime")
 ```
 
 # Session Info

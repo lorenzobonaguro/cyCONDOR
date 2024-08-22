@@ -85,6 +85,8 @@ filter_fcd <- function(fcd, cell_ids) {
 
   }
 
+  class(new_fcd) <- "flow_cytometry_dataframe"
+
   return(new_fcd)
 
 }
@@ -257,6 +259,53 @@ subset_fcd <- function(fcd, size, seed = 91) {
   return(condor_filter)
 }
 
+#' subset_fcd_byparam
+#'
+#' @title subset_fcd_byparam
+#' @description Performs a random subset of the fcd
+#'
+#' @param fcd flow cytometry dataset.
+#' @param param Name of the parameter to be used to equaly subset the fcd. This should be a columns in the cell annotation table.
+#' @param size Numeric: size of the sub-sampling for each element in `param`.
+#' @param seed A seed is set for reproducibility.
+#'
+#' @return subset_fcd_byparam
+#'
+#' @export
+subset_fcd_byparam <- function(fcd,
+                               param,
+                               size,
+                               seed = 91) {
+
+  # Store the annotation and prepare a container
+
+  anno <- fcd$anno$cell_anno
+
+  selected_cells <- c()
+
+  # Define the cell IDs to keep
+
+  for (single_param in unique(fcd$anno$cell_anno[[param]])) {
+
+    set.seed(seed)
+
+    single_param_cells <- sample(x = rownames(anno[anno[[param]] == single_param,]),
+                                 size = size,
+                                 replace = F)
+
+    selected_cells <- c(selected_cells, single_param_cells)
+
+  }
+
+  # Filter the fcd
+
+  fcd_filter <- filter_fcd(fcd = fcd,
+                           cell_ids = selected_cells)
+
+  # return the filtered object
+  return(fcd_filter)
+
+}
 
 #' df_frequency
 #'

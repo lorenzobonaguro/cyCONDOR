@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,14 +93,14 @@
 <h2 id="how-to-use">How to use<a class="anchor" aria-label="anchor" href="#how-to-use"></a>
 </h2>
 <p><strong>You can find the detailed documentation of cyCONDOR <a href="https://lorenzobonaguro.github.io/cyCONDOR/">here</a></strong></p>
-<p>We recommend using <code>cyCONDOR</code> from our pre-build <code>Docker</code> container <a href="https://hub.docker.com/r/lorenzobonaguro/condor" class="external-link">lorenzobonaguro/condor</a>, the latest version of the image can be pulled with:</p>
-<pre><code>docker pull lorenzobonaguro/cycondor:v016</code></pre>
+<p>We recommend using <code>cyCONDOR</code> from our pre-build <code>Docker</code> container <a href="https://hub.docker.com/r/lorenzobonaguro/cycondor" class="external-link">lorenzobonaguro/cycondor</a>, the latest version of the image can be pulled with:</p>
+<pre><code>docker pull lorenzobonaguro/cycondor:v020</code></pre>
 <p>To run the image you can then follow the following script</p>
 <pre><code>docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:v016</code></pre>
+lorenzobonaguro/cycondor:v020</code></pre>
 <p>You can then access RStudio from your web browser at the address</p>
 <pre><code>http://localhost:[YOURPORT]/</code></pre>
 <p>If you are starting the Docker container from a remote server exchange the <code>localhost</code> with the IP address or domain name of the server as exemplified below:</p>
@@ -118,7 +118,7 @@ lorenzobonaguro/cycondor:v016</code></pre>
 <p>Next we install two dependencies which are only available on GitHub</p>
 <pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JinmiaoChenLab/Rphenograph"</span>, <span class="st">"stuchly/Rphenoannoy"</span>, <span class="st">"saeyslab/CytoNorm@362ac08"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 <p>Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.</p>
-<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_url.html" class="external-link">install_url</a></span><span class="op">(</span><span class="st">"https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v016/cyCONDOR_0.1.6.tar.gz"</span>,</span>
+<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_url.html" class="external-link">install_url</a></span><span class="op">(</span><span class="st">"https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v020/cyCONDOR_0.2.0.tar.gz"</span>,</span>
 <span>                      repos <span class="op">=</span> <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/repositories.html" class="external-link">repositories</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 <p>Alternatively those steps could be automated with the following code</p>
 <pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R"</span>, destfile <span class="op">=</span> <span class="st">"install_locally_script.R"</span><span class="op">)</span></span>
@@ -153,6 +153,7 @@ lorenzobonaguro/cycondor:v016</code></pre>
 <p>For any problem or question regarding the <code>cyCONDOR</code> package or this repository or you just want to be up to date on what is coming next follow me:</p>
 <p><img src="reference/figures/twitter.png" width="8%" style="float: left;"></p>
 <p><a href="https://twitter.com/LorenzoBonaguro" class="external-link">@LorenzoBonaguro</a></p>
+<p>If you want to directly chat with us join our <a href="https://join.slack.com/t/cycondor/shared_invite/zt-2keb5ztaa-0aNKxP3OCglOTUiXDrtkhg" class="external-link">Slack Workspace</a></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

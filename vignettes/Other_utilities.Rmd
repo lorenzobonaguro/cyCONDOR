@@ -148,6 +148,17 @@ condor_subset <- subset_fcd(fcd = condor,
                             seed = 91)
 ```
 
+## Subset a `condor` object euqually for a variable
+
+The `subset_fcd_byparam` function subsets the `condor` object to a specific number of randomly selected cells specified with the `size` parameter in each of the specified `param`. A seed can be set for reproducibility.
+
+```{r}
+condor_subset_sample <- subset_fcd_byparam(fcd = condor, 
+                                           param = "sample_ID", 
+                                           size = 500, 
+                                           seed = 91)
+```
+
 ## Filter a `condor` object to create a specific subset
 
 The `filter_fcd` function can be useful to created a specific subset of a `condor` object. It takes the row names of the cells to be filtered as `cell_ids` input.

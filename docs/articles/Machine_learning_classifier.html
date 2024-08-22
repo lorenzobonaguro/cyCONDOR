@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,13 +136,6 @@ classification of the samples (<code>aml</code> or
 <span>                   anno_table <span class="op">=</span> <span class="st">"../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv"</span>, </span>
 <span>                   filename_col <span class="op">=</span> <span class="st">"fcsName"</span>,</span>
 <span>                   seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "FS Lin w= 0 t= 1023"</span></span>
-<span><span class="co">## [1] "SS Log w= 0 t= 1420.18115234375"</span></span>
-<span><span class="co">## [1] "CD15-FITC w= 0 t= 3651.7412109375"</span></span>
-<span><span class="co">## [1] "CD13-PE w= 0 t= 3651.7412109375"</span></span>
-<span><span class="co">## [1] "CD45-ECD w= 0 t= 2665.515625"</span></span>
-<span><span class="co">## [1] "CD16-PC5 w= 0 t= 9139.8173828125"</span></span>
-<span><span class="co">## [1] "CD56-PC7 w= 0 t= 2167.39208984375"</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="build-the-classifier-model">Build the classifier model<a class="anchor" aria-label="anchor" href="#build-the-classifier-model"></a>
@@ -151,7 +144,7 @@ classification of the samples (<code>aml</code> or
 this step does not require any other pre-analysis on the dataset,
 nevertheless, if you are not familiar with the data you are using for
 training we recommend an exploratory data analysis first.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Re order variables - this is not strictly needed but the classification always consider the first variable as reference.</span></span>
 <span></span>
 <span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">Label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">Label</span>, </span>
@@ -181,7 +174,7 @@ details.</li>
 details.</li>
 <li>parallelCore: number of cores to be used.</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/train_classifier_model.html">train_classifier_model</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>, </span>
 <span>                                 input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
 <span>                                 data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
@@ -208,7 +201,7 @@ the <code>cytoDX</code> model itself in the <code>extras</code> slot
 <p>The cellular level result contain the probability of classification
 to <code>aml</code> for each cell in the dataset, this table also
 include the true label of each cell.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_model</span><span class="op">$</span><span class="va">train.Data.cell</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##         sample y1.Truth y.Pred.s0</span></span>
 <span><span class="co">## 1 sample11.fcs    2_aml 0.5836773</span></span>
@@ -224,7 +217,7 @@ include the true label of each cell.</p>
 <p>The sample level result contain the probability of classification to
 <code>aml</code> for each cell in the dataset, this table also include
 the true label of each cell.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">condor</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_model</span><span class="op">$</span><span class="va">train.Data.sample</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                    sample y1.Truth    y.Pred.s0</span></span>
 <span><span class="co">## sample11.fcs sample11.fcs    2_aml 1.000000e+00</span></span>
@@ -239,7 +232,7 @@ the true label of each cell.</p>
 </h4>
 <p>We can now visualize the prediction result both at cell and sample
 level.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">anno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_model</span><span class="op">$</span><span class="va">train.Data.cell</span>, y <span class="op">=</span> <span class="va">anno</span>, by.x <span class="op">=</span> <span class="st">"sample"</span>, by.y <span class="op">=</span> <span class="st">"fcsName"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sample</span>, y <span class="op">=</span> <span class="va">y.Pred.s0</span>, color <span class="op">=</span> <span class="va">Label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -252,7 +245,7 @@ level.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"sample level prediction - train data"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Machine_learning_classifier_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_model</span><span class="op">$</span><span class="va">train.Data.sample</span>, y <span class="op">=</span> <span class="va">anno</span>, by.x <span class="op">=</span> <span class="st">"sample"</span>, by.y <span class="op">=</span> <span class="st">"fcsName"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sample</span>, y <span class="op">=</span> <span class="va">y.Pred.s0</span>, color <span class="op">=</span> <span class="va">Label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#92278F"</span>, <span class="st">"#F15A29"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -269,7 +262,7 @@ level.</p>
 <p>We can use a <code>cytoDX</code> built-in function to visualize the
 decision tree used for the cell level classification. See
 <code>cytoDX</code> documentation for further details.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/CytoDx/man/treeGate.html" class="external-link">treeGate</a></span><span class="op">(</span>P <span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_model</span><span class="op">$</span><span class="va">train.Data.cell</span><span class="op">$</span><span class="va">y.Pred.s0</span>,</span>
 <span>                 x<span class="op">=</span> <span class="va">condor</span><span class="op">$</span><span class="va">expr</span><span class="op">$</span><span class="va">orig</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Machine_learning_classifier_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
@@ -285,7 +278,7 @@ decision tree used for the cell level classification. See
 <p>To now validate the performance of the trained <code>cytoDX</code>
 model we will test it on a test dataset with no overlap with the
 training data.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_fcd.html">prep_fcd</a></span><span class="op">(</span>data_path <span class="op">=</span> <span class="st">"../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/test/"</span>, </span>
 <span>                        max_cell <span class="op">=</span> <span class="fl">10000000</span>, </span>
 <span>                        useCSV <span class="op">=</span> <span class="cn">FALSE</span>, </span>
@@ -294,19 +287,12 @@ training data.</p>
 <span>                        anno_table <span class="op">=</span> <span class="st">"../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv"</span>, </span>
 <span>                        filename_col <span class="op">=</span> <span class="st">"fcsName"</span>,</span>
 <span>                        seed <span class="op">=</span> <span class="fl">91</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "FS Lin w= 0 t= 1023"</span></span>
-<span><span class="co">## [1] "SS Log w= 0 t= 7104.97412109375"</span></span>
-<span><span class="co">## [1] "CD15-FITC w= 0 t= 9733.7734375"</span></span>
-<span><span class="co">## [1] "CD13-PE w= 0 t= 8131.22998046875"</span></span>
-<span><span class="co">## [1] "CD45-ECD w= 0 t= 4141.78466796875"</span></span>
-<span><span class="co">## [1] "CD16-PC5 w= 0 t= 8659.6435546875"</span></span>
-<span><span class="co">## [1] "CD56-PC7 w= 0 t= 922.239562988281"</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="predict-classification">Predict classification<a class="anchor" aria-label="anchor" href="#predict-classification"></a>
 </h3>
 <p>We can now predict the label using the trained model</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Re order variables - this is not strictly needed but the classification always consider the first variable as reference.</span></span>
 <span></span>
 <span><span class="va">condor_test</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">Label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">condor_test</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">Label</span>, </span>
@@ -329,7 +315,7 @@ containing the sample names.</li>
 model, this is stored in the <code>condor</code> object used to train
 the model (<code>extras</code> slot).</li>
 </ul>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_classifier.html">predict_classifier</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor_test</span>, </span>
 <span>                                  input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
 <span>                                  data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
@@ -349,7 +335,7 @@ prediction on the test data. The results are stored together with the
 </h4>
 <p>The cellular level result contain the probability of classification
 to <code>aml</code> for each cell in the dataset.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">condor_test</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_prediction</span><span class="op">$</span><span class="va">xNew.Pred.cell</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##        sample y.Pred.s0</span></span>
 <span><span class="co">## 1 sample1.fcs 0.6212374</span></span>
@@ -364,7 +350,7 @@ to <code>aml</code> for each cell in the dataset.</p>
 </h4>
 <p>The sample level result contain the probability of classification to
 <code>aml</code> for each cell in the dataset.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">condor_test</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_prediction</span><span class="op">$</span><span class="va">xNew.Pred.sample</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                    sample    y.Pred.s0</span></span>
 <span><span class="co">## sample1.fcs   sample1.fcs 1.000000e+00</span></span>
@@ -379,7 +365,7 @@ to <code>aml</code> for each cell in the dataset.</p>
 </h4>
 <p>We can now visualize the prediction result both at cell and sample
 level.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">anno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"../../../Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">condor_test</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_prediction</span><span class="op">$</span><span class="va">xNew.Pred.cell</span>, y <span class="op">=</span> <span class="va">anno</span>, by.x <span class="op">=</span> <span class="st">"sample"</span>, by.y <span class="op">=</span> <span class="st">"fcsName"</span><span class="op">)</span></span>
@@ -396,9 +382,9 @@ level.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"cell level prediction - test data"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Machine_learning_classifier_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">condor_test</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">classifier_prediction</span><span class="op">$</span><span class="va">xNew.Pred.sample</span>, y <span class="op">=</span> <span class="va">anno</span>, by.x <span class="op">=</span> <span class="st">"sample"</span>, by.y <span class="op">=</span> <span class="st">"fcsName"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tmp</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">$</span><span class="va">sample</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample1.fcs"</span>, <span class="st">"sample2.fcs"</span>, <span class="st">"sample3.fcs"</span>,  <span class="st">"sample4.fcs"</span>,  <span class="st">"sample5.fcs"</span>,  <span class="st">"sample6.fcs"</span>,  <span class="st">"sample7.fcs"</span>,  <span class="st">"sample8.fcs"</span>,  <span class="st">"sample9.fcs"</span>, <span class="st">"sample10.fcs"</span><span class="op">)</span><span class="op">)</span></span>
@@ -412,7 +398,7 @@ level.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"sample level prediction - test data"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Machine_learning_classifier_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -420,7 +406,7 @@ level.</p>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">info</span></span></code></pre></div>
@@ -447,7 +433,7 @@ level.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] CytoDx_1.20.0  ggplot2_3.4.4  cyCONDOR_0.1.6</span></span>
+<span><span class="co">## [1] CytoDx_1.20.0  ggplot2_3.4.4  cyCONDOR_0.2.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] IRanges_2.34.1              Rmisc_1.5.1                </span></span>

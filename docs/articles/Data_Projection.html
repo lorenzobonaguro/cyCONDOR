@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,42 +117,14 @@ analyse millions of cell in few minutes.</p>
 <span>                         remove_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-H"</span>, <span class="st">"SSC-H"</span>, <span class="st">"FSC-W"</span>, <span class="st">"SSC-W"</span>, <span class="st">"Time"</span>, <span class="st">"live_dead"</span><span class="op">)</span>, </span>
 <span>                         anno_table <span class="op">=</span> <span class="st">"../../../Figure 6 - Data Projection/data_and_envs/metadata_train.csv"</span>, </span>
 <span>                         filename_col <span class="op">=</span> <span class="st">"filename"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "FSC-A w= 0 t= 189548.3125"</span></span>
-<span><span class="co">## [1] "SSC-A w= 0 t= 143017.28125"</span></span>
-<span><span class="co">## [1] "CD38 w= 1.00467092903809 t= 21098.90234375"</span></span>
-<span><span class="co">## [1] "CD8 w= 1.39087928377008 t= 13280.115234375"</span></span>
-<span><span class="co">## [1] "CD195 (CCR5) w= 1.47496968547118 t= 9324.6044921875"</span></span>
-<span><span class="co">## [1] "CD94 (KLRD1) w= 1.14024165714939 t= 52697.83984375"</span></span>
-<span><span class="co">## [1] "CD45RA w= 0.575559538942434 t= 188189.21875"</span></span>
-<span><span class="co">## [1] "HLA-DR w= 0.906457376716275 t= 52268.72265625"</span></span>
-<span><span class="co">## [1] "CD56 w= 1.08251168835056 t= 38711.34375"</span></span>
-<span><span class="co">## [1] "CD127 (IL7RA) w= 1.24594483351245 t= 22799.275390625"</span></span>
-<span><span class="co">## [1] "CD14 w= 1.20856525032223 t= 19707.974609375"</span></span>
-<span><span class="co">## [1] "CD64 w= 1.46255388991963 t= 30131.552734375"</span></span>
-<span><span class="co">## [1] "CD4 w= 1.11074922553137 t= 60661.015625"</span></span>
-<span><span class="co">## [1] "IgD w= 1.01328989695129 t= 86759.4296875"</span></span>
-<span><span class="co">## [1] "CD19 w= 1.1442639974397 t= 56064.35546875"</span></span>
-<span><span class="co">## [1] "CD16 w= 0.907155415750036 t= 183188.46875"</span></span>
-<span><span class="co">## [1] "CD32 w= 1.14295376712075 t= 24696.62109375"</span></span>
-<span><span class="co">## [1] "CD197 (CCR7) w= 1.06373634722298 t= 28634.5234375"</span></span>
-<span><span class="co">## [1] "CD20 w= 1.07250534509397 t= 59596.2265625"</span></span>
-<span><span class="co">## [1] "CD27 w= 1.31710110098513 t= 22037.9765625"</span></span>
-<span><span class="co">## [1] "CD15 w= 1.29414575567539 t= 52487.171875"</span></span>
-<span><span class="co">## [1] "PD-1 w= 1.91283109324646 t= 3218.92749023438"</span></span>
-<span><span class="co">## [1] "CD3 w= 1.2093241717371 t= 36624.5625"</span></span>
-<span><span class="co">## [1] "CD57 w= 0.36295690399458 t= 386989.96875"</span></span>
-<span><span class="co">## [1] "CD25 w= 1.05414262118344 t= 16987.53515625"</span></span>
-<span><span class="co">## [1] "CD123 (IL3RA) w= 1.12703027334259 t= 66552.2265625"</span></span>
-<span><span class="co">## [1] "CD13 w= 1.06214617659589 t= 105455.2265625"</span></span>
-<span><span class="co">## [1] "CD11c w= 0.961656743322294 t= 61599.1171875"</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_train</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span> <span class="op">&lt;-</span> <span class="st">"train"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="loading-the-data-for-projection">Loading the data for projection<a class="anchor" aria-label="anchor" href="#loading-the-data-for-projection"></a>
 </h2>
 <p>We also load the data to later project.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_fcd.html">prep_fcd</a></span><span class="op">(</span>data_path <span class="op">=</span> <span class="st">"../../../Figure 6 - Data Projection/data_and_envs/fcs_test/"</span>,</span>
 <span>                        max_cell <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>                        useCSV <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -160,35 +132,7 @@ analyse millions of cell in few minutes.</p>
 <span>                        remove_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-H"</span>, <span class="st">"SSC-H"</span>, <span class="st">"FSC-W"</span>, <span class="st">"SSC-W"</span>, <span class="st">"Time"</span>, <span class="st">"live_dead"</span><span class="op">)</span>,</span>
 <span>                        anno_table <span class="op">=</span> <span class="st">"../../../Figure 6 - Data Projection/data_and_envs/metadata_test.csv"</span>,</span>
 <span>                        filename_col <span class="op">=</span> <span class="st">"filename"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "FSC-A w= 0 t= 185496.546875"</span></span>
-<span><span class="co">## [1] "SSC-A w= 0 t= 139761.484375"</span></span>
-<span><span class="co">## [1] "CD38 w= 1.08547016720781 t= 13277.1572265625"</span></span>
-<span><span class="co">## [1] "CD8 w= 1.48560061602496 t= 7864.705078125"</span></span>
-<span><span class="co">## [1] "CD195 (CCR5) w= 1.50085615737931 t= 8613.083984375"</span></span>
-<span><span class="co">## [1] "CD94 (KLRD1) w= 1.21217921134578 t= 38320.88671875"</span></span>
-<span><span class="co">## [1] "CD45RA w= 0.620511970611501 t= 173972.0625"</span></span>
-<span><span class="co">## [1] "HLA-DR w= 1.09669597244259 t= 20941.41015625"</span></span>
-<span><span class="co">## [1] "CD56 w= 1.06739206852295 t= 34215.83984375"</span></span>
-<span><span class="co">## [1] "CD127 (IL7RA) w= 1.61853635269781 t= 3892.93969726562"</span></span>
-<span><span class="co">## [1] "CD14 w= 1.26677471297522 t= 14700.3818359375"</span></span>
-<span><span class="co">## [1] "CD64 w= 0.899618799383607 t= 339462.875"</span></span>
-<span><span class="co">## [1] "CD4 w= 1.07758754326147 t= 67894.796875"</span></span>
-<span><span class="co">## [1] "IgD w= 1.12861167597351 t= 48291.58203125"</span></span>
-<span><span class="co">## [1] "CD19 w= 1.21481288924708 t= 43206.7890625"</span></span>
-<span><span class="co">## [1] "CD16 w= 1.17429955588297 t= 64739.12109375"</span></span>
-<span><span class="co">## [1] "CD32 w= 1.46577688239247 t= 5517.2109375"</span></span>
-<span><span class="co">## [1] "CD197 (CCR7) w= 1.6248268378295 t= 2004.80041503906"</span></span>
-<span><span class="co">## [1] "CD20 w= 1.2230402255227 t= 29262.005859375"</span></span>
-<span><span class="co">## [1] "CD27 w= 1.24496607596317 t= 27285.08984375"</span></span>
-<span><span class="co">## [1] "CD15 w= 1.43146259961623 t= 26227.884765625"</span></span>
-<span><span class="co">## [1] "PD-1 w= 1.96432495215 t= 2769.64282226562"</span></span>
-<span><span class="co">## [1] "CD3 w= 1.31097005291493 t= 27068.626953125"</span></span>
-<span><span class="co">## [1] "CD57 w= 0.405977305077584 t= 316672.84375"</span></span>
-<span><span class="co">## [1] "CD25 w= 1.06638241667567 t= 16345.5"</span></span>
-<span><span class="co">## [1] "CD123 (IL3RA) w= 1.06963230873939 t= 65990.96875"</span></span>
-<span><span class="co">## [1] "CD13 w= 1.21846591936931 t= 57385.46484375"</span></span>
-<span><span class="co">## [1] "CD11c w= 1.04066753642893 t= 40379.015625"</span></span></code></pre>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span><span class="op">$</span><span class="va">anno</span><span class="op">$</span><span class="va">cell_anno</span><span class="op">$</span><span class="va">group</span> <span class="op">&lt;-</span> <span class="st">"test"</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -203,7 +147,7 @@ in the two dataset not providing consistent results.</p>
 <div class="section level3">
 <h3 id="run-umap-keeping-the-model">Run UMAP keeping the model<a class="anchor" aria-label="anchor" href="#run-umap-keeping-the-model"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor_train</span>, </span>
 <span>                        input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
 <span>                        data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
@@ -214,7 +158,7 @@ in the two dataset not providing consistent results.</p>
 <h3 id="add-data-to-the-embedding">Add data to the embedding<a class="anchor" aria-label="anchor" href="#add-data-to-the-embedding"></a>
 </h3>
 <p>We can now predict the UMAP coordinates of the test data.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/learnUMAP.html">learnUMAP</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor_test</span>,</span>
 <span>                        input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
 <span>                        data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
@@ -224,7 +168,7 @@ in the two dataset not providing consistent results.</p>
 <span>                        prefix <span class="op">=</span> <span class="st">"pred"</span><span class="op">)</span></span></code></pre></div>
 <p>The predicted UMAP coordinates can be accessed via
 <code>condor_test$umap$pred_expr_orig</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">pred_expr_orig</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##                UMAP1      UMAP2</span></span>
 <span><span class="co">## ID10.fcs_1  8.721360   0.634307</span></span>
@@ -242,7 +186,7 @@ we need to train a cell classifier. We start by clustering the training
 data. In this case both <code>FlowSOM</code> and
 <code>Phenogpraph</code> can be used as input for the cell label kNN
 classifier. In this vignette we use <code>Phenograph</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPhenograph.html">runPhenograph</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor_train</span>, </span>
 <span>                              input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
 <span>                              data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
@@ -250,21 +194,21 @@ classifier. In this vignette we use <code>Phenograph</code>.</p>
 <pre><code><span><span class="co">## Run Rphenograph starts:</span></span>
 <span><span class="co">##   -Input data of 45000 rows and 28 columns</span></span>
 <span><span class="co">##   -k is set to 150</span></span></code></pre>
-<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 57.221 s</span></span>
+<pre><code><span><span class="co">##   Finding nearest neighbors...DONE ~ 47.566 s</span></span>
 <span><span class="co">##   Compute jaccard coefficient between nearest-neighbor sets...</span></span></code></pre>
 <pre><code><span><span class="co">## Presorting knn...</span></span></code></pre>
-<pre><code><span><span class="co">## presorting DONE ~ 2.427 s</span></span>
+<pre><code><span><span class="co">## presorting DONE ~ 2.076 s</span></span>
 <span><span class="co">##   Start jaccard</span></span>
-<span><span class="co">## DONE ~ 42.605 s</span></span>
-<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 5.386 s</span></span>
-<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 30.041 s</span></span></code></pre>
-<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 135.253s.</span></span></code></pre>
+<span><span class="co">## DONE ~ 40.344 s</span></span>
+<span><span class="co">##   Build undirected graph from the weighted links...DONE ~ 3.814 s</span></span>
+<span><span class="co">##   Run louvain clustering on the graph ...DONE ~ 23.978 s</span></span></code></pre>
+<pre><code><span><span class="co">## Run Rphenograph DONE, totally takes 115.702s.</span></span></code></pre>
 <pre><code><span><span class="co">##   Return a community class</span></span>
 <span><span class="co">##   -Modularity value: 0.846826 </span></span>
 <span><span class="co">##   -Number of clusters: 17</span></span></code></pre>
 <p>We can visualize the <code>Phenograph</code> clustering in a
 UMAP.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_dim_red.html">plot_dim_red</a></span><span class="op">(</span>fcd<span class="op">=</span> <span class="va">condor_train</span>,  </span>
 <span>             expr_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>             reduction_method <span class="op">=</span> <span class="st">"umap"</span>, </span>
@@ -287,7 +231,7 @@ classifier.</p>
 example to train the classifier. In many cases you probably want to use
 the metacluster labels of an annotated flow cytometry data set which had
 been previously assigned using <code><a href="../reference/metaclustering.html">metaclustering()</a></code>.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/train_transfer_model.html">train_transfer_model</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor_train</span>, </span>
 <span>                                     data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
 <span>                                     input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
@@ -303,10 +247,10 @@ been previously assigned using <code><a href="../reference/metaclustering.html">
 <pre><code><span><span class="co">## The following object is masked from 'package:cyCONDOR':</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##     confusionMatrix</span></span></code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_train</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">lt_model</span><span class="op">$</span><span class="va">performance_plot</span></span></code></pre></div>
 <p><img src="Data_Projection_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#kNN importance</span></span>
 <span><span class="va">condor_train</span><span class="op">$</span><span class="va">extras</span><span class="op">$</span><span class="va">lt_model</span><span class="op">$</span><span class="va">features_plot</span></span></code></pre></div>
 <p><img src="Data_Projection_files/figure-html/unnamed-chunk-12-1.png" width="960"></p>
@@ -316,7 +260,7 @@ been previously assigned using <code><a href="../reference/metaclustering.html">
 </h3>
 <p>Based on the trained classifier, we predict now the cluster labels
 for the test data set.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_labels.html">predict_labels</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor_test</span>, </span>
 <span>                              data_slot <span class="op">=</span> <span class="st">"orig"</span>, </span>
 <span>                              input_type <span class="op">=</span> <span class="st">"expr"</span>, </span>
@@ -324,7 +268,7 @@ for the test data set.</p>
 <span>                              label <span class="op">=</span> <span class="st">"label_pred"</span><span class="op">)</span></span></code></pre></div>
 <p>The predicted labels are saved in
 <code>condor_test$clustering$label_pred</code>.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor_test</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">label_pred</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Description predicted_label</span></span>
 <span><span class="co">## 1   predicted               7</span></span>
@@ -344,7 +288,7 @@ the independent results of each dataset can be vidualized with
 <div class="section level3">
 <h3 id="prepare-the-dataframe">Prepare the dataframe<a class="anchor" aria-label="anchor" href="#prepare-the-dataframe"></a>
 </h3>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">condor_train</span><span class="op">$</span><span class="va">umap</span><span class="op">$</span><span class="va">expr_orig</span>, Phenograph <span class="op">=</span> <span class="va">condor_train</span><span class="op">$</span><span class="va">clustering</span><span class="op">$</span><span class="va">phenograph_expr_orig_k_150</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">train</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="st">"train"</span></span>
@@ -365,9 +309,9 @@ the independent results of each dataset can be vidualized with
 <div class="section level2">
 <h2 id="overlap-umap">Overlap UMAP<a class="anchor" aria-label="anchor" href="#overlap-umap"></a>
 </h2>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vis_data</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">vis_data</span><span class="op">$</span><span class="va">type</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">vis_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span>, color <span class="op">=</span> <span class="va">type</span>, alpha <span class="op">=</span> <span class="va">type</span>, size <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gray"</span>, <span class="st">"#92278F"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -377,7 +321,7 @@ the independent results of each dataset can be vidualized with
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span>, panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP projected"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Data_Projection_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">vis_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">UMAP1</span>, y <span class="op">=</span> <span class="va">UMAP2</span>, color <span class="op">=</span> <span class="va">Phenograph</span>, alpha <span class="op">=</span> <span class="va">type</span>, size <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_alpha_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -390,7 +334,7 @@ the independent results of each dataset can be vidualized with
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">info</span></span></code></pre></div>
@@ -417,7 +361,7 @@ the independent results of each dataset can be vidualized with
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] caret_6.0-94   lattice_0.22-5 ggplot2_3.4.4  cyCONDOR_0.1.6</span></span>
+<span><span class="co">## [1] caret_6.0-94   lattice_0.22-5 ggplot2_3.4.4  cyCONDOR_0.2.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] IRanges_2.34.1              Rmisc_1.5.1                </span></span>

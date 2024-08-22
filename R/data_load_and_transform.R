@@ -14,10 +14,19 @@ clr <- function(x) {
 #'
 #' @title read_data
 #' @description Load .fcs or .csv files into a dataframe and prepare the condor object.
-#' @param FCSpath Path to the .fcs files.
+#' @param data_path Path to the .fcs or .csv files.
 #' @param max_cells number of cells to subset.
 #' @param useCSV Logical, if input is .csv and not .fcs.
 #' @param separator Separator used the flow csv files (if loading from csv).
+#' @param simple_names If TRUE only the channel description is used to name the column, if FALSE both channel name and description are pasted together.
+#' @param truncate_max_range From FlowCore: logical type. Default is FALSE. can be optionally turned off to avoid truncating the extreme positive value to the instrument measurement range .i.e.'$PnR'.
+#' @param emptyValue From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.
+#' @param ignore.text.offset From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.
+#' @param verbose Default FALSE, if TRUE the at each file loaded something is printed in the screen.
+#' @param cross_path_with_anno Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.
+#' @param anno_table Passed from 'prep_fcd'
+#' @param separator_anno Passed from 'prep_fcd'
+#' @param filename_col Passed from 'prep_fcs'
 #' @import flowCore
 #' @import reshape2
 #' @import dplyr
@@ -25,70 +34,122 @@ clr <- function(x) {
 #' @return load flow cytometry dataset
 #'
 #' @export
-read_data <- function(FCSpath, max_cells, useCSV, separator){
+read_data <- function(data_path,
+                      max_cells,
+                      useCSV,
+                      separator,
+                      simple_names,
+                      truncate_max_range,
+                      emptyValue,
+                      ignore.text.offset,
+                      verbose,
+                      cross_path_with_anno,
+                      anno_table,
+                      separator_anno,
+                      filename_col){
 
   if(useCSV == FALSE){
 
     # Read FCS files
 
-    FcsFiles <- list.files(path = FCSpath, pattern = ".fcs")
-    flow_set = list()
-    for(FileNum in 1:length(FcsFiles)){
-      flow_set[[FileNum]] <- read.FCS(paste0(FCSpath,"/",FcsFiles[FileNum]),
-                                      transformation =F,
-                                      ignore.text.offset=T,
-                                      truncate_max_range=F,
-                                      emptyValue = F)}
+    data_files <- list.files(path = data_path, pattern = ".fcs")
 
-    # Arrange the dataset
-    num_files <- length(flow_set)
+    if (cross_path_with_anno == TRUE) {
+
+      anno_files <- read.delim(anno_table, sep = separator_anno)[[filename_col]]
+
+      data_files <- data_files[data_files %in% anno_files]
+
+    }
+
     merged_df <- NULL
+    for(FileNum in 1:length(data_files)){
 
-    for (single_file in 1:num_files){
-      single_file_red <- exprs(flow_set[[single_file]])
+      if (verbose == TRUE) {
+
+        print(paste0("Loading file ", FileNum, " out of ", length(data_files)))
+
+      }
+
+      flow_frame_single <- read.FCS(paste0(data_path,"/",data_files[FileNum]),
+                                    transformation =F,
+                                    ignore.text.offset=ignore.text.offset,
+                                    truncate_max_range=truncate_max_range,
+                                    emptyValue = emptyValue)
+
+      single_file_red <- exprs(flow_frame_single)
 
       ## Downsample if needed
-      if (nrow(single_file_red)<=max_cells)
+      if (nrow(single_file_red) <= max_cells) {
         single_file_red <- single_file_red
-      else
+      } else {
         single_file_red <- single_file_red[sample(nrow(single_file_red),max_cells,replace=F),]
+      }
 
       #Adjust colnames
-      colnames(single_file_red) <- flow_set[[single_file]]@parameters$desc
-      colnames(single_file_red)[which(is.na(colnames(single_file_red)) | colnames(single_file_red)== " ")] <- flow_set[[single_file]]@parameters$name[which(is.na(colnames(single_file_red)) | colnames(single_file_red)== " ")]
+      if (simple_names == TRUE) {
 
-      #Include column with file label for tracking
-      single_file_red <- cbind(single_file_red,rep(single_file,dim(single_file_red)[1]))
+        colnames(single_file_red) <- flow_frame_single@parameters@data$desc
+        colnames(single_file_red)[which(is.na(colnames(single_file_red)) | colnames(single_file_red)== " ")] <- flow_frame_single@parameters@data$name[which(is.na(colnames(single_file_red)) | colnames(single_file_red)== " ")]
+
+      } else {
+
+        colnames(single_file_red) <- ifelse(is.na(flow_frame_single@parameters@data$desc),
+                                            flow_frame_single@parameters@data$name,
+                                            paste0(flow_frame_single@parameters@data$name, "_", flow_frame_single@parameters@data$desc))
+
+      }
+
+
+      #Include column with file index for tracking and later merging annotation
+      single_file_red <- cbind(single_file_red,rep(FileNum,dim(single_file_red)[1]))
+      colnames(single_file_red)[dim(single_file_red)[2]] <- "InFile"
+
+      #Merge into a single data.frame
+      merged_df <- rbind(merged_df,single_file_red)
+
+    }
+  } else { # read csv
+
+    data_files <- list.files(path = data_path, pattern = ".csv")
+
+    if (cross_path_with_anno == TRUE) {
+
+      anno_files <- read.delim(anno_table, sep = separator_anno)[[filename_col]]
+
+      data_files <- data_files[data_files %in% anno_files]
+
+    }
+
+    merged_df <- NULL
+
+    for (FileNum in 1:length(data_files)){
+
+      if (verbose == TRUE) {
+
+        print(paste0("Loading file ", FileNum, " out of ", length(data_files)))
+
+      }
+
+      single_file_red <- read.delim(paste0(data_path,"/",data_files[FileNum]), check.names = F, sep = separator)
+
+      ## Downsample if needed
+      if (nrow(single_file_red) <= max_cells){
+        single_file_red <- single_file_red
+      } else {
+        single_file_red <- single_file_red[sample(nrow(single_file_red),max_cells,replace=F),]
+      }
+
+      #Include column with file index for tracking and later merging annotation
+      single_file_red <- cbind(single_file_red,rep(FileNum,dim(single_file_red)[1]))
       colnames(single_file_red)[dim(single_file_red)[2]] <- "InFile"
 
       #Merge
       merged_df <- rbind(merged_df,single_file_red)
-
-    }} else {
-
-      csvfilenames <- list.files(path = FCSpath, pattern="*.csv")
-      FcsFiles <- csvfilenames
-      csvdata <- lapply(paste0(FCSpath,"//",csvfilenames),function(x) read.delim(x, check.names = F, sep = separator))
-      num_files <- length(csvdata)
-      merged_df<-NULL
-      for (single_file in 1:num_files){
-        single_file_red <- csvdata[[single_file]]
-
-        ## Downsample if needed
-        if (nrow(single_file_red)<=max_cells)
-          single_file_red <- single_file_red
-        else
-          single_file_red <- single_file_red[sample(nrow(single_file_red),max_cells,replace=F),]
-
-        single_file_red <- cbind(single_file_red,rep(single_file,dim(single_file_red)[1]))
-        colnames(single_file_red)[dim(single_file_red)[2]] <- "InFile"
-
-        #Merge
-        merged_df <- rbind(merged_df,single_file_red)
-      }
     }
+  }
 
-  return(list(merged_df=merged_df, FcsFiles = FcsFiles))
+  return(list(merged_df=merged_df, data_files = data_files))
 }
 
 #' transform_data
@@ -98,10 +159,16 @@ read_data <- function(FCSpath, max_cells, useCSV, separator){
 #' @param keep Vector of the parameter to keep in the analysis.
 #' @param original_data Original data
 #' @param transformation transformation to perform.
+#' @param verbose Logical, if TRUE the transformation parameters are printed.
+#' @param cofactor cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.
 #' @return transformed flow cytometry dataset
 #'
 #' @export
-transform_data <- function(keep, transformation, original_data){
+transform_data <- function(keep,
+                           transformation,
+                           original_data,
+                           verbose,
+                           cofactor = 5){
 
   # Save temp df
   transf_data <- original_data
@@ -117,7 +184,7 @@ transform_data <- function(keep, transformation, original_data){
 
     if(transformation == "arcsinh" ){
       dataNum <- which(colnames(original_data)==paramName)
-      temp <- original_data[,dataNum,drop=F] / 5
+      temp <- original_data[,dataNum,drop=F] / cofactor
       temp <- asinh(temp)
       transf_data[,dataNum] <- temp
     }
@@ -140,7 +207,7 @@ transform_data <- function(keep, transformation, original_data){
           w <- (m - log10(t/abs(r)))/2
           if (is.nan(w) || w > 2) {
             warning(paste0("autoLgcl failed for channel: ",
-                           paramName, "; using default fluor logicle transformation!"))
+                           paramName, "; using default fluor logicle transformation, be carefull with this parameter!"))
             w <- 0.1
             t <- 500000
             m <- 4.5
@@ -151,7 +218,12 @@ transform_data <- function(keep, transformation, original_data){
       dataNum <- which(colnames(original_data)==paramName)
       temp <- apply(original_data[,dataNum,drop=F],2, templgcl)
       transf_data[,dataNum] <- temp
-      print(paste0(paramName, " w= ",w," t= ",t))
+      if (verbose == TRUE) {
+
+        print(paste0(paramName, " w= ",w," t= ",t))
+
+      }
+
     }
 
   }
@@ -166,13 +238,20 @@ transform_data <- function(keep, transformation, original_data){
 #' @param data_path Folder where the .fcs files or .csv files are stored.
 #' @param max_cell Number of cells to use for each file (set to a high number if you want to use all available events).
 #' @param useCSV Flag if the input are .csv files and not .fcs (experimental).
-#' @param transformation Transformation to perform. Select one of the following: \code{"auto_log"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).
+#' @param transformation Transformation to perform. Select one of the following: \code{"auto_logi"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).
 #' @param remove_param Parameters to be removed from the \code{fcd}, "inTime" should be kept.
 #' @param anno_table Path to the annotation table text file. The annotation table should contain one column with the file names of all .fcs or .csv files to read in and optionally additional columns with further sample information (e.g. "sample_id", "condition").
 #' @param filename_col Name of the column of the \code{anno_table} containing the file name matching with the .fcs/.csv files.
 #' @param seed A seed is set for reproducibility.
 #' @param separator_anno Separator used in the annotation file, by default \code{separator_anno = ","}.
 #' @param separator_fc_csv Separator used in the cytometry data .csv files, by default \code{separator_anno = ","}.
+#' @param simple_names If TRUE only the channel description is used to name the column, if FALSE both channel name and description are pasted together.
+#' @param truncate_max_range From FlowCore: logical type. Default is FALSE. can be optionally turned off to avoid truncating the extreme positive value to the instrument measurement range .i.e.'$PnR'.
+#' @param emptyValue From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.
+#' @param ignore.text.offset From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.
+#' @param verbose Default FALSE, if TRUE the at each file loaded something is printed in the screen.
+#' @param cross_path_with_anno Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.
+#' @param cofactor cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.
 #' @details The \code{prep_fcd} is a wrapper function to read in the files, subset to \code{max_cell}, transform the data and create a 'flow cytometry dataframe' (\code{fcd}).
 #' @return An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
 #' @import readr
@@ -191,13 +270,38 @@ prep_fcd <- function(data_path,
                      filename_col,
                      seed = 91,
                      separator_anno = ",",
-                     separator_fc_csv = ",") {
+                     separator_fc_csv = ",",
+                     simple_names = TRUE,
+                     truncate_max_range = FALSE,
+                     emptyValue = TRUE,
+                     ignore.text.offset = FALSE,
+                     verbose = FALSE,
+                     cross_path_with_anno = FALSE,
+                     cofactor = 5) {
 
   # Set seed for reproducibility
   set.seed(seed)
 
+  if (verbose) {
+
+    print("Start reading the data")
+
+  }
+
   ## Load the data
-  data <- read_data(FCSpath = data_path, max_cells = max_cell, useCSV = useCSV, separator = separator_fc_csv)
+  data <- read_data(data_path = data_path,
+                    max_cells = max_cell,
+                    useCSV = useCSV,
+                    separator = separator_fc_csv,
+                    simple_names = simple_names,
+                    truncate_max_range = truncate_max_range,
+                    emptyValue = emptyValue,
+                    ignore.text.offset = ignore.text.offset,
+                    verbose = verbose,
+                    cross_path_with_anno = cross_path_with_anno,
+                    anno_table = anno_table,
+                    separator_anno = separator_anno,
+                    filename_col = filename_col)
 
   raw_data <- as.matrix(data$merged_df) # Take the dataframe with the intensity values
 
@@ -218,15 +322,25 @@ prep_fcd <- function(data_path,
     }
   }else{stop("transformation parameter needs to be specified to run this function")}
 
+  if (verbose) {
+
+    print("Start transforming the data")
+
+  }
 
 
-  trans_data <- transform_data(keep = keep, transformation = transformation, original_data = raw_data)
+
+  trans_data <- transform_data(keep = keep,
+                               transformation = transformation,
+                               original_data = raw_data,
+                               verbose = verbose,
+                               cofactor = cofactor)
 
   ## Clean the dataframe
   df <- cbind(trans_data, expfcs_filename=data$merged_df[,"InFile"])
   df <- as.data.frame(df)
   df$expfcs_filename <- as.factor(df$expfcs_filename)
-  df$expfcs_filename <- factor(df$expfcs_filename, labels = data$FcsFiles)
+  df$expfcs_filename <- factor(df$expfcs_filename, labels = data$data_files)
 
   ## Now add the annotation (as csv file)
   anno <- read.delim(anno_table, sep = separator_anno)
@@ -244,15 +358,16 @@ prep_fcd <- function(data_path,
 
   #save import parameters
   fcd[["extras"]][["prep_param"]] <- list(data_path = data_path,
-                                              max_cell = max_cell,
-                                              transformation = transformation,
-                                              remove_param= remove_param,
-                                              anno_table = anno_table,
-                                              filename_col= filename_col,
-                                              seed= seed,
-                                              separator_anno = separator_anno,
-                                              separator_fc_csv = separator_fc_csv,
-                                              prep_function = "prep_fcd")
+                                          max_cell = max_cell,
+                                          transformation = transformation,
+                                          remove_param = remove_param,
+                                          anno_table = anno_table,
+                                          filename_col = filename_col,
+                                          seed = seed,
+                                          separator_anno = separator_anno,
+                                          separator_fc_csv = separator_fc_csv,
+                                          prep_function = "prep_fcd",
+                                          version = packageDescription("cyCONDOR")$Version)
 
   class(fcd) <- "flow_cytometry_dataframe"
 
@@ -340,7 +455,7 @@ prep_fjw <- function(data_gs,
      stop(paste0(transformation, " is not a valid transformation method"))
     }
 
-    trans_data <- transform_data(keep = keep, transformation = transformation, original_data = raw_data)
+    trans_data <- transform_data(keep = keep, transformation = transformation, original_data = raw_data, verbose = TRUE)
 
     ## Clean the dataframe
     df <- cbind(trans_data, data[, !colnames(data) %in% fs[[1]]@parameters$desc])
@@ -390,14 +505,15 @@ prep_fjw <- function(data_gs,
 
   #save import parameters
   fcd[["extras"]][["prep_param"]] <- list(max_cell = 1000000000, #set to a high number to read in all events
-                                              inverse.transform = inverse.transform,
-                                              transformation = transformation,
-                                              remove_param = remove_param,
-                                              merge_anno = merge_anno,
-                                              anno_table = anno_table,
-                                              filename_col= filename_col,
-                                              separator_anno = separator_anno,
-                                              prep_function = "prep_fjw")
+                                          inverse.transform = inverse.transform,
+                                          transformation = transformation,
+                                          remove_param = remove_param,
+                                          merge_anno = merge_anno,
+                                          anno_table = anno_table,
+                                          filename_col= filename_col,
+                                          separator_anno = separator_anno,
+                                          prep_function = "prep_fjw",
+                                          version = packageDescription("cyCONDOR")$Version)
 
 
   class(fcd) <- "flow_cytometry_dataframe"
