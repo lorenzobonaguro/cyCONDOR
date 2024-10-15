@@ -1,3 +1,9 @@
+![pages-build-deployment](https://github.com/lorenzobonaguro/cyCONDOR/actions/workflows/pages/pages-build-deployment/badge.svg)
+[![GitHub contributors](https://img.shields.io/github/contributors/lorenzobonaguro/cyCONDOR.svg)](https://github.com/lorenzobonaguro/cyCONDOR/graphs/contributors)
+[![GitHub release](https://img.shields.io/github/v/release/lorenzobonaguro/cyCONDOR)](https://github.com/lorenzobonaguro/cyCONDOR/releases/latest)
+[![GitHub license](https://img.shields.io/github/license/lorenzobonaguro/cyCONDOR?color=blue)](https://github.com/lorenzobonaguro/cyCONDOR/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/476240084.svg)](https://doi.org/10.5281/zenodo.13897560)
+
 # cyCONDOR (HDC analysis ecosystem)
 
 <img src="man/figures/condor_logo_new.png" alt="drawing" width="200" align="right"/>
@@ -112,3 +118,11 @@ follow me:
 [@LorenzoBonaguro](<https://twitter.com/LorenzoBonaguro>)
 
 If you want to directly chat with us join our [Slack Workspace](https://join.slack.com/t/cycondor/shared_invite/zt-2keb5ztaa-0aNKxP3OCglOTUiXDrtkhg)
+
+---
+<div align="center">
+
+[![GitHub stars](https://img.shields.io/github/stars/lorenzobonaguro/cyCONDOR)](https://github.com/lorenzobonaguro/cyCONDOR)
+[![GitHub forks](https://img.shields.io/github/forks/lorenzobonaguro/cyCONDOR)](https://github.com/lorenzobonaguro/cyCONDOR/fork)
+
+</div>
