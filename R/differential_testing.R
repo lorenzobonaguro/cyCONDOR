@@ -119,7 +119,7 @@ frequency_anova_test<-function(fcd,
     }else{
       tmp_filtered <- tmp[tmp$variable %in% cluster_keep,]
 
-      # choose post hoc test
+      #perform tukey hsd test
       if(post_hoc_test == "tukey"){
         ##perform tukey test
         results_pht <- tmp_filtered %>%    group_by(variable) %>%  tukey_hsd(value ~ group_var,detailed = F)
@@ -128,15 +128,29 @@ frequency_anova_test<-function(fcd,
       }else if(post_hoc_test == "emmeans"){
 
        ##perform emmeans test
-      results_pht <- tmp_filtered %>% dplyr::group_by(variable) %>% rstatix::emmeans_test(data =., value ~ group_var, detailed = F)
+        # Check if tmp_filtered has only one unique variable value
+        if(length(unique(tmp_filtered$variable)) == 1){
+          results_pht  <- tmp_filtered %>%
+            rstatix::emmeans_test(value ~ group_var, detailed = FALSE)
+          results_pht$variable <- unique(tmp_filtered$variable)
+        } else {
+          # Proceed with multiple variables
+          results_pht  <- bind_rows(
+            lapply(unique(tmp_filtered$variable), function(i) {
+              emmeans_tmp <- tmp_filtered %>%
+                filter(variable == i) %>%
+                rstatix::emmeans_test(value ~ group_var, detailed = FALSE)
+            })
+          )
+        }
+        ##p-value adjustment for comparisons of same variable (cluster), same adj.p as when provided during dunn_test.
+        results_pht <- results_pht %>% dplyr::group_by(variable) %>%
+          rstatix::adjust_pvalue(data = ., p.col = "p", method = post_hoc_p.adjust.method) %>%
+          rstatix::add_significance("p.adj")
 
-      ##p-value adjustment for comparisons of same variable (cluster), same adj.p as when provided during dunn_test.
-      results_pht <- results_pht %>% dplyr::group_by(variable) %>%
-        rstatix::adjust_pvalue(data = ., p.col = "p", method = post_hoc_p.adjust.method) %>%
-        rstatix::add_significance("p.adj")
+        results_pht$info<-paste("Emmeans test for Anova tests with p.adj <=",anova_sig_threshold,".", collapse = "")
+      }
       results_pht$p.adj_method <- post_hoc_p.adjust.method
-      results_pht$info<-paste("Emmeans test for Anova tests with p.adj <=",anova_sig_threshold,".", collapse = "")
-}
       names(results_pht)[names(results_pht) == "variable"] <- "cluster"
       results.list$post_hoc_test <- results_pht
     }
