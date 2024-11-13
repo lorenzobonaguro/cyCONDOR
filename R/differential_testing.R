@@ -42,8 +42,8 @@ frequency_anova_test<-function(fcd,
              sample_var = sample_var
   )
 
-  if(!(isTRUE(post_hoc_test) || isFALSE(post_hoc_test))){
-    stop('argument "post_hoc_test needs to be TRUE or FALSE.')
+  if (!(is.null(post_hoc_test) || post_hoc_test %in% c("emmeans", "tukey"))){
+    stop('argument "post_hoc_test needs to be a valid method or NULL.')
   }
   if(!is.character(anova_p.adjust.method)){
     stop('argument "anova_p.adjust.method" needs to be a character string.')
@@ -147,10 +147,10 @@ frequency_anova_test<-function(fcd,
         results_pht <- results_pht %>% dplyr::group_by(variable) %>%
           rstatix::adjust_pvalue(data = ., p.col = "p", method = post_hoc_p.adjust.method) %>%
           rstatix::add_significance("p.adj")
-
+        results_pht$p.adj_method <- post_hoc_p.adjust.method
         results_pht$info<-paste("Emmeans test for Anova tests with p.adj <=",anova_sig_threshold,".", collapse = "")
       }
-      results_pht$p.adj_method <- post_hoc_p.adjust.method
+
       names(results_pht)[names(results_pht) == "variable"] <- "cluster"
       results.list$post_hoc_test <- results_pht
     }
