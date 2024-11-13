@@ -8,11 +8,11 @@
 #' @param group_var string indicating variable in cell_anno that should be used to group samples in sample_var. group_var must have three or more levels.
 #' @param sample_var string indicating variable in cell_anno that defines sample IDs to be used.
 #' @param anova_p.adjust.method p-value adjustment method to use for multiple test correction of Anova tests, e.g "bonferroni"(default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
-#' @param post_hoc_test logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).
-#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
+#' @param post_hoc_test string specifying which post hoc test to perform. Select \code{"tukey"} (balanced data is required to perform a Tukey HSD test) or \code{"emmeans"}. By default no post-hoc test is performed.
+#' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing using \code{"emmeans"}, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
 #' @param anova_sig_threshold significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
-#' @details \code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package \code{rstatix}.
+#' @details \code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}}, \code{\link[rstatix]{tukey_hsd}} and \code{\link[rstatix]{emmeans_test}} implemented in the package \code{rstatix}.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
 #' @returns \code{frequency_anova_test()} returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
 #' @import rstatix
@@ -27,7 +27,7 @@ frequency_anova_test<-function(fcd,
                                group_var,
                                anova_p.adjust.method = "bonferroni",
                                numeric = F,
-                               post_hoc_test = T,
+                               post_hoc_test = NULL,
                                post_hoc_p.adjust.method = "bonferroni",
                                anova_sig_threshold = 0.05)
 {
@@ -106,8 +106,7 @@ frequency_anova_test<-function(fcd,
   results.list$anova_test<-results
 
 
-  if(post_hoc_test == T){
-    #### post hoc test (emmeans test)
+  if(!is.null(post_hoc_test)){
 
     ##get variables with significant Anova test
     if(!is.numeric(anova_sig_threshold)){
@@ -115,23 +114,31 @@ frequency_anova_test<-function(fcd,
     }
     cluster_keep <- unique(as.character(results[which(results$p.adj <= anova_sig_threshold),]$cluster))
     if(length(cluster_keep) == 0){
-      warning('None of the Kruskal-Wallis tests has an adjusted p-value below the provided anova_sig_threshold '
+      warning('None of the ANOVAs has an adjusted p-value below the provided anova_sig_threshold '
               ,anova_sig_threshold,'.')
     }else{
       tmp_filtered <- tmp[tmp$variable %in% cluster_keep,]
 
-      ##perform emmeans test
-      results_emmeans <- tmp_filtered %>% dplyr::group_by(variable) %>% rstatix::emmeans_test(data =., value ~ group_var, detailed = F)
+      # choose post hoc test
+      if(post_hoc_test == "tukey"){
+        ##perform tukey test
+        results_pht <- tmp_filtered %>%    group_by(variable) %>%  tukey_hsd(value ~ group_var,detailed = F)
+        results_pht$info<-paste("Tukey HSD test for Anova tests with p.adj <=", anova_sig_threshold,".", collapse = "")
+
+      }else if(post_hoc_test == "emmeans"){
+
+       ##perform emmeans test
+      results_pht <- tmp_filtered %>% dplyr::group_by(variable) %>% rstatix::emmeans_test(data =., value ~ group_var, detailed = F)
 
       ##p-value adjustment for comparisons of same variable (cluster), same adj.p as when provided during dunn_test.
-      results_emmeans <- results_emmeans %>% dplyr::group_by(variable) %>%
+      results_pht <- results_pht %>% dplyr::group_by(variable) %>%
         rstatix::adjust_pvalue(data = ., p.col = "p", method = post_hoc_p.adjust.method) %>%
         rstatix::add_significance("p.adj")
-      results_emmeans$p.adj_method <- post_hoc_p.adjust.method
-      results_emmeans$info<-paste("Emmeans test for Anova tests with p.adj <=",anova_sig_threshold,".", collapse = "")
-
-      names(results_emmeans)[names(results_emmeans) == "variable"] <- "cluster"
-      results.list$emmeans_test <- results_emmeans
+      results_pht$p.adj_method <- post_hoc_p.adjust.method
+      results_pht$info<-paste("Emmeans test for Anova tests with p.adj <=",anova_sig_threshold,".", collapse = "")
+}
+      names(results_pht)[names(results_pht) == "variable"] <- "cluster"
+      results.list$post_hoc_test <- results_pht
     }
   }
 
