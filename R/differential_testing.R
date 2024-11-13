@@ -77,7 +77,6 @@ frequency_anova_test<-function(fcd,
   } else if (numeric == FALSE) {
     tmp <- tmp[order(rownames(tmp)), order(colnames(tmp))]
   } else {
-    #tmp <- tmp[order(rownames(tmp)), order(colnames(tmp))]
     stop('argument "numeric" needs to be set to TRUE or FALSE.')
   }
 
@@ -130,9 +129,6 @@ frequency_anova_test<-function(fcd,
         rstatix::add_significance("p.adj")
       results_emmeans$p.adj_method <- post_hoc_p.adjust.method
       results_emmeans$info<-paste("Emmeans test for Anova tests with p.adj <=",anova_sig_threshold,".", collapse = "")
-      # ##p-value adjustment for all comparisons
-      # results_emmeans <- rstatix::adjust_pvalue(data = results_emmeans, p.col = "p", method = post_hoc_p.adjust.method) %>%
-      #   rstatix::add_significance("p.adj")
 
       names(results_emmeans)[names(results_emmeans) == "variable"] <- "cluster"
       results.list$emmeans_test <- results_emmeans
