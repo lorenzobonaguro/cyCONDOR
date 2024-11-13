@@ -12,7 +12,6 @@
 #' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
 #' @param anova_sig_threshold significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
-#' @param color_palette Color Palette (Charlotte check)
 #' @details \code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package \code{rstatix}.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
 #' @returns \code{frequency_anova_test()} returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
@@ -28,7 +27,6 @@ frequency_anova_test<-function(fcd,
                                group_var,
                                anova_p.adjust.method = "bonferroni",
                                numeric = F,
-                               color_palette = NULL,
                                post_hoc_test = T,
                                post_hoc_p.adjust.method = "bonferroni",
                                anova_sig_threshold = 0.05)
