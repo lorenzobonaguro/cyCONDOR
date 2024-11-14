@@ -575,7 +575,7 @@ frequency_t_test<-function(fcd,
       stop('paired_test is set to T. Please provide a variable for pairing via argument pair_var')
 
     }else{
-      data$pair_var <- fcd$anno$cell_anno[[pair_var]]
+      data$pair_var <- as.character(fcd$anno$cell_anno[[pair_var]])
 
       #### make sure that all data pairs are fine.
       pairing<-unique(data[,c("sample_var","pair_var","group_var")])
@@ -752,7 +752,7 @@ frequency_wilcox_test<-function(fcd,
       stop('paired_test is set to T. Please provide a variable for pairing via argument pair_var')
 
     }else{
-      data$pair_var <- fcd$anno$cell_anno[[pair_var]]
+      data$pair_var <- as.character(fcd$anno$cell_anno[[pair_var]])
 
       #### make sure that all data pairs are fine.
       pairing<-unique(data[,c("sample_var","pair_var","group_var")])
