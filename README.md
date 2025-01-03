@@ -105,7 +105,7 @@ cytometry dataset, subset it or annotate metaclusters. Also includes several vis
 
 ## How to cite cyCONDOR
 
-> [**Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR**](https://www.biorxiv.org/content/10.1101/2024.02.29.582727v1)
+> [**Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR, Nature Communications**](https://www.nature.com/articles/s41467-024-55179-w)
 
 ## Contact or follow us
 
