@@ -12,8 +12,7 @@ frequency_anova_test(
   group_var,
   anova_p.adjust.method = "bonferroni",
   numeric = F,
-  color_palette = NULL,
-  post_hoc_test = T,
+  post_hoc_test = NULL,
   post_hoc_p.adjust.method = "bonferroni",
   anova_sig_threshold = 0.05
 )
@@ -33,11 +32,9 @@ frequency_anova_test(
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
 
-\item{color_palette}{Color Palette (Charlotte check)}
+\item{post_hoc_test}{string specifying which post hoc test to perform. Select \code{"tukey"} (balanced data is required to perform a Tukey HSD test) or \code{"emmeans"}. By default no post-hoc test is performed.}
 
-\item{post_hoc_test}{logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).}
-
-\item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
+\item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing using \code{"emmeans"}, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{anova_sig_threshold}{significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)}
 }
@@ -50,6 +47,6 @@ frequency_anova_test(
 \details{
 frequency_anova_test
 
-\code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}} and  \code{\link[rstatix]{emmeans_test}} implemented in the package \code{rstatix}.
+\code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}}, \code{\link[rstatix]{tukey_hsd}} and \code{\link[rstatix]{emmeans_test}} implemented in the package \code{rstatix}.
 The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
 }

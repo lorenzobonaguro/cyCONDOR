@@ -521,3 +521,23 @@ checkInput<-function(fcd,
 
   #print("all good.")
 }
+
+
+#' create_metaclustering_script
+#'
+#' @title create_metaclustering_script
+#' @description This function created an empty script to assign metaclusters. Thanks to @Lucas for providing this helpful peace of code!
+#'
+#' @param num_clusters (Numeric) number of clusters to assign.
+#'
+#' @return create_metaclustering_script
+#'
+#' @export
+
+create_metaclustering_script <- function(num_clusters) {
+
+    vec <- sapply(1:num_clusters, function(i) paste0('"', i, '" = ""'))
+    vec_string <- paste(vec, collapse = ",\n                  ")
+    cat("metaclusters <- c(", vec_string, ")\n", sep = "")
+  
+  }

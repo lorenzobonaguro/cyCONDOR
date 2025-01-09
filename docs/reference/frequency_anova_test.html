@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,8 +81,7 @@
 <span>  <span class="va">group_var</span>,</span>
 <span>  anova_p.adjust.method <span class="op">=</span> <span class="st">"bonferroni"</span>,</span>
 <span>  numeric <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  color_palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  post_hoc_test <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  post_hoc_test <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  post_hoc_p.adjust.method <span class="op">=</span> <span class="st">"bonferroni"</span>,</span>
 <span>  anova_sig_threshold <span class="op">=</span> <span class="fl">0.05</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -118,16 +117,12 @@
 <dd><p>logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.</p></dd>
 
 
-<dt>color_palette</dt>
-<dd><p>Color Palette (Charlotte check)</p></dd>
-
-
 <dt>post_hoc_test</dt>
-<dd><p>logical, whether to perform post-hoc testing (TRUE, default) or not (FALSE).</p></dd>
+<dd><p>string specifying which post hoc test to perform. Select <code>"tukey"</code> (balanced data is required to perform a Tukey HSD test) or <code>"emmeans"</code>. By default no post-hoc test is performed.</p></dd>
 
 
 <dt>post_hoc_p.adjust.method</dt>
-<dd><p>p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the <code><a href="https://rpkgs.datanovia.com/rstatix/reference/adjust_pvalue.html" class="external-link">adjust_pvalue</a></code> function from the package <code>rstatix</code>.</p></dd>
+<dd><p>p-value adjustment method to use for post-hoc testing using <code>"emmeans"</code>, e.g "bonferroni" (default). All available options can be checked in the documentation of the <code><a href="https://rpkgs.datanovia.com/rstatix/reference/adjust_pvalue.html" class="external-link">adjust_pvalue</a></code> function from the package <code>rstatix</code>.</p></dd>
 
 
 <dt>anova_sig_threshold</dt>
@@ -143,7 +138,7 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>frequency_anova_test</p>
-<p><code>frequency_anova_test()</code> is a wrapper function around <code><a href="https://rpkgs.datanovia.com/rstatix/reference/anova_test.html" class="external-link">anova_test</a></code> and  <code><a href="https://rpkgs.datanovia.com/rstatix/reference/emmeans_test.html" class="external-link">emmeans_test</a></code> implemented in the package <code>rstatix</code>.
+<p><code>frequency_anova_test()</code> is a wrapper function around <code><a href="https://rpkgs.datanovia.com/rstatix/reference/anova_test.html" class="external-link">anova_test</a></code>, <code><a href="https://rpkgs.datanovia.com/rstatix/reference/tukey_hsd.html" class="external-link">tukey_hsd</a></code> and <code><a href="https://rpkgs.datanovia.com/rstatix/reference/emmeans_test.html" class="external-link">emmeans_test</a></code> implemented in the package <code>rstatix</code>.
 The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If <code>post_hoc = T</code>, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.</p>
     </div>
 

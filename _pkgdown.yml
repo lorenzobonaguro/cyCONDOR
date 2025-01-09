@@ -98,6 +98,7 @@ reference:
   - subset_fcd_byparam
   - checkInput
   - measured_markers
+  - create_metaclustering_script
 
 articles:
 - title: Detailed cyCONDOR workflows

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,14 +154,14 @@ advisable to consult the troubleshooting section of
 <code>cyCONDOR</code> analysis.</p>
 <p>First download the latest version of the <code>Docker</code>
 image</p>
-<pre><code>docker pull lorenzobonaguro/cycondor:v016</code></pre>
+<pre><code>docker pull lorenzobonaguro/cycondor:v021</code></pre>
 <p>Now start the container with the following command (everything in
 <code>[]</code> need to be edited by the user).</p>
 <pre><code>docker run -dp [YOUR PORT]:8787 ∖         # define the port to use
 -e USER=[USER] -e PASSWORD=[PW] ∖         # username and password, can be defined by the user
 --name cycondor_analysis ∖                # name of the container
 -v [LOCAL DIRECTORY PATH]:/data/ ∖        # directory to mount
-lorenzobonaguro/cycondor:015              #name of the docker image</code></pre>
+lorenzobonaguro/cycondor:021              #name of the docker image</code></pre>
 <p>You can now access your <code>RStudio</code> session with any browser
 at the address:</p>
 <pre><code>http://localhost:[YOUR PORT]</code></pre>
@@ -192,7 +192,7 @@ previously</p>
 -e USER=[USER] -e PASSWORD=[PW] ∖         # username and password
 --name cycondor_analysis ∖                # name of the container
 -v [LOCAL DIRECTORY PATH]:/data/ ∖        # directory to mount
-lorenzobonaguro/cycondor:015              #name of the docker image</code></pre>
+lorenzobonaguro/cycondor:021              #name of the docker image</code></pre>
 <p>The <code>RServer</code> session will now be available at the
 following address:</p>
 <pre><code>http://[ServerAddress]:[YOURPORT]/</code></pre>
@@ -232,7 +232,7 @@ system. If you want to remove also the docker image type
 <code>Singularity</code> as runtime is possible, first you need to
 download cyCONDOR <code>Docker</code> image and convert it to a
 <code>.sif</code> file:</p>
-<pre><code>singularity pull docker://lorenzobonaguro/cycondor:v016</code></pre>
+<pre><code>singularity pull docker://lorenzobonaguro/cycondor:v021</code></pre>
 <p>This command will save the <code>Docker</code> image in the current
 working directory.</p>
 <p>You can now generate a script to start the singularity container in

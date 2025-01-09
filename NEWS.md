@@ -1,3 +1,10 @@
+# cyCONDOR 0.2.1
+* Included help function to assign metaclusters (Thanks to Lucas Secchim Ribeiro)
+* Removal of redundant `color_palette` parameter and other redundant lines in the source code
+* Added `turkey hsd` as post-hoc test to `frequency_anova_test` (see issue #10)
+* Modified `emmeans test` in `frequency_anova_test` (see issue #10)
+* Improvement of error messages
+
 # cyCONDOR 0.2.0
 * Bump of major version for official release and publication
 * Changed order of events in the `prep_fcd` function. This makes the process faster (especially in smaller machines) and reduces the usage of memory.
