@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,8 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
+  <main id="main" class="col-md-9">
+<div class="section level1">
 <div class="page-header"><h1 id="cycondor-hdc-analysis-ecosystem">cyCONDOR (HDC analysis ecosystem)<a class="anchor" aria-label="anchor" href="#cycondor-hdc-analysis-ecosystem"></a>
 </h1></div>
 <p><img src="reference/figures/condor_logo_new.png" alt="drawing" width="200" align="right"></p>
@@ -94,13 +95,13 @@
 </h2>
 <p><strong>You can find the detailed documentation of cyCONDOR <a href="https://lorenzobonaguro.github.io/cyCONDOR/">here</a></strong></p>
 <p>We recommend using <code>cyCONDOR</code> from our pre-build <code>Docker</code> container <a href="https://hub.docker.com/r/lorenzobonaguro/cycondor" class="external-link">lorenzobonaguro/cycondor</a>, the latest version of the image can be pulled with:</p>
-<pre><code>docker pull lorenzobonaguro/cycondor:v020</code></pre>
+<pre><code>docker pull lorenzobonaguro/cycondor:v021</code></pre>
 <p>To run the image you can then follow the following script</p>
 <pre><code>docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:v020</code></pre>
+lorenzobonaguro/cycondor:v021</code></pre>
 <p>You can then access RStudio from your web browser at the address</p>
 <pre><code>http://localhost:[YOURPORT]/</code></pre>
 <p>If you are starting the Docker container from a remote server exchange the <code>localhost</code> with the IP address or domain name of the server as exemplified below:</p>
@@ -118,7 +119,7 @@ lorenzobonaguro/cycondor:v020</code></pre>
 <p>Next we install two dependencies which are only available on GitHub</p>
 <pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JinmiaoChenLab/Rphenograph"</span>, <span class="st">"stuchly/Rphenoannoy"</span>, <span class="st">"saeyslab/CytoNorm@362ac08"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 <p>Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.</p>
-<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_url.html" class="external-link">install_url</a></span><span class="op">(</span><span class="st">"https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v020/cyCONDOR_0.2.0.tar.gz"</span>,</span>
+<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_url.html" class="external-link">install_url</a></span><span class="op">(</span><span class="st">"https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v021/cyCONDOR_0.2.1.tar.gz"</span>,</span>
 <span>                      repos <span class="op">=</span> <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/repositories.html" class="external-link">repositories</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 <p>Alternatively those steps could be automated with the following code</p>
 <pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R"</span>, destfile <span class="op">=</span> <span class="st">"install_locally_script.R"</span><span class="op">)</span></span>
@@ -144,7 +145,7 @@ lorenzobonaguro/cycondor:v020</code></pre>
 <h2 id="how-to-cite-cycondor">How to cite cyCONDOR<a class="anchor" aria-label="anchor" href="#how-to-cite-cycondor"></a>
 </h2>
 <blockquote>
-<p><a href="https://www.biorxiv.org/content/10.1101/2024.02.29.582727v1" class="external-link"><strong>Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR</strong></a></p>
+<p><a href="https://www.nature.com/articles/s41467-024-55179-w" class="external-link"><strong>Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR, Nature Communications</strong></a></p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -154,8 +155,13 @@ lorenzobonaguro/cycondor:v020</code></pre>
 <p><img src="reference/figures/twitter.png" width="8%" style="float: left;"></p>
 <p><a href="https://twitter.com/LorenzoBonaguro" class="external-link">@LorenzoBonaguro</a></p>
 <p>If you want to directly chat with us join our <a href="https://join.slack.com/t/cycondor/shared_invite/zt-2keb5ztaa-0aNKxP3OCglOTUiXDrtkhg" class="external-link">Slack Workspace</a></p>
+<hr>
+<div align="center">
+<p><a href="https://github.com/lorenzobonaguro/cyCONDOR" class="external-link"><img src="https://img.shields.io/github/stars/lorenzobonaguro/cyCONDOR" alt="GitHub stars"></a> <a href="https://github.com/lorenzobonaguro/cyCONDOR/fork" class="external-link"><img src="https://img.shields.io/github/forks/lorenzobonaguro/cyCONDOR" alt="GitHub forks"></a></p>
 </div>
 </div>
+</div>
+
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
@@ -190,7 +196,15 @@ lorenzobonaguro/cycondor:v020</code></pre>
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/lorenzobonaguro/cyCONDOR/graphs/contributors" class="external-link"><img src="https://img.shields.io/github/contributors/lorenzobonaguro/cyCONDOR.svg" alt="GitHub contributors"></a></li>
+<li><a href="https://github.com/lorenzobonaguro/cyCONDOR/releases/latest" class="external-link"><img src="https://img.shields.io/github/v/release/lorenzobonaguro/cyCONDOR" alt="GitHub release"></a></li>
+<li><a href="https://github.com/lorenzobonaguro/cyCONDOR/blob/master/LICENSE" class="external-link"><img src="https://img.shields.io/github/license/lorenzobonaguro/cyCONDOR?color=blue" alt="GitHub license"></a></li>
+<li><a href="https://doi.org/10.5281/zenodo.13897560" class="external-link"><img src="https://zenodo.org/badge/476240084.svg" alt="DOI"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

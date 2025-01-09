@@ -17,7 +17,7 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/cycondor](https://hub.docker.com/r/lorenzobonaguro/cycondor), the latest version of the image can be pulled with:
 ```
-docker pull lorenzobonaguro/cycondor:v020
+docker pull lorenzobonaguro/cycondor:v021
 ```
 
 To run the image you can then follow the following script
@@ -27,7 +27,7 @@ docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:v020
+lorenzobonaguro/cycondor:v021
 ```
 You can then access RStudio from your web browser at the address
 
@@ -63,7 +63,7 @@ devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoa
 
 Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.
 ```
-devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v020/cyCONDOR_0.2.0.tar.gz",
+devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v021/cyCONDOR_0.2.1.tar.gz",
                       repos = BiocManager::repositories())
 ```
 
