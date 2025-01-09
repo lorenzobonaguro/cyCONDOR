@@ -340,8 +340,13 @@ prep_fcd <- function(data_path,
   df <- cbind(trans_data, expfcs_filename=data$merged_df[,"InFile"])
   df <- as.data.frame(df)
   df$expfcs_filename <- as.factor(df$expfcs_filename)
-  df$expfcs_filename <- factor(df$expfcs_filename, labels = data$data_files)
-
+  ##
+  ##the original version gives me the error: 
+  #Error in factor(df$expfcs_filename, labels = prepData$FcsFileNames) : 
+  #invalid 'labels'; length 77 should be 1 or 76
+  #df$expfcs_filename <- factor(df$expfcs_filename, labels = prepData$FcsFileNames)
+  ##therefore changed in to this: 
+  levels(df$expfcs_filename)<-prepData$FcsFileNames
   ## Now add the annotation (as csv file)
   anno <- read.delim(anno_table, sep = separator_anno)
 
