@@ -17,7 +17,7 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/cycondor](https://hub.docker.com/r/lorenzobonaguro/cycondor), the latest version of the image can be pulled with:
 ```
-docker pull lorenzobonaguro/cycondor:v021
+docker pull lorenzobonaguro/cycondor:v022
 ```
 
 To run the image you can then follow the following script
@@ -27,7 +27,7 @@ docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:v021
+lorenzobonaguro/cycondor:v022
 ```
 You can then access RStudio from your web browser at the address
 
@@ -45,31 +45,42 @@ A detailed guide on how to get started with Docker and how to run cyCONDOR as `S
 
 ## How to install locally
 
-The tools was tested with `R v4.3.X`, older version should be compatible but were not tested
+The tools was tested with `R v4.3` or newer, older version should be compatible but were not tested
 
 To install `cyCONDOR` you can follow few steps describe here below. 
 
 **IMPORTANT:** For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)
 
+**NOTE TO MAC SILICON USERS:** You might run into an issue when installing `Rphenoannoy`, please see the specific [issue](https://github.com/stuchly/Rphenoannoy/issues/2)
+
 First install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
 ```
-BiocManager::install(update = T, ask = F, version = "3.17")
+BiocManager::install(update = T, ask = F, version = "3.20")
 ``` 
 
-Next we install two dependencies which are only available on GitHub
+Now you need to install devtools if this is not already available in your system
+
 ```
-devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy", "saeyslab/CytoNorm@362ac08"))
+BiocManager::install("devtools",version = "3.20")
+```
+
+Next we install two dependencies which are only available on GitHub
+
+```
+devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy", "saeyslab/CytoNorm@362ac08"),
+                                  repos = BiocManager::repositories())
 ```
 
 Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.
 ```
-devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v021/cyCONDOR_0.2.1.tar.gz",
+devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v022/cyCONDOR_0.2.2.tar.gz",
                       repos = BiocManager::repositories())
 ```
 
 Alternatively those steps could be automated with the following code
 ```
-download.file(url = "https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R", destfile = "install_locally_script.R")
+download.file(url = "https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R", 
+              destfile = "install_locally_script.R")
               
 source(install_locally_script.R)
 ``` 
@@ -106,6 +117,8 @@ cytometry dataset, subset it or annotate metaclusters. Also includes several vis
 ## How to cite cyCONDOR
 
 > [**Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR, Nature Communications**](https://www.nature.com/articles/s41467-024-55179-w)
+
+[![DOI](https://doi.org/10.1038/s41467-024-55179-w)](https://doi.org/10.1038/s41467-024-55179-w)
 
 ## Contact or follow us
 

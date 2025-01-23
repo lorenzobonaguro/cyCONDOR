@@ -48,7 +48,7 @@ You can now start a `Docker` container for `cyCONDOR` analysis.
 First download the latest version of the `Docker` image
 
 ```
-docker pull lorenzobonaguro/cycondor:v021
+docker pull lorenzobonaguro/cycondor:v022
 ```
 
 Now start the container with the following command (everything in `[]` need to be edited by the user).
@@ -58,7 +58,7 @@ docker run -dp [YOUR PORT]:8787 ∖         # define the port to use
 -e USER=[USER] -e PASSWORD=[PW] ∖         # username and password, can be defined by the user
 --name cycondor_analysis ∖                # name of the container
 -v [LOCAL DIRECTORY PATH]:/data/ ∖        # directory to mount
-lorenzobonaguro/cycondor:021              #name of the docker image
+lorenzobonaguro/cycondor:022              #name of the docker image
 ```
 
 You can now access your `RStudio` session with any browser at the address:
@@ -97,7 +97,7 @@ docker run -dp [YOUR PORT]:8787 ∖         # define the port to use
 -e USER=[USER] -e PASSWORD=[PW] ∖         # username and password
 --name cycondor_analysis ∖                # name of the container
 -v [LOCAL DIRECTORY PATH]:/data/ ∖        # directory to mount
-lorenzobonaguro/cycondor:021              #name of the docker image
+lorenzobonaguro/cycondor:022              #name of the docker image
 ```
 
 The `RServer` session will now be available at the following address:
@@ -147,7 +147,7 @@ type `docker image rm [IMAGE NAME]`.
 Running cyCONDOR `Docker` container with `Singularity` as runtime is possible, first you need to download cyCONDOR `Docker` image and convert it to a `.sif` file:
 
 ```
-singularity pull docker://lorenzobonaguro/cycondor:v021
+singularity pull docker://lorenzobonaguro/cycondor:v022
 ```
 
 This command will save the `Docker` image in the current working directory.

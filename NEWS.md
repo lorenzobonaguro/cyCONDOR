@@ -1,3 +1,6 @@
+# cyCONDOR 0.2.2
+* Bug fix with data projection where specific parameters were removed in UMAP calculation
+
 # cyCONDOR 0.2.1
 * Included help function to assign metaclusters (Thanks to Lucas Secchim Ribeiro)
 * Removal of redundant `color_palette` parameter and other redundant lines in the source code
