@@ -1,5 +1,7 @@
 # cyCONDOR 0.2.2
 * Bug fix with data projection where specific parameters were removed in UMAP calculation
+* Updated official Docker image to the latest Biovonductor version (Bioconductor 3.20, R 4.4.2)
+* Completed documentation of the `Astir` workflow.
 
 # cyCONDOR 0.2.1
 * Included help function to assign metaclusters (Thanks to Lucas Secchim Ribeiro)

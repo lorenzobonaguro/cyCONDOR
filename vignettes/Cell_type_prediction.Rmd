@@ -14,5 +14,64 @@ editor_options:
 library(cyCONDOR)
 ```
 
-# WORK IN PROGRESS
-We are currently developing the implementation of `Astir` in the `cyCONDOR` ecosystem to allow the automated cell classification.
+## Conda load
+```{r}
+conda_list()
+```
+## Activate Conda
+```{r}
+use_condaenv(condaenv = "astir")
+```
+
+## Load example condor object
+```{r}
+condor <- readRDS("../.test_files/Astir/condor_example_astir.rds")
+```
+
+## Now I should be able to run the Python script
+
+```{r}
+condor <- runAstir_celltype(fcd = condor, 
+                            data_slot = "orig",
+                            analysis_path = "../.test_files/Astir/",
+                            manifest_name = "marker.yml", 
+                            max_epochs = 1000, 
+                            learning_rate = 0.002, 
+                            initial_epochs = 3)
+```
+
+```{r}
+# plot_dim_red(fcd = condor,
+#                  expr_slot = NULL,
+#                  reduction_method = "umap",
+#                  reduction_slot = "pca_orig",
+#                  cluster_slot = "phenograph_pca_orig_k_60",
+#                  param = "metaclusters",
+#                  title = "UMAP colored by metaclusters")
+```
+
+```{r}
+condor <- runAstir_cellstates(fcd = condor, 
+                              data_slot = "orig",
+                              analysis_path = "../.test_files/Astir/",
+                              manifest_name = "marker.yml", 
+                              max_epochs = 1000, 
+                              learning_rate = 0.002, 
+                              initial_epochs = 3)
+```
+
+```{r}
+# plot_marker(data = cbind(condor$umap$pca_orig, condor$astir$Astir_cell_state_orig), 
+#             param = "Temra", 
+#             order = T, 
+#             title = "Cell state prediction", 
+#             dim_red = "UMAP", 
+#             facet_by_variable = FALSE)
+```
+
+# SessionInfo
+```{r}
+info <- sessionInfo()
+
+info
+```

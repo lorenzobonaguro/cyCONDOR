@@ -77,6 +77,18 @@ devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/down
                       repos = BiocManager::repositories())
 ```
 
+If you want to have early access to the new feature of `cyCONDOR` you can install the developmental version of `cyCONDOR`. 
+
+```
+devtools::install_github("lorenzobonaguro/cyCONDOR@dev", 
+                        build_vignettes = FALSE, 
+                        repos = BiocManager::repositories())
+```
+
+*NOTE:* Keep in mind the developmental version if `cyCONDOR` is not fully tested, if you find any bug feel free to report it!
+
+To see which changes are currently implemented in the `dev` branch see the [changelog](https://github.com/lorenzobonaguro/cyCONDOR/blob/dev/NEWS.md).
+
 Alternatively those steps could be automated with the following code
 ```
 download.file(url = "https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R", 
@@ -117,8 +129,6 @@ cytometry dataset, subset it or annotate metaclusters. Also includes several vis
 ## How to cite cyCONDOR
 
 > [**Kroeger, Mueller, Leidner et al. Unveiling the Power of High-Dimensional Cytometry Data with cyCONDOR, Nature Communications**](https://www.nature.com/articles/s41467-024-55179-w)
-
-[![DOI](https://doi.org/10.1038/s41467-024-55179-w)](https://doi.org/10.1038/s41467-024-55179-w)
 
 ## Contact or follow us
 
