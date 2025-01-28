@@ -12,23 +12,54 @@ editor_options:
 
 ```{r setup, warning=FALSE, message=FALSE}
 library(cyCONDOR)
+library(reticulate)
 ```
 
+In this vignette we showcase how to use the `cyCONDOR` ecosystem to predict cell type and cell state without manual annotation of the dataset. This workflow is based on the `Astir` python package, if you use this workflow please consider citing the Astir manuscript [Geuenich et al. Cell Systems, 2021](https://www.sciencedirect.com/science/article/pii/S2405471221003355).
+
+In `cyCONDOR` we use the `reticulate` package to run python code from R. If you use the `cyCONDOR` `Docker` image a conda environment is already configured to run `Astir`. If you have a local installation of `cyCONDOR` please visit `Astir` website to see a tutorial on how to get the tool installed in your system.
+
+# Prepare your python environment
+
 ## Conda load
+If you are using `cyCONDOR` `Docker` container you can visualize the list of available `conda` environment. 
+
 ```{r}
 conda_list()
 ```
 ## Activate Conda
+
+Now you simple need to activate `Astir` environment to be ready to run this workflow.
+
 ```{r}
 use_condaenv(condaenv = "astir")
 ```
 
 ## Load example condor object
+
+For this workflow we use an example dataset which was already analysed with `cyCONDOR`.
+
 ```{r}
 condor <- readRDS("../.test_files/Astir/condor_example_astir.rds")
 ```
 
-## Now I should be able to run the Python script
+# Run Astir prediction
+
+`Astir` allows to predict either cell type or cell state, for more details on the package see the official manuscript ([Geuenich et al. Cell Systems, 2021](https://www.sciencedirect.com/science/article/pii/S2405471221003355)).
+
+For the prediction `Astir` needs a `manifest` file where the characteristinc of each cell type or cell state are specified.
+
+This `manifest` file should be save as `.yml` file with this structure:
+
+```{bash}
+head ../.test_files/Astir/marker.yml -n 200
+```
+
+You can now run the two functions for the prediction of the cell type (`run_astir_celltype`) and cell state (`run_astir_cellstate`).
+
+## Run `Astrir` to predict cell type
+
+This function predict the cell type based on the marker selection specified in the manifest file. The output of this function is saved within the `condor` object under `condor$astir$Astir_cell_type_[data_slot]`. Additionally some QC data is saved in the `analysis_path` directory as `.csv`
 
 ```{r}
 condor <- runAstir_celltype(fcd = condor, 
@@ -40,15 +71,9 @@ condor <- runAstir_celltype(fcd = condor,
                             initial_epochs = 3)
 ```
 
-```{r}
-# plot_dim_red(fcd = condor,
-#                  expr_slot = NULL,
-#                  reduction_method = "umap",
-#                  reduction_slot = "pca_orig",
-#                  cluster_slot = "phenograph_pca_orig_k_60",
-#                  param = "metaclusters",
-#                  title = "UMAP colored by metaclusters")
-```
+## Run `Astrir` to predict cell state
+
+Similarly to the previous function the `runAstir_cellstates` function calculates a score for each cell state declared in the manifest file. The results are saved in the `condor` object in the slot `condor$astir$Astir_cell_state_[data_slot]`. Also in this case additional information are stored in the `analysis_path` directory in `.csv` format.
 
 ```{r}
 condor <- runAstir_cellstates(fcd = condor, 
@@ -60,16 +85,25 @@ condor <- runAstir_cellstates(fcd = condor,
                               initial_epochs = 3)
 ```
 
+# Explore `Astrir` output
+
+## Cell type predictiom
+
 ```{r}
-# plot_marker(data = cbind(condor$umap$pca_orig, condor$astir$Astir_cell_state_orig), 
-#             param = "Temra", 
-#             order = T, 
-#             title = "Cell state prediction", 
-#             dim_red = "UMAP", 
-#             facet_by_variable = FALSE)
+head(read.csv("../.test_files/Astir/cell_types.csv"))
 ```
 
-# SessionInfo
+```{r}
+head(read.csv("../.test_files/Astir/probabilities.csv"))
+```
+
+## Cell State
+
+```{r}
+head(read.csv("../.test_files/Astir/cell_states.csv"))
+```
+
+# Session Info
 ```{r}
 info <- sessionInfo()
 
