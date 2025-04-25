@@ -7,8 +7,9 @@ Authors@R: c(
   person(given = "Charlotte", family = "Kroeger", email = "charlotte.kroeger@dzne.de", role = "aut"),
   person(given = "Sophie", family = "Mueller", email = "sophie.mueller@dzne.de", role = "aut"),
   person(given = "Jacqueline", family = "Leidner", email = "jacqueline.leidner@dzne.de", role = "aut")
+  person(given = "Aleksej", family = "Frolov", email = "aleksej.frolov@dzne.de", role = "aut")
   )
-Description: Flow cytometry analysis workflow. The aim of this project if to 
+Description: Flow cytometry analysis workflow. The aim of this project is to 
     provide an intuitive workflow for the analysis of high-dimensionality cytometry data in R.
 URL: https://github.com/lorenzobonaguro/condor
 License: GPL-3 + file LICENSE
@@ -63,4 +64,6 @@ RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
