@@ -1,15 +1,13 @@
-#' Run Astir cell type prediction
-#'
 #' @title Subsampling base on geometric sketching
-#' @description Subsamples the condor object to a predefined number of cells based on the geosketching algorithm (https://github.com/brianhie/geosketch).
+#' @description
+#' Subsamples the condor object to a predefined number of cells based on the geosketching algorithm (https://github.com/brianhie/geosketch).
 #' Using the PCA representation it subsamples your dataset by preserving the overall structure. Important,
 #' if you do not want to loose rare cell populations or do not want skew cell numbers. Requires the python package geosketch and reticulate.
 #' @param fcd Flow cytometry dataset.
 #' @param pca_slot PCA slot to use for the sketching (e.g. "orig" or "norm").
-#' @param n_sub Number of cells to subset (default 50% of all cells).
+#' @param n_sub Number of cells to subset (default half of all cells).
+#' @return Returns a subsampled condor object
 #' @import reticulate
-#' @return a subsampled condor object
-#'
 #' @export
 subsample_geosketch <- function(condor,
                               pca_slot="orig",n_sub=0.5) {

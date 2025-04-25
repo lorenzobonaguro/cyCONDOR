@@ -8,6 +8,9 @@ learnUMAP(
   fcd,
   input_type,
   data_slot,
+  nPC = ncol(fcd[[input_type]][[data_slot]]),
+  markers = colnames(fcd$expr[[data_slot]]),
+  discard = FALSE,
   fcd_model,
   nEpochs = 100,
   prefix = NULL,
@@ -21,6 +24,12 @@ learnUMAP(
 \item{input_type}{Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}. This should be the same which has been used for calculating the UMAP of the reference data set.}
 
 \item{data_slot}{Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added. This should be the same which has been used for calculating the UMAP of the reference data set.}
+
+\item{nPC}{Number of PCs used for the UMAP Projection. Default = All. The number of PCs should be the same used for calculating the UMAP of the reference data set. Check the UMAP name of your reference data set e.g. using \code{fcd_model$umap$your_umap_name}.}
+
+\item{markers}{Vector of marker names to include or exclude from UMAP projection according to the discard parameter. The markers should be the same used for calculating the UMAP of the reference data set. Use the function \code{\link{used_markers}} to check which markers were used to calculate the UMAP of your \code{fcd_model}.  .}
+
+\item{discard}{LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP projection. Default = F.}
 
 \item{fcd_model}{Flow cytometry reference data set containing data associated with an existing embedding in \code{fcd_model$extras}.}
 
