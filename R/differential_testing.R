@@ -512,10 +512,11 @@ frequency_kruskal_test<-function(fcd,
 #' @param detailed logical if detailed output from \code{\link[rstatix]{t_test}} should be reported.
 #' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param print_results Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).
 #' @details \code{frequency_t_test()} is a wrapper function around the \code{t_test()} implemented in the package \code{rstatix}.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then, a two-sided, two sample t-test is performed between two groups defined in group_var.
 #' The test can either be run unpaired (two independent groups) or paired. Afterwards,  p-value adjustment will be performed across all comparisons that were made.
-#' @returns \code{frequency_t_test()} returns a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+#' @returns \code{frequency_t_test()} returns the fcd containing a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used. Results are stored in the fcd under extras$statistics.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -531,7 +532,8 @@ frequency_t_test<-function(fcd,
                            var.equal = F,
                            detailed = F,
                            p.adjust.method = "bonferroni",
-                           numeric = F)
+                           numeric = F,
+                           print_results = T)
 {
 
   #### check slots, cellIDs und varibles
@@ -672,7 +674,22 @@ frequency_t_test<-function(fcd,
     results$applied_test<-"unpaired t test"
   }
 
-  return(results)
+  #### store the results in the fcd
+  ## check if the statistics slot exists. If not, initiate a list for storage.
+  if(is.null(fcd$extras$statistics)){
+    fcd$extras$statistics <- list()
+  }
+
+  ## assing the results to their unique slot
+  fcd$extras$statistics[["t_test"]] <- results
+  message("Statistic results were saved in the fcd under extras$statistics")
+
+  #### print the results to the console if desired
+  if(print_results == T){
+    print(results)
+  }
+
+  return(fcd)
 }
 
 
@@ -690,10 +707,11 @@ frequency_t_test<-function(fcd,
 #' @param p.adjust.method p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
 #' @param detailed logical if detailed output from \code{\link[rstatix]{wilcox_test}} should be reported.
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param print_results Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).
 #' @details \code{frequency_wilcox_test()} is a wrapper function around the \code{wilcox_test()} function implemented in the package \code{rstatix}.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then a two-sided, two sample wilcoxon test is performed between two groups defined in group_var.
 #' The test can either be run unpaired (two independent groups) or paired. Afterwards,  p-value adjustment will be performed across all comparisons that were made.
-#' @returns \code{frequency_wilcox_test} returns a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+#' @returns \code{frequency_wilcox_test} returns the fcd containing a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used. Results are stored in the fcd under extras$statistics.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -708,7 +726,8 @@ frequency_wilcox_test<-function(fcd,
                                 paired_test = F,
                                 p.adjust.method = "bonferroni",
                                 detailed = F,
-                                numeric = F)
+                                numeric = F,
+                                print_results = T)
 {
 
   #### check slots, cellIDs und varibles
@@ -848,7 +867,22 @@ frequency_wilcox_test<-function(fcd,
     results$applied_test<-"unpaired wilcox test"
   }
 
-  return(results)
+  #### store the results in the fcd
+  ## check if the statistics slot exists. If not, initiate a list for storage.
+  if(is.null(fcd$extras$statistics)){
+    fcd$extras$statistics <- list()
+  }
+
+  ## assing the results to their unique slot
+  fcd$extras$statistics[["wilcox"]] <- results
+  message("Statistic results were saved in the fcd under extras$statistics")
+
+  #### print the results to the console if desired
+  if(print_results == T){
+    print(results)
+  }
+
+  return(fcd)
 }
 
 #' prepInputDiffcyt
@@ -1194,4 +1228,46 @@ marker_wilcox_test<-function(fcd,
                             "p","p.adj","delta_mean")]
 
   return(wilcox_res)
+}
+
+#' add_diffcyt_statistics
+#'
+#' @title Add statistical results from the diffcyt package to the fcd.
+#' @description
+#' Wrapper function to include the statistical results calculated using the diffcyt package into the fcd file.
+#' @param fcd flow cytometry dataset, that has been subjected to clustering or cell type label prediction with cyCONDOR before.
+#' @param input dataframe containing the statistical results from the diffcyt package. Example: \code{input <- as.data.frame(diffcyt::topTable(res_DA, all = TRUE))}.
+#' @param group1 First group of the comparison.
+#' @param group2 Second group of the comparison.
+#' @import dplyr
+#' @import diffcyt
+#' @returns the fcd containing the statistical results from the diffcyt package
+#'
+#' @export
+
+add_diffcyt_statistics <- function(fcd = condor, input, group1 = "ctrl", group2 = "pat") {
+
+  ## check if the statistics slot exists. If not, initiate a list for storage.
+  if(is.null(fcd$extras$statistics)){
+    fcd$extras$statistics <- list()
+  }
+
+  ## add the results with matching colnames to the other statistical tests.
+  fcd$extras$statistics$diffcyt <- input %>%
+    mutate(
+      group1 = group1,
+      group2 = group2,
+
+      ## add asteriks indications for significance - similar to the other statistical tests
+      p.adj.signif = case_when(
+        p_adj > 0.05     ~ "ns",
+        p_adj <= 0.0001  ~ "****",
+        p_adj <= 0.001   ~ "***",
+        p_adj <= 0.01    ~ "**",
+        p_adj <= 0.05    ~ "*"
+      )
+    ) %>%
+    select(cluster = cluster_id, group1, group2, p = p_val, p.adj = p_adj, p.adj.signif)
+  message("Statistics from diffcyt were saved to fcd$extras$statistics")
+  return(tmp)
 }
