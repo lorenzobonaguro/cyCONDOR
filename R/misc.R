@@ -555,8 +555,11 @@ create_metaclustering_script <- function(num_clusters) {
 condor_session_info <- function(fcd = condor) {
   tmp <- fcd
   info <- sessionInfo()
-  tmp$extras$session_info <- info
-  fcd <<- tmp
+  if (is.null(tmp$extras)) {
+    tmp$extras <- list()
+  }
+  tmp[["extras"]][["session_info"]] <- info
   message("✓ Session info was saved to fcd$extras$session_info")
-  return(info)
+  return(tmp)
 }
+
