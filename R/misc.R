@@ -551,7 +551,6 @@ create_metaclustering_script <- function(num_clusters) {
 #' @returns fcd with sessionInfo sztored under extras
 #'
 #' @export
-
 condor_session_info <- function(fcd = condor) {
   tmp <- fcd
   info <- sessionInfo()

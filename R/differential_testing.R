@@ -1244,7 +1244,6 @@ marker_wilcox_test<-function(fcd,
 #' @returns the fcd containing the statistical results from the diffcyt package
 #'
 #' @export
-
 add_diffcyt_statistics <- function(fcd = condor, input, group1 = "ctrl", group2 = "pat") {
 
   ## check if the statistics slot exists. If not, initiate a list for storage.
