@@ -15,7 +15,8 @@ frequency_t_test(
   var.equal = F,
   detailed = F,
   p.adjust.method = "bonferroni",
-  numeric = F
+  numeric = F,
+  print_results = T
 )
 }
 \arguments{
@@ -40,9 +41,11 @@ frequency_t_test(
 \item{p.adjust.method}{p-value adjustment method to use for multiple comparison testing, e.g "bonferroni" (default) or "BH" (Benjamini-Hochberg). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
+
+\item{print_results}{Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).}
 }
 \value{
-\code{frequency_t_test()} returns a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+\code{frequency_t_test()} returns the fcd containing a data frame produced by \code{\link[rstatix]{t_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used. Results are stored in the fcd under extras$statistics.
 }
 \description{
 \code{frequency_t_test()} performs a two-sided, two sample t-test on cell type frequencies.

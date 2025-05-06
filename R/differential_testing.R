@@ -1268,5 +1268,5 @@ add_diffcyt_statistics <- function(fcd = condor, input, group1 = "ctrl", group2 
     ) %>%
     select(cluster = cluster_id, group1, group2, p = p_val, p.adj = p_adj, p.adj.signif)
   message("Statistics from diffcyt were saved to fcd$extras$statistics")
-  return(tmp)
+  return(fcd)
 }
