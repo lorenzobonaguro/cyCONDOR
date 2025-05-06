@@ -548,7 +548,7 @@ create_metaclustering_script <- function(num_clusters) {
 #' @description This function saves the session infos to the fcd object
 #' @param fcd flow cytometry dataset
 #'
-#' @return sessionInfo() stored under fcs$extras
+#' @returns fcd with sessionInfo sztored under extras
 #'
 #' @export
 
