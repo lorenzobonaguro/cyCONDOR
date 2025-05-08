@@ -796,17 +796,58 @@ plot_frequency_boxplot<-function(fcd,
 
     #### statistics
     if(!isFALSE(statistics)){
-      if(!(statistics %in% c("wilcox", "t_test", "diffcyt"))){
-        stop('Please select a valid statistical test: "wilcox", "t_test" or "diffcyt"')
+      if(!(statistics %in% c("wilcox", "t_test", "diffcyt", "anova_pht", "friedman_pht", "kruskal_pht"))){
+        stop('Please select a valid statistical test: "wilcox", "t_test", "diffcyt", "anova_pht", "friedman_pht" or "kruskal_pht"')
       }
       if(!(sig_label %in% c("p.adj", "p.adj.signif"))){
         stop('Please specify how you want to display the significance: "p.adj" for the numerical value, "p.adj.signif" for asteriks')
       }
+
       test_res <- fcd[["extras"]][["statistics"]][[statistics]]
+
+      ## Visualization of tests for more than two groups - requires a more dynamic y.position for the bars
+      if(statistics %in%  c("anova_pht", "friedman_pht", "kruskal_pht")){
+        # First, prepare tmp so column names match the lookup keys
+        tmp_lookup <- tmp %>%
+          rename(cluster = variable, group = group_var) %>%
+          distinct(group, cluster, .keep_all = TRUE)
+
+        # Add value1 (lookup using group1 + cluster)
+        test_res <- test_res %>%
+          left_join(
+            tmp_lookup %>%
+              select(group, cluster, value) %>%
+              rename(group1 = group, value1 = value),
+            by = c("group1", "cluster"))
+
+        # Add value2 (lookup using group2 + cluster)
+        test_res <- test_res %>%
+          left_join(
+            tmp_lookup %>%
+              select(group, cluster, value) %>%
+              rename(group2 = group, value2 = value),
+            by = c("group2", "cluster"))
+
+        # Add y position
+        test_res <- test_res %>%
+          dplyr::filter(cluster == i) %>%
+          dplyr::mutate(
+            y.base = max(c(value1, value2), na.rm = TRUE) * 1.05,
+            y.step = (max(c(value1, value2), na.rm = TRUE) - min(c(value1, value2), na.rm = TRUE)) * 0.2,
+            y.position = y.base + dplyr::row_number() * y.step)
+
+        p <- p + ggpubr::stat_pvalue_manual(test_res[test_res$cluster == i, ],
+                                            label = sig_label,
+                                            hide.ns = F,
+                                            y.position = "y.position")
+      }
+
+      else{
       p <- p + ggpubr::stat_pvalue_manual(test_res[test_res$cluster == i, ],
                                           label = sig_label,
                                           hide.ns = F,
                                           y.position = max(data_cluster$value, na.rm = T) *1.1)
+      }
     }
 
     plot.list[[i]] <- p

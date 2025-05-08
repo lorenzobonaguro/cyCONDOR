@@ -12,9 +12,10 @@
 #' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing using \code{"emmeans"}, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
 #' @param anova_sig_threshold significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param print_results Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).
 #' @details \code{frequency_anova_test()} is a wrapper function around \code{\link[rstatix]{anova_test}}, \code{\link[rstatix]{tukey_hsd}} and \code{\link[rstatix]{emmeans_test}} implemented in the package \code{rstatix}.
 #' The function first calculates cell population frequencies for each sample in sample_var. Then a independent measures, one-way Anova test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise emmeans tests and p-value correction is performed for each significant Anova test.
-#' @returns \code{frequency_anova_test()} returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+#' @returns \code{frequency_anova_test()} returns the fcd containing two data frames, "anova" and "annova_pht". "anova" comprises results produced by \code{\link[rstatix]{anova_test}} and "anova_pht" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested. Results are stored in the fcd under extras$statistics.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -29,7 +30,8 @@ frequency_anova_test<-function(fcd,
                                numeric = F,
                                post_hoc_test = NULL,
                                post_hoc_p.adjust.method = "bonferroni",
-                               anova_sig_threshold = 0.05)
+                               anova_sig_threshold = 0.05,
+                               print_results = T)
 {
 
   #### check slots, cell IDs und variables
@@ -105,6 +107,10 @@ frequency_anova_test<-function(fcd,
   results.list<-list()
   results.list$anova_test<-results
 
+  ## Saving the anova results to the fcd
+  if (is.null(fcd$extras$statistics)) fcd$extras$statistics <- list()
+  fcd$extras$statistics[["anova"]] <- results
+
 
   if(!is.null(post_hoc_test)){
 
@@ -153,10 +159,18 @@ frequency_anova_test<-function(fcd,
 
       names(results_pht)[names(results_pht) == "variable"] <- "cluster"
       results.list$post_hoc_test <- results_pht
+
+      ## saving the posthoc results to the fcd
+      if (is.null(fcd$extras$statistics)) fcd$extras$statistics <- list()
+      fcd$extras$statistics[["anova_pht"]] <- results_pht
     }
   }
 
-  return(results.list)
+    if(print_result == T){
+      print(results_list)
+      }
+  message("Statistic results were saved in the fcd under $extras$statistics")
+  return(fcd)
 }
 
 
@@ -175,8 +189,9 @@ frequency_anova_test<-function(fcd,
 #' @param friedman_sig_threshold significance threshold Friedman Rank Sum test. For all Friedman Rank Sum comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
 #' @param pair_var string indicating variable in cell_anno that should be used to pair the samples.
+#' @param print_results Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).
 #' @details \code{frequency_friedman_test()} is a wrapper function around \code{\link[rstatix]{friedman_test}},  \code{\link[rstatix]{friedman_effsize}} and  \code{\link[rstatix]{wilcox_test}} implemented in the package \code{rstatix}. The function first calculates cell population frequencies for each sample in sample_var. Then a Friedman Rank Sum test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with pairwise Wilcoxon Rank Sum Tests and p-value correction is performed for each significant Friedman Rank Sum test comparison.
-#' @returns \code{frequency_friedman_test} returns a list of two data frames, "friedman_test" and "wilcox_test". "friedman_test" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "wilcox_test" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+#' @returns \code{frequency_friedman_test} returns the fcd containing two data frames, "friedman" and "friedman_pht". "friedman" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "friedman_pht" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested. Results are stored in the fcd under extras$statistics.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -192,7 +207,8 @@ frequency_friedman_test<-function(fcd,
                                   numeric = F,
                                   post_hoc_test = F,
                                   post_hoc_p.adjust.method = "bonferroni",
-                                  friedman_sig_threshold = 0.05)
+                                  friedman_sig_threshold = 0.05,
+                                  print_results = T)
 {
 
   #### check slots, cellIDs und varibles
@@ -312,6 +328,9 @@ frequency_friedman_test<-function(fcd,
   results.list<-list()
   results.list$friedman_test<-results
 
+  if (is.null(fcd$extras$statistics)) fcd$extras$statistics <- list()
+  fcd$extras$statistics[["friedman"]] <- results
+
 
   if(post_hoc_test == T){
     #### post hoc test (wilcox test)
@@ -341,10 +360,16 @@ frequency_friedman_test<-function(fcd,
 
       names(results_wilcox)[names(results_wilcox) == "variable"] <- "cluster"
       results.list$wilcox_test <- results_wilcox
+
+      if (is.null(fcd$extras$statistics)) fcd$extras$statistics <- list()
+      fcd$extras$statistics[["friedman_pht"]] <- results_wilcox
     }
   }
-
-  return(results.list)
+    if(print_results == T){
+      print(results.list)
+  }
+  message("Statistic results were saved in the fcd under $extras$statistics")
+  return(fcd)
 }
 
 
@@ -362,8 +387,9 @@ frequency_friedman_test<-function(fcd,
 #' @param post_hoc_p.adjust.method p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.
 #' @param kruskal_sig_threshold significance threshold for Kruskal-Wallis test. For all Kruskal-Wallis comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
+#' @param print_results Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).
 #' @details \code{frequency_kruskal_test()} is a wrapper function around \code{\link[rstatix]{kruskal_test}},  \code{\link[rstatix]{kruskal_effsize}} and  \code{\link[rstatix]{dunn_test}} implemented in the package *rstatix*. The function first calculates cell population frequencies for each sample in sample_var. Then a Kruskal-Wallis rank sum test is performed for each cell population followed by p-value adjustment. If \code{post_hoc = T}, post-hoc testing with Dunne's Test and p-value correction is performed for each significant Kruskal-Wallis comparison.
-#' @returns \code{frequency_kruskal_test()} returns a list of two data frames, "kruskal_test" and "dunn_test". "kruskal_test" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "dunn_test" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+#' @returns \code{frequency_kruskal_test()} returns the fcd conaining two data frames, "kruskal" and "kruskal_pht". "kruskal" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "kruskal_pht" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested. Results are stored in the fcd under extras$statistics.
 #' @import rstatix
 #' @import dplyr
 #' @import reshape2
@@ -378,7 +404,8 @@ frequency_kruskal_test<-function(fcd,
                                  post_hoc_test = T,
                                  post_hoc_p.adjust.method = "bonferroni",
                                  kruskal_sig_threshold = 0.05,
-                                 numeric = F)
+                                 numeric = F,
+                                 print_results = T)
 {
 
   #### check slots, cellIDs und varibles
@@ -460,6 +487,8 @@ frequency_kruskal_test<-function(fcd,
   results.list<-list()
   results.list$kruskal_test<-results
 
+  if (is.null(fcd$extras$statistics)) fcd$extras$statistics <- list()
+  fcd$extras$statistics[["kruskal"]] <- results
 
   if(post_hoc_test == T){
     #### post hoc test (dunn test)
@@ -490,10 +519,16 @@ frequency_kruskal_test<-function(fcd,
 
       names(results_dunn)[names(results_dunn) == "variable"] <- "cluster"
       results.list$dunn_test <- results_dunn
+
+      if (is.null(fcd$extras$statistics)) fcd$extras$statistics <- list()
+      fcd$extras$statistics[["kruskal_pht"]] <- results_dunn
+    }
+    if(print_results == T){
+      print(results.list)
     }
   }
-
-  return(results.list)
+  message("Statistic results were saved in the fcd under $extras$statistics")
+  return(fcd)
 }
 
 
