@@ -166,7 +166,7 @@ frequency_anova_test<-function(fcd,
     }
   }
 
-    if(print_result == T){
+    if(print_results == T){
       print(results_list)
       }
   message("Statistic results were saved in the fcd under $extras$statistics")
