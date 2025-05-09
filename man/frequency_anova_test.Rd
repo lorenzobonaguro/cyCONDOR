@@ -14,7 +14,8 @@ frequency_anova_test(
   numeric = F,
   post_hoc_test = NULL,
   post_hoc_p.adjust.method = "bonferroni",
-  anova_sig_threshold = 0.05
+  anova_sig_threshold = 0.05,
+  print_results = T
 )
 }
 \arguments{
@@ -37,9 +38,11 @@ frequency_anova_test(
 \item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing using \code{"emmeans"}, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{anova_sig_threshold}{significance threshold of the Anova test. For all Anova tests with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)}
+
+\item{print_results}{Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).}
 }
 \value{
-\code{frequency_anova_test()} returns a list of two data frames, "anova_test" and "emmeans_test". "anova_test" comprises results produced by \code{\link[rstatix]{anova_test}} and "emmeans_test" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+\code{frequency_anova_test()} returns the fcd containing two data frames, "anova" and "annova_pht". "anova" comprises results produced by \code{\link[rstatix]{anova_test}} and "anova_pht" contains results obtained by \code{\link[rstatix]{emmeans_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested. Results are stored in the fcd under extras$statistics.
 }
 \description{
 \code{frequency_anova_test()} performs an independent measures Anova to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Emmeans test.

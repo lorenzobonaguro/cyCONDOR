@@ -15,7 +15,8 @@ frequency_friedman_test(
   numeric = F,
   post_hoc_test = F,
   post_hoc_p.adjust.method = "bonferroni",
-  friedman_sig_threshold = 0.05
+  friedman_sig_threshold = 0.05,
+  print_results = T
 )
 }
 \arguments{
@@ -40,9 +41,11 @@ frequency_friedman_test(
 \item{post_hoc_p.adjust.method}{p-value adjustment method to use for post-hoc testing, e.g "bonferroni" (default). All available options can be checked in the documentation of the \code{\link[rstatix]{adjust_pvalue}} function from the package \code{rstatix}.}
 
 \item{friedman_sig_threshold}{significance threshold Friedman Rank Sum test. For all Friedman Rank Sum comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)}
+
+\item{print_results}{Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).}
 }
 \value{
-\code{frequency_friedman_test} returns a list of two data frames, "friedman_test" and "wilcox_test". "friedman_test" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "wilcox_test" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+\code{frequency_friedman_test} returns the fcd containing two data frames, "friedman" and "friedman_pht". "friedman" comprises results produced by \code{\link[rstatix]{friedman_test}} and \code{\link[rstatix]{friedman_effsize}} and "friedman_pht" contains results obtained by \code{\link[rstatix]{wilcox_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested. Results are stored in the fcd under extras$statistics.
 }
 \description{
 \code{frequency_friedman_test()} performs a Friedman Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Wilcoxon Rank Sum test.
