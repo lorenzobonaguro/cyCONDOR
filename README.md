@@ -51,35 +51,42 @@ To install `cyCONDOR` you can follow few steps describe here below.
 
 **IMPORTANT:** For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)
 
-**NOTE TO MAC SILICON USERS:** You might run into an issue when installing `Rphenoannoy`, please see the specific [issue](https://github.com/stuchly/Rphenoannoy/issues/2)
-
-First install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
+**NOTE TO MAC SILICON USER** 
+> You might run into an issue when installing `Rphenoannoy`, please see the specific [issue](https://github.com/stuchly/Rphenoannoy/issues/2)
+> Alternateively, we provide a pre-compiled version of `Rphenoannoy` which you can install with:
 ```
-BiocManager::install(update = T, ask = F, version = "3.20")
+install.packages("https://github.com/lorenzobonaguro/Rphenoannoy/releases/download/R4.4.X/Rphenoannoy_0.1.0.tgz")
+```
+> Once this package is installed you can continue with the standard installation
+
+### Install Bioconductor
+
+Install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
+```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+    
+BiocManager::install(version = "3.20")
 ``` 
 
-Now you need to install devtools if this is not already available in your system
+### Install cyCONDOR
 
+Now you can install cyCONDOR and all its dependencies
 ```
-BiocManager::install("devtools",version = "3.20")
-```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
-Next we install two dependencies which are only available on GitHub
-
-```
-devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy", "saeyslab/CytoNorm@362ac08"),
-                                  repos = BiocManager::repositories())
-```
-
-Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.
-```
-devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v022/cyCONDOR_0.2.2.tar.gz",
-                      repos = BiocManager::repositories())
+devtools::install_github("lorenzobonaguro/cyCONDOR", 
+                        build_vignettes = FALSE, 
+                        repos = BiocManager::repositories())
 ```
 
 If you want to have early access to the new feature of `cyCONDOR` you can install the developmental version of `cyCONDOR`. 
 
 ```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
 devtools::install_github("lorenzobonaguro/cyCONDOR@dev", 
                         build_vignettes = FALSE, 
                         repos = BiocManager::repositories())
@@ -88,14 +95,6 @@ devtools::install_github("lorenzobonaguro/cyCONDOR@dev",
 *NOTE:* Keep in mind the developmental version if `cyCONDOR` is not fully tested, if you find any bug feel free to report it!
 
 To see which changes are currently implemented in the `dev` branch see the [changelog](https://github.com/lorenzobonaguro/cyCONDOR/blob/dev/NEWS.md).
-
-Alternatively those steps could be automated with the following code
-```
-download.file(url = "https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R", 
-              destfile = "install_locally_script.R")
-              
-source(install_locally_script.R)
-``` 
 
 ## Key cyCONDOR features include:
 
