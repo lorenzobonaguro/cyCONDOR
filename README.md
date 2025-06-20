@@ -51,9 +51,17 @@ To install `cyCONDOR` you can follow few steps describe here below.
 
 **IMPORTANT:** For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)
 
-**NOTE TO MAC SILICON USERS:** You might run into an issue when installing `Rphenoannoy`, please see the specific [issue](https://github.com/stuchly/Rphenoannoy/issues/2)
+**NOTE TO MAC SILICON USER** 
+> You might run into an issue when installing `Rphenoannoy`, please see the specific [issue](https://github.com/stuchly/Rphenoannoy/issues/2)
+> Alternateively, we provide a pre-compiled version of `Rphenoannoy` which you can install with:
+```
+install.packages("https://github.com/lorenzobonaguro/Rphenoannoy/releases/download/R4.4.X/Rphenoannoy_0.1.0.tgz")
+```
+> Once this package is installed you can continue with the standard installation
 
-First install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
+### Install Bioconductor
+
+Install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
 ```
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -61,13 +69,16 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install(version = "3.20")
 ``` 
 
+### Install cyCONDOR
+
 Now you can install cyCONDOR and all its dependencies
 ```
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy", "saeyslab/CytoNorm@362ac08"),
-                                  repos = BiocManager::repositories())
+devtools::install_github("lorenzobonaguro/cyCONDOR", 
+                        build_vignettes = FALSE, 
+                        repos = BiocManager::repositories())
 ```
 
 If you want to have early access to the new feature of `cyCONDOR` you can install the developmental version of `cyCONDOR`. 
