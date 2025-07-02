@@ -13,7 +13,7 @@
 #' @param prefix Prefix for the name of the dimensionality reduction.
 #' @param nThreads Number of threads to use, (except during stochastic gradient descent). By default \code{nThreads = 32}.
 #' @param seed A seed is set for reproducibility.
-#' @details \code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using code{\link{runUMAP}}.
+#' @details \code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using \code{\link{runUMAP}}.
 #' @return \code{learnUMAP()} returns a \code{fcd} with the predicted UMAP coordinates saved in \code{fcd$umap$expr_orig}, if no \code{prefix} was set.
 #'
 #' @export
