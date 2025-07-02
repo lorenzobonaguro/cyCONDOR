@@ -14,7 +14,8 @@ frequency_wilcox_test(
   paired_test = F,
   p.adjust.method = "bonferroni",
   detailed = F,
-  numeric = F
+  numeric = F,
+  print_results = T
 )
 }
 \arguments{
@@ -37,9 +38,11 @@ frequency_wilcox_test(
 \item{detailed}{logical if detailed output from \code{\link[rstatix]{wilcox_test}} should be reported.}
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
+
+\item{print_results}{Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).}
 }
 \value{
-\code{frequency_wilcox_test} returns a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used.
+\code{frequency_wilcox_test} returns the fcd containing a data frame produced by \code{\link[rstatix]{wilcox_test}} with two additional columns, "cluster" containing the information, which cell population was tested, and "applied_test", indicating which test was used. Results are stored in the fcd under extras$statistics.
 }
 \description{
 \code{frequency_wilcox_test()} performs a two-sided, two-sample Wilcoxon Rank Sum test (independent) or Wilcoxon Signed Rank test (paired data) on cell type frequencies.
