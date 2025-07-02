@@ -549,6 +549,7 @@ create_metaclustering_script <- function(num_clusters) {
 #' @param fcd flow cytometry dataset
 #'
 #' @returns fcd with sessionInfo sztored under extras
+#' @importFrom utils sessionInfo
 #'
 #' @export
 condor_session_info <- function(fcd = condor) {
@@ -558,7 +559,7 @@ condor_session_info <- function(fcd = condor) {
     tmp$extras <- list()
   }
   tmp[["extras"]][["session_info"]] <- info
-  message("✓ Session info was saved to fcd$extras$session_info")
+  message("Session info was saved to fcd$extras$session_info")
   return(tmp)
 }
 

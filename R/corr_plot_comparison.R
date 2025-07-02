@@ -8,6 +8,10 @@
 #' @param flowjo_df data frame containing the cell type frequencies obtained via manual gating and annotation (e.g. FlowJo).
 #' @param sample_col name of the column containing sample names. This column name needs to be matching between the two data frames.
 #' @param method_corr correlation method used in the correlogram (default = "pearson").
+#' @import corrplot
+#' @importFrom grDevices recordPlot
+#'
+#' @export
 
 
 
