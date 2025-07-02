@@ -1,7 +1,7 @@
 library(testthat)
 library(devtools)
 devtools::load_all()
-condor<-readRDS(here::here("../data/bonn_covid_test_data/condor_bonn_monocytes_factor.rds"))
+condor<-readRDS(here::here("/data/analysis/2_data/bonn_covid_test_data/condor_bonn_monocytes_factor.rds"))
 
 
 
