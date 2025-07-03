@@ -11,6 +11,7 @@
 * Added the option to display statistics to the `plot_frequency_boxplot` function - so far for `wilcox`, `t_test` and `diffcyt`
 * Added a function to write FCS files from a `condor` object (`write_fcs`)
 * Added function to correlate the cyCONDOR results and the manual gating with FlowJo or similar software (`corr_plot_comparison`)
+* Companion Docker image is not multi-platform `amd64` and `arm64` for better performance on Mac
 
 # cyCONDOR 0.2.1
 * Included help function to assign metaclusters (Thanks to Lucas Secchim Ribeiro)
