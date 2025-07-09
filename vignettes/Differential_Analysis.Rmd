@@ -217,6 +217,8 @@ Tests for three or more groups:
 
 By default, p-value adjustment is performed using the conservative "bonferroni" method, but other methods available in the basic R function `stats::p.adjust()` can be chosen and fed to the cyCONDOR functions via arguments. (Note that post-hoc tests have a separate argument for this). We recommend to get familiar with the options in the `p.adjust` function at this point.
 
+The result of each statistical test is store in the `extra@statistics` slot, with this is then possible to add the statistics on the boxplot directly usign the `statistics` argument.
+
 
 Here, we exemplary show how to compare two groups using a t-test:
 
@@ -227,14 +229,14 @@ unique(condor$anno$cell_anno[,c("sample_ID","group")])
 
 ```{r}
 #perform test
-results_t <- frequency_t_test(fcd = condor,
-                                   cluster_slot = "phenograph_pca_orig_k_60", 
-                                   cluster_var = "metaclusters",
-                                   sample_var = "sample_ID", 
-                                   group_var = "group",
-                                   paired_test = F,
-                                   p.adjust.method = "bonferroni")
-results_t
+condor <- frequency_t_test(fcd = condor,
+                           cluster_slot = "phenograph_pca_orig_k_60", 
+                           cluster_var = "metaclusters",
+                           sample_var = "sample_ID", 
+                           group_var = "group",
+                           paired_test = F,
+                           p.adjust.method = "bonferroni", 
+                           print_results = T)
 ```
 
 As usual, there is no "one-solves-it-all" approach for statistical testing and it is still necessary to think about whether the given data meet the required assumptions for the test or what kind of p-value adjustment should be performed. But as mentioned above, the `getTable()` function allows easy extraction of the cell population frequencies that can be subsequently subjected to other tests, assumption checks or tools. 
@@ -613,3 +615,9 @@ plots<-cowplot::plot_grid(plotlist = list(p1,p2),rel_widths = c(2,3))
 cowplot::plot_grid(plotlist = list(plots,p3),ncol=1,rel_heights = c(1,1.5))
 ```
 
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```
