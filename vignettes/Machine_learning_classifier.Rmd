@@ -31,12 +31,12 @@ If you use this workflow in your work please consider citing [cyCONDOR](XXX) and
 We start by importing the training dataset, this is done as previously described with the `prep_fcd` function, in this case the `anno_table` also include the clinical classification of the samples (`aml` or `normal`).
 
 ```{r}
-condor <- prep_fcd(data_path = "../../../../2_data/paper_figures/Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+condor <- prep_fcd(data_path = "../.test_files/ClinicalClassifier/train/", 
                    max_cell = 10000000, 
                    useCSV = FALSE, 
                    transformation = "auto_logi", 
                    remove_param = c("FSC-A","FSC-W","FSC-H","Time"), 
-                   anno_table = "../../../../2_data/paper_figures/Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv", 
+                   anno_table = "../.test_files/ClinicalClassifier/fcs_info_train.csv", 
                    filename_col = "fcsName",
                    seed = 91)
 ```
@@ -102,7 +102,7 @@ head(condor$extras$classifier_model$train.Data.sample)
 We can now visualize the prediction result both at cell and sample level.
 
 ```{r}
-anno <- read.csv("../../../../2_data/paper_figures/Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_train.csv")
+anno <- read.csv("../.test_files/ClinicalClassifier/fcs_info_train.csv")
 
 ggplot(merge(x = condor$extras$classifier_model$train.Data.cell, y = anno, by.x = "sample", by.y = "fcsName"), aes(x = sample, y = y.Pred.s0, color = Label)) +
   geom_jitter() + 
@@ -142,12 +142,12 @@ tree <- treeGate(P = condor$extras$classifier_model$train.Data.cell$y.Pred.s0,
 To now validate the performance of the trained `cytoDX` model we will test it on a test dataset with no overlap with the training data.
 
 ```{r}
-condor_test <- prep_fcd(data_path = "../../../../2_data/paper_figures/Figure 7 - Clinical Classifier/data_and_envs/CytoDX/", 
+condor_test <- prep_fcd(data_path = "../.test_files/ClinicalClassifier/test/", 
                         max_cell = 10000000, 
                         useCSV = FALSE, 
                         transformation = "auto_logi", 
                         remove_param = c("FSC-A","FSC-W","FSC-H","Time"), 
-                        anno_table = "../../../../2_data/paper_figures/Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv", 
+                        anno_table = "../.test_files/ClinicalClassifier/fcs_info_test.csv", 
                         filename_col = "fcsName",
                         seed = 91)
 ```
@@ -206,7 +206,7 @@ head(condor_test$extras$classifier_prediction$xNew.Pred.sample)
 We can now visualize the prediction result both at cell and sample level.
 
 ```{r}
-anno <- read.csv("../../../../2_data/paper_figures/Figure 7 - Clinical Classifier/data_and_envs/CytoDX/fcs_info_test.csv")
+anno <- read.csv("../.test_files/ClinicalClassifier/fcs_info_test.csv")
 
 tmp <- merge(x = condor_test$extras$classifier_prediction$xNew.Pred.cell, y = anno, by.x = "sample", by.y = "fcsName")
 

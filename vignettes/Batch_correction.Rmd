@@ -27,12 +27,12 @@ This first part describes the general `cyCONDOR` data processing and dimensional
 
 We start by loading the data.
 ```{r}
-condor <- prep_fcd(data_path = "../../../../2_data/paper_figures/Figure 3 - Batch Correction/data/CureDem/all/",
+condor <- prep_fcd(data_path = "../.test_files/BatchCorrection/all/",
                    max_cell = 500,
                    useCSV = FALSE,
                    transformation = "auto_logi",
                    remove_param = c("Time", "FSC-H", "SSC-H"),
-                   anno_table = "../../../../2_data/paper_figures/Figure 3 - Batch Correction/data/CureDem/all.csv",
+                   anno_table = "../.test_files/BatchCorrection/all.csv",
                    filename_col = "filename"
 )
 

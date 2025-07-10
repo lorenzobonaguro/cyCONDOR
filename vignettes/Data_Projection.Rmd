@@ -21,12 +21,12 @@ Considering the high number of samples that can be generated with modern HDC ins
 We start by loading the data for the training.
 
 ```{r}
-condor_train <- prep_fcd(data_path = "../../../Figure 6 - Data Projection/data_and_envs/fcs_train/", 
+condor_train <- prep_fcd(data_path = "../.test_files/DataProjection/fcs_train/", 
                          max_cell = 5000, 
                          useCSV = FALSE, 
                          transformation = "auto_logi", 
                          remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "live_dead"), 
-                         anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_train.csv", 
+                         anno_table = "../.test_files/DataProjection/metadata_train.csv", 
                          filename_col = "filename")
 ```
 
@@ -39,12 +39,12 @@ condor_train$anno$cell_anno$group <- "train"
 We also load the data to later project.
 
 ```{r}
-condor_test <- prep_fcd(data_path = "../../../Figure 6 - Data Projection/data_and_envs/fcs_test/",
+condor_test <- prep_fcd(data_path = "../.test_files/DataProjection/fcs_test/",
                         max_cell = 10000,
                         useCSV = FALSE,
                         transformation = "auto_logi",
                         remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time", "live_dead"),
-                        anno_table = "../../../Figure 6 - Data Projection/data_and_envs/metadata_test.csv",
+                        anno_table = "../.test_files/DataProjection/metadata_test.csv",
                         filename_col = "filename")
 ```
 
