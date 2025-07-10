@@ -551,6 +551,10 @@ write_fcs <- function(fcd = condor,
                       dir = paste0(getwd(), "/"),
                       filename){
 
+  # Print a working to let people know this is an experimental functio
+  warning("This function is still experimental. Feel free to test if and report your experience, this function
+  is currently writing cyCONDOR transformed value, future revision will export original values.")
+
   # Get the expression data
   xdata <- fcd[["expr"]][[expr_slot]]
   exp <- xdata
