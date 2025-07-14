@@ -50,5 +50,5 @@ Projects new samples on a UMAP calculated previously for a reference data set wi
 \details{
 learnUMAP
 
-\code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using code{\link{runUMAP}}.
+\code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using \code{\link{runUMAP}}.
 }
