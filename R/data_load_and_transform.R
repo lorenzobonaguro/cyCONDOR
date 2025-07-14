@@ -640,3 +640,69 @@ write_fcs <- function(fcd = condor,
     message("File was saved to ", dir, filename, ".fcs")
   }
 }
+
+#' Save the results from cyCONDOR as a Single Cell Experiment Class as RDS file
+#'
+#' @title Export Flow Cytometry Dataset as SCE.
+#' @description This function creates an object of the class Single Cell Experiment (SCE) based on the data of the flow cytometry dataset (fcd).
+#' @param fcd flow cytometry data set
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' @param reduction_method string specifying which dimensionality reduction method to use.
+#' @param reduction_slot string specifying reduction name in reduction_method to use for visualization, e.g. "pca_orig".
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels). Must be numeric in this function - factors are converted automatically.
+#' @param save boolean indicating if the sce should be saved as RDS file.
+#' @param dir string specifying the directory where the RDS file is saved. Current working directory by default.
+#' @param filename string specifying the filename for the RDS file.
+#' @importFrom SingleCellExperiment SingleCellExperiment reducedDim
+#' @importFrom SummarizedExperiment colData
+#' @returns The SCE  plus a short message if the RDS file was saved successfully.
+#'
+#' @export
+export_sce <- function(fcd = condor,
+                       expr_slot = "orig",
+                       reduction_method = NULL,
+                       reduction_slot = NULL,
+                       cluster_slot = NULL,
+                       cluster_var = NULL,
+                       save = TRUE,
+                       dir = paste0(getwd(), "/"),
+                       filename = "") {
+
+  # Extracting the expression data
+  exp <- as.matrix(t(fcd[["expr"]][[expr_slot]]))
+
+  # Extracting the annotation data
+  anno <- fcd[["anno"]][["cell_anno"]]
+
+  # Check if the colnames of exp and the rownames of anno match
+  if(!identical(colnames(exp), rownames(anno))){
+    stop("Column names of the expression matrix and rownames of the annotation matrix do not match.")
+  }
+
+  # Create the SCE
+  sce <- SingleCellExperiment::SingleCellExperiment(assays = list(x = exp),
+                                                    colData = anno)
+
+  # Extract and add dimensional reduction data
+  if(!is.null(reduction_method)){
+    red <- fcd[[reduction_method]][[reduction_slot]]
+    SingleCellExperiment::reducedDim(sce, reduction_method) <- red
+  }
+
+  # Extract and add clustering information
+  if(!is.null(cluster_slot)){
+    clust <- fcd[["clustering"]][[cluster_slot]][[cluster_var]]
+    SummarizedExperiment::colData(sce)[[cluster_slot]] <- clust
+  }
+
+  # Save the SCE
+  ## as .rds for standard usage in R
+  if(save == TRUE) {
+    saveRDS(sce,
+            file = paste0(dir, filename, ".rds"))
+    message("SCE has been saved to ", dir, filename, ".rds")
+  }
+
+  return(sce)
+}
