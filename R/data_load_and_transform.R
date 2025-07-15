@@ -703,7 +703,7 @@ export_sce <- function(fcd = condor,
   # Extract and save experiment_info as metadata
   ei <- unique(as.data.frame(colData(sce)[, c("sample_id", "condition")]))
   rownames(ei) <- ei$sample_id  # Set rownames = sample IDs
-  SingleCellExperiment::metadata(sce)$experiment_info <- ei
+  S4Vectors::metadata(sce)$experiment_info <- ei
 
   # Save the SCE
   ## as .rds for standard usage in R
