@@ -674,6 +674,8 @@ export_sce <- function(fcd = condor,
 
   # Extracting the annotation data
   anno <- fcd[["anno"]][["cell_anno"]]
+  names(anno)[names(anno) == "sample_ID"] <- "sample_id" # required for CATALYST - .check_sce() checks if 'sample_id' (case sensitive!) is present in the SCE.
+  names(anno)[names(anno) == "group"] <- "condition" # also required naming for CATALYST
 
   # Check if the colnames of exp and the rownames of anno match
   if(!identical(colnames(exp), rownames(anno))){
@@ -681,7 +683,7 @@ export_sce <- function(fcd = condor,
   }
 
   # Create the SCE
-  sce <- SingleCellExperiment::SingleCellExperiment(assays = list(x = exp),
+  sce <- SingleCellExperiment::SingleCellExperiment(assays = list(assays = exp),
                                                     colData = anno)
 
   # Extract and add dimensional reduction data
@@ -694,7 +696,13 @@ export_sce <- function(fcd = condor,
   if(!is.null(cluster_slot)){
     clust <- fcd[["clustering"]][[cluster_slot]][[cluster_var]]
     SummarizedExperiment::colData(sce)[[cluster_slot]] <- clust
+    SummarizedExperiment::colData(sce)[["cluster_id"]] <- clust # also required for downstream application in CATALYST
   }
+
+  # Extract and save experiment_info as metadata
+  ei <- unique(as.data.frame(colData(sce)[, c("sample_id", "condition")]))
+  rownames(ei) <- ei$sample_id  # Set rownames = sample IDs
+  metadata(sce)$experiment_info <- ei
 
   # Save the SCE
   ## as .rds for standard usage in R
