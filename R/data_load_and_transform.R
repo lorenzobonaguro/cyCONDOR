@@ -656,6 +656,7 @@ write_fcs <- function(fcd = condor,
 #' @param filename string specifying the filename for the RDS file.
 #' @importFrom SingleCellExperiment SingleCellExperiment reducedDim
 #' @importFrom SummarizedExperiment colData
+#' @importFrom SV4Vectors metadata
 #' @returns The SCE  plus a short message if the RDS file was saved successfully.
 #'
 #' @export
@@ -702,7 +703,7 @@ export_sce <- function(fcd = condor,
   # Extract and save experiment_info as metadata
   ei <- unique(as.data.frame(colData(sce)[, c("sample_id", "condition")]))
   rownames(ei) <- ei$sample_id  # Set rownames = sample IDs
-  metadata(sce)$experiment_info <- ei
+  SingleCellExperiment::metadata(sce)$experiment_info <- ei
 
   # Save the SCE
   ## as .rds for standard usage in R
