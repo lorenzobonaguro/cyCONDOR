@@ -13,7 +13,9 @@ plot_frequency_boxplot(
   groups_to_show = NULL,
   numeric = F,
   color_palette = cluster_palette,
-  dot_size = 2
+  dot_size = 2,
+  statistics = F,
+  sig_label = "p.adj.signif"
 )
 }
 \arguments{
@@ -34,6 +36,10 @@ plot_frequency_boxplot(
 \item{color_palette}{vector of colors to be used to fill box plots}
 
 \item{dot_size}{Size of the dots.}
+
+\item{statistics}{optional string indicating if and which statistics are displayed in the plot. Currently, "wilcox", "t_test" or "diffcyt" are accepted as input. If no statistics should be displayed, set to FALSE.}
+
+\item{sig_label}{string indicating how the significance is indicated: "p.adj" for the numerical adjusted p-value, "p.adj.signif" for asteriks.}
 }
 \value{
 \code{plot_frequency_boxplots()} returns a list of boxplots, each element of the list contains the plot of one cell population.

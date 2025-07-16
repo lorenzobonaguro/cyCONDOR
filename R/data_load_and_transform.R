@@ -522,3 +522,125 @@ prep_fjw <- function(data_gs,
 
 }
 
+
+#' Save the results from cyCONDOR as FCS file(s)
+#'
+#' @title Save the results from cyCONDOR as FCS file(s)
+#' @description Saves the expression data, annotation data and (optionally) results from the cyCONDOR analysis (dimensionality reduction, clustering) as one or more FCS file(s).
+#' @param fcd flow cytometry data set
+#' @param expr_slot expr_slot from which to take marker expression values, default is "orig".
+#' @param reduction_method string specifying which dimensionality reduction method to use.
+#' @param reduction_slot string specifying reduction name in reduction_method to use for visualization, e.g. "pca_orig".
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
+#' @param cluster_var string specifying variable name in cluster_slot that identifies cell population labels to be used (e.g. clusters, metaclusters or predicted labels). Must be numeric in this function - factors are converted automatically.
+#' @param split_by NULL or character string specifying a metadata variable (e.g. sample_ID) to split the data. If NULL, only one FCS file with all data is generated.
+#' @param dir string specifying the directory where the FCS file(s) is/are saved. Current working directory by default.
+#' @param filename string specifying the filename for the FCS file. If split_by is defined, an automatic suffix according to the defined variable is assigned to the FCS files.
+#' @importFrom Biobase AnnotatedDataFrame
+#' @import flowCore
+#' @return Message that FCS file(s) are saved in the defined directory.
+#'
+#' @export
+write_fcs <- function(fcd = condor,
+                      expr_slot = "orig",
+                      reduction_method = NULL,
+                      reduction_slot = NULL,
+                      cluster_slot = NULL,
+                      cluster_var = NULL,
+                      split_by = NULL,
+                      dir = paste0(getwd(), "/"),
+                      filename){
+
+  # Print a working to let people know this is an experimental functio
+  warning("This function is still experimental. Feel free to test if and report your experience, this function
+  is currently writing cyCONDOR transformed value, future revision will export original values.")
+
+  # Get the expression data
+  xdata <- fcd[["expr"]][[expr_slot]]
+  exp <- xdata
+
+  # Add dimensionl reduction information
+  if(!is.null(reduction_method)){
+    rdata <- fcd[[reduction_method]][[reduction_slot]]
+    exp <- cbind(exp, rdata)
+  }
+
+  # Add cluster labels (must be numeric!)
+  if(!is.null(cluster_slot)){
+    cluster <- fcd[["clustering"]][[cluster_slot]][[cluster_var]]
+    exp <- cbind(exp, cluster)
+  }
+
+  # Ensure all columns in exp are numeric
+  exp[] <- lapply(exp, function(x){
+    if (is.numeric(x)) return(x)
+    xnum <- as.numeric(as.character(x))
+    if (any(is.na(xnum) & !is.na(x)))
+      warning("Some values in column could not be converted to numeric.")
+    return(xnum)
+  })
+
+  # Hanlde splitting
+  if(!is.null(split_by)){
+    anno <- fcd[["anno"]][["cell_anno"]]
+
+    if(!split_by %in% colnames(anno)){
+      stop("Column '", split_by, "' not found in the annotation data.")
+    }
+
+    split_vec <- anno[[split_by]]
+    exp_mat <- as.matrix(exp)
+    split_list <- split(seq_len(nrow(exp)), split_vec)
+
+    # create a flowSet with flowFrames for each subset
+    ffs <- lapply(names(split_list), function(group){
+      idx <- split_list[[group]]
+      exp_sub <- exp_mat[idx, , drop = FALSE]
+
+      # Create AnnotatedDataFrame for parameters of each subset
+      param_sub <- Biobase::AnnotatedDataFrame(data.frame(
+        name = colnames(exp_sub),
+        desc = paste("Channel", colnames(exp_sub), sep = "_"),
+        range = apply(exp_sub, 2, function(x) ceiling(max(x))),
+        minRange = apply(exp_sub, 2, min),
+        maxRange = apply(exp_sub, 2, max)
+      ))
+
+      # flowFrames
+      flowCore::flowFrame(exprs = exp_sub, parameters = param_sub)
+    })
+
+    names(ffs) <- names(split_list)
+
+    # flowSet
+    fs <- flowCore::flowSet(ffs)
+
+    # Write each frame into its own fcs file
+    for(sample_name in flowCore::sampleNames(fs)){
+      out_file <- paste0(dir, filename, "_", make.names(sample_name), ".fcs")
+      flowCore::write.FCS(fs[[sample_name]], file = out_file)
+      message("File was saved to ", out_file)
+    }
+  }
+
+  # No splitting, yields a single fcs file
+  else{
+
+    # Create AnnotatedDataFrame for parameters
+    param <- Biobase::AnnotatedDataFrame(data.frame(
+      name = colnames(exp),
+      desc = paste("Channel", colnames(exp), sep = "_"),
+      range = apply(exp, 2, function(x) ceiling(max(x))),
+      minRange = apply(exp, 2, min),
+      maxRange = apply(exp, 2, max)
+    ))
+
+    # Create flowFrame file
+    ffs <- flowCore::flowFrame(exprs = as.matrix(exp),
+                               parameters = param)
+
+    # Write the fcs
+    flowCore::write.FCS(ffs, file = paste0(dir, filename, ".fcs"))
+    message("File was saved to ", dir, filename, ".fcs")
+  }
+}

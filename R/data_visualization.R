@@ -699,6 +699,8 @@ plot_confusion_HM <- function(fcd,
 #' @param numeric logical, if TRUE numeric levels in cluster_var are ordered in increasing order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.
 #' @param color_palette vector of colors to be used to fill box plots
 #' @param dot_size Size of the dots.
+#' @param statistics optional string indicating if and which statistics are displayed in the plot. Currently, "wilcox", "t_test" or "diffcyt" are accepted as input. If no statistics should be displayed, set to FALSE.
+#' @param sig_label string indicating how the significance is indicated: "p.adj" for the numerical adjusted p-value, "p.adj.signif" for asteriks.
 #' @import dplyr
 #' @import reshape2
 #' @import ggplot2
@@ -713,7 +715,9 @@ plot_frequency_boxplot<-function(fcd,
                                  groups_to_show = NULL,
                                  numeric = F,
                                  color_palette = cluster_palette,
-                                 dot_size = 2){
+                                 dot_size = 2,
+                                 statistics = F,
+                                 sig_label = "p.adj.signif"){
 
   #### check slots, cell IDs and variables
   checkInput(fcd = fcd,
@@ -789,6 +793,62 @@ plot_frequency_boxplot<-function(fcd,
       ggtitle(i) +
       expand_limits(y = 0) + xlab("") + ylab("percentage") +
       scale_fill_manual(values = color_palette)
+
+    #### statistics
+    if(!isFALSE(statistics)){
+      if(!(statistics %in% c("wilcox", "t_test", "diffcyt", "anova_pht", "friedman_pht", "kruskal_pht"))){
+        stop('Please select a valid statistical test: "wilcox", "t_test", "diffcyt", "anova_pht", "friedman_pht" or "kruskal_pht"')
+      }
+      if(!(sig_label %in% c("p.adj", "p.adj.signif"))){
+        stop('Please specify how you want to display the significance: "p.adj" for the numerical value, "p.adj.signif" for asteriks')
+      }
+
+      test_res <- fcd[["extras"]][["statistics"]][[statistics]]
+
+      ## Visualization of tests for more than two groups - requires a more dynamic y.position for the bars
+      if(statistics %in%  c("anova_pht", "friedman_pht", "kruskal_pht")){
+        # First, prepare tmp so column names match the lookup keys
+        tmp_lookup <- tmp %>%
+          rename(cluster = variable, group = group_var) %>%
+          distinct(group, cluster, .keep_all = TRUE)
+
+        # Add value1 (lookup using group1 + cluster)
+        test_res <- test_res %>%
+          left_join(
+            tmp_lookup %>%
+              select(group, cluster, value) %>%
+              rename(group1 = group, value1 = value),
+            by = c("group1", "cluster"))
+
+        # Add value2 (lookup using group2 + cluster)
+        test_res <- test_res %>%
+          left_join(
+            tmp_lookup %>%
+              select(group, cluster, value) %>%
+              rename(group2 = group, value2 = value),
+            by = c("group2", "cluster"))
+
+        # Add y position
+        test_res <- test_res %>%
+          dplyr::filter(cluster == i) %>%
+          dplyr::mutate(
+            y.base = max(c(value1, value2), na.rm = TRUE) * 1.05,
+            y.step = (max(c(value1, value2), na.rm = TRUE) - min(c(value1, value2), na.rm = TRUE)) * 0.2,
+            y.position = y.base + dplyr::row_number() * y.step)
+
+        p <- p + ggpubr::stat_pvalue_manual(test_res[test_res$cluster == i, ],
+                                            label = sig_label,
+                                            hide.ns = F,
+                                            y.position = "y.position")
+      }
+
+      else{
+      p <- p + ggpubr::stat_pvalue_manual(test_res[test_res$cluster == i, ],
+                                          label = sig_label,
+                                          hide.ns = F,
+                                          y.position = max(data_cluster$value, na.rm = T) *1.1)
+      }
+    }
 
     plot.list[[i]] <- p
     rm(p, data_cluster)

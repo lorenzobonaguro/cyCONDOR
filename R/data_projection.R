@@ -5,18 +5,24 @@
 #' @param fcd Flow cytometry dataset for which the UMAP coordinates should be predicted.
 #' @param input_type Data to use for the calculation of the UMAP, e.g. \code{expr} or \code{pca}. This should be the same which has been used for calculating the UMAP of the reference data set.
 #' @param data_slot Name of the \code{input_type} data slot to use e.g. \code{orig}, if no prefix was added. This should be the same which has been used for calculating the UMAP of the reference data set.
+#' @param nPC Number of PCs used for the UMAP Projection. Default = All. The number of PCs should be the same used for calculating the UMAP of the reference data set. Check the UMAP name of your reference data set e.g. using \code{fcd_model$umap$your_umap_name}.
+#' @param markers Vector of marker names to include or exclude from UMAP projection according to the discard parameter. The markers should be the same used for calculating the UMAP of the reference data set. Use the function \code{\link{used_markers}} to check which markers were used to calculate the UMAP of your \code{fcd_model}.  .
+#' @param discard LOGICAL to decide if the markers specified should be included, "F", or excluded, "T", from the UMAP projection. Default = F.
 #' @param fcd_model Flow cytometry reference data set containing data associated with an existing embedding in \code{fcd_model$extras}.
 #' @param nEpochs Number of epochs to use during the optimization of the embedded coordinates. A value between 30 - 100 is a reasonable trade off between speed and thoroughness. By default, this value is set to one third the number of epochs used to build the model.
 #' @param prefix Prefix for the name of the dimensionality reduction.
 #' @param nThreads Number of threads to use, (except during stochastic gradient descent). By default \code{nThreads = 32}.
 #' @param seed A seed is set for reproducibility.
-#' @details \code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using code{\link{runUMAP}}.
+#' @details \code{learnUMAP()} uses \code{\link[uwot]{umap_transform}} to project new samples contained in \code{fcd} on the embedding previously calculated in a reference data set, \code{fcd_model}, using \code{\link{runUMAP}}.
 #' @return \code{learnUMAP()} returns a \code{fcd} with the predicted UMAP coordinates saved in \code{fcd$umap$expr_orig}, if no \code{prefix} was set.
 #'
 #' @export
 learnUMAP <- function(fcd,
                       input_type,
                       data_slot,
+                      nPC = ncol(fcd[[input_type]][[data_slot]]),
+                      markers = colnames(fcd$expr[[data_slot]]),
+                      discard = FALSE,
                       fcd_model,
                       nEpochs = 100,
                       prefix = NULL,
@@ -27,24 +33,59 @@ learnUMAP <- function(fcd,
   if (!"umap_model" %in% names(fcd_model[["extras"]])) {
     stop("Your fcd_model does not contain a 'umap_model' in the 'extras' slot. Rerun 'runUMAP' for your fcd_model with 'ret_model = TRUE'.")
   }
-
   #check if the column order of fcd and fcd_model
-  if(identical(colnames(fcd[[input_type]][[data_slot]]), colnames(fcd_model[[input_type]][[data_slot]]))== FALSE){
+  if (identical(colnames(fcd[[input_type]][[data_slot]]),
+                colnames(fcd_model[[input_type]][[data_slot]])) == FALSE) {
     stop("fcd test does not have the same column order as fcd_model")
   }
-
   set.seed(seed)
+  # see if selected markers are present in condor_object , if input_type = "expr"
+  if (input_type == "expr") {
+    for (single in markers) {
+      if (!single %in% colnames(fcd[["expr"]][["orig"]])) {
+        stop(paste("ERROR:", single, "not found in expr markers."))
+      }
+    }
+    # define markers to use
+    if (discard == FALSE) {
+      UMAP_markers <- markers
+    }
+    else if (discard == TRUE) {
+      if (length(markers) == length(colnames(fcd$expr[[data_slot]]))) {
+        stop("ERROR: No markers specified. Specify markers to be removed or set 'discard = F'.")
+      }
+      else {
+        UMAP_markers <- setdiff(colnames(fcd$expr[[data_slot]]),
+                                markers)
+      }
+    }
+    #define fcd subset for UMAP projection
+    data1 <- fcd$expr[[data_slot]][, colnames(fcd$expr[[data_slot]]) %in%
+                                     UMAP_markers, drop = F]
+  }
+  if (input_type == "pca") {
+    # define number of PCs and define fcd subset for UMAP projection
+    data1 <- fcd$pca[[data_slot]][, 1:nPC]
+    UMAP_markers <- used_markers(fcd, input_type = "pca",
+                                 data_slot = data_slot, mute = T)
+  }
 
-  umapMat <- uwot::umap_transform(X = fcd[[input_type]][[data_slot]],
-                                  model = fcd_model[["extras"]][["umap_model"]],
-                                  n_epochs = nEpochs,
+  umapMat <- uwot::umap_transform(X = data1,
+                                  model = fcd_model[["extras"]][["umap_model"]], n_epochs = nEpochs,
                                   n_threads = nThreads)
 
   colnames(umapMat) <- c("UMAP1", "UMAP2")
-
-  umap_name <- sub("^_", "" , paste(prefix, input_type, data_slot, sep = "_"))
-
+  umap_name <- sub("^_", "", paste(prefix, input_type, data_slot,
+                                   sep = "_"))
   fcd[["umap"]][[umap_name]] <- umapMat
+  if (nPC < ncol(fcd[[input_type]][[data_slot]])) {
+    suffix <- paste0("top", nPC)
+    umap_name <- paste(umap_name, suffix, sep = "_")
+  }
+  #save markers used for projection in "extras"-slot
+  fcd[["extras"]][["markers"]][[paste("umap", paste(umap_name,
+                                                    "markers", sep = "_"), sep = "_")]] <- UMAP_markers
+
 
   return(fcd)
 

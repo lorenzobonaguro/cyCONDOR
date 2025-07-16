@@ -1,10 +1,11 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: '3.6'
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   Batch_correction: Batch_correction.html
   Cell_type_prediction: Cell_type_prediction.html
   Clustering_and_cell_annotation: Clustering_and_cell_annotation.html
+  cyCONDOR: cyCONDOR.html
   Data_Loading_and_Transformation: Data_Loading_and_Transformation.html
   Data_Projection: Data_Projection.html
   Data_Visualization: Data_Visualization.html
@@ -16,9 +17,7 @@ articles:
   Other_utilities: Other_utilities.html
   Prepare_data_for_cyCONDOR_analysis: Prepare_data_for_cyCONDOR_analysis.html
   Pseudotime_analysis: Pseudotime_analysis.html
-  cyCONDOR: cyCONDOR.html
-last_built: 2025-01-09T08:25Z
+last_built: 2025-07-14T07:34Z
 urls:
   reference: https://lorenzobonaguro.github.io/cyCONDOR/reference
   article: https://lorenzobonaguro.github.io/cyCONDOR/articles
-

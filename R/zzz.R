@@ -10,23 +10,14 @@
   welcome_msg <- paste0("Welcome to ", packageDescription("cyCONDOR")$Package, " version ", packageDescription("cyCONDOR")$Version, "!")
   ascii_art <- "
 
-                                                                   dddddddd
-                                                                   d::::::d
-                                                                   d::::::d
-                                                                   d::::::d
-                                                                   d:::::d
-    cccccccccccccccc   ooooooooooo   nnnn  nnnnnnnn        ddddddddd:::::d    ooooooooooo   rrrrr   rrrrrrrrr
-  cc:::::::::::::::c oo:::::::::::oo n:::nn::::::::nn    dd::::::::::::::d  oo:::::::::::oo r::::rrr:::::::::r
- c:::::::::::::::::co:::::::::::::::on::::::::::::::nn  d::::::::::::::::d o:::::::::::::::or:::::::::::::::::r
-c:::::::cccccc:::::co:::::ooooo:::::onn:::::::::::::::nd:::::::ddddd:::::d o:::::ooooo:::::orr::::::rrrrr::::::r
-c::::::c     ccccccco::::o     o::::o  n:::::nnnn:::::nd::::::d    d:::::d o::::o     o::::o r:::::r     r:::::r
-c:::::c             o::::o     o::::o  n::::n    n::::nd:::::d     d:::::d o::::o     o::::o r:::::r     rrrrrrr
-c:::::c             o::::o     o::::o  n::::n    n::::nd:::::d     d:::::d o::::o     o::::o r:::::r
-c::::::c     ccccccco::::o     o::::o  n::::n    n::::nd:::::d     d:::::d o::::o     o::::o r:::::r
-c:::::::cccccc:::::co:::::ooooo:::::o  n::::n    n::::nd::::::ddddd::::::ddo:::::ooooo:::::o r:::::r
- c:::::::::::::::::co:::::::::::::::o  n::::n    n::::n d:::::::::::::::::do:::::::::::::::o r:::::r
-  cc:::::::::::::::c oo:::::::::::oo   n::::n    n::::n  d:::::::::ddd::::d oo:::::::::::oo  r:::::r
-    cccccccccccccccc   ooooooooooo     nnnnnn    nnnnnn   ddddddddd   ddddd   ooooooooooo    rrrrrrr
+:'######::'##:::'##::'######:::'#######::'##::: ##:'########:::'#######::'########::
+'##... ##:. ##:'##::'##... ##:'##.... ##: ###:: ##: ##.... ##:'##.... ##: ##.... ##:
+ ##:::..:::. ####::: ##:::..:: ##:::: ##: ####: ##: ##:::: ##: ##:::: ##: ##:::: ##:
+ ##:::::::::. ##:::: ##::::::: ##:::: ##: ## ## ##: ##:::: ##: ##:::: ##: ########::
+ ##:::::::::: ##:::: ##::::::: ##:::: ##: ##. ####: ##:::: ##: ##:::: ##: ##.. ##:::
+ ##::: ##:::: ##:::: ##::: ##: ##:::: ##: ##:. ###: ##:::: ##: ##:::: ##: ##::. ##::
+. ######::::: ##::::. ######::. #######:: ##::. ##: ########::. #######:: ##:::. ##:
+:......::::::..::::::......::::.......:::..::::..::........::::.......:::..:::::..::
 
   (o o)   (o o)
  (  V  ) (  V  )
@@ -52,5 +43,6 @@ if (getRversion() >= "2.15.1") {
                            "train", "Accuracy", "AccuracySD", "varImp", "..level..",
                            "DC_1", "DC_2", "PC1", "PC2", "X", "Y", "color", "comparison_result",
                            "variable", "value", "condor", "expfcs_filename", ".", "level",
-                           "data_path", "max_cell", "seed")) # Add other variables as needed
+                           "data_path", "max_cell", "seed", "p_val", "p_adj", "p.adj.signif",
+                           "group", "value1", "value2", "y.base", "y.step", "cluster_id")) # Add other variables as needed
 }

@@ -14,7 +14,8 @@ frequency_kruskal_test(
   post_hoc_test = T,
   post_hoc_p.adjust.method = "bonferroni",
   kruskal_sig_threshold = 0.05,
-  numeric = F
+  numeric = F,
+  print_results = T
 )
 }
 \arguments{
@@ -37,9 +38,11 @@ frequency_kruskal_test(
 \item{kruskal_sig_threshold}{significance threshold for Kruskal-Wallis test. For all Kruskal-Wallis comparisons with an adjusted p-value equal or smaller than the threshold, post-hoc tests are performed (default 0.05)}
 
 \item{numeric}{logical, if TRUE numeric levels in cluster_var are ordered in ascending order and "Cluster_" is pasted before number, if FALSE alphabetical ordering is applied.}
+
+\item{print_results}{Logical, indicating if the test results are printed to the console (TRUE) or not (FALSE).}
 }
 \value{
-\code{frequency_kruskal_test()} returns a list of two data frames, "kruskal_test" and "dunn_test". "kruskal_test" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "dunn_test" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested.
+\code{frequency_kruskal_test()} returns the fcd conaining two data frames, "kruskal" and "kruskal_pht". "kruskal" comprises results produced by \code{\link[rstatix]{kruskal_test}} and \code{\link[rstatix]{kruskal_effsize}} and "kruskal_pht" contains results obtained by \code{\link[rstatix]{dunn_test}}. Both data frames have one additional columns, "cluster", containing the information, which cell population was tested. Results are stored in the fcd under extras$statistics.
 }
 \description{
 \code{frequency_kruskal_test()} performs a Kruskal-Wallis Rank Sum test to compare cell population frequencies of three of more groups. Optionally, post-hoc testing is performed using Dunne's test.

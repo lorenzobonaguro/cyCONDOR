@@ -5,80 +5,69 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="cyCONDOR">
 <title>Differential Analysis with cyCONDOR • cyCONDOR</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Differential Analysis with cyCONDOR">
-<meta property="og:description" content="cyCONDOR">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Differential Analysis with cyCONDOR">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/cyCONDOR.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/cyCONDOR.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a>
-    <a class="dropdown-item" href="../articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a>
-    <a class="dropdown-item" href="../articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a>
-    <a class="dropdown-item" href="../articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a>
-    <a class="dropdown-item" href="../articles/Dimensionality_Reduction.html">Dimensionality Reduction</a>
-    <a class="dropdown-item" href="../articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a>
-    <a class="dropdown-item" href="../articles/Batch_correction.html">Batch correction</a>
-    <a class="dropdown-item" href="../articles/Data_Visualization.html">Data Visualization</a>
-    <a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a>
-    <a class="dropdown-item" href="../articles/Pseudotime_analysis.html">Pseudotime analysis</a>
-    <a class="dropdown-item" href="../articles/Data_Projection.html">Data Projection</a>
-    <a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a>
-    <a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a>
-    <a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/Prepare_data_for_cyCONDOR_analysis.html">Prepare data for cyCONDOR analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/How_to_run_cyCONDOR_as_container.html">How to run cyCONDOR as container</a></li>
+    <li><a class="dropdown-item" href="../articles/Data_Loading_and_Transformation.html">Data Loading and Transformation</a></li>
+    <li><a class="dropdown-item" href="../articles/Load_a_FlowJo_workspace.html">Load a FlowJo workspace</a></li>
+    <li><a class="dropdown-item" href="../articles/Dimensionality_Reduction.html">Dimensionality Reduction</a></li>
+    <li><a class="dropdown-item" href="../articles/Clustering_and_cell_annotation.html">Clustering and cell annotation</a></li>
+    <li><a class="dropdown-item" href="../articles/Batch_correction.html">Batch correction</a></li>
+    <li><a class="dropdown-item" href="../articles/Data_Visualization.html">Data Visualization</a></li>
+    <li><a class="dropdown-item" href="../articles/Differential_Analysis.html">Differential Analysis with cyCONDOR</a></li>
+    <li><a class="dropdown-item" href="../articles/Pseudotime_analysis.html">Pseudotime analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/Data_Projection.html">Data Projection</a></li>
+    <li><a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a></li>
+    <li><a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a></li>
+    <li><a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/lorenzobonaguro/condor/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
 </li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -87,17 +76,18 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Differential Analysis with cyCONDOR</h1>
+
+      <h1>Differential Analysis with cyCONDOR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/lorenzobonaguro/condor/blob/HEAD/vignettes/Differential_Analysis.Rmd" class="external-link"><code>vignettes/Differential_Analysis.Rmd</code></a></small>
+
       <div class="d-none name"><code>Differential_Analysis.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lorenzobonaguro/condor" class="external-link">cyCONDOR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lorenzobonaguro.github.io/cyCONDOR">cyCONDOR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lmweber/diffcyt" class="external-link">diffcyt</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
@@ -430,6 +420,10 @@ the post-hoc tests is performed per cell population.</li>
 functions via arguments. (Note that post-hoc tests have a separate
 argument for this). We recommend to get familiar with the options in the
 <code>p.adjust</code> function at this point.</p>
+<p>The result of each statistical test is store in the
+<code>extra@statistics</code> slot, with this is then possible to add
+the statistics on the boxplot directly usign the <code>statistics</code>
+argument.</p>
 <p>Here, we exemplary show how to compare two groups using a t-test:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#double check correctness of sample IDs to group assignment</span></span>
@@ -443,14 +437,15 @@ argument for this). We recommend to get familiar with the options in the
 <span><span class="co">#&gt; ID8.fcs_49050       ID8   pat</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#perform test</span></span>
-<span><span class="va">results_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/frequency_t_test.html">frequency_t_test</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
-<span>                                   cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
-<span>                                   cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
-<span>                                   sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
-<span>                                   group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
-<span>                                   paired_test <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>                                   p.adjust.method <span class="op">=</span> <span class="st">"bonferroni"</span><span class="op">)</span></span>
-<span><span class="va">results_t</span></span>
+<span><span class="va">condor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/frequency_t_test.html">frequency_t_test</a></span><span class="op">(</span>fcd <span class="op">=</span> <span class="va">condor</span>,</span>
+<span>                           cluster_slot <span class="op">=</span> <span class="st">"phenograph_pca_orig_k_60"</span>, </span>
+<span>                           cluster_var <span class="op">=</span> <span class="st">"metaclusters"</span>,</span>
+<span>                           sample_var <span class="op">=</span> <span class="st">"sample_ID"</span>, </span>
+<span>                           group_var <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                           paired_test <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                           p.adjust.method <span class="op">=</span> <span class="st">"bonferroni"</span>, </span>
+<span>                           print_results <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Statistic results were saved in the fcd under extras$statistics</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 13</span></span></span>
 <span><span class="co">#&gt;    cluster        .y.   group1 group2    n1    n2 statistic    df       p  p.adj</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -931,7 +926,7 @@ sample combination as input.</p>
 <span><span class="va">formula</span></span>
 <span><span class="co">#&gt; $formula</span></span>
 <span><span class="co">#&gt; y ~ group</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55ca76c06a90&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55eb58267cb8&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
 <span><span class="co">#&gt;      group</span></span>
@@ -1136,28 +1131,179 @@ visual inspection to set potential findings into context. We can use
 </div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+<div class="section level2">
+<h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">info</span></span>
+<span><span class="co">#&gt; R version 4.4.2 (2024-10-31)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.1 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: Etc/UTC</span></span>
+<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] dplyr_1.1.4    ggplot2_3.5.2  diffcyt_1.26.1 cyCONDOR_0.3.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;   [1] IRanges_2.40.1              Rmisc_1.5.1                </span></span>
+<span><span class="co">#&gt;   [3] urlchecker_1.0.1            nnet_7.3-20                </span></span>
+<span><span class="co">#&gt;   [5] CytoNorm_2.0.1              TH.data_1.1-3              </span></span>
+<span><span class="co">#&gt;   [7] vctrs_0.6.5                 digest_0.6.37              </span></span>
+<span><span class="co">#&gt;   [9] png_0.1-8                   shape_1.4.6.1              </span></span>
+<span><span class="co">#&gt;  [11] proxy_0.4-27                slingshot_2.14.0           </span></span>
+<span><span class="co">#&gt;  [13] ggrepel_0.9.6               corrplot_0.95              </span></span>
+<span><span class="co">#&gt;  [15] parallelly_1.45.0           MASS_7.3-65                </span></span>
+<span><span class="co">#&gt;  [17] pkgdown_2.1.3               reshape2_1.4.4             </span></span>
+<span><span class="co">#&gt;  [19] httpuv_1.6.16               foreach_1.5.2              </span></span>
+<span><span class="co">#&gt;  [21] BiocGenerics_0.52.0         withr_3.0.2                </span></span>
+<span><span class="co">#&gt;  [23] ggrastr_1.0.2               xfun_0.52                  </span></span>
+<span><span class="co">#&gt;  [25] ggpubr_0.6.1                ellipsis_0.3.2             </span></span>
+<span><span class="co">#&gt;  [27] survival_3.8-3              memoise_2.0.1              </span></span>
+<span><span class="co">#&gt;  [29] hexbin_1.28.5               ggbeeswarm_0.7.2           </span></span>
+<span><span class="co">#&gt;  [31] RProtoBufLib_2.18.0         princurve_2.1.6            </span></span>
+<span><span class="co">#&gt;  [33] profvis_0.4.0               ggsci_3.2.0                </span></span>
+<span><span class="co">#&gt;  [35] systemfonts_1.2.3           ragg_1.4.0                 </span></span>
+<span><span class="co">#&gt;  [37] zoo_1.8-14                  GlobalOptions_0.1.2        </span></span>
+<span><span class="co">#&gt;  [39] DEoptimR_1.1-3-1            Formula_1.2-5              </span></span>
+<span><span class="co">#&gt;  [41] promises_1.3.3              scatterplot3d_0.3-44       </span></span>
+<span><span class="co">#&gt;  [43] httr_1.4.7                  rstatix_0.7.2              </span></span>
+<span><span class="co">#&gt;  [45] globals_0.18.0              rstudioapi_0.17.1          </span></span>
+<span><span class="co">#&gt;  [47] UCSC.utils_1.2.0            miniUI_0.1.2               </span></span>
+<span><span class="co">#&gt;  [49] generics_0.1.4              ggcyto_1.34.0              </span></span>
+<span><span class="co">#&gt;  [51] base64enc_0.1-3             curl_6.4.0                 </span></span>
+<span><span class="co">#&gt;  [53] S4Vectors_0.44.0            zlibbioc_1.52.0            </span></span>
+<span><span class="co">#&gt;  [55] flowWorkspace_4.18.1        polyclip_1.10-7            </span></span>
+<span><span class="co">#&gt;  [57] randomForest_4.7-1.2        GenomeInfoDbData_1.2.13    </span></span>
+<span><span class="co">#&gt;  [59] SparseArray_1.6.2           RBGL_1.82.0                </span></span>
+<span><span class="co">#&gt;  [61] ncdfFlow_2.52.1             RcppEigen_0.3.4.0.2        </span></span>
+<span><span class="co">#&gt;  [63] xtable_1.8-4                stringr_1.5.1              </span></span>
+<span><span class="co">#&gt;  [65] desc_1.4.3                  doParallel_1.0.17          </span></span>
+<span><span class="co">#&gt;  [67] evaluate_1.0.4              S4Arrays_1.6.0             </span></span>
+<span><span class="co">#&gt;  [69] hms_1.1.3                   glmnet_4.1-9               </span></span>
+<span><span class="co">#&gt;  [71] GenomicRanges_1.58.0        irlba_2.3.5.1              </span></span>
+<span><span class="co">#&gt;  [73] colorspace_2.1-1            harmony_1.2.3              </span></span>
+<span><span class="co">#&gt;  [75] reticulate_1.42.0           readxl_1.4.5               </span></span>
+<span><span class="co">#&gt;  [77] magrittr_2.0.3              lmtest_0.9-40              </span></span>
+<span><span class="co">#&gt;  [79] readr_2.1.5                 Rgraphviz_2.50.0           </span></span>
+<span><span class="co">#&gt;  [81] later_1.4.2                 lattice_0.22-7             </span></span>
+<span><span class="co">#&gt;  [83] future.apply_1.20.0         robustbase_0.99-4-1        </span></span>
+<span><span class="co">#&gt;  [85] XML_3.99-0.18               cowplot_1.2.0              </span></span>
+<span><span class="co">#&gt;  [87] matrixStats_1.5.0           xts_0.14.1                 </span></span>
+<span><span class="co">#&gt;  [89] class_7.3-23                Hmisc_5.2-3                </span></span>
+<span><span class="co">#&gt;  [91] pillar_1.11.0               nlme_3.1-168               </span></span>
+<span><span class="co">#&gt;  [93] iterators_1.0.14            compiler_4.4.2             </span></span>
+<span><span class="co">#&gt;  [95] RSpectra_0.16-2             stringi_1.8.7              </span></span>
+<span><span class="co">#&gt;  [97] gower_1.0.2                 minqa_1.2.8                </span></span>
+<span><span class="co">#&gt;  [99] SummarizedExperiment_1.36.0 lubridate_1.9.4            </span></span>
+<span><span class="co">#&gt; [101] devtools_2.4.5              CytoML_2.18.3              </span></span>
+<span><span class="co">#&gt; [103] plyr_1.8.9                  crayon_1.5.3               </span></span>
+<span><span class="co">#&gt; [105] abind_1.4-8                 locfit_1.5-9.12            </span></span>
+<span><span class="co">#&gt; [107] sp_2.2-0                    sandwich_3.1-1             </span></span>
+<span><span class="co">#&gt; [109] pcaMethods_1.98.0           codetools_0.2-20           </span></span>
+<span><span class="co">#&gt; [111] multcomp_1.4-28             textshaping_1.0.1          </span></span>
+<span><span class="co">#&gt; [113] recipes_1.3.1               openssl_2.3.3              </span></span>
+<span><span class="co">#&gt; [115] Rphenograph_0.99.1          TTR_0.24.4                 </span></span>
+<span><span class="co">#&gt; [117] bslib_0.9.0                 e1071_1.7-16               </span></span>
+<span><span class="co">#&gt; [119] destiny_3.20.0              GetoptLong_1.0.5           </span></span>
+<span><span class="co">#&gt; [121] ggplot.multistats_1.0.1     mime_0.13                  </span></span>
+<span><span class="co">#&gt; [123] splines_4.4.2               circlize_0.4.16            </span></span>
+<span><span class="co">#&gt; [125] Rcpp_1.1.0                  sparseMatrixStats_1.18.0   </span></span>
+<span><span class="co">#&gt; [127] cellranger_1.1.0            utf8_1.2.6                 </span></span>
+<span><span class="co">#&gt; [129] knitr_1.50                  clue_0.3-66                </span></span>
+<span><span class="co">#&gt; [131] lme4_1.1-37                 fs_1.6.6                   </span></span>
+<span><span class="co">#&gt; [133] listenv_0.9.1               checkmate_2.3.2            </span></span>
+<span><span class="co">#&gt; [135] DelayedMatrixStats_1.28.1   Rdpack_2.6.4               </span></span>
+<span><span class="co">#&gt; [137] pkgbuild_1.4.8              ggsignif_0.6.4             </span></span>
+<span><span class="co">#&gt; [139] tibble_3.3.0                Matrix_1.7-3               </span></span>
+<span><span class="co">#&gt; [141] rpart.plot_3.1.2            statmod_1.5.0              </span></span>
+<span><span class="co">#&gt; [143] tzdb_0.5.0                  tweenr_2.0.3               </span></span>
+<span><span class="co">#&gt; [145] pkgconfig_2.0.3             pheatmap_1.0.13            </span></span>
+<span><span class="co">#&gt; [147] tools_4.4.2                 cachem_1.1.0               </span></span>
+<span><span class="co">#&gt; [149] rbibutils_2.3               smoother_1.3               </span></span>
+<span><span class="co">#&gt; [151] fastmap_1.2.0               rmarkdown_2.29             </span></span>
+<span><span class="co">#&gt; [153] scales_1.4.0                grid_4.4.2                 </span></span>
+<span><span class="co">#&gt; [155] usethis_3.1.0               broom_1.0.8                </span></span>
+<span><span class="co">#&gt; [157] sass_0.4.10                 graph_1.84.1               </span></span>
+<span><span class="co">#&gt; [159] carData_3.0-5               RANN_2.6.2                 </span></span>
+<span><span class="co">#&gt; [161] rpart_4.1.24                farver_2.1.2               </span></span>
+<span><span class="co">#&gt; [163] reformulas_0.4.1            yaml_2.3.10                </span></span>
+<span><span class="co">#&gt; [165] MatrixGenerics_1.18.1       foreign_0.8-90             </span></span>
+<span><span class="co">#&gt; [167] ggthemes_5.1.0              cli_3.6.5                  </span></span>
+<span><span class="co">#&gt; [169] purrr_1.0.4                 stats4_4.4.2               </span></span>
+<span><span class="co">#&gt; [171] lifecycle_1.0.4             uwot_0.2.3                 </span></span>
+<span><span class="co">#&gt; [173] askpass_1.2.1               caret_7.0-1                </span></span>
+<span><span class="co">#&gt; [175] Biobase_2.66.0              mvtnorm_1.3-3              </span></span>
+<span><span class="co">#&gt; [177] lava_1.8.1                  sessioninfo_1.2.3          </span></span>
+<span><span class="co">#&gt; [179] backports_1.5.0             cytolib_2.18.2             </span></span>
+<span><span class="co">#&gt; [181] timechange_0.3.0            gtable_0.3.6               </span></span>
+<span><span class="co">#&gt; [183] rjson_0.2.23                umap_0.2.10.0              </span></span>
+<span><span class="co">#&gt; [185] ggridges_0.5.6              parallel_4.4.2             </span></span>
+<span><span class="co">#&gt; [187] pROC_1.18.5                 limma_3.62.2               </span></span>
+<span><span class="co">#&gt; [189] jsonlite_2.0.0              edgeR_4.4.2                </span></span>
+<span><span class="co">#&gt; [191] RcppHNSW_0.6.0              Rtsne_0.17                 </span></span>
+<span><span class="co">#&gt; [193] FlowSOM_2.14.0              ranger_0.17.0              </span></span>
+<span><span class="co">#&gt; [195] flowCore_2.18.0             jquerylib_0.1.4            </span></span>
+<span><span class="co">#&gt; [197] timeDate_4041.110           shiny_1.11.1               </span></span>
+<span><span class="co">#&gt; [199] ConsensusClusterPlus_1.70.0 htmltools_0.5.8.1          </span></span>
+<span><span class="co">#&gt; [201] glue_1.8.0                  XVector_0.46.0             </span></span>
+<span><span class="co">#&gt; [203] VIM_6.2.2                   gridExtra_2.3              </span></span>
+<span><span class="co">#&gt; [205] boot_1.3-31                 TrajectoryUtils_1.14.0     </span></span>
+<span><span class="co">#&gt; [207] igraph_2.1.4                R6_2.6.1                   </span></span>
+<span><span class="co">#&gt; [209] tidyr_1.3.1                 SingleCellExperiment_1.28.1</span></span>
+<span><span class="co">#&gt; [211] labeling_0.4.3              vcd_1.4-13                 </span></span>
+<span><span class="co">#&gt; [213] cluster_2.1.8.1             pkgload_1.4.0              </span></span>
+<span><span class="co">#&gt; [215] GenomeInfoDb_1.42.3         ipred_0.9-15               </span></span>
+<span><span class="co">#&gt; [217] nloptr_2.2.1                DelayedArray_0.32.0        </span></span>
+<span><span class="co">#&gt; [219] tidyselect_1.2.1            vipor_0.4.7                </span></span>
+<span><span class="co">#&gt; [221] htmlTable_2.4.3             ggforce_0.5.0              </span></span>
+<span><span class="co">#&gt; [223] CytoDx_1.26.0               car_3.1-3                  </span></span>
+<span><span class="co">#&gt; [225] future_1.58.0               ModelMetrics_1.2.2.2       </span></span>
+<span><span class="co">#&gt; [227] laeken_0.5.3                data.table_1.17.6          </span></span>
+<span><span class="co">#&gt; [229] htmlwidgets_1.6.4           ComplexHeatmap_2.22.0      </span></span>
+<span><span class="co">#&gt; [231] RColorBrewer_1.1-3          rlang_1.1.6                </span></span>
+<span><span class="co">#&gt; [233] remotes_2.5.0               colorRamps_2.3.4           </span></span>
+<span><span class="co">#&gt; [235] ggnewscale_0.5.2            hardhat_1.4.1              </span></span>
+<span><span class="co">#&gt; [237] beeswarm_0.4.0              prodlim_2025.04.28</span></span></code></pre></div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner.</p>
+  <p>Developed by Lorenzo Bonaguro, Charlotte Kroeger, Sophie Mueller, Jacqueline Leidner, Aleksej Frolov, Francesco Elli, Nico Henschel.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

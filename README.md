@@ -17,7 +17,7 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/cycondor](https://hub.docker.com/r/lorenzobonaguro/cycondor), the latest version of the image can be pulled with:
 ```
-docker pull lorenzobonaguro/cycondor:v021
+docker pull lorenzobonaguro/cycondor:v030
 ```
 
 To run the image you can then follow the following script
@@ -27,7 +27,7 @@ docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:v021
+lorenzobonaguro/cycondor:v030
 ```
 You can then access RStudio from your web browser at the address
 
@@ -45,34 +45,56 @@ A detailed guide on how to get started with Docker and how to run cyCONDOR as `S
 
 ## How to install locally
 
-The tools was tested with `R v4.3.X`, older version should be compatible but were not tested
+The tools was tested with `R v4.3` or newer, older version should be compatible but were not tested
 
 To install `cyCONDOR` you can follow few steps describe here below. 
 
 **IMPORTANT:** For some package a compiler is required (e.g. Rtools on Windows or Xcode on MacOS)
 
-First install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
+**NOTE TO MAC SILICON USER** 
+> You might run into an issue when installing `Rphenoannoy`, please see the specific [issue](https://github.com/stuchly/Rphenoannoy/issues/2)
+> Alternateively, we provide a pre-compiled version of `Rphenoannoy` which you can install with:
 ```
-BiocManager::install(update = T, ask = F, version = "3.17")
+install.packages("https://github.com/lorenzobonaguro/Rphenoannoy/releases/download/R4.4.X/Rphenoannoy_0.1.0.tgz")
+```
+> Once this package is installed you can continue with the standard installation
+
+### Install Bioconductor
+
+Install `Bioconductor`, if you are sure `Bioconductor` is already installed in your system you can skip this step.
+```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+    
+BiocManager::install(version = "3.20")
 ``` 
 
-Next we install two dependencies which are only available on GitHub
+### Install cyCONDOR
+
+Now you can install cyCONDOR and all its dependencies
 ```
-devtools::install_github(repo = c("JinmiaoChenLab/Rphenograph", "stuchly/Rphenoannoy", "saeyslab/CytoNorm@362ac08"))
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+devtools::install_github("lorenzobonaguro/cyCONDOR", 
+                        build_vignettes = FALSE, 
+                        repos = BiocManager::repositories())
 ```
 
-Finally we install cyCONDOR, here we manually provide the link to the Bioconductor repositories.
+If you want to have early access to the new feature of `cyCONDOR` you can install the developmental version of `cyCONDOR`. 
+
 ```
-devtools::install_url("https://github.com/lorenzobonaguro/cyCONDOR/releases/download/v021/cyCONDOR_0.2.1.tar.gz",
-                      repos = BiocManager::repositories())
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+devtools::install_github("lorenzobonaguro/cyCONDOR@dev", 
+                        build_vignettes = FALSE, 
+                        repos = BiocManager::repositories())
 ```
 
-Alternatively those steps could be automated with the following code
-```
-download.file(url = "https://raw.githubusercontent.com/lorenzobonaguro/cyCONDOR/master/inst/install_locally_script.R", destfile = "install_locally_script.R")
-              
-source(install_locally_script.R)
-``` 
+*NOTE:* Keep in mind the developmental version if `cyCONDOR` is not fully tested, if you find any bug feel free to report it!
+
+To see which changes are currently implemented in the `dev` branch see the [changelog](https://github.com/lorenzobonaguro/cyCONDOR/blob/dev/NEWS.md).
 
 ## Key cyCONDOR features include:
 

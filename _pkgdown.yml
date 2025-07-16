@@ -83,6 +83,7 @@ reference:
   - frequency_wilcox_test
   - prepInputDiffcyt
   - marker_wilcox_test
+  - add_diffcyt_statistics
 
 - title: Utilities
   desc:  Collection of misc functions.
@@ -96,9 +97,13 @@ reference:
   - merge_condor
   - subset_fcd
   - subset_fcd_byparam
+  - subsample_geosketch
   - checkInput
   - measured_markers
   - create_metaclustering_script
+  - condor_session_info
+  - corr_plot_comparison
+  - write_fcs
 
 articles:
 - title: Detailed cyCONDOR workflows

@@ -539,5 +539,27 @@ create_metaclustering_script <- function(num_clusters) {
     vec <- sapply(1:num_clusters, function(i) paste0('"', i, '" = ""'))
     vec_string <- paste(vec, collapse = ",\n                  ")
     cat("metaclusters <- c(", vec_string, ")\n", sep = "")
-  
+
+}
+
+#' condor_session_info
+#'
+#' @title condor_session_info
+#' @description This function saves the session infos to the fcd object
+#' @param fcd flow cytometry dataset
+#'
+#' @returns fcd with sessionInfo sztored under extras
+#' @importFrom utils sessionInfo
+#'
+#' @export
+condor_session_info <- function(fcd = condor) {
+  tmp <- fcd
+  info <- sessionInfo()
+  if (is.null(tmp$extras)) {
+    tmp$extras <- list()
   }
+  tmp[["extras"]][["session_info"]] <- info
+  message("Session info was saved to fcd$extras$session_info")
+  return(tmp)
+}
+
