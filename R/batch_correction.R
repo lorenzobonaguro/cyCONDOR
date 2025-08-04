@@ -38,6 +38,9 @@ harmonize_intensities <- function(fcd,
 #' @param batch_var vector of column names from \code{fcd$anno$cell_anno} to use for correcting the data.
 #' @param seed A seed is set for reproducibility.
 #' @param prefix Prefix for the output.
+#' @param GPU should GPU be used? Requirement: valid rapids-singlecell installation, CUDA driver and supported hardware (docker image).
+#' @param rapids_dir directory containing the virtual environment for rapids singlecell. Default is directory found in our docker image supporting GPU.
+#' @param GPU_device which graphic card should be used. Defaults to first device in list returned by nvidia-smi.
 #' @details
 #' See [Korunsky et al., 2019](https://doi.org/10.1038/s41592-019-0619-0) for more details on the Harmony algorithm.
 #' @return The function returns a fcd with a harmonized Principal Components based on \code{\link[harmony]{HarmonyMatrix}}. If no prefix is added, the harmonized PCs are saved in \code{fcd$pca$norm}.
@@ -47,9 +50,31 @@ harmonize_PCA <- function(fcd,
                           data_slot = "orig",
                           batch_var,
                           seed = 91,
-                          prefix = NULL) {
+                          prefix = NULL,
+                          GPU=F,
+                          rapids_dir="/home/rapids/virtualenv/rapids_singlecell/",
+                          GPU_device=0) {
 
   set.seed(seed)
+
+
+  if( !("pca" %in% names(condor)) )
+  {
+    stop("PCA was not computed. Compute PCA first")
+  }
+  if( !(data_slot %in% names(condor$pca)) )
+  {
+    stop(paste("the slot",data_slot,"does not exist",sep=" "))
+  }
+  if( !(batch_var%in%colnames(fcd$anno$cell_anno)) )
+  {
+    stop(paste(batch_var,"is not found in meta table.",sep = " "))
+  }
+
+
+
+  if(!GPU){
+
 
   if (is.null(prefix)) {
 
@@ -64,6 +89,72 @@ harmonize_PCA <- function(fcd,
                                                                       meta_data = fcd$anno$cell_anno,
                                                                       vars_use = batch_var,
                                                                       do_pca = FALSE)
+
+  }}
+  else
+    {
+fcd<-readRDS("/home/data/bonn_covid_test_data/condor_bonn_monocytes_factor.rds")
+
+    if( !(dir.exists(rapids_dir)) )
+    {
+      stop("Rapids virtual environment not found. please check if you use the correct docker image or specify the argument rapids_dir.")
+    }
+
+
+##import virtual environmetn
+
+    message(paste("loading rapids virtualenv:",rapids_dir,sep = " "))
+    reticulate::use_virtualenv(rapids_dir)
+
+    ##import python packages
+    message("loading rapids singlecell package")
+    rsc<-reticulate::import("rapids_singlecell")
+    ad<-reticulate::import("anndata")
+    sc<-reticulate::import("scanpy")
+
+    ###rmm does not work at the moment, problem is probably because of the format adata.X is converted by reticulate
+    #rmm<-reticulate::import("rmm")
+    #rmm_cupy_allocator<-reticulate::import("rmm.allocators.cupy")
+    #cp<-reticulate::import("cupy")
+    #
+    ####initialise memory management
+    #rmm$reinitialize(
+    #  managed_memory=F,  # Allows oversubscription
+    #  pool_allocator=F,  # default is False
+    #  devices=as.integer(GPU_device),  # GPU device IDs to register. By default registers only GPU 0.
+    #)
+    #cp$cuda$set_allocator(rmm_cupy_allocator)
+    #
+
+    message("Converting cyCONDOR to anndata")
+  fcd$anno$cell_anno$date_of_sample_collection<-NULL
+    obsm_R<-list()
+
+    if (is.null(prefix)) {
+    obsm_R[["X_pca"]]<-fcd$pca[[data_slot]]
+    adata = ad$AnnData(fcd$expr[[data_slot]],obsm=obsm_R,
+                       obs=fcd$anno$cell_anno
+                       )
+
+    }
+    else{
+      obsm_R[["X_pca"]]<-fcd$pca[[paste(prefix, "norm", sep = "_")]]
+      adata = ad$AnnData(fcd$expr[[paste(prefix, "norm", sep = "_")]],obsm=obsm_R,
+                         obs=fcd$anno$cell_anno
+      )
+    }
+
+
+    rsc$get$anndata_to_GPU(adata)
+    batch_var<-"sex"
+   # rsc$tl$pca(adata, n_comps=10)
+    message("Running harmony integration ...")
+    rsc$pp$harmony_integrate(adata, key=batch_var)
+
+    adata
+
+    fcd[["pca"]][["norm"]]=adata$obsm[["X_pca_harmony"]]
+
 
   }
 

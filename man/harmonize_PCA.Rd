@@ -4,7 +4,16 @@
 \alias{harmonize_PCA}
 \title{harmonize_PCA}
 \usage{
-harmonize_PCA(fcd, data_slot = "orig", batch_var, seed = 91, prefix = NULL)
+harmonize_PCA(
+  fcd,
+  data_slot = "orig",
+  batch_var,
+  seed = 91,
+  prefix = NULL,
+  GPU = F,
+  rapids_dir = "/home/rapids/virtualenv/rapids_singlecell/",
+  GPU_device = 0
+)
 }
 \arguments{
 \item{fcd}{flow cytometry dataset.}
@@ -16,6 +25,12 @@ harmonize_PCA(fcd, data_slot = "orig", batch_var, seed = 91, prefix = NULL)
 \item{seed}{A seed is set for reproducibility.}
 
 \item{prefix}{Prefix for the output.}
+
+\item{GPU}{should GPU be used? Requirement: valid rapids-singlecell installation, CUDA driver and supported hardware (docker image).}
+
+\item{rapids_dir}{directory containing the virtual environment for rapids singlecell. Default is directory found in our docker image supporting GPU.}
+
+\item{GPU_device}{which graphic card should be used. Defaults to first device in list returned by nvidia-smi.}
 }
 \value{
 The function returns a fcd with a harmonized Principal Components based on \code{\link[harmony]{HarmonyMatrix}}. If no prefix is added, the harmonized PCs are saved in \code{fcd$pca$norm}.

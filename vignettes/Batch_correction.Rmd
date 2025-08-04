@@ -80,11 +80,11 @@ If you use this workflow in your work please consider citing [cyCONDOR](XXX) and
 
 ## 2.1 Correct Principal Components 
 
-To use the `harmony` algorithm for correcting the principal components, we use the `harmonize_PCA()` and define the batch variable `batch_var`, in this example the experiment date 'exp'. 
+To use the `harmony` algorithm for correcting the principal components, we use the `harmonize_PCA()` and define the batch variable `batch_var`, in this example the experiment date 'exp'. If you want to use GPU support set argument GPU=T (only available in the respective docker image and supported hardware).
 ```{r, warning=FALSE}
 condor <- harmonize_PCA(fcd = condor, 
                         batch_var = c("exp"), 
-                        data_slot = "orig")
+                        data_slot = "orig",GPU=F)
 ```
 The harmonized PCs are saved in `condor$pca$norm`.
 ```{r}
