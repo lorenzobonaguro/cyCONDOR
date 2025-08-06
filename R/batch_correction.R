@@ -40,7 +40,6 @@ harmonize_intensities <- function(fcd,
 #' @param prefix Prefix for the output.
 #' @param GPU should GPU be used? Requirement: valid rapids-singlecell installation, CUDA driver and supported hardware (docker image).
 #' @param rapids_dir directory containing the virtual environment for rapids singlecell. Default is directory found in our docker image supporting GPU.
-#' @param GPU_device which graphic card should be used. Defaults to first device in list returned by nvidia-smi.
 #' @details
 #' See [Korunsky et al., 2019](https://doi.org/10.1038/s41592-019-0619-0) for more details on the Harmony algorithm.
 #' @return The function returns a fcd with a harmonized Principal Components based on \code{\link[harmony]{HarmonyMatrix}}. If no prefix is added, the harmonized PCs are saved in \code{fcd$pca$norm}.
@@ -52,17 +51,18 @@ harmonize_PCA <- function(fcd,
                           seed = 91,
                           prefix = NULL,
                           GPU=F,
-                          rapids_dir="/home/rapids/virtualenv/rapids_singlecell/",
-                          GPU_device=0) {
+                          rapids_dir="/home/rapids/virtualenv/rapids_singlecell/"#,
+                         # GPU_device=0 #device allocation is currently not functional
+                          ) {
 
   set.seed(seed)
 
 
-  if( !("pca" %in% names(condor)) )
+  if( !("pca" %in% names(fcd)) )
   {
     stop("PCA was not computed. Compute PCA first")
   }
-  if( !(data_slot %in% names(condor$pca)) )
+  if( !(data_slot %in% names(fcd$pca)) )
   {
     stop(paste("the slot",data_slot,"does not exist",sep=" "))
   }
@@ -93,7 +93,6 @@ harmonize_PCA <- function(fcd,
   }}
   else
     {
-fcd<-readRDS("/home/data/bonn_covid_test_data/condor_bonn_monocytes_factor.rds")
 
     if( !(dir.exists(rapids_dir)) )
     {

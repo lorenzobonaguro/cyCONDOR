@@ -295,3 +295,110 @@ runFlowSOM <-  function (fcd,
 
   return(fcd)
 }
+
+#' cluster_GPU
+#'
+#' @title GPU assisted clustering
+#' @description Use GPU assisted Louvain or Leiden algorithm for graph-based clustering.
+#' @param fcd flow cytometry data set, that has been subjected to clustering with cyCONDOR.
+#' @param algorithm which algorithm to use for clustering. Possible choices are leiden or louvain.  Default is leiden.
+#' @param seed A seed is set for reproducibility.
+#' @param rapids_dir directory containing the virtual environment for rapids singlecell. Default is directory found in our docker image supporting GPU.
+#' @param n_neighbor Number of neighbors to use for generating neighbor graph, which is required for the clustering algorithm
+#' @param data_slot name of the PCA data slot to use for harmonization. If no prefix was added the, \code{orig}.
+#' @param n_pc Number of PCs to use for neighbor graph generation. If nothing specified, will use all markers in dataset.
+#' @param res Resolution to use for clustering. Default is 0.6.
+#' @param prefix Prefix for the output.
+#' @details
+#' See [Korunsky et al., 2019](https://doi.org/10.1038/s41592-019-0619-0) for more details on the Harmony algorithm.
+#' @return The function returns a fcd with a column in the metadata called either "leiden" or "louvain".
+#'
+#' @export
+cluster_GPU <- function(fcd,
+                           algorithm="leiden",
+                           seed = 91,
+                           rapids_dir="/home/rapids/virtualenv/rapids_singlecell/",
+                           #GPU_device=0,#device allocation is currently not functional
+                           n_neighbor=15,
+                           data_slot="orig",
+                           n_pc=ncol(fcd$expr$orig),
+                           prefix=NULL,
+                           res=0.6
+) {
+  set.seed(seed)
+
+  ##sanity checks
+  if( !("pca" %in% names(fcd)) )
+  {
+    stop("PCA was not computed. Compute PCA first")
+  }
+  if( !(data_slot %in% names(fcd$pca)) )
+  {
+    stop(paste("the slot",data_slot,"does not exist",sep=" "))
+  }
+
+
+  if( !(dir.exists(rapids_dir)) )
+  {
+    stop("Rapids virtual environment not found. please check if you use the correct docker image or specify the argument rapids_dir.")
+  }
+
+  message(paste("loading rapids virtualenv:",rapids_dir,sep = " "))
+  reticulate::use_virtualenv(rapids_dir)
+
+  ##import python packages
+  message("loading rapids singlecell package")
+  rsc<-reticulate::import("rapids_singlecell")
+  ad<-reticulate::import("anndata")
+  sc<-reticulate::import("scanpy")
+
+  message("Converting cyCONDOR to anndata")
+  fcd$anno$cell_anno$date_of_sample_collection<-NULL
+
+  obsm_R<-list()
+
+  if (is.null(prefix)) {
+    obsm_R[["X_pca"]]<-fcd$pca[[data_slot]]
+    adata = ad$AnnData(fcd$expr[[data_slot]],obsm=obsm_R,
+                       obs=fcd$anno$cell_anno
+    )
+
+  }
+  else{
+    obsm_R[["X_pca"]]<-fcd$pca[[paste(prefix, "norm", sep = "_")]]
+    adata = ad$AnnData(fcd$expr[[paste(prefix, "norm", sep = "_")]],obsm=obsm_R,
+                       obs=fcd$anno$cell_anno
+    )
+  }
+
+
+  rsc$get$anndata_to_GPU(adata)
+
+  message(paste("Generating neighborhood graph with the following parameter:","number of neighbors:" ,n_neighbor,"number of PCs:" ,n_pc, sep = " "))
+
+  ####prepare neighborhood graph for clustering, if n_pc not specified using all markers
+
+  if(is.integer(n_pc)){
+  rsc$pp$neighbors(adata, n_neighbors=as.integer(n_neighbor),n_pcs=as.integer(n_pc))
+  }
+  else{
+    rsc$pp$neighbors(adata, n_neighbors=as.integer(n_neighbor),n_pcs= n_pc)
+  }
+
+
+  message(paste("Performing",algorithm,"clustering using",res,"resolution", sep = " "))
+  if(algorithm=="louvain")
+  {
+  rsc$tl$louvain(adata, resolution=res)
+    fcd$clustering[[paste("louvain",res,sep="_")]]=adata$obs$louvain
+
+  }
+  else if(algorithm=="leiden"){
+    rsc$tl$leiden(adata, resolution=res)
+    fcd$clustering[[paste("leiden",res,sep="_")]]=adata$obs$leiden
+  }
+    return(fcd)
+
+  }
+
+

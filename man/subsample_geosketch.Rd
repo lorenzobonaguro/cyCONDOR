@@ -7,11 +7,11 @@
 subsample_geosketch(condor, pca_slot = "orig", n_sub = 0.5)
 }
 \arguments{
+\item{condor}{Flow cytometry dataset.}
+
 \item{pca_slot}{PCA slot to use for the sketching (e.g. "orig" or "norm").}
 
 \item{n_sub}{Number of cells to subset (default half of all cells).}
-
-\item{fcd}{Flow cytometry dataset.}
 }
 \value{
 Returns a subsampled condor object

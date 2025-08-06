@@ -14,26 +14,59 @@ editor_options:
 library(cyCONDOR)
 ```
 
-In this vignette we showcase `cyCONDOR` functions for clustering and cell annotation.
+In this vignette we showcase `cyCONDOR` functions for clustering and
+cell annotation.
 
 # Load an example dataset
+
 ```{r}
 condor <- readRDS("../.test_files/conodr_example_016.rds")
 ```
 
-The `cyCONDOR` ecosystem provides different clustering methods, Phenograph and FlowSOM. It also provides a convenient way to assign cell annotations to the clustered object.
+The `cyCONDOR` ecosystem provides different clustering methods,
+Phenograph and FlowSOM. It also provides a convenient way to assign cell
+annotations to the clustered object.
 
-The clustering functions take the `condor` object as `fcd` input and the matrix to be used for the calculation of the clusters as `data_slot` input (e.g. `orig` or `norm`). We recommend using the PCA coordinates as `input_type` to compensate for fluctuations in the expression data. By defining a `prefix` which gets incorporated into the slot name of the output, each function can be run with different settings and the results will be saved accordingly. The functions return a fcd with an additional data frame corresponding to the calculated clustering saved in `fcd$clustering`. The name of the output consists of the `prefix` (if given), the clustering method and the `data_slot`.
+The clustering functions take the `condor` object as `fcd` input and the
+matrix to be used for the calculation of the clusters as `data_slot`
+input (e.g. `orig` or `norm`). We recommend using the PCA coordinates as
+`input_type` to compensate for fluctuations in the expression data. By
+defining a `prefix` which gets incorporated into the slot name of the
+output, each function can be run with different settings and the results
+will be saved accordingly. The functions return a fcd with an additional
+data frame corresponding to the calculated clustering saved in
+`fcd$clustering`. The name of the output consists of the `prefix` (if
+given), the clustering method and the `data_slot`.
 
-Additionally, when using the expression matrix as input, the user has the option to specifically state which markers should be used for the calculation by listing them under `markers`. The list can be either written out manually or be extracted directly from the `condor` object using the implemented functions `measured_markers` and `used_markers` By default all available markers from the condor object are used. If the `discard` option is set to TRUE, all markers **except** the ones listed under `markers` are used for calculation. This enables the exclusion of single markers. When using `pca` as input is possible to specify the number of PCs to be used.
+Additionally, when using the expression matrix as input, the user has
+the option to specifically state which markers should be used for the
+calculation by listing them under `markers`. The list can be either
+written out manually or be extracted directly from the `condor` object
+using the implemented functions `measured_markers` and `used_markers` By
+default all available markers from the condor object are used. If the
+`discard` option is set to TRUE, all markers **except** the ones listed
+under `markers` are used for calculation. This enables the exclusion of
+single markers. When using `pca` as input is possible to specify the
+number of PCs to be used.
 
 # Phenograph clustering
 
-`runPhenograph` is based on the package `Rphenoannoy`, an optimized version of `Rphenograph`. This clustering method is designed for high-dimensional single-cell data analysis incorporating the approximate k-nearest neighbor (kNN) technique for graph construction. The `k` parameter defines the number of nearest neighbors to be used for the nearest-neighbor graph, with higher values resulting in fewer clusters. It can be useful to try out different settings here to get the desired cluster resolution. A seed can be set to ensure reproducibility of the clustering.
+`runPhenograph` is based on the package `Rphenoannoy`, an optimized
+version of `Rphenograph`. This clustering method is designed for
+high-dimensional single-cell data analysis incorporating the approximate
+k-nearest neighbor (kNN) technique for graph construction. The `k`
+parameter defines the number of nearest neighbors to be used for the
+nearest-neighbor graph, with higher values resulting in fewer clusters.
+It can be useful to try out different settings here to get the desired
+cluster resolution. A seed can be set to ensure reproducibility of the
+clustering.
 
-For more details see: 
-Chen H (2015). "Rphenograph: R implementation of the phenograph algorithm". R package version 0.99.1. <https://github.com/JinmiaoChenLab/Rphenograph>
-Stuchly J (2020). "Rphenoannoy: R implementation of the phenograph algorithm - approximate KNN modification, based on Rphenograph package". R package version 0.1.0. <https://github.com/stuchly/Rphenoannoy>
+For more details see: Chen H (2015). "Rphenograph: R implementation of
+the phenograph algorithm". R package version 0.99.1.
+<https://github.com/JinmiaoChenLab/Rphenograph> Stuchly J (2020).
+"Rphenoannoy: R implementation of the phenograph algorithm - approximate
+KNN modification, based on Rphenograph package". R package version
+0.1.0. <https://github.com/stuchly/Rphenoannoy>
 
 ```{r}
 condor <- runPhenograph(fcd = condor, 
@@ -42,13 +75,21 @@ condor <- runPhenograph(fcd = condor,
                         k = 60, 
                         seed = 91)
 ```
-The output of the phenograph clustering can be accessed with `condor$clustering$phenograph_pca_orig_k_60`.
+
+The output of the phenograph clustering can be accessed with
+`condor$clustering$phenograph_pca_orig_k_60`.
 
 # FlowSOM clustering
 
-`runFlowSOM` provides a fast algorithm to cluster a high number of cells. The `nClusters` parameter defines the final number of clusters to be generated. A seed can be set to ensure reproducibility of the clustering.
+`runFlowSOM` provides a fast algorithm to cluster a high number of
+cells. The `nClusters` parameter defines the final number of clusters to
+be generated. A seed can be set to ensure reproducibility of the
+clustering.
 
-For more details see: Van Gassen S et al. (2015) "FlowSOM: Using self-organizing maps for visualization and interpretation of cytometry data." Cytom Part J Int Soc Anal Cytol 87: 636-645. <https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625>
+For more details see: Van Gassen S et al. (2015) "FlowSOM: Using
+self-organizing maps for visualization and interpretation of cytometry
+data." Cytom Part J Int Soc Anal Cytol 87: 636-645.
+<https://onlinelibrary.wiley.com/doi/full/10.1002/cyto.a.22625>
 
 ```{r}
 condor <- runFlowSOM(fcd = condor, 
@@ -58,12 +99,18 @@ condor <- runFlowSOM(fcd = condor,
                      seed = 91, 
                      ret_model = TRUE)
 ```
-The output of the FlowSOM clustering can be accessed with `condor$clustering$FlowSOM_pca_orig_k_60`.
 
+The output of the FlowSOM clustering can be accessed with
+`condor$clustering$FlowSOM_pca_orig_k_60`.
 
 # Metaclustering
 
-Each cluster can be now labeled according to the specific cell type with the `metaclustering` function. This function takes the condor object (`fcd`) and the `cluster_slot` as input. The `cluster_var_new` parameter names the new column containing the cell types. The `metacluster` parameter is a named vector acting as translation table to annotate each cell cluster.
+Each cluster can be now labeled according to the specific cell type with
+the `metaclustering` function. This function takes the condor object
+(`fcd`) and the `cluster_slot` as input. The `cluster_var_new` parameter
+names the new column containing the cell types. The `metacluster`
+parameter is a named vector acting as translation table to annotate each
+cell cluster.
 
 ```{r}
 condor <- metaclustering(fcd = condor, 
@@ -97,10 +144,41 @@ condor <- metaclustering(fcd = condor,
                                           "25" = "NK bright"))
 ```
 
+# GPU accelerated clustering
+
+`cluster_GPU` provides access to the GPU accelerated algorithm from the
+rapids-single-cell package to cluster a high number of cells in a fast
+and scalable way. The algorithm depends on a neighborhood graph.
+Parameters `n_neighbor` and `n_pc` can be used to modify graph
+generation. Parameter `res` can be used to change the clustering
+resolution. Two algorithms are available:
+
+-   Louvain: Iteratively refines clusters for optimal modularity
+-   Leiden: Improved version of Louvain, increases stability of clusters
+
+Only available in the respective docker image and supported hardware.
+For more details see:
+<https://rapids-singlecell.readthedocs.io/en/latest/>
+
+```{r}
+condor <- cluster_GPU(fcd=condor,
+                      algorithm="leiden",
+                           seed = 91,
+                           rapids_dir="/home/rapids/virtualenv/rapids_singlecell/",
+                           n_neighbor=15,
+                           data_slot="orig",
+                           n_pc=ncol(fcd$expr$orig),
+                           prefix=NULL,
+                           res=0.6)
+```
+
+The output of the phenograph clustering can be accessed with
+`condor$clustering$leiden_0.6`.
+
 # Session Info
+
 ```{r}
 info <- sessionInfo()
 
 info
 ```
-

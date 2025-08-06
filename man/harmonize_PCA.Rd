@@ -11,8 +11,7 @@ harmonize_PCA(
   seed = 91,
   prefix = NULL,
   GPU = F,
-  rapids_dir = "/home/rapids/virtualenv/rapids_singlecell/",
-  GPU_device = 0
+  rapids_dir = "/home/rapids/virtualenv/rapids_singlecell/"
 )
 }
 \arguments{
@@ -29,8 +28,6 @@ harmonize_PCA(
 \item{GPU}{should GPU be used? Requirement: valid rapids-singlecell installation, CUDA driver and supported hardware (docker image).}
 
 \item{rapids_dir}{directory containing the virtual environment for rapids singlecell. Default is directory found in our docker image supporting GPU.}
-
-\item{GPU_device}{which graphic card should be used. Defaults to first device in list returned by nvidia-smi.}
 }
 \value{
 The function returns a fcd with a harmonized Principal Components based on \code{\link[harmony]{HarmonyMatrix}}. If no prefix is added, the harmonized PCs are saved in \code{fcd$pca$norm}.

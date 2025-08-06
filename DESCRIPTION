@@ -6,7 +6,7 @@ Authors@R: c(
   person(given = "Lorenzo", family = "Bonaguro", email = "lorenzo.bonaguro@dzne.de", role = c("aut", "cre")),
   person(given = "Charlotte", family = "Kroeger", email = "charlotte.kroeger@dzne.de", role = "aut"),
   person(given = "Sophie", family = "Mueller", email = "sophie.mueller@dzne.de", role = "aut"),
-  person(given = "Jacqueline", family = "Leidner", email = "jacqueline.leidner@dzne.de", role = "aut")
+  person(given = "Jacqueline", family = "Leidner", email = "jacqueline.leidner@dzne.de", role = "aut"),
   person(given = "Aleksej", family = "Frolov", email = "aleksej.frolov@dzne.de", role = "aut")
   )
 Description: Flow cytometry analysis workflow. The aim of this project is to 

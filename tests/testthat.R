@@ -10,3 +10,4 @@ library(testthat)
 library(cyCONDOR)
 
 test_check("cyCONDOR")
+
