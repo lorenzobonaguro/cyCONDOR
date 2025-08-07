@@ -2,3 +2,6 @@ cyCONDOR.Rproj
 .Rproj.user/
 .test_files
 .Rhistory
+.Rproj_user_backup/
+cyCONDOR.Rproj_backup
+.gitignore

@@ -8,6 +8,9 @@
 #' @param prefix Optional prefix for the slot name of the output.
 #' @param markers Vector of marker names to include or exclude from the calculation according to the discard parameter. See functions \code{\link{used_markers}} and \code{\link{measured_markers}} for the extraction of markers directly from the condor object.
 #' @param discard LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.
+#' @param n_comp Numbers of components to calculate. By default the same number of components as there are markers.
+#' @param GPU Should GPU be used? By default False. Can only be used with the correct docker image and supported hardware.
+#' @param rapids Path leading to the rapids single cell virtual environment. By default pointing to location in the respective docker image.
 #'
 #' @import stats
 #' @import dplyr
@@ -26,8 +29,20 @@ runPCA <- function(fcd,
                    seed = 91,
                    prefix =  NULL,
                    markers = colnames(fcd$expr[["orig"]]),
-                   discard = FALSE){
+                   discard = FALSE,
+                   n_comp=ncol(fcd$expr$orig),
+                   GPU=F,
+                   rapids_dir="/home/rapids/virtualenv/rapids_singlecell/"#,
+                   # GPU_device=0 #device allocation is currently not functional
+                   ){
   set.seed(seed)
+
+
+  ###sanity checks
+  if( !(data_slot %in% names(fcd$expr)) )
+  {
+    stop(paste("the slot",data_slot,"does not exist",sep=" "))
+  }
 
   # see if selected markers are present in condor_object
   for (single in markers){
@@ -38,6 +53,7 @@ runPCA <- function(fcd,
   }
 
   # calculate PC
+  if(!GPU){
   if (discard == FALSE){              # (discard == F -> keep markers (default = all))
 
     tmp <- stats::prcomp(fcd$expr[[data_slot]][, colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
@@ -54,13 +70,82 @@ runPCA <- function(fcd,
       tmp <- stats::prcomp(fcd$expr[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F])
 
     }
+
+    # save rotated values of PCs in "pca"-slot of condor
+    fcd[["pca"]][[paste(sub("^_", "", paste(prefix, data_slot, sep = "_")))]] <- tmp$x
+
+    #save used markeres in "extras$markers"-slot
+    fcd[["extras"]][["markers"]][[paste("pca", sub("^_", "", paste(prefix, data_slot,"markers", sep = "_")), sep = "_")]] <- dimnames(tmp$rotation)[[1]]
+
+
+  }
+  }else{ ###GPU mode
+    if( !(dir.exists(rapids_dir)) )
+    {
+      stop("Rapids virtual environment not found. please check if you use the correct docker image or specify the argument rapids_dir.")
+    }
+
+
+    ##import virtual environmetn
+
+    message(paste("loading rapids virtualenv:",rapids_dir,sep = " "))
+    reticulate::use_virtualenv(rapids_dir)
+
+    ##import python packages
+    message("loading rapids singlecell package")
+    rsc<-reticulate::import("rapids_singlecell")
+    ad<-reticulate::import("anndata")
+    sc<-reticulate::import("scanpy")
+
+    ###rmm does not work at the moment, problem is probably because of the format adata.X is converted by reticulate
+    #rmm<-reticulate::import("rmm")
+    #rmm_cupy_allocator<-reticulate::import("rmm.allocators.cupy")
+    #cp<-reticulate::import("cupy")
+    #
+    ####initialise memory management
+    #rmm$reinitialize(
+    #  managed_memory=F,  # Allows oversubscription
+    #  pool_allocator=F,  # default is False
+    #  devices=as.integer(GPU_device),  # GPU device IDs to register. By default registers only GPU 0.
+    #)
+    #cp$cuda$set_allocator(rmm_cupy_allocator)
+    #
+
+    message("Converting cyCONDOR to anndata")
+    fcd$anno$cell_anno$date_of_sample_collection<-NULL
+
+    if (discard == FALSE){              # (discard == F -> keep markers (default = all))
+
+
+      adata = ad$AnnData(fcd$expr[[data_slot]])
+
+    } else {
+      if (length(markers) == length(colnames(fcd$expr[["orig"]]))){     # error code if no markers for removal are specified
+
+        stop("No markers specified. Specify markers to be removed or set 'discard = F'.")
+
+
+      } else {
+
+
+        adata = ad$AnnData(fcd$expr[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F],
+                      )
+
+      }
+    }
+
+
+
+    rsc$get$anndata_to_GPU(adata)
+    message("Running PCA ...")
+     rsc$tl$pca(adata, n_comps=n_comp)
+
+
+       fcd[["pca"]][[paste(sub("^_", "", paste(prefix, data_slot, sep = "_")))]]=adata$obsm[["X_pca"]]
+
+
   }
 
-  # save rotated values of PCs in "pca"-slot of condor
-  fcd[["pca"]][[paste(sub("^_", "", paste(prefix, data_slot, sep = "_")))]] <- tmp$x
-
-  #save used markeres in "extras$markers"-slot
-  fcd[["extras"]][["markers"]][[paste("pca", sub("^_", "", paste(prefix, data_slot,"markers", sep = "_")), sep = "_")]] <- dimnames(tmp$rotation)[[1]]
 
 
 

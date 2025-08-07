@@ -40,12 +40,15 @@ condor <- readRDS("../.test_files/conodr_example_016.rds")
 
 # Principal Component Analysis (PCA)
 
-The calculation of the Principle Components is based on the `prcomp` function from the R Stats package (https://rdocumentation.org/packages/stats/versions/3.6.2).
+The calculation of the Principle Components is based on the `prcomp` function from the R Stats package (https://rdocumentation.org/packages/stats/versions/3.6.2). Alternatively you can use the GPU accelerated version of the PCA algorithm by setting the parameter `GPU=T` (only available in the respective docker image and supported hardware). For more details see: https://rapids-singlecell.readthedocs.io/en/latest/.
 
 ```{r}
 condor <- runPCA(fcd = condor,
                  data_slot = "orig",
-                 seed = 91)
+                 seed = 91,
+                 n_comp=ncol(fcd$expr$orig),
+                 GPU=F,
+                 rapids_dir="/home/rapids/virtualenv/rapids_singlecell/")
 ```
 The output data frame of the PCA can be accessed with `condor$pca$orig`.
 

@@ -91,7 +91,7 @@ harmonize_PCA <- function(fcd,
                                                                       do_pca = FALSE)
 
   }}
-  else
+  else ###GPU mode
     {
 
     if( !(dir.exists(rapids_dir)) )
@@ -129,19 +129,14 @@ harmonize_PCA <- function(fcd,
   fcd$anno$cell_anno$date_of_sample_collection<-NULL
     obsm_R<-list()
 
-    if (is.null(prefix)) {
+
     obsm_R[["X_pca"]]<-fcd$pca[[data_slot]]
     adata = ad$AnnData(fcd$expr[[data_slot]],obsm=obsm_R,
                        obs=fcd$anno$cell_anno
                        )
 
-    }
-    else{
-      obsm_R[["X_pca"]]<-fcd$pca[[paste(prefix, "norm", sep = "_")]]
-      adata = ad$AnnData(fcd$expr[[paste(prefix, "norm", sep = "_")]],obsm=obsm_R,
-                         obs=fcd$anno$cell_anno
-      )
-    }
+
+
 
 
     rsc$get$anndata_to_GPU(adata)
@@ -152,7 +147,12 @@ harmonize_PCA <- function(fcd,
 
     adata
 
+    if (is.null(prefix)) {
+
     fcd[["pca"]][["norm"]]=adata$obsm[["X_pca_harmony"]]
+    }else{
+      fcd[["pca"]][[paste(prefix, "norm", sep = "_")]]=adata$obsm[["X_pca_harmony"]]
+    }
 
 
   }

@@ -80,7 +80,7 @@ If you use this workflow in your work please consider citing [cyCONDOR](XXX) and
 
 ## 2.1 Correct Principal Components 
 
-To use the `harmony` algorithm for correcting the principal components, we use the `harmonize_PCA()` and define the batch variable `batch_var`, in this example the experiment date 'exp'. If you want to use GPU support set argument GPU=T (only available in the respective docker image and supported hardware). For more details see: https://rapids-singlecell.readthedocs.io/en/latest/
+To use the `harmony` algorithm for correcting the principal components, we use the `harmonize_PCA()` and define the batch variable `batch_var`, in this example the experiment date 'exp'. If you want to use GPU support set argument `GPU=T` (only available in the respective docker image and supported hardware). For more details see: https://rapids-singlecell.readthedocs.io/en/latest/
 ```{r, warning=FALSE}
 condor <- harmonize_PCA(fcd = condor, 
                         batch_var = c("exp"), 

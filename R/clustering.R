@@ -309,8 +309,6 @@ runFlowSOM <-  function (fcd,
 #' @param n_pc Number of PCs to use for neighbor graph generation. If nothing specified, will use all markers in dataset.
 #' @param res Resolution to use for clustering. Default is 0.6.
 #' @param prefix Prefix for the output.
-#' @details
-#' See [Korunsky et al., 2019](https://doi.org/10.1038/s41592-019-0619-0) for more details on the Harmony algorithm.
 #' @return The function returns a fcd with a column in the metadata called either "leiden" or "louvain".
 #'
 #' @export
@@ -323,7 +321,8 @@ cluster_GPU <- function(fcd,
                            data_slot="orig",
                            n_pc=ncol(fcd$expr$orig),
                            prefix=NULL,
-                           res=0.6
+                           res=0.6,
+                           discard=F
 ) {
   set.seed(seed)
 
@@ -357,19 +356,35 @@ cluster_GPU <- function(fcd,
 
   obsm_R<-list()
 
-  if (is.null(prefix)) {
-    obsm_R[["X_pca"]]<-fcd$pca[[data_slot]]
-    adata = ad$AnnData(fcd$expr[[data_slot]],obsm=obsm_R,
-                       obs=fcd$anno$cell_anno
-    )
+  if (discard == FALSE){              # (discard == F -> keep markers (default = all))
 
+    obsm_R[["X_pca"]]<-fcd$pca[[data_slot]]
+    adata = ad$AnnData(fcd$expr[[data_slot]],obsm=obsm_R
+                       )
+
+  } else {
+    if (length(markers) == length(colnames(fcd$expr[["orig"]]))){     # error code if no markers for removal are specified
+
+      stop("No markers specified. Specify markers to be removed or set 'discard = F'.")
+
+
+    } else {
+
+      obsm_R[["X_pca"]]<-fcd$pca[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F]
+      adata = ad$AnnData(fcd$expr[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F],obsm=obsm_R
+                        )
+
+      adata = ad$AnnData(fcd$expr[[data_slot]][, !colnames(fcd$expr[["orig"]]) %in% markers, drop = F],
+      )
+
+    }
   }
-  else{
-    obsm_R[["X_pca"]]<-fcd$pca[[paste(prefix, "norm", sep = "_")]]
-    adata = ad$AnnData(fcd$expr[[paste(prefix, "norm", sep = "_")]],obsm=obsm_R,
-                       obs=fcd$anno$cell_anno
-    )
-  }
+
+
+
+
+
+
 
 
   rsc$get$anndata_to_GPU(adata)
@@ -390,12 +405,12 @@ cluster_GPU <- function(fcd,
   if(algorithm=="louvain")
   {
   rsc$tl$louvain(adata, resolution=res)
-    fcd$clustering[[paste("louvain",res,sep="_")]]=adata$obs$louvain
+    fcd$clustering[[paste(prefix,"louvain",res,sep="_")]]=adata$obs$louvain
 
   }
   else if(algorithm=="leiden"){
     rsc$tl$leiden(adata, resolution=res)
-    fcd$clustering[[paste("leiden",res,sep="_")]]=adata$obs$leiden
+    fcd$clustering[[paste(prefix,"leiden",res,sep="_")]]=adata$obs$leiden
   }
     return(fcd)
 
