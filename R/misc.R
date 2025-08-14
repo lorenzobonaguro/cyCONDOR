@@ -588,20 +588,37 @@ condor_info <- function(fcd = condor) {
                " parameters across ",
                length(unique(fcd$anno$cell_anno$expfcs_filename)), " samples", "\n"))
 
-  writeLines("Available Dimensionality Reductions:\n")
+  writeLines("Available Data Slots:\n")
+
+  writeLines(names(fcd$expr))
+
+  writeLines("\nAvailable Dimensionality Reductions:\n")
 
   available_dim_red <- names(fcd)[names(fcd) %in% c("pca", "umap", "tSNE")]
 
-  for (dr in available_dim_red) {
+  if (length(available_dim_red) == 0) {
 
-    writeLines(paste0(dr,": ", names(fcd[[dr]])))
+    writeLines("none")
 
+  } else {
+
+    for (dr in available_dim_red) {
+
+      writeLines(paste0(dr,": ", names(fcd[[dr]])))
+
+    }
   }
 
   writeLines("\nAvailable Clustering:\n")
 
-  writeLines(names(fcd$clustering))
+  if (length(names(fcd$clustering)) == 0) {
 
+    writeLines("none")
 
+  } else {
+
+    writeLines(names(fcd$clustering))
+
+  }
 
 }

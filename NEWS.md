@@ -1,3 +1,6 @@
+# cyCONDOR 0.3.1
+* Added function `condor_info` to easily explore the content of a condor object
+
 # cyCONDOR 0.3.0
 * Bug fix with data projection where specific parameters were removed in UMAP calculation
 * Updated official Docker image to the latest Bioconductor version (Bioconductor 3.20, R 4.4.2)
