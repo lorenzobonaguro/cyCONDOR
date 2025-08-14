@@ -563,3 +563,45 @@ condor_session_info <- function(fcd = condor) {
   return(tmp)
 }
 
+#' condor_info
+#'
+#' @title condor_info
+#' @description This function prints an overview of the details of the condor object
+#' @param fcd flow cytometry dataset
+#'
+#' @returns Prints to the console the detail of the condor object
+#'
+#' @export
+
+condor_info <- function(fcd = condor) {
+
+  if (!class(fcd) == "flow_cytometry_dataframe") {
+
+    stop("The provided fcd is not a condor object")
+
+  }
+
+  writeLines(paste0("condor object with: ",
+               dim(fcd$expr$orig)[1],
+               " cells ",
+               dim(fcd$expr$orig)[2],
+               " parameters across ",
+               length(unique(fcd$anno$cell_anno$expfcs_filename)), " samples", "\n"))
+
+  writeLines("Available Dimensionality Reductions:\n")
+
+  available_dim_red <- names(fcd)[names(fcd) %in% c("pca", "umap", "tSNE")]
+
+  for (dr in available_dim_red) {
+
+    writeLines(paste0(dr,": ", names(fcd[[dr]])))
+
+  }
+
+  writeLines("\nAvailable Clustering:\n")
+
+  writeLines(names(fcd$clustering))
+
+
+
+}
