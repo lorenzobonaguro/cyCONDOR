@@ -13,7 +13,8 @@ Authors@R: c(
   )
 Description: Flow cytometry analysis workflow. The aim of this project is to 
     provide an intuitive workflow for the analysis of high-dimensionality cytometry data in R.
-URL: https://lorenzobonaguro.github.io/cyCONDOR
+URL: https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR
+template:
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 biocViews:

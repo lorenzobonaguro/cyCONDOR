@@ -1523,6 +1523,7 @@ plot_marker_boxplot<- function(fcd,
 #' @param seed a seed is set for reproducibility of the plotting result.
 #' @param color_palette vector of colors that should be used to color dots.
 #' @param dot_size numeric indicating the size of the dots.
+#' @param alpha transparency of the dots.
 #' @param title Title of the plot.
 #' @import ggplot2
 #' @return The function returns a scatter plot of two features available in the expression matrix. By default, dots are colored by cell population label provided in cluster_var. If coloring by a metadata is wanted instead, a group_var can be defined. Further, if only a selection of levels available in cluster_var should be included in plotting, a vector of labels of interest can be provided to cluster_to_show argument.
@@ -1540,7 +1541,8 @@ plot_marker_dotplot <- function(fcd,
                                 order = F,
                                 seed = 91,
                                 color_palette = cluster_palette,
-                                dot_size=2,
+                                dot_size = 2,
+                                alpha = 1,
                                 title ="") {
 
   #### check slots, cellIDs und varibles
@@ -1623,7 +1625,7 @@ plot_marker_dotplot <- function(fcd,
     }
 
     p <- ggplot(data, aes(x = X, y = Y)) +
-      geom_point(aes(color = group_var), size = dot_size) +
+      geom_point(aes(color = group_var), size = dot_size, alpha = alpha) +
       theme_bw()+
       theme(aspect.ratio = 1, panel.grid = element_blank())+
       ggtitle(title) +
@@ -1645,7 +1647,7 @@ plot_marker_dotplot <- function(fcd,
     }
 
     p <- ggplot(data, aes(x = X, y = Y)) +
-      geom_point(aes(color = cluster), size = dot_size) +
+      geom_point(aes(color = cluster), size = dot_size, alpha = alpha) +
       theme_bw()+
       theme(aspect.ratio = 1, panel.grid = element_blank())+
       ggtitle(title) +
@@ -1815,6 +1817,7 @@ plot_marker_density <- function(fcd,
 #' @param cluster_to_show (optional) vector of strings indicating levels in cluster_var that should be included for plotting.
 #' @param color_palette vector of colors to be used to fill density distributions.
 #' @param alpha numeric, adjust alpha to be used on fill color of density distributions.
+#' @param title Title of the plot.
 #' @import ggridges
 #' @returns \code{plot_marker_ridgeplot()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.
 #' @details The ridgeline plots are plotted with default parameters of ggridges's \code{\link[ggridges]{geom_density_ridges}}
@@ -1826,8 +1829,9 @@ plot_marker_ridgeplot<- function(fcd,
                                  cluster_slot,
                                  cluster_var,
                                  cluster_to_show = NULL,
-                                 color_palette = cluster_palette,
-                                 alpha = 1){
+                                 color_palette = rev(cluster_palette),
+                                 alpha = 1,
+                                 title = ""){
 
   #### check slots, cellIDs und varibles
   checkInput(fcd = fcd,
@@ -1900,6 +1904,7 @@ plot_marker_ridgeplot<- function(fcd,
       scale_y_discrete(expand = expand_scale(mult = c(0.01, 0.2))) +
       scale_fill_manual(values = color_palette) +
       theme(legend.position = "none") +
+      ggtitle(title) +
       xlab("expression") + ylab(cluster_var) + ggtitle(i)
 
     plot.list[[i]] <- p

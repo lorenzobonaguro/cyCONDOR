@@ -25,6 +25,7 @@
 #' @param smoother choice of scatter plot smoother. Same as principal_curve, but "lowess" option is replaced with "loess" for additional flexibility.
 #' @param shrink.method character denoting how to determine the appropriate amount of shrinkage for a branching lineage. Accepted values are the same as for kernel in density (default is "cosine"), as well as "tricube" and "density". See 'Details' for more.
 #' @param allow.breaks logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @param seed A seed is set for reproducibility.
 #' @details `runPseudotime()` is a wrapper function around \code{\link[slingshot]{getLineages}} and \code{\link[slingshot]{getCurves}} implemented in the package *slingshot*.
 #' The function first calculated the linages and then the curves of the pseudotime and converts the result to a format compatible with the structure of the 'condor' object. The user can specify all the parameters available for the \code{\link[slingshot]{getLineages}} and  \code{\link[slingshot]{getCurves}} functions, arguments description were copied from the documentation of the *slingshot* package.
@@ -56,6 +57,7 @@ runPseudotime <- function(fcd,
                           smoother = "smooth.spline",
                           shrink.method = "cosine",
                           allow.breaks = TRUE,
+                          prefix = NULL,
                           seed = 91) {
 
 
@@ -115,15 +117,15 @@ runPseudotime <- function(fcd,
 
   if (is.null(start.clus)) {
 
-    fcd[["extras"]][[paste("slingshot", reduction_method, reduction_slot, sep = "_")]] <- pseudotime_extra
+    fcd[["extras"]][[paste("slingshot", prefix, reduction_method, reduction_slot, sep = "_")]] <- pseudotime_extra
 
-    fcd[["pseudotime"]][[paste("slingshot", reduction_method, reduction_slot, sep = "_")]] <- curve
+    fcd[["pseudotime"]][[paste("slingshot", prefix, reduction_method, reduction_slot, sep = "_")]] <- curve
 
   } else {
 
-    fcd[["extras"]][[paste("slingshot", reduction_method, reduction_slot, start.clus, sep = "_")]] <- pseudotime_extra
+    fcd[["extras"]][[paste("slingshot", prefix, reduction_method, reduction_slot, start.clus, sep = "_")]] <- pseudotime_extra
 
-    fcd[["pseudotime"]][[paste("slingshot", reduction_method, reduction_slot, start.clus, sep = "_")]] <- curve
+    fcd[["pseudotime"]][[paste("slingshot", prefix, reduction_method, reduction_slot, start.clus, sep = "_")]] <- curve
 
   }
 

@@ -1,4 +1,4 @@
-url: https://lorenzobonaguro.github.io/cyCONDOR
+url: https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR
 template:
   bootstrap: 5
   light-switch: true
@@ -107,6 +107,8 @@ reference:
 
 articles:
 - title: Detailed cyCONDOR workflows
+  desc: >
+    cyCONDOR tutorials
   navbar: ~
   contents:
   - Prepare_data_for_cyCONDOR_analysis
@@ -123,3 +125,9 @@ articles:
   - Machine_learning_classifier
   - Cell_type_prediction
   - Other_utilities
+
+- title: Other workflows
+  desc: >
+    Additional analytical workflows
+  contents: 
+  - Workflow_merge_panels

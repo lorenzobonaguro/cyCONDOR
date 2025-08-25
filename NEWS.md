@@ -1,5 +1,11 @@
 # cyCONDOR 0.3.1
-* Added function `condor_info` to easily explore the content of a condor object
+* Added function `condor_info` to easily explore the content of a condor object.
+* Solved Issue #31, color pallette is reversed in `plot_marker_ridgeplot()` function.
+* Solved Issue #30, the pseudotime function can now use a `prefix` argument.
+* Improved documentation regarding the use of different co-factors when using the archsin data transformation.
+* Solved Issue #33, the `plot_marker_dotplot` function have now an `alpha` argument to control the transparency of the dots.
+* Solved Issue #34, the `plot_marker_ridgeplot` now have a `title` argument.
+* Solved Issue #19, if an empty `fcs` or `csv` file is provided the `prep_fcd` function will stop and point to the corrupted file.
 
 # cyCONDOR 0.3.0
 * Bug fix with data projection where specific parameters were removed in UMAP calculation
