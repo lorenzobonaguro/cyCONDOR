@@ -11,8 +11,9 @@ plot_marker_ridgeplot(
   cluster_slot,
   cluster_var,
   cluster_to_show = NULL,
-  color_palette = cluster_palette,
-  alpha = 1
+  color_palette = rev(cluster_palette),
+  alpha = 1,
+  title = ""
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ Corrected input data should be handled cautiously.}
 \item{color_palette}{vector of colors to be used to fill density distributions.}
 
 \item{alpha}{numeric, adjust alpha to be used on fill color of density distributions.}
+
+\item{title}{Title of the plot.}
 }
 \value{
 \code{plot_marker_ridgeplot()} returns either one plot in case only one marker is provided via \code{marker} argument or a list of plots, if several markers are requested.

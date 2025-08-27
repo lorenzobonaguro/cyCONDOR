@@ -93,6 +93,12 @@ under the variable (`metaclusters`).
 data loading, lists of markers, dimensionality reduction or clustering
 models for future data projection).
 
+# Visualize the content of a condor object
+```{r}
+condor_info(fcd = condor)
+```
+
+
 # Extract or change marker names
 
 ## Get measured markers

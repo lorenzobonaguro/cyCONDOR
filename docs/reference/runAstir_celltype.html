@@ -41,6 +41,7 @@ The function returns a `condor` object with automatically annotated cell types a
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/lorenzobonaguro/cyCONDOR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -56,7 +57,7 @@ The function returns a `condor` object with automatically annotated cell types a
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Run Astir cell type prediction</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/lorenzobonaguro/cyCONDOR/blob/HEAD/R/astir.R" class="external-link"><code>R/astir.R</code></a></small>
       <div class="d-none name"><code>runAstir_celltype.Rd</code></div>
     </div>
 
@@ -74,7 +75,8 @@ The function returns a `condor` object with automatically annotated cell types a
 <span>  <span class="va">manifest_name</span>,</span>
 <span>  <span class="va">max_epochs</span>,</span>
 <span>  <span class="va">learning_rate</span>,</span>
-<span>  <span class="va">initial_epochs</span></span>
+<span>  <span class="va">initial_epochs</span>,</span>
+<span>  prefix <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,6 +110,10 @@ The function returns a `condor` object with automatically annotated cell types a
 
 <dt id="arg-initial-epochs">initial_epochs<a class="anchor" aria-label="anchor" href="#arg-initial-epochs"></a></dt>
 <dd><p>initial epochs, for details see `Astir` documentation.</p></dd>
+
+
+<dt id="arg-prefix">prefix<a class="anchor" aria-label="anchor" href="#arg-prefix"></a></dt>
+<dd><p>Optional prefix for the slot name of the output.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -39,6 +39,7 @@
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/lorenzobonaguro/cyCONDOR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -54,18 +55,20 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-
+      <small>Source: <a href="https://github.com/lorenzobonaguro/cyCONDOR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="cycondor-031">cyCONDOR 0.3.1<a class="anchor" aria-label="anchor" href="#cycondor-031"></a></h2>
 <ul><li>Added function <code>condor_info</code> to easily explore the content of a condor object.</li>
-<li>Solved Issue #31, color pallette is reversed in <code><a href="../reference/plot_marker_ridgeplot.html">plot_marker_ridgeplot()</a></code> function.</li>
-<li>Solved Issue #30, the pseudotime function can now use a <code>prefix</code> argument.</li>
+<li>Solved Issue <a href="https://github.com/lorenzobonaguro/cyCONDOR/issues/31" class="external-link">#31</a>, color pallette is reversed in <code><a href="../reference/plot_marker_ridgeplot.html">plot_marker_ridgeplot()</a></code> function.</li>
+<li>Solved Issue <a href="https://github.com/lorenzobonaguro/cyCONDOR/issues/30" class="external-link">#30</a>, the pseudotime function can now use a <code>prefix</code> argument.</li>
 <li>Improved documentation regarding the use of different co-factors when using the archsin data transformation.</li>
-<li>Solved Issue #33, the <code>plot_marker_dotplot</code> function have now an <code>alpha</code> argument to control the transparency of the dots.</li>
-<li>Solved Issue #34, the <code>plot_marker_ridgeplot</code> now have a <code>title</code> argument.</li>
-<li>Solved Issue #19, if an empty <code>fcs</code> or <code>csv</code> file is provided the <code>prep_fcd</code> function will stop and point to the corrupted file.</li>
+<li>Solved Issue <a href="https://github.com/lorenzobonaguro/cyCONDOR/issues/33" class="external-link">#33</a>, the <code>plot_marker_dotplot</code> function have now an <code>alpha</code> argument to control the transparency of the dots.</li>
+<li>Solved Issue <a href="https://github.com/lorenzobonaguro/cyCONDOR/issues/34" class="external-link">#34</a>, the <code>plot_marker_ridgeplot</code> now have a <code>title</code> argument.</li>
+<li>Solved Issue <a href="https://github.com/lorenzobonaguro/cyCONDOR/issues/19" class="external-link">#19</a>, if an empty <code>fcs</code> or <code>csv</code> file is provided the <code>prep_fcd</code> function will stop and point to the corrupted file.</li>
+<li>Added function <code>order_param</code> to allow manual ordering of an annotation or clustering variable.</li>
+<li>Added <code>prefix</code> argument to <code>astir</code> functions.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="cycondor-030">cyCONDOR 0.3.0<a class="anchor" aria-label="anchor" href="#cycondor-030"></a></h2>
@@ -89,8 +92,8 @@
 <h2 class="pkg-version" data-toc-text="0.2.1" id="cycondor-021">cyCONDOR 0.2.1<a class="anchor" aria-label="anchor" href="#cycondor-021"></a></h2>
 <ul><li>Included help function to assign metaclusters (Thanks to Lucas Secchim Ribeiro)</li>
 <li>Removal of redundant <code>color_palette</code> parameter and other redundant lines in the source code</li>
-<li>Added <code>turkey hsd</code> as post-hoc test to <code>frequency_anova_test</code> (see issue #10)</li>
-<li>Modified <code>emmeans test</code> in <code>frequency_anova_test</code> (see issue #10)</li>
+<li>Added <code>turkey hsd</code> as post-hoc test to <code>frequency_anova_test</code> (see issue <a href="https://github.com/lorenzobonaguro/cyCONDOR/issues/10" class="external-link">#10</a>)</li>
+<li>Modified <code>emmeans test</code> in <code>frequency_anova_test</code> (see issue <a href="https://github.com/lorenzobonaguro/cyCONDOR/issues/10" class="external-link">#10</a>)</li>
 <li>Improvement of error messages</li>
 </ul></div>
     <div class="section level2">

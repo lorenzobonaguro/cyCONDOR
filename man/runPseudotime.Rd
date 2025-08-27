@@ -28,6 +28,7 @@ runPseudotime(
   smoother = "smooth.spline",
   shrink.method = "cosine",
   allow.breaks = TRUE,
+  prefix = NULL,
   seed = 91
 )
 }
@@ -77,6 +78,8 @@ runPseudotime(
 \item{shrink.method}{character denoting how to determine the appropriate amount of shrinkage for a branching lineage. Accepted values are the same as for kernel in density (default is "cosine"), as well as "tricube" and "density". See 'Details' for more.}
 
 \item{allow.breaks}{logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.}
+
+\item{prefix}{Optional prefix for the slot name of the output.}
 
 \item{seed}{A seed is set for reproducibility.}
 }

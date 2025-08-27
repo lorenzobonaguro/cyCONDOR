@@ -12,6 +12,8 @@ plot_dim_red(
   cluster_slot = NULL,
   add_pseudotime = FALSE,
   pseudotime_slot,
+  add_astir = FALSE,
+  astir_slot,
   param,
   order = FALSE,
   title = "Dimensionality Reduction Plot",
@@ -45,6 +47,10 @@ Corrected input data should be handled cautiously.}
 \item{add_pseudotime}{Logical, if plot should be colored by pseudotime.}
 
 \item{pseudotime_slot}{string specifying pseudotime name to use for visualization.}
+
+\item{add_astir}{Logical, if plot should be colored by Astir prediction.}
+
+\item{astir_slot}{string specifying astir description name to use for visualization.}
 
 \item{param}{parameter to visualize in the plot, this can be either a continuous variable or a categorical one, the function will react differently accordingly.}
 
