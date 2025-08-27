@@ -258,6 +258,8 @@ plot_dim_red <- function(fcd,
                          cluster_slot = NULL,
                          add_pseudotime = FALSE,
                          pseudotime_slot,
+                         add_astir = FALSE,
+                         astir_slot,
                          param,
                          order = FALSE,
                          title = "Dimensionality Reduction Plot",
@@ -324,6 +326,12 @@ plot_dim_red <- function(fcd,
   if (isTRUE(add_pseudotime)) {
 
     data <- cbind(data, fcd$pseudotime[[pseudotime_slot]])
+
+  }
+
+  if (isTRUE(add_astir)) {
+
+    data <- cbind(data, fcd$astir[[astir_slot]])
 
   }
 

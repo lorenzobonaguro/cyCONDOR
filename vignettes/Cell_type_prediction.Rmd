@@ -103,6 +103,40 @@ head(read.csv("../.test_files/Astir/probabilities.csv"))
 head(read.csv("../.test_files/Astir/cell_states.csv"))
 ```
 
+# Data Visualization
+```{r}
+plot_dim_red(fcd = condor, 
+             expr_slot = "orig", 
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             add_astir = TRUE, 
+             astir_slot = "Astir_cell_type_orig",
+             param = "cell_type", 
+             order = T, 
+             title = "UMAP colored by Astir predicted cell type", 
+             facet_by_variable = FALSE, 
+             raster = TRUE, 
+             alpha = .3, 
+             dot_size = .3)
+```
+
+```{r}
+plot_dim_red(fcd = condor, 
+             expr_slot = "orig", 
+             reduction_method = "umap", 
+             reduction_slot = "pca_orig", 
+             add_astir = TRUE, 
+             astir_slot = "Astir_cell_state_orig",
+             param = "Naive", 
+             order = F, 
+             title = "UMAP colored by Astir predicted cell state", 
+             facet_by_variable = FALSE, 
+             raster = TRUE, 
+             alpha = .3, 
+             dot_size = 1)
+```
+
+
 # Session Info
 ```{r}
 info <- sessionInfo()
