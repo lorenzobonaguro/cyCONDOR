@@ -62,12 +62,12 @@ You can now run the two functions for the prediction of the cell type (`run_asti
 This function predict the cell type based on the marker selection specified in the manifest file. The output of this function is saved within the `condor` object under `condor$astir$Astir_cell_type_[data_slot]`. Additionally some QC data is saved in the `analysis_path` directory as `.csv`
 
 ```{r}
-condor <- runAstir_celltype(fcd = condor, 
+condor <- runAstir_celltype(fcd = condor,
                             data_slot = "orig",
                             analysis_path = "../.test_files/Astir/",
-                            manifest_name = "marker.yml", 
-                            max_epochs = 1000, 
-                            learning_rate = 0.002, 
+                            manifest_name = "marker.yml",
+                            max_epochs = 1000,
+                            learning_rate = 0.002,
                             initial_epochs = 3)
 ```
 
@@ -76,12 +76,12 @@ condor <- runAstir_celltype(fcd = condor,
 Similarly to the previous function the `runAstir_cellstates` function calculates a score for each cell state declared in the manifest file. The results are saved in the `condor` object in the slot `condor$astir$Astir_cell_state_[data_slot]`. Also in this case additional information are stored in the `analysis_path` directory in `.csv` format.
 
 ```{r}
-condor <- runAstir_cellstates(fcd = condor, 
+condor <- runAstir_cellstates(fcd = condor,
                               data_slot = "orig",
                               analysis_path = "../.test_files/Astir/",
-                              manifest_name = "marker.yml", 
-                              max_epochs = 1000, 
-                              learning_rate = 0.002, 
+                              manifest_name = "marker.yml",
+                              max_epochs = 1000,
+                              learning_rate = 0.002,
                               initial_epochs = 3)
 ```
 

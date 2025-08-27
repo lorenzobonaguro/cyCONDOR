@@ -1,7 +1,16 @@
-# cyCONDOR 0.2.2
+# cyCONDOR 0.3.0
 * Bug fix with data projection where specific parameters were removed in UMAP calculation
-* Updated official Docker image to the latest Biovonductor version (Bioconductor 3.20, R 4.4.2)
+* Updated official Docker image to the latest Bioconductor version (Bioconductor 3.20, R 4.4.2)
 * Completed documentation of the `Astir` workflow.
+* Added parameter to select number of PCs and markers for UMAP projection in `learnUMAP` function.
+* Added documentation and guide to install cyCONDOR in Silicon Mac. We now how a compiled version of the Rphenoannoy package.
+* Simplified installation process, now automatically installing also the GitHub dependencies.
+* Enable Geometric Sketching to subset a `condor` object with the function `geometric_sketching`
+* Developed a function (`condor_session_info`) to include the `SessionInfo` to the `condor` object to increase tackability of the analysis.
+* Included storage of the statistical test results in the `condor` object
+* Added the option to display statistics to the `plot_frequency_boxplot` function - so far for `wilcox`, `t_test` and `diffcyt`
+* Added function to correlate the cyCONDOR results and the manual gating with FlowJo or similar software (`corr_plot_comparison`)
+* **Experimental**: Added a function to write FCS files from a `condor` object (`write_fcs`). Currently the function if writing in the .fcs file the cyCONDOR transformed values, we will change to the original values in the next iteration after more extensive testing.
 
 # cyCONDOR 0.2.1
 * Included help function to assign metaclusters (Thanks to Lucas Secchim Ribeiro)

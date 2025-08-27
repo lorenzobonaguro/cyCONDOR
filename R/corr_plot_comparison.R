@@ -8,13 +8,21 @@
 #' @param flowjo_df data frame containing the cell type frequencies obtained via manual gating and annotation (e.g. FlowJo).
 #' @param sample_col name of the column containing sample names. This column name needs to be matching between the two data frames.
 #' @param method_corr correlation method used in the correlogram (default = "pearson").
+#' @param tl.cex Numeric, for the size of text label (variable names).
+#' @param cl.cex Numeric, text size of number-label in color-legend
+#' @import corrplot
+#' @importFrom grDevices recordPlot
+#'
+#' @export
 
 
 
 corr_plot_comparison <- function(condor_df,
                                  flowjo_df,
                                  sample_col,
-                                 method_corr = "pearson"){
+                                 method_corr = "pearson",
+                                 tl.cex = 1,
+                                 cl.cex = 1){
 
 
      # Merge the two dataframes by Sample/DONOR ID
@@ -63,9 +71,8 @@ corr_plot_comparison <- function(condor_df,
      M <- cor(cor_data,use = "pairwise.complete.obs",method = method_corr)
 
      corr_M <- M[selected_condor,selected_flowjo]
-     corrplot::corrplot(corr_M,method = "circle",type = "lower", tl.cex = 3.5,cl.cex = 4.5)
 
-     plot <- recordPlot()
+     plot <- corrplot::corrplot(corr_M,method = "circle",type = "lower", tl.cex = 1, cl.cex = 1)
 
      return(plot)
 }

@@ -1,17 +1,19 @@
 Package: cyCONDOR
 Type: Package
 Title: Flow Cytometry data analysis toolbox
-Version: 0.2.2.00.02
+Version: 0.3.0
 Authors@R: c(
   person(given = "Lorenzo", family = "Bonaguro", email = "lorenzo.bonaguro@dzne.de", role = c("aut", "cre")),
   person(given = "Charlotte", family = "Kroeger", email = "charlotte.kroeger@dzne.de", role = "aut"),
   person(given = "Sophie", family = "Mueller", email = "sophie.mueller@dzne.de", role = "aut"),
   person(given = "Jacqueline", family = "Leidner", email = "jacqueline.leidner@dzne.de", role = "aut"),
-  person(given = "Aleksej", family = "Frolov", email = "aleksej.frolov@dzne.de", role = "aut")
+  person(given = "Aleksej", family = "Frolov", email = "aleksej.frolov@dzne.de", role = "aut"),
+  person(given = "Francesco", family = "Elli", email = "francesco.elli@dzne.de", role = "aut"),
+  person(given = "Nico", family = "Henschel", email = "nico.henschel@dzne.de", role = "aut")
   )
 Description: Flow cytometry analysis workflow. The aim of this project is to 
     provide an intuitive workflow for the analysis of high-dimensionality cytometry data in R.
-URL: https://github.com/lorenzobonaguro/cyCONDOR
+URL: https://lorenzobonaguro.github.io/cyCONDOR
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 biocViews:
@@ -58,7 +60,8 @@ Imports:
     ggridges,
     rstatix,
     tidyr,
-    CytoNorm
+    CytoNorm,
+    corrplot
 Remotes:
     JinmiaoChenLab/Rphenograph,
     stuchly/Rphenoannoy,

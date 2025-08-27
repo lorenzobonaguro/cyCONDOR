@@ -242,6 +242,57 @@ The `subsample_geosketch` function can be useful if you want to speed up calcula
 condor_sub <- subsample_geosketch(condor,pca_slot = "orig",n_sub=10000)
 ```
 
+## Compare cyCONDOR frequencies with FlowJo results
+
+We provide an easy to use function to calculate the correlation between cyCONDOR results and the cell frequency obtained with other analysis tools such as FlowJo.
+
+```{r, eval=TRUE, include=F}
+df_flowjo <- data.frame(
+  sample_ID = paste0("Sample_", 1:10),
+  FlowJo_B_class_switched = c(0.07143, 0.03125, 0.01333, 0.0625, 0.21429, 0.1, 0.18182, 0.11111, 0.1, 0.15126),
+  FlowJo_CD4_CM            = c(0.14286, 0.09375, 0.06667, 0.1875, 0.21429, 0.1, 0.09091, 0.22222, 0.1, 0.13445),
+  FlowJo_CD8_CM            = c(0.03571, 0.03125, 0.06667, 0.0625, 0.07143, 0.1, 0.09091, 0.33333, 0.1, 0.11765),
+  FlowJo_CD69_pos        = c(0.10714, 0.125, 0.06667, 0.125, 0.07143, 0.1, 0.09091, 0.11111, 0.1, 0.10084),
+  FlowJo_Naive_CD4         = c(0.21429, 0.0625, 0.06667, 0.25, 0.07143, 0.1, 0.09091, 0.11111, 0.1, 0.08403),
+  FlowJo_Naive_CD8         = c(0.01429, 0.0625, 0.06667, 0.25, 0.03571, 0.1, 0.04545, 0.11111, 0.1, 0.06723),
+  FlowJo_Treg              = c(0.02143, 0.0625, 0.13333, 0.0625, 0.03571, 0.1, 0.04545, 0.05556, 0.1, 0.05042),
+  FlowJo_DCs               = c(0.02857, 0.03125, 0.06667, 0.125, 0.03571, 0.1, 0.04545, 0.05556, 0.1, 0.03361),
+  FlowJo_NK_CD56dim        = c(0.04286, 0.0625, 0.06667, 0.0625, 0.01786, 0.1, 0.01818, 0.02778, 0.1, 0.01681),
+  FlowJo_Unconventional_T  = c(0.03571, 0.4375, 0.45333, 0.0625, 0.30357, 0.1, 0.09091, 0.05556, 0.1, 0.3437)
+)
+
+
+df_condor <- data.frame(
+  sample_ID = paste0("Sample_", 1:10),
+  
+  Condor_B_class_switched = c(0.07143, 0.03125, 0.01333, 0.0625, 0.21429, 0.1, 0.18182, 0.11111, 0.1, 0.15126) + 0.1,
+  Condor_CD4_CM            = c(0.14286, 0.09375, 0.06667, 0.1875, 0.21429, 0.1, 0.09091, 0.22222, 0.1, 0.13445) + 0.2,
+  Condor_CD8_CM            = c(0.03571, 0.03125, 0.06667, 0.0625, 0.07143, 0.1, 0.09091, 0.33333, 0.1, 0.11765) + 0.3,
+  Condor_CD69_pos         = c(0.10714, 0.125, 0.06667, 0.125, 0.07143, 0.1, 0.09091, 0.11111, 0.1, 0.10084) + 0.4,
+  Condor_Naive_CD4         = c(0.21429, 0.0625, 0.06667, 0.25, 0.07143, 0.1, 0.09091, 0.11111, 0.1, 0.08403) + 0.3,
+  Condor_Naive_CD8         = c(0.01429, 0.0625, 0.06667, 0.25, 0.03571, 0.1, 0.04545, 0.11111, 0.1, 0.06723) + 0.2,
+  Condor_Treg              = c(0.02143, 0.0625, 0.13333, 0.0625, 0.03571, 0.1, 0.04545, 0.05556, 0.1, 0.05042) + 0.2,
+  Condor_DCs               = c(0.02857, 0.03125, 0.06667, 0.125, 0.03571, 0.1, 0.04545, 0.05556, 0.1, 0.03361) + 0.5,
+  Condor_NK_CD56dim        = c(0.04286, 0.0625, 0.06667, 0.0625, 0.01786, 0.1, 0.01818, 0.02778, 0.1, 0.01681) + 0.9,
+  Condor_Unconventional_T  = c(0.03571, 0.4375, 0.45333, 0.0625, 0.30357, 0.1, 0.09091, 0.05556, 0.1, 0.3437) + 0.4
+)
+```
+
+The two dataframe should look like this, it is impartant that every colum name is starting with `Condor_` for the condor dataframe and `FlowJo` for the FlowJo dataframe. 
+```{r}
+df_condor
+```
+
+```{r, fig.width=7, fig.height=7}
+corr_plot_comparison(condor_df = df_condor, 
+                     flowjo_df = df_flowjo, 
+                     sample_col = "sample_ID",
+                     method_corr = "pearson", 
+                     tl.cex = 1, 
+                     cl.cex = 1)
+```
+
+
 # Session Info
 
 ```{r}

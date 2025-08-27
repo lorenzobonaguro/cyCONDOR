@@ -17,7 +17,7 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/cycondor](https://hub.docker.com/r/lorenzobonaguro/cycondor), the latest version of the image can be pulled with:
 ```
-docker pull lorenzobonaguro/cycondor:v022
+docker pull lorenzobonaguro/cycondor:v030
 ```
 
 To run the image you can then follow the following script
@@ -27,7 +27,7 @@ docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:v022
+lorenzobonaguro/cycondor:v030
 ```
 You can then access RStudio from your web browser at the address
 
