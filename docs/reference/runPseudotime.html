@@ -39,6 +39,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/lorenzobonaguro/cyCONDOR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -54,7 +55,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Function of calculate Pseudotime from HDFC data analysed with cyCONDOR</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/lorenzobonaguro/cyCONDOR/blob/HEAD/R/pseudotime.R" class="external-link"><code>R/pseudotime.R</code></a></small>
       <div class="d-none name"><code>runPseudotime.Rd</code></div>
     </div>
 
@@ -88,6 +89,7 @@
 <span>  smoother <span class="op">=</span> <span class="st">"smooth.spline"</span>,</span>
 <span>  shrink.method <span class="op">=</span> <span class="st">"cosine"</span>,</span>
 <span>  allow.breaks <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  prefix <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">91</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -186,6 +188,10 @@
 
 <dt id="arg-allow-breaks">allow.breaks<a class="anchor" aria-label="anchor" href="#arg-allow-breaks"></a></dt>
 <dd><p>logical, determines whether curves that branch very close to the origin should be allowed to have different starting points.</p></dd>
+
+
+<dt id="arg-prefix">prefix<a class="anchor" aria-label="anchor" href="#arg-prefix"></a></dt>
+<dd><p>Optional prefix for the slot name of the output.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>

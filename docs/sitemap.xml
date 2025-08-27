@@ -28,11 +28,13 @@
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/check_IDs.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/clr.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/condor-onAttach.html</loc></url>
+<url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/condor_info.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/condor_session_info.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/confusionMatrix.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/corr_plot_comparison.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/create_metaclustering_script.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/df_frequency.html</loc></url>
+<url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/export_sce.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/filter_fcd.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/frequency_anova_test.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/frequency_friedman_test.html</loc></url>
@@ -48,6 +50,7 @@
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/measured_markers.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/merge_condor.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/metaclustering.html</loc></url>
+<url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/order_param.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/plot_confusion_HM.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/plot_counts_barplot.html</loc></url>
 <url><loc>https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference/plot_dim_density.html</loc></url>

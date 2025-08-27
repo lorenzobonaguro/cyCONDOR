@@ -104,6 +104,9 @@ reference:
   - condor_session_info
   - corr_plot_comparison
   - write_fcs
+  - condor_info
+  - export_sce
+  - order_param
 
 articles:
 - title: Detailed cyCONDOR workflows
@@ -129,5 +132,5 @@ articles:
 - title: Other workflows
   desc: >
     Additional analytical workflows
-  contents: 
+  contents:
   - Workflow_merge_panels

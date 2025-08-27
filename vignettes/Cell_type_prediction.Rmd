@@ -103,7 +103,8 @@ head(read.csv("../.test_files/Astir/probabilities.csv"))
 head(read.csv("../.test_files/Astir/cell_states.csv"))
 ```
 
-# Data Visualization
+## Data Visualization
+
 ```{r}
 plot_dim_red(fcd = condor, 
              expr_slot = "orig", 

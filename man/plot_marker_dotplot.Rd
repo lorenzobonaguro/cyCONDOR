@@ -17,6 +17,7 @@ plot_marker_dotplot(
   seed = 91,
   color_palette = cluster_palette,
   dot_size = 2,
+  alpha = 1,
   title = ""
 )
 }
@@ -46,6 +47,8 @@ By default all groups are plotted.}
 \item{color_palette}{vector of colors that should be used to color dots.}
 
 \item{dot_size}{numeric indicating the size of the dots.}
+
+\item{alpha}{transparency of the dots.}
 
 \item{title}{Title of the plot.}
 }

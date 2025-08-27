@@ -39,6 +39,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/lorenzobonaguro/cyCONDOR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -54,7 +55,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Dimensionality reduction dotplot</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/lorenzobonaguro/cyCONDOR/blob/HEAD/R/data_visualization.R" class="external-link"><code>R/data_visualization.R</code></a></small>
       <div class="d-none name"><code>plot_dim_red.Rd</code></div>
     </div>
 
@@ -72,6 +73,8 @@
 <span>  cluster_slot <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_pseudotime <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">pseudotime_slot</span>,</span>
+<span>  add_astir <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">astir_slot</span>,</span>
 <span>  <span class="va">param</span>,</span>
 <span>  order <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Dimensionality Reduction Plot"</span>,</span>
@@ -122,6 +125,14 @@ Corrected input data should be handled cautiously.</p></dd>
 
 <dt id="arg-pseudotime-slot">pseudotime_slot<a class="anchor" aria-label="anchor" href="#arg-pseudotime-slot"></a></dt>
 <dd><p>string specifying pseudotime name to use for visualization.</p></dd>
+
+
+<dt id="arg-add-astir">add_astir<a class="anchor" aria-label="anchor" href="#arg-add-astir"></a></dt>
+<dd><p>Logical, if plot should be colored by Astir prediction.</p></dd>
+
+
+<dt id="arg-astir-slot">astir_slot<a class="anchor" aria-label="anchor" href="#arg-astir-slot"></a></dt>
+<dd><p>string specifying astir description name to use for visualization.</p></dd>
 
 
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>

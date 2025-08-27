@@ -686,6 +686,8 @@ export_sce <- function(fcd = condor,
                        dir = paste0(getwd(), "/"),
                        filename = "") {
 
+  message("This function is still experimental, if you run into any issue please let us know!")
+
   # Extracting the expression data
   exp <- as.matrix(t(fcd[["expr"]][[expr_slot]]))
 

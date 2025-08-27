@@ -62,7 +62,8 @@ Imports:
     rstatix,
     tidyr,
     CytoNorm,
-    corrplot
+    corrplot,
+    S4Vectors
 Remotes:
     JinmiaoChenLab/Rphenograph,
     stuchly/Rphenoannoy,

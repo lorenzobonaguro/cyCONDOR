@@ -4,7 +4,6 @@
 \alias{corr_plot_comparison}
 \title{Sample-wise correlation of cell type proportions to compare manual gating and cyCONDOR.}
 \usage{
-
 corr_plot_comparison(
   condor_df,
   flowjo_df,
@@ -13,7 +12,6 @@ corr_plot_comparison(
   tl.cex = 1,
   cl.cex = 1
 )
-
 }
 \arguments{
 \item{condor_df}{data frame containing the cell type frequencies obtained via clustering and annotation in cyCONDOR.}
@@ -27,7 +25,6 @@ corr_plot_comparison(
 \item{tl.cex}{Numeric, for the size of text label (variable names).}
 
 \item{cl.cex}{Numeric, text size of number-label in color-legend}
-
 }
 \description{
 'corr_plot_comparison' performs a sample-wise correlation of cell type proportions obtained via manual gating and via clustering on cyCONDOR. The result is shown in a correlogram.

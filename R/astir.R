@@ -10,6 +10,7 @@
 #' @param max_epochs Maximum number of epochs, for details see `Astir` documentation.
 #' @param learning_rate Learning Rate.
 #' @param initial_epochs initial epochs, for details see `Astir` documentation.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @details Predict cell types using 'Astir'. This package requires the python library `astir` and `reticulate`. This function is still experimental and was not extensively tested in cyCONDOR. In one of the next release we will document it's usage in more details on a dedicated vignette.
 #' For the moment if you want to know more feel free to reach out on our `Slack` channel. For more details on the different parameters refer to `Astir` documentation.
 #' @import reticulate
@@ -23,7 +24,7 @@ runAstir_celltype <- function(fcd,
                               max_epochs,
                               learning_rate,
                               initial_epochs,
-                              prefix = "") {
+                              prefix = NULL) {
 
   # Save the expression matrix as csv
   write.csv(x = fcd$expr[[data_slot]], file = paste0(analysis_path, "expr.csv"))
@@ -68,7 +69,7 @@ runAstir_celltype <- function(fcd,
                                         "Learning_Rate_", learning_rate,
                                         "_Initial_Epochs_", initial_epochs))
 
-  fcd[["astir"]][[paste(prefix, "Astir_cell_type", data_slot, sep = "_")]] <- df
+  fcd[["astir"]][[paste("Astir_cell_type", sub("^_", "", paste(prefix, data_slot, sep = "_")), sep = "_")]] <- df
 
   return(fcd)
 
@@ -86,6 +87,7 @@ runAstir_celltype <- function(fcd,
 #' @param max_epochs Maximum number of epochs.
 #' @param learning_rate Learning Rate.
 #' @param initial_epochs Initial Epochs.
+#' @param prefix Optional prefix for the slot name of the output.
 #' @import reticulate
 #' @importFrom utils write.csv
 #' @return runAstir_cellstates
@@ -98,7 +100,7 @@ runAstir_cellstates <- function(fcd,
                                 max_epochs,
                                 learning_rate,
                                 initial_epochs,
-                                prefix = "") {
+                                prefix = NULL) {
 
   # Save the expression matrix as csv
   write.csv(x = fcd$expr[[data_slot]], file = paste0(analysis_path, "expr.csv"))
@@ -138,7 +140,7 @@ runAstir_cellstates <- function(fcd,
                                         "Learning_Rate_", learning_rate,
                                         "_Initial_Epochs_", initial_epochs))
 
-  fcd[["astir"]][[paste(prefix, "Astir_cell_state", data_slot, sep = "_")]] <- df
+  fcd[["astir"]][[paste("Astir_cell_state", sub("^_", "", paste(prefix, data_slot, sep = "_")), sep = "_")]] <- df
 
   return(fcd)
 

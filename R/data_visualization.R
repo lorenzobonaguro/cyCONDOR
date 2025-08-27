@@ -225,6 +225,8 @@ confusionMatrix <- function (i = NULL, j = NULL)
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in cluster_var.
 #' @param add_pseudotime Logical, if plot should be colored by pseudotime.
 #' @param pseudotime_slot string specifying pseudotime name to use for visualization.
+#' @param add_astir Logical, if plot should be colored by Astir prediction.
+#' @param astir_slot string specifying astir description name to use for visualization.
 #' @param param parameter to visualize in the plot, this can be either a continuous variable or a categorical one, the function will react differently accordingly.
 #' @param order logical if you want to order the dots in the plot, by expression for example. This can help to find small populations of positive cells. If set to FALSE, the plotting order of the cells is randomized.
 #' @param title title of the plot.

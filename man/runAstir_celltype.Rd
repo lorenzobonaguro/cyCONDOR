@@ -11,7 +11,8 @@ runAstir_celltype(
   manifest_name,
   max_epochs,
   learning_rate,
-  initial_epochs
+  initial_epochs,
+  prefix = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ runAstir_celltype(
 \item{learning_rate}{Learning Rate.}
 
 \item{initial_epochs}{initial epochs, for details see `Astir` documentation.}
+
+\item{prefix}{Optional prefix for the slot name of the output.}
 }
 \value{
 runAstir_celltype
