@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,8 @@
     <li><a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a></li>
     <li><a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a></li>
     <li><a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -55,6 +57,16 @@
 
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.1" id="cycondor-031">cyCONDOR 0.3.1<a class="anchor" aria-label="anchor" href="#cycondor-031"></a></h2>
+<ul><li>Added function <code>condor_info</code> to easily explore the content of a condor object.</li>
+<li>Solved Issue #31, color pallette is reversed in <code><a href="../reference/plot_marker_ridgeplot.html">plot_marker_ridgeplot()</a></code> function.</li>
+<li>Solved Issue #30, the pseudotime function can now use a <code>prefix</code> argument.</li>
+<li>Improved documentation regarding the use of different co-factors when using the archsin data transformation.</li>
+<li>Solved Issue #33, the <code>plot_marker_dotplot</code> function have now an <code>alpha</code> argument to control the transparency of the dots.</li>
+<li>Solved Issue #34, the <code>plot_marker_ridgeplot</code> now have a <code>title</code> argument.</li>
+<li>Solved Issue #19, if an empty <code>fcs</code> or <code>csv</code> file is provided the <code>prep_fcd</code> function will stop and point to the corrupted file.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="cycondor-030">cyCONDOR 0.3.0<a class="anchor" aria-label="anchor" href="#cycondor-030"></a></h2>
 <ul><li>Bug fix with data projection where specific parameters were removed in UMAP calculation</li>

@@ -1,7 +1,7 @@
 Package: cyCONDOR
 Type: Package
 Title: Flow Cytometry data analysis toolbox
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
   person(given = "Lorenzo", family = "Bonaguro", email = "lorenzo.bonaguro@dzne.de", role = c("aut", "cre")),
   person(given = "Charlotte", family = "Kroeger", email = "charlotte.kroeger@dzne.de", role = "aut"),
@@ -13,7 +13,8 @@ Authors@R: c(
   )
 Description: Flow cytometry analysis workflow. The aim of this project is to 
     provide an intuitive workflow for the analysis of high-dimensionality cytometry data in R.
-URL: https://lorenzobonaguro.github.io/cyCONDOR
+URL: https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR
+template:
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 biocViews:

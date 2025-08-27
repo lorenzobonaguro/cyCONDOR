@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Prepare data for cyCONDOR analysis • cyCONDOR</title>
+<title>Workflow Merge Panels • cyCONDOR</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Prepare data for cyCONDOR analysis">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Workflow Merge Panels">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -79,96 +79,17 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Prepare data for cyCONDOR analysis</h1>
+      <h1>Workflow Merge Panels</h1>
             
       
 
-      <div class="d-none name"><code>Prepare_data_for_cyCONDOR_analysis.Rmd</code></div>
+      <div class="d-none name"><code>Workflow_merge_panels.Rmd</code></div>
     </div>
 
     
     
-<p>We provide here a detailed step-by-step guideline on how to export
-compensated <code>.fcs</code> files from <code>FlowJo v10</code> and
-prepare the metadata annotation table for <code>cyCONDOR</code>
-analysis.</p>
-<div class="section level2">
-<h2 id="step-1">Step 1<a class="anchor" aria-label="anchor" href="#step-1"></a>
-</h2>
-<p>Within the <code>FlowJo workspace</code>, you can adjust compensation
-as needed and optionally apply a <code>basic gating hierarchy</code> to
-your data. This is recommended to remove debris and unwanted cells,
-reducing the size of your final dataset and improving computational
-efficiency. For instance, during immune cell analysis, consider gating
-on <code>CD45+</code> cells for <code>cyCONDOR</code> analysis.</p>
-</div>
-<div class="section level2">
-<h2 id="step-2">Step 2<a class="anchor" aria-label="anchor" href="#step-2"></a>
-</h2>
-<p>Right-click in the gate you want to export and select
-<code>Export/Concatenate Populations</code></p>
-<p><em>Tip:</em> If you want to export this gate for all the samples in
-the workspace, before this step right-click on the desired gate and
-select <code>Select Equivalent Nodes</code> to select the same gate in
-all samples.</p>
-<p><br></p>
-<p><img src="../reference/figures/preparation_1.PNG" alt="drawing" width="700"></p>
-<p><em>Exemplary <code>FlowJo workspace</code> (left) and exemplary
-option window shown after right-clicking on the desired gate</em></p>
-</div>
-<div class="section level2">
-<h2 id="step-3">Step 3<a class="anchor" aria-label="anchor" href="#step-3"></a>
-</h2>
-<p>Now, choose the format for your exported data. <code>FCS3</code> is
-the recommended format. Additionally, select the destination folder
-where you want to save the file. You have two options for selecting
-which channels to export:</p>
-<ul>
-<li>
-<strong>Export all compensated values:</strong> This option is
-selected in the image below and will export all channels that have been
-compensated.</li>
-<li>
-<strong>Manually select compensated channels:</strong> This option
-allows you to choose specific compensated channels to include in the
-exported <code>.fcs</code> file.</li>
-</ul>
-<p><em>Note:</em> If data were not compensated in FlowJo, for example
-cyTOF data or BD S8 unmixed data, export <code>uncompensated</code>
-values.</p>
-<p><br></p>
-<p><img src="../reference/figures/preparation_2.PNG" alt="drawing" width="500"></p>
-<p><em><code>Population Export or Concatenate</code> window</em></p>
-</div>
-<div class="section level2">
-<h2 id="step-4">Step 4<a class="anchor" aria-label="anchor" href="#step-4"></a>
-</h2>
-<p>Click on <code>Export</code>. Now all selected files will be exported
-in the selected folder. As input for <code>cyCONDOR</code> the
-<code>data_path</code> should only contain the <code>.fcs</code> files
-intended for the analysis.</p>
-<p><br></p>
-<p><img src="../reference/figures/preparation_3.PNG" alt="drawing" width="450"></p>
-<p><em>Exemplary folder with exported <code>.fcs</code> files</em></p>
-</div>
-<div class="section level2">
-<h2 id="step-5">Step 5<a class="anchor" aria-label="anchor" href="#step-5"></a>
-</h2>
-<p>The <code>annotation table</code>, used to load <code>.fcs</code>
-files, should have the file names of all <code>.fcs</code> files in the
-first column. Additional columns can be included to store any relevant
-metadata for your analysis. There are no restrictions on the type of
-information you can include in these metadata columns. We advise to save
-the annotation table in a separate folder and save it as comma separated
-<code>.csv</code> file. An example of annotation table is shown
-below:</p>
-<p><br></p>
-<p><img src="../reference/figures/preparation_4.PNG" alt="drawing" width="700"></p>
-<p><em>Exemplary metadata table visualized in Excel (left) and Notepad
-(right)</em></p>
-</div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside>
+<p>This is a test vignette</p>
+  </main>
 </div>
 
 

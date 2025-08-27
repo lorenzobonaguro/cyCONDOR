@@ -17,7 +17,8 @@ articles:
   Other_utilities: Other_utilities.html
   Prepare_data_for_cyCONDOR_analysis: Prepare_data_for_cyCONDOR_analysis.html
   Pseudotime_analysis: Pseudotime_analysis.html
-last_built: 2025-07-14T07:34Z
+  Workflow_merge_panels: Workflow_merge_panels.html
+last_built: 2025-08-22T15:20Z
 urls:
-  reference: https://lorenzobonaguro.github.io/cyCONDOR/reference
-  article: https://lorenzobonaguro.github.io/cyCONDOR/articles
+  reference: https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/reference
+  article: https://lorenzobonaguro.github.io/cyCONDOR, https://github.com/lorenzobonaguro/cyCONDOR/articles

@@ -563,3 +563,127 @@ condor_session_info <- function(fcd = condor) {
   return(tmp)
 }
 
+#' condor_info
+#'
+#' @title condor_info
+#' @description This function prints an overview of the details of the condor object
+#' @param fcd flow cytometry dataset
+#'
+#' @returns Prints to the console the detail of the condor object
+#'
+#' @export
+
+condor_info <- function(fcd = condor) {
+
+  if (!class(fcd) == "flow_cytometry_dataframe") {
+
+    stop("The provided fcd is not a condor object")
+
+  }
+
+  writeLines(paste0("condor object with: ",
+               dim(fcd$expr$orig)[1],
+               " cells ",
+               dim(fcd$expr$orig)[2],
+               " parameters across ",
+               length(unique(fcd$anno$cell_anno$expfcs_filename)), " samples", "\n"))
+
+  writeLines("Available Data Slots:\n")
+
+  writeLines(names(fcd$expr))
+
+  writeLines("\nAvailable Dimensionality Reductions:\n")
+
+  available_dim_red <- names(fcd)[names(fcd) %in% c("pca", "umap", "tSNE")]
+
+  if (length(available_dim_red) == 0) {
+
+    writeLines("none")
+
+  } else {
+
+    for (dr in available_dim_red) {
+
+      writeLines(paste0(dr,": ", names(fcd[[dr]])))
+
+    }
+  }
+
+  writeLines("\nAvailable Clustering:\n")
+
+  if (length(names(fcd$clustering)) == 0) {
+
+    writeLines("none")
+
+  } else {
+
+    writeLines(names(fcd$clustering))
+
+  }
+
+}
+
+#' order_param
+#'
+#' @title order_param
+#' @description This function helps to re-oder the levels of a variable to allow a personalized order for plotting.
+#' @param fcd flow cytometry dataset.
+#' @param type This function can be used to re-order either a metadata annotation or a clustering label (metacluster).
+#' @param cluster_slot string specifying which clustering slot to use to find variable specified in param. Necessary only if type is "cluster".
+#' @param param Parameter to reorder.
+#' @param new_order A vector describing the new order asigned to the labels.
+#' @returns Returns a condor object with a reordered variable
+#'
+#' @export
+
+order_param <- function(fcd,
+                        type,
+                        cluster_slot,
+                        param,
+                        new_order) {
+
+  #First check if the fcd is a valid condor object
+  if (class(fcd) != "flow_cytometry_dataframe") {
+
+    stop("The provided object is not a valid condor object")
+
+  }
+
+  #Decide which variable need to be adjusted
+  if (type == "anno") {
+
+    # Check if the provided order covers all of the selected variable
+    if (setequal(unique(fcd$anno$cell_anno[[param]]), new_order)) {
+
+      # If the check is passed the factor is reordered
+      fcd$anno$cell_anno[[param]] <- factor(fcd$anno$cell_anno[[param]], levels = new_order)
+
+      message("The variable was reordered successfully")
+
+    }
+
+  }
+
+  if (type == "cluster") {
+
+    # Check if the provided order covers all of the selected variable
+    if (setequal(unique(fcd$clustering[[cluster_slot]][[param]]), new_order)) {
+
+      # If the check is passed the factor is reordered
+      fcd$clustering[[cluster_slot]][[param]] <- factor(fcd$clustering[[cluster_slot]][[param]], levels = new_order)
+
+      message("The variable was reordered successfully")
+
+    }
+
+  }
+
+  if (sum(type == c("anno", "cluster")) == 0) {
+
+    stop("The provided 'type' valiable is not valid, please use either 'anno' or 'cluster'")
+
+  }
+
+  return(fcd)
+
+}

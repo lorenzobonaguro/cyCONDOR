@@ -22,7 +22,7 @@ For data transformation `cyCONDOR` provides different options:
 
 - `auto_logi`: For HDFC and Spectral Flow data (recommended, auto-logicle transformation). This transformation gives good results also with cyTOF data, especially if you are experiencing a lot of noise with `arcsinh` due to negative values. auto-logicle transformation is inherited from the `Cytofkit` package [Chen er al. 2016](https://pubmed.ncbi.nlm.nih.gov/27662185/).
 - `clr`: Recommended for CITE-seq data (centered log ratio transformation)
-- `arcsinh`: arcsinh transformation with co-factor 5, common transformation for cyTOF data.
+- `arcsinh`: arcsinh transformation, common transformation for CyTOF data. By default a co-factor of 5 is used (optimal setting for most CyTOF dataset), for conventional cytometry a co-factor of 150 is usually suggested. For spectral data higher co-factors might be needed and need to be tested in individual cases.
 
 The last important piece to build a `condor` object is the annotation table. The annotation table should contain all necessary metadata used for analysis as well a column containing the names of the input files and should be supplied as `.csv` file. The column containing the file names should be stated in 'filename_col'. Below an exemplary metadata table is shown.
 

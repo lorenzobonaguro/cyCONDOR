@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cyCONDOR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,8 @@
     <li><a class="dropdown-item" href="../articles/Machine_learning_classifier.html">Machine learning classifier</a></li>
     <li><a class="dropdown-item" href="../articles/Cell_type_prediction.html">Cell type prediction</a></li>
     <li><a class="dropdown-item" href="../articles/Other_utilities.html">Introduction to the condor object and other utilities</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -87,7 +89,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lorenzobonaguro.github.io/cyCONDOR">cyCONDOR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lorenzobonaguro.github.io/cyCONDOR" class="external-link">cyCONDOR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
@@ -151,12 +153,12 @@ already annotated.</p>
 <code>condor$pseudotime$slingshot_umap_pca_orig</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">pseudotime</span><span class="op">$</span><span class="va">slingshot_umap_pca_orig</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                               Lineage1 Lineage2     mean</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_2  10.83834       NA 10.83834</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_9        NA 13.03076 13.03076</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_18       NA 13.66170 13.66170</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_27       NA 12.58441 12.58441</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_49       NA 12.47278 12.47278</span></span></code></pre>
+<pre><code><span><span class="co">##                                               Lineage1 Lineage2      mean</span></span>
+<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_2  8.907685       NA  8.907685</span></span>
+<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_9        NA 11.40754 11.407538</span></span>
+<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_18       NA 12.15903 12.159027</span></span>
+<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_27       NA 11.36649 11.366492</span></span>
+<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_49       NA 11.36649 11.366492</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="with-a-specific-starting-cluster">With a specific starting cluster<a class="anchor" aria-label="anchor" href="#with-a-specific-starting-cluster"></a>
@@ -175,18 +177,7 @@ already annotated.</p>
 <code>condor$pseudotime$slingshot_umap_pca_orig_CMPs</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condor</span><span class="op">$</span><span class="va">pseudotime</span><span class="op">$</span><span class="va">slingshot_umap_pca_orig_CMPs</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                               Lineage1 Lineage2 Lineage3</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_2        NA 7.546249       NA</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_9        NA       NA 8.739421</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_18       NA       NA 9.618069</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_27       NA       NA 8.178005</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_49       NA       NA 8.034586</span></span>
-<span><span class="co">##                                                   mean</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_2  7.546249</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_9  8.739421</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_18 9.618069</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_27 8.178005</span></span>
-<span><span class="co">## export_Marrow1_00_SurfaceOnly_singlets.fcs_49 8.034586</span></span></code></pre>
+<pre><code><span><span class="co">## NULL</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="testing-all-clusters-as-starting-point">Testing all clusters as starting point<a class="anchor" aria-label="anchor" href="#testing-all-clusters-as-starting-point"></a>
@@ -306,7 +297,7 @@ on the biological question.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] dplyr_1.1.4     ggplot2_3.5.2   pheatmap_1.0.13 cyCONDOR_0.3.0 </span></span>
+<span><span class="co">## [1] dplyr_1.1.4     ggplot2_3.5.2   pheatmap_1.0.13 cyCONDOR_0.3.1 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] IRanges_2.40.1              Rmisc_1.5.1                </span></span>
@@ -392,7 +383,7 @@ on the biological question.</p>
 <span><span class="co">## [161] reformulas_0.4.1            yaml_2.3.10                </span></span>
 <span><span class="co">## [163] MatrixGenerics_1.18.1       foreign_0.8-90             </span></span>
 <span><span class="co">## [165] ggthemes_5.1.0              cli_3.6.5                  </span></span>
-<span><span class="co">## [167] purrr_1.0.4                 stats4_4.4.2               </span></span>
+<span><span class="co">## [167] purrr_1.1.0                 stats4_4.4.2               </span></span>
 <span><span class="co">## [169] lifecycle_1.0.4             uwot_0.2.3                 </span></span>
 <span><span class="co">## [171] askpass_1.2.1               caret_7.0-1                </span></span>
 <span><span class="co">## [173] Biobase_2.66.0              mvtnorm_1.3-3              </span></span>
@@ -422,7 +413,7 @@ on the biological question.</p>
 <span><span class="co">## [221] ggforce_0.5.0               CytoDx_1.26.0              </span></span>
 <span><span class="co">## [223] car_3.1-3                   future_1.58.0              </span></span>
 <span><span class="co">## [225] ModelMetrics_1.2.2.2        laeken_0.5.3               </span></span>
-<span><span class="co">## [227] data.table_1.17.6           htmlwidgets_1.6.4          </span></span>
+<span><span class="co">## [227] data.table_1.17.8           htmlwidgets_1.6.4          </span></span>
 <span><span class="co">## [229] ComplexHeatmap_2.22.0       RColorBrewer_1.1-3         </span></span>
 <span><span class="co">## [231] rlang_1.1.6                 remotes_2.5.0              </span></span>
 <span><span class="co">## [233] colorRamps_2.3.4            Cairo_1.6-2                </span></span>

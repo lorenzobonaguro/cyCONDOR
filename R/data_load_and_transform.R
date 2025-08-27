@@ -79,6 +79,12 @@ read_data <- function(data_path,
 
       single_file_red <- exprs(flow_frame_single)
 
+      if (dim(single_file_red)[1] == 0) {
+
+        stop(paste0("File: ", data_files[FileNum], " contains no valid event"))
+
+      }
+
       ## Downsample if needed
       if (nrow(single_file_red) <= max_cells) {
         single_file_red <- single_file_red
@@ -132,6 +138,12 @@ read_data <- function(data_path,
       }
 
       single_file_red <- read.delim(paste0(data_path,"/",data_files[FileNum]), check.names = F, sep = separator)
+
+      if (dim(single_file_red)[1] == 0) {
+
+        stop(paste0("File: ", data_files[FileNum], " contains no valid event"))
+
+      }
 
       ## Downsample if needed
       if (nrow(single_file_red) <= max_cells){
