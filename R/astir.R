@@ -22,7 +22,8 @@ runAstir_celltype <- function(fcd,
                               manifest_name,
                               max_epochs,
                               learning_rate,
-                              initial_epochs) {
+                              initial_epochs,
+                              prefix = "") {
 
   # Save the expression matrix as csv
   write.csv(x = fcd$expr[[data_slot]], file = paste0(analysis_path, "expr.csv"))
@@ -67,7 +68,7 @@ runAstir_celltype <- function(fcd,
                                         "Learning_Rate_", learning_rate,
                                         "_Initial_Epochs_", initial_epochs))
 
-  fcd[["astir"]][[paste0("Astir_cell_type_", data_slot)]] <- df
+  fcd[["astir"]][[paste(prefix, "Astir_cell_type", data_slot, sep = "_")]] <- df
 
   return(fcd)
 
@@ -96,7 +97,8 @@ runAstir_cellstates <- function(fcd,
                                 manifest_name,
                                 max_epochs,
                                 learning_rate,
-                                initial_epochs) {
+                                initial_epochs,
+                                prefix = "") {
 
   # Save the expression matrix as csv
   write.csv(x = fcd$expr[[data_slot]], file = paste0(analysis_path, "expr.csv"))
@@ -136,7 +138,7 @@ runAstir_cellstates <- function(fcd,
                                         "Learning_Rate_", learning_rate,
                                         "_Initial_Epochs_", initial_epochs))
 
-  fcd[["astir"]][[paste0("Astir_cell_state_", data_slot)]] <- df
+  fcd[["astir"]][[paste(prefix, "Astir_cell_state", data_slot, sep = "_")]] <- df
 
   return(fcd)
 

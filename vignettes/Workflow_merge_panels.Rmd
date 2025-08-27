@@ -1,0 +1,13 @@
+---
+title: "Workflow Merge Panels"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Batch correction}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+This is a test vignette
