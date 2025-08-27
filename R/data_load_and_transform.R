@@ -656,7 +656,7 @@ write_fcs <- function(fcd = condor,
 #' @param filename string specifying the filename for the RDS file.
 #' @importFrom SingleCellExperiment SingleCellExperiment reducedDim
 #' @importFrom SummarizedExperiment colData
-#' @importFrom SV4Vectors metadata
+#' @importFrom S4Vectors metadata
 #' @returns The SCE  plus a short message if the RDS file was saved successfully.
 #'
 #' @export
