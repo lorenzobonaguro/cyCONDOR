@@ -6,6 +6,7 @@
 * Solved Issue #33, the `plot_marker_dotplot` function have now an `alpha` argument to control the transparency of the dots.
 * Solved Issue #34, the `plot_marker_ridgeplot` now have a `title` argument.
 * Solved Issue #19, if an empty `fcs` or `csv` file is provided the `prep_fcd` function will stop and point to the corrupted file.
+* Added function `order_param` to allow manual ordering of an annotation or clustering variable.
 
 # cyCONDOR 0.3.0
 * Bug fix with data projection where specific parameters were removed in UMAP calculation
