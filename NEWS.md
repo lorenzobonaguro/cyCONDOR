@@ -1,3 +1,6 @@
+# cyCONDOR 0.3.2
+* Added option to chose which Phenograpg implementation to use to solve Issue #35
+
 # cyCONDOR 0.3.1
 * Added function `condor_info` to easily explore the content of a condor object.
 * Solved Issue #31, color pallette is reversed in `plot_marker_ridgeplot()` function.

@@ -58,6 +58,7 @@ metaclustering <- function(fcd,
 #' @param nPC Number of principal components to use for the analysis.
 #' @param markers vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object
 #' @param discard LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.
+#' @param implementation Which implementation to use for Phenograph, either "Rphenograph" or "Rphenoannoy". Rphenoannoy is a faster implementation but might not be compatible with all system configurations.
 #'
 #' @import Rphenograph
 #' @importFrom igraph membership
@@ -80,7 +81,8 @@ runPhenograph <- function (fcd,
                            prefix = NULL,
                            nPC = ncol(fcd$pca[[data_slot]]),
                            markers = colnames(fcd$expr[[data_slot]]),
-                           discard = FALSE)
+                           discard = FALSE,
+                           implementation = "Rphenoannoy")
 {
   set.seed(seed)
 
@@ -128,8 +130,24 @@ runPhenograph <- function (fcd,
 
 
 
+  if (implementation == "Rphenograph") {
 
-  Rphenograph_out <- Rphenoannoy::Rphenoannoy(data1, k = k)
+    Rphenograph::Rphenograph(data1, k = k)
+
+  }
+
+  if (implementation == "Rphenoannoy") {
+
+    Rphenograph_out <- Rphenoannoy::Rphenoannoy(data1, k = k)
+
+  }
+
+  if (implementation != "Rphenograph" & implementation != "Rphenoannoy") {
+
+    stop("Provide a valid implementation name - Rphenograph or Rphenoannoy")
+
+  }
+
   Rphenograph_out <- as.matrix(membership(Rphenograph_out[[2]]))
   Rphenograph_out <- as.data.frame(matrix(ncol = 1,
                                           data = Rphenograph_out,
