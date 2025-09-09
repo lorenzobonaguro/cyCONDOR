@@ -10,4 +10,277 @@ editor_options:
     wrap: 72
 ---
 
-This is a test vignette
+```{r setup}
+library(cyCONDOR)
+library(ggplot2)
+library(data.table)
+library(ggplot2)
+```
+
+```{r}
+source("./functions.R")
+```
+
+# Loading the data
+```{r}
+condor_SCS1 <- prep_fcd(FCSpath = "../Exported/SCS1/",
+                        ceil = 10000,
+                        useCSV = FALSE,
+                        transformation = "a", 
+                        remove_param = c("FSC-H", "FSC-W", "SSC-H", "SSC-W", "Live_Dead", "CD45", "CD3_19_56", "Time", "InFile"), 
+                        anno_table = "../Exported/metadata_SCS1.csv", 
+                        filename_col = "filename",
+                        seed = 91)
+
+check_IDs(condor_SCS1)
+```
+
+```{r}
+condor_SCS2 <- prep_fcd(FCSpath = "../Exported/SCS2/",
+                        ceil = 10000,
+                        useCSV = FALSE,
+                        transformation = "a", 
+                        remove_param = c("FSC-H", "FSC-W", "SSC-H", "SSC-W", "Live_Dead", "CD45", "CD11c_14_33_66b_123", "Time", "InFile"), 
+                        anno_table = "../Exported/metadata_SCS2.csv", 
+                        filename_col = "filename",
+                        seed = 91)
+
+check_IDs(condor_SCS2)
+```
+
+# Comparing the set of features
+```{r}
+c(colnames(condor_SCS1$expr$orig), colnames(condor_SCS2$expr$orig))[duplicated(c(colnames(condor_SCS1$expr$orig), colnames(condor_SCS2$expr$orig)))]
+```
+
+The only overlap in the panel is CD45 and CD16. CD45 is measured in 2 different filters (PB and AF700), CD16 is on the same filter Qdot605 - I would assume this is also on the same antibody/fluorochrome. Also the voltage setting is the same in both 610V.
+
+Since CD45+ cells were gated before I would exclude CD45 from the condor object.
+
+For FSC is recorded at 410V and 420V, let's see how much this impacts the analysis
+
+SSC is recorded in both at 275V (this would for sure be more problematic)
+
+# Merge in 1 condor object
+```{r}
+# Expression Data
+expr_SCS1 <- condor_SCS1$expr$orig
+
+expr_SCS2 <- condor_SCS2$expr$orig
+
+expr_merge <- merge(expr_SCS1, expr_SCS2, all.x = TRUE, all.y = TRUE, sort = FALSE)
+
+rownames(expr_merge) <- c(rownames(condor_SCS1$expr$orig), rownames(condor_SCS2$expr$orig))
+
+# Annotation
+
+anno_merge <- rbind(condor_SCS1$anno$cell_anno, condor_SCS2$anno$cell_anno)
+```
+
+```{r}
+minima_collector <- list()
+
+for (i in colnames(expr_merge)) {
+  
+  minima_collector[[i]] <- estimate_peak(expr_merge, variable = i)
+  
+  print(i)
+  
+  print(minima_collector[[i]]$graph + ggtitle(i))
+  
+}
+```
+
+# Correct the wrong estimation of the peak
+```{r}
+minima_collector$CD56$min_between_peaks_x <- 0
+```
+
+```{r}
+expr_estimate <- estimate_missing_values(expr = expr_merge, 
+                                         minima_list = minima_collector)
+```
+
+
+```{r}
+for (i in colnames(expr_merge)) {
+  
+  print(estimate_peak(expr_merge, variable = i)$graph)
+  
+}
+```
+
+```{r}
+for (i in colnames(expr_estimate)) {
+  
+  print(estimate_peak(expr_estimate, variable = i)$graph)
+  
+}
+```
+
+
+# Create the condor object
+```{r}
+condor <- condor_SCS1
+
+condor$expr$orig <- expr_estimate
+
+condor$anno$cell_anno <- anno_merge
+
+check_IDs(condor)
+```
+
+# Dimensionality Reduction
+
+## PCA
+
+Similarly to single-cell RNA seq data we first apply a linear dimensionality reduction to the data. Compared to scRNA-seq here we use all the available features and not only the most variable as the data space is already pre-selected.
+
+```{r}
+condor <- runPCA(fcd = condor, 
+                 data_slot = "orig", 
+                 seed = 91)
+```
+
+We can now visualize the dimensionality reduction in a 2D plot.
+
+```{r}
+ggplot(cbind(condor$pca$orig, condor$anno$cell_anno), aes(x = PC1, y = PC2, color = tissue)) +
+  geom_point(size = 0.2) +
+  scale_color_manual(values = c("#89C5DA", "#DA5724")) +
+  theme_bw() + theme(aspect.ratio = 1) + ggtitle("PCA")
+
+ggplot(cbind(condor$pca$orig, condor$anno$cell_anno), aes(x = PC1, y = PC2, color = panel)) +
+  geom_point(size = 0.2) +
+  scale_color_manual(values = c("#89C5DA", "#DA5724")) +
+  theme_bw() + theme(aspect.ratio = 1) + ggtitle("PCA")
+```
+
+
+## UMAP
+
+We next apply a UMAP dimensionality reduction using the PCA coordinates of each cell as input. We could use here only a certain number of PCs for the calculation, nevertheless using all will not increase the computation time as the number is anyway rather limited.
+
+```{r}
+condor <- runUMAP(fcd = condor, 
+                  input_type = "pca", 
+                  data_slot = "orig", 
+                  seed = 91)
+```
+
+We can visualize the result in a 2D plot.
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "tissue", 
+            order = T, 
+            title = "UMAP", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "tissue", 
+            order = T, 
+            title = "UMAP", 
+            dim_red = "UMAP", 
+            facet_by_variable = TRUE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "panel", 
+            order = T, 
+            title = "UMAP", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "panel", 
+            order = T, 
+            title = "UMAP", 
+            dim_red = "UMAP", 
+            facet_by_variable = TRUE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$anno$cell_anno), 
+            param = "sample_ID", 
+            order = T, 
+            title = "UMAP", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+```
+
+# Clustering
+
+We now apply a clustering algorithm to group cells with similar expression of the selected markers. Many clustering algorithms have been developed for single-cell cytometry data. For a more detailed description of clustering methods see: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1917-7 
+
+## Phenograph
+
+PhenoGraph provides a computationally efficient graph-based method for identifying subpopulations in high-dimensional single-cell data. The algorithm represents the underlying cellular population by a graph (or network) in which each cell is connected to other cells that are phenotypically similar. This graph is then clustered into distinct phenotypic communities, using modularity optimization. While it can be used for any sample size, PhenoGraph is especially powerful for large samples (thousands or hundreds of thousands of cells), where it is produces high-quality results without downsampling. 
+
+https://pubmed.ncbi.nlm.nih.gov/26095251/ 
+
+```{r}
+condor <- runPhenograph(fcd = condor, 
+                        input_type = "pca", 
+                        data_slot = "orig", 
+                        k = 60, 
+                        seed = 91)
+```
+
+We can visualize the clustering overlaid to the UMAP embedding
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60), 
+            param = "Phenograph", 
+            order = T, 
+            title = "UMAP - Phenograph", 
+            dim_red = "UMAP", 
+            facet_by_variable = FALSE)
+```
+
+```{r}
+plot_marker(data = cbind(condor$umap$pca_orig, condor$clustering$Phenograph_pca_orig_k_60, condor$anno$cell_anno), 
+            param = "Phenograph", 
+            order = T, 
+            title = "UMAP - Phenograph - separated", 
+            dim_red = "UMAP", 
+            facet_by_variable = "tissue")
+```
+
+## Explore the propreties of each cluster
+
+In the analysis of flow cytometry data it is difficult to rely on automated cell classification due to the pre-filtered feature set used in the panel. We need now to assign to each cluster a cell type to compare the two sample.
+
+We can explore it as an heatmap of markers by cluster
+```{r, fig.height=7}
+HM_markers(input = cbind(condor$expr$orig, condor$clustering$Phenograph_pca_orig_k_60), 
+           group = "Phenograph",
+           maxvalue = 2, 
+           title = "Marker expression in the Phenograph clusters", 
+           cluster_rows = TRUE)
+```
+
+Or plotting the single markers on the UMAP embedding
+```{r}
+for (marker in colnames(condor$expr$orig)[3:18]) {
+  
+  plot(plot_marker(data = cbind(condor$umap$pca_orig, condor$expr$orig), 
+                   param = marker, 
+                   order = T, 
+                   title = paste0("UMAP - ", marker, " expression"), 
+                   dim_red = "UMAP", facet_by_variable = FALSE))
+  
+}
+
+rm(marker)
+```
+
+# Session Info
+
+```{r}
+info <- sessionInfo()
+
+info
+```
