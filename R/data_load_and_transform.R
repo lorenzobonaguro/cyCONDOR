@@ -63,6 +63,15 @@ read_data <- function(data_path,
     }
 
     merged_df <- NULL
+
+    # Check if max_cell is valid
+    ## here we already need to load the anno table!
+    anno <- read.delim(anno_table, sep = separator_anno)
+
+    max_cell_vector <- validate_max_cell(max_cell = max_cell,
+                                         n_files = length(data_files),
+                                         anno_table = anno)
+
     for(FileNum in 1:length(data_files)){
 
       if (verbose == TRUE) {
@@ -80,10 +89,11 @@ read_data <- function(data_path,
       single_file_red <- exprs(flow_frame_single)
 
       ## Downsample if needed
-      if (nrow(single_file_red) <= max_cells) {
-        single_file_red <- single_file_red
-      } else {
-        single_file_red <- single_file_red[sample(nrow(single_file_red),max_cells,replace=F),]
+      target <- max_cell_vector[FileNum]
+      if (nrow(single_file_red) > target) {
+        single_file_red <- single_file_red[
+          sample(nrow(single_file_red), target), # simplified code
+        ]
       }
 
       #Adjust colnames
@@ -123,6 +133,14 @@ read_data <- function(data_path,
 
     merged_df <- NULL
 
+    # Check if max_cell is valid
+    ## here we already need to load the anno table!
+    anno <- read.delim(anno_table, sep = separator_anno)
+
+    max_cell_vector <- validate_max_cell(max_cell = max_cell,
+                                         n_files = length(data_files),
+                                         anno_table = anno)
+
     for (FileNum in 1:length(data_files)){
 
       if (verbose == TRUE) {
@@ -134,10 +152,11 @@ read_data <- function(data_path,
       single_file_red <- read.delim(paste0(data_path,"/",data_files[FileNum]), check.names = F, sep = separator)
 
       ## Downsample if needed
-      if (nrow(single_file_red) <= max_cells){
-        single_file_red <- single_file_red
-      } else {
-        single_file_red <- single_file_red[sample(nrow(single_file_red),max_cells,replace=F),]
+      target <- max_cell_vector[FileNum]
+      if (nrow(single_file_red) > target) {
+        single_file_red <- single_file_red[
+          sample(nrow(single_file_red), target), # simplified code
+        ]
       }
 
       #Include column with file index for tracking and later merging annotation
@@ -236,7 +255,7 @@ transform_data <- function(keep,
 #' @title prep_fcd
 #' @description Loading and transforming the data to create a flow cytometry dataset from FCS files for the analysis with the cyCONDOR workflow.
 #' @param data_path Folder where the .fcs files or .csv files are stored.
-#' @param max_cell Number of cells to use for each file (set to a high number if you want to use all available events).
+#' @param max_cell Maximum number of cells to use for each file (set to a high number if you want to use all available events). Can be either a single number (that is then used for all files), a numeric vector (needs to be the same length as the number of files) or a string refering to a column in 'anno_table' with cell numbers for each file.
 #' @param useCSV Flag if the input are .csv files and not .fcs (experimental).
 #' @param transformation Transformation to perform. Select one of the following: \code{"auto_logi"} (autologicle, recommended for flow cytometry data), \code{"arcsinh"} (arcsinh transformation with cofactor 5), \code{"clr"} (centered-log-ratio) or \code{"none"} (no transformation).
 #' @param remove_param Parameters to be removed from the \code{fcd}, "inTime" should be kept.
@@ -718,4 +737,56 @@ export_sce <- function(fcd = condor,
   }
 
   return(sce)
+}
+
+#' @title Function to check the validity of the max_cell input.
+#' @description Checks if max_cell is either an integer length == 1 or a numeric vector with length == n_files. If a string, checks for a column in anno_table that matches the number of files.
+#' @param max_cell The maximum number of cells to analyse for each file. Passed from 'prep_fcs'.
+#' @param n_files number of files to read. Passed from 'prep_fcs'.
+#' @param anno_table Path of the annotaton file. Passed from 'prep_fcs'.
+#' @return validate_max_cell
+#'
+#' @export
+validate_max_cell <- function(max_cell, n_files, anno_table){
+
+  # If numeric....
+  if(is.numeric(max_cell)) {
+
+    # Case 1: single number for all files (maximum number)
+    if(length(max_cell) == 1) {
+      return(rep(max_cell, n_files))
+    }
+
+    # Case 2: numeric vector
+    if(length(max_cell) == n_files){
+      return(max_cell)
+    }
+
+    stop("Error: numeric 'max_cell' must be length 1 or equal to number of files.")
+  }
+
+  # If a column in anno_table (character)
+  if(is.character(max_cell)) {
+
+    ## check if max_cell is a column of anno_table
+    if(!max_cell %in% colnames(anno_table)) {
+      stop(paste0("Error: column '", max_cell, "' is not a column in anno_table."))
+    }
+
+    colvals <- anno_table[[max_cell]]
+
+    ## check if the values in the anno_table column are numeric
+    if(!is.numeric(colvals)) {
+      stop(paste0("Error: column '", max_cell, "' is not numeric."))
+    }
+
+    ## check if there is a cell number for every file
+    if(length(colvals) != n_files) {
+      stop("Error: the column from anno_table does not match the number of files.")
+    }
+    return(colvals)
+  }
+
+  # Otherwise
+  stop("Error: 'max_cell' must be numeric or a character naming a column in anno_table.")
 }
