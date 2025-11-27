@@ -15,7 +15,7 @@ clr <- function(x) {
 #' @title read_data
 #' @description Load .fcs or .csv files into a dataframe and prepare the condor object.
 #' @param data_path Path to the .fcs or .csv files.
-#' @param max_cells number of cells to subset.
+#' @param max_cell number of cells to subset.
 #' @param useCSV Logical, if input is .csv and not .fcs.
 #' @param separator Separator used the flow csv files (if loading from csv).
 #' @param simple_names If TRUE only the channel description is used to name the column, if FALSE both channel name and description are pasted together.
@@ -35,7 +35,7 @@ clr <- function(x) {
 #'
 #' @export
 read_data <- function(data_path,
-                      max_cells,
+                      max_cell,
                       useCSV,
                       separator,
                       simple_names,
@@ -309,7 +309,7 @@ prep_fcd <- function(data_path,
 
   ## Load the data
   data <- read_data(data_path = data_path,
-                    max_cells = max_cell,
+                    max_cell = max_cell,
                     useCSV = useCSV,
                     separator = separator_fc_csv,
                     simple_names = simple_names,
