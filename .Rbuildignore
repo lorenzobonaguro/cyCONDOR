@@ -1,8 +1,2 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.test_files
-.logo
-^_pkgdown\.yml$
-^docs$
-^pkgdown$
-.Rhistory

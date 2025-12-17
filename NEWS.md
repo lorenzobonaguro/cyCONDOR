@@ -1,5 +1,7 @@
 # cyCONDOR 0.3.2
 * Added option to chose which Phenograpg implementation to use to solve Issue #35
+* Added a function to set an ID for the condor object, the ID will be store in the `extras` slot. An ID can not also be set directly in the `prep_fcd` function while reading the raw data.
+* Added parameter `reset_seed_every_sample` to the `prep_fcd` function as suggested in Issue #27. 
 
 # cyCONDOR 0.3.1
 * Added function `condor_info` to easily explore the content of a condor object.

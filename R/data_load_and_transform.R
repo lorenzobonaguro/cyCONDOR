@@ -27,6 +27,8 @@ clr <- function(x) {
 #' @param anno_table Passed from 'prep_fcd'
 #' @param separator_anno Passed from 'prep_fcd'
 #' @param filename_col Passed from 'prep_fcs'
+#' @param seed A seed is set for reproducibility.
+#' @param reset_seed_every_sample TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.
 #' @import flowCore
 #' @import reshape2
 #' @import dplyr
@@ -46,7 +48,9 @@ read_data <- function(data_path,
                       cross_path_with_anno,
                       anno_table,
                       separator_anno,
-                      filename_col){
+                      filename_col,
+                      seed,
+                      reset_seed_every_sample){
 
   if(useCSV == FALSE){
 
@@ -86,6 +90,12 @@ read_data <- function(data_path,
       }
 
       ## Downsample if needed
+      if (reset_seed_every_sample == TRUE) {
+        
+        set.seed(seed)
+        
+      }
+      
       if (nrow(single_file_red) <= max_cells) {
         single_file_red <- single_file_red
       } else {
@@ -262,8 +272,10 @@ transform_data <- function(keep,
 #' @param emptyValue From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.
 #' @param ignore.text.offset From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.
 #' @param verbose Default FALSE, if TRUE the at each file loaded something is printed in the screen.
+#' @param condor_id Default NULL, if set it will asign this values and the id for the condor object saved in the `extras` slot.
 #' @param cross_path_with_anno Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.
 #' @param cofactor cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.
+#' @param reset_seed_every_sample TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.
 #' @details The \code{prep_fcd} is a wrapper function to read in the files, subset to \code{max_cell}, transform the data and create a 'flow cytometry dataframe' (\code{fcd}).
 #' @return An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
 #' @import readr
@@ -288,8 +300,10 @@ prep_fcd <- function(data_path,
                      emptyValue = TRUE,
                      ignore.text.offset = FALSE,
                      verbose = FALSE,
+                     condor_id = NULL,
                      cross_path_with_anno = FALSE,
-                     cofactor = 5) {
+                     cofactor = 5,
+                     reset_seed_every_sample = FALSE) {
 
   # Set seed for reproducibility
   set.seed(seed)
@@ -313,7 +327,9 @@ prep_fcd <- function(data_path,
                     cross_path_with_anno = cross_path_with_anno,
                     anno_table = anno_table,
                     separator_anno = separator_anno,
-                    filename_col = filename_col)
+                    filename_col = filename_col,
+                    reset_seed_every_sample = reset_seed_every_sample,
+                    seed = seed)
 
   raw_data <- as.matrix(data$merged_df) # Take the dataframe with the intensity values
 
@@ -339,8 +355,6 @@ prep_fcd <- function(data_path,
     print("Start transforming the data")
 
   }
-
-
 
   trans_data <- transform_data(keep = keep,
                                transformation = transformation,
@@ -380,6 +394,12 @@ prep_fcd <- function(data_path,
                                           separator_fc_csv = separator_fc_csv,
                                           prep_function = "prep_fcd",
                                           version = packageDescription("cyCONDOR")$Version)
+  
+  if(condor_id != NULL){
+
+    fcd[["extras"]][["id"]] <- condor_id
+
+  }
 
   class(fcd) <- "flow_cytometry_dataframe"
 

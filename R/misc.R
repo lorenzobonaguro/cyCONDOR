@@ -687,3 +687,47 @@ order_param <- function(fcd,
   return(fcd)
 
 }
+
+
+#' condor_id
+#'
+#' @title condor_ind
+#' @description This function is used to asign and ID to a condor object, if the `id` argument is not used the function will print the current asigned id
+#' @param fcd flow cytometry dataset
+#' @param id ID to asign to the condor object
+#'
+#' @returns Prints to the console the detail of the condor object
+#'
+#' @export
+
+condor_id <- function(fcd, id="") {
+  
+  if (!class(fcd) == "flow_cytometry_dataframe") {
+    
+    stop("The provided fcd is not a condor object")
+    
+  }
+  
+  if (id == "") {
+    
+    if (is.null(fcd$extras$id) == TRUE) {
+      
+      print("No ID was defined for this condor object")
+      
+    } else {
+      
+      print(fcd$extras$id)
+      
+    }
+    
+  }else {
+      
+    fcd$extras$id <- id
+      
+    print("ID asigned!")
+    
+  }
+  
+  return(fcd)
+  
+}
