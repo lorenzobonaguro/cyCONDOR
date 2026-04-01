@@ -61,9 +61,9 @@ Imports:
     ggridges,
     rstatix,
     tidyr,
-    CytoNorm,
     corrplot,
-    S4Vectors
+    S4Vectors,
+    methods
 Remotes:
     JinmiaoChenLab/Rphenograph,
     stuchly/Rphenoannoy,

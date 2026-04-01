@@ -1,2 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+.test_files
+_pkgdown.yml
+.Rhistory
+tests
+docs

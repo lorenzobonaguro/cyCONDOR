@@ -25,6 +25,12 @@ transform_data(
 \item{verbose}{Logical, if TRUE the transformation parameters are printed.}
 
 \item{cofactor}{cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.}
+
+\item{use_transformation_table}{Default FALSE. If TRUE a transformation table will be used to define parameter specific transformations.}
+
+\item{transformation_table}{Path to the transformation table. For details on the structure see the online documentation.}
+
+\item{separator_transformation}{Separator for the provided transformation_table. Default ",".}
 }
 \value{
 transformed flow cytometry dataset

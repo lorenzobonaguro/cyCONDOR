@@ -20,9 +20,9 @@ read_data(
   filename_col,
   seed,
   reset_seed_every_sample,
-  use_max_cell_table,
-  max_cell_table,
-  separator_max_cell
+  use_max_cells_table,
+  max_cells_table,
+  separator_max_cells
 )
 }
 \arguments{
@@ -44,7 +44,7 @@ read_data(
 
 \item{verbose}{Default FALSE, if TRUE the at each file loaded something is printed in the screen.}
 
-\item{cross_path_with_anno}{Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.}
+\item{cross_path_with_anno}{Default FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.}
 
 \item{anno_table}{Passed from 'prep_fcd'}
 
@@ -55,6 +55,12 @@ read_data(
 \item{seed}{A seed is set for reproducibility.}
 
 \item{reset_seed_every_sample}{TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.}
+
+\item{use_max_cells_table}{Default FALSE, it TRUE the function will use a provided max cell table to define how many cells to take for each sample.}
+
+\item{max_cells_table}{Path to the table with the number of cells to take for each sample. For details about the structure of this table please see the online documentation.}
+
+\item{separator_max_cells}{Separator used in the max_cells_table, default to ",".}
 }
 \value{
 load flow cytometry dataset

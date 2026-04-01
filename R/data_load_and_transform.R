@@ -23,12 +23,15 @@ clr <- function(x) {
 #' @param emptyValue From FlowCore: boolean indicating whether or not we allow empty value for keyword values in TEXT segment. It affects how the double delimiters are treated. IF TRUE, The double delimiters are parsed as a pair of start and end single delimiter for an empty value. Otherwise, double delimiters are parsed one part of string as the keyword value. default is TRUE.
 #' @param ignore.text.offset From FlowCore: whether to ignore the keyword values in TEXT segment when they don't agree with the HEADER. Default is FALSE, which throws the error when such discrepancy is found. User can turn it on to ignore TEXT segment when he is sure of the accuracy of HEADER so that the file still can be read.
 #' @param verbose Default FALSE, if TRUE the at each file loaded something is printed in the screen.
-#' @param cross_path_with_anno Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.
+#' @param cross_path_with_anno Default FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.
 #' @param anno_table Passed from 'prep_fcd'
 #' @param separator_anno Passed from 'prep_fcd'
 #' @param filename_col Passed from 'prep_fcs'
 #' @param seed A seed is set for reproducibility.
 #' @param reset_seed_every_sample TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.
+#' @param use_max_cells_table Default FALSE, it TRUE the function will use a provided max cell table to define how many cells to take for each sample.
+#' @param max_cells_table Path to the table with the number of cells to take for each sample. For details about the structure of this table please see the online documentation.
+#' @param separator_max_cells Separator used in the max_cells_table, default to ",".
 #' @import flowCore
 #' @import reshape2
 #' @import dplyr
@@ -51,9 +54,9 @@ read_data <- function(data_path,
                       filename_col,
                       seed,
                       reset_seed_every_sample,
-                      use_max_cell_table,
-                      max_cell_table,
-                      separator_max_cell){
+                      use_max_cells_table,
+                      max_cells_table,
+                      separator_max_cells){
 
   if(useCSV == FALSE){
 
@@ -69,9 +72,9 @@ read_data <- function(data_path,
 
     }
 
-    if (use_max_cell_table == TRUE) {
+    if (use_max_cells_table == TRUE) {
 
-      max_cells_table <- read.delim(max_cell_table, sep = separator_max_cell)
+      max_cells_table <- read.delim(max_cells_table, sep = separator_max_cells)
 
     }
 
@@ -84,7 +87,7 @@ read_data <- function(data_path,
 
       }
 
-      if (use_max_cell_table == TRUE) {
+      if (use_max_cells_table == TRUE) {
 
         max_cells <- max_cells_table[max_cells_table$filename == data_files[FileNum],]$max_cells
 
@@ -174,9 +177,9 @@ read_data <- function(data_path,
 
     }
 
-    if (use_max_cell_table == TRUE) {
+    if (use_max_cells_table == TRUE) {
 
-      max_cells_table <- read.delim(max_cell_table, sep = separator_max_cell)
+      max_cells_table <- read.delim(max_cells_table, sep = separator_max_cells)
 
     }
 
@@ -190,7 +193,7 @@ read_data <- function(data_path,
 
       }
 
-      if (use_max_cell_table == TRUE) {
+      if (use_max_cells_table == TRUE) {
 
         max_cells <- max_cells_table[max_cells_table$filename == data_files[FileNum],]$max_cells
 
@@ -238,6 +241,9 @@ read_data <- function(data_path,
 #' @param transformation transformation to perform.
 #' @param verbose Logical, if TRUE the transformation parameters are printed.
 #' @param cofactor cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.
+#' @param use_transformation_table Default FALSE. If TRUE a transformation table will be used to define parameter specific transformations.
+#' @param transformation_table Path to the transformation table. For details on the structure see the online documentation.
+#' @param separator_transformation Separator for the provided transformation_table. Default ",".
 #' @return transformed flow cytometry dataset
 #'
 #' @export
@@ -312,6 +318,26 @@ transform_data <- function(keep,
   }
 
   if (use_transformation_table == TRUE) {
+
+    trans_table <- read.delim(transformation_table, sep = separator_transformation)
+
+    # Check if a transformation parameter is provided for each or the keep parameters
+
+    missmatch <- keep[!(keep %in% trans_table$param)]
+
+    if (length(missmatch) == 0) {
+
+      if (verbose == TRUE) {
+
+        print("All transformation parameter were provided")
+
+      }
+
+    } else {
+
+      stop(paste0("Transformation type not provided for: ", missmatch, ". Please correct the transfomration table \n"))
+
+    }
 
     # Transform the data
     for(paramName in as.character(keep)){
@@ -426,6 +452,12 @@ transform_data <- function(keep,
 #' @param cross_path_with_anno Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.
 #' @param cofactor cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.
 #' @param reset_seed_every_sample TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.
+#' @param use_max_cells_table Default FALSE, it TRUE the function will use a provided max cell table to define how many cells to take for each sample.
+#' @param max_cells_table Path to the table with the number of cells to take for each sample. For details about the structure of this table please see the online documentation.
+#' @param separator_max_cells Separator used in the max_cells_table, default to ",".
+#' @param use_transformation_table Default FALSE. If TRUE a transformation table will be used to define parameter specific transformations.
+#' @param transformation_table Path to the transformation table. For details on the structure see the online documentation.
+#' @param separator_transformation Separator for the provided transformation_table. Default ",".
 #' @details The \code{prep_fcd} is a wrapper function to read in the files, subset to \code{max_cell}, transform the data and create a 'flow cytometry dataframe' (\code{fcd}).
 #' @return An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
 #' @import readr
@@ -457,9 +489,9 @@ prep_fcd <- function(data_path,
                      use_transformation_table = FALSE,
                      transformation_table,
                      separator_transformation = ",",
-                     use_max_cell_table = FALSE,
-                     max_cell_table,
-                     separator_max_cell = ",") {
+                     use_max_cells_table = FALSE,
+                     max_cells_table,
+                     separator_max_cells = ",") {
 
   # Set seed for reproducibility
   set.seed(seed)
@@ -485,9 +517,9 @@ prep_fcd <- function(data_path,
                     separator_anno = separator_anno,
                     filename_col = filename_col,
                     reset_seed_every_sample = reset_seed_every_sample,
-                    use_max_cell_table = use_max_cell_table,
-                    max_cell_table = max_cell_table,
-                    separator_max_cell = separator_max_cell,
+                    use_max_cells_table = use_max_cells_table,
+                    max_cells_table = max_cells_table,
+                    separator_max_cells = separator_max_cells,
                     seed = seed)
 
   raw_data <- as.matrix(data$merged_df) # Take the dataframe with the intensity values

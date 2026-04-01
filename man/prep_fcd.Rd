@@ -27,9 +27,9 @@ prep_fcd(
   use_transformation_table = FALSE,
   transformation_table,
   separator_transformation = ",",
-  use_max_cell_table = FALSE,
-  max_cell_table,
-  separator_max_cell = ","
+  use_max_cells_table = FALSE,
+  max_cells_table,
+  separator_max_cells = ","
 )
 }
 \arguments{
@@ -70,6 +70,18 @@ prep_fcd(
 \item{cofactor}{cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.}
 
 \item{reset_seed_every_sample}{TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.}
+
+\item{use_transformation_table}{Default FALSE. If TRUE a transformation table will be used to define parameter specific transformations.}
+
+\item{transformation_table}{Path to the transformation table. For details on the structure see the online documentation.}
+
+\item{separator_transformation}{Separator for the provided transformation_table. Default ",".}
+
+\item{use_max_cells_table}{Default FALSE, it TRUE the function will use a provided max cell table to define how many cells to take for each sample.}
+
+\item{max_cells_table}{Path to the table with the number of cells to take for each sample. For details about the structure of this table please see the online documentation.}
+
+\item{separator_max_cells}{Separator used in the max_cells_table, default to ",".}
 }
 \value{
 An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.

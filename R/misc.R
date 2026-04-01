@@ -575,7 +575,7 @@ condor_session_info <- function(fcd = condor) {
 
 condor_info <- function(fcd = condor) {
 
-  if (!class(fcd) == "flow_cytometry_dataframe") {
+  if (!is(fcd) == "flow_cytometry_dataframe") {
 
     stop("The provided fcd is not a condor object")
 
@@ -632,6 +632,7 @@ condor_info <- function(fcd = condor) {
 #' @param cluster_slot string specifying which clustering slot to use to find variable specified in param. Necessary only if type is "cluster".
 #' @param param Parameter to reorder.
 #' @param new_order A vector describing the new order asigned to the labels.
+#' @importFrom methods is
 #' @returns Returns a condor object with a reordered variable
 #'
 #' @export
@@ -643,7 +644,7 @@ order_param <- function(fcd,
                         new_order) {
 
   #First check if the fcd is a valid condor object
-  if (class(fcd) != "flow_cytometry_dataframe") {
+  if (is(fcd) != "flow_cytometry_dataframe") {
 
     stop("The provided object is not a valid condor object")
 
@@ -701,33 +702,33 @@ order_param <- function(fcd,
 #' @export
 
 condor_id <- function(fcd, id="") {
-  
-  if (!class(fcd) == "flow_cytometry_dataframe") {
-    
+
+  if (!is(fcd) == "flow_cytometry_dataframe") {
+
     stop("The provided fcd is not a condor object")
-    
+
   }
-  
+
   if (id == "") {
-    
+
     if (is.null(fcd$extras$id) == TRUE) {
-      
+
       print("No ID was defined for this condor object")
-      
+
     } else {
-      
+
       print(fcd$extras$id)
-      
+
     }
-    
+
   }else {
-      
+
     fcd$extras$id <- id
-      
+
     print("ID asigned!")
-    
+
   }
-  
+
   return(fcd)
-  
+
 }
