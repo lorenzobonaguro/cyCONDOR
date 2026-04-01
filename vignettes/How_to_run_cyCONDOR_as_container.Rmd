@@ -48,7 +48,7 @@ You can now start a `Docker` container for `cyCONDOR` analysis.
 First download the latest version of the `Docker` image
 
 ```
-docker pull lorenzobonaguro/cycondor:v030
+docker pull lorenzobonaguro/cycondor:v032
 ```
 
 Now start the container with the following command (everything in `[]` need to be edited by the user).
@@ -147,7 +147,7 @@ type `docker image rm [IMAGE NAME]`.
 Running cyCONDOR `Docker` container with `Singularity` as runtime is possible, first you need to download cyCONDOR `Docker` image and convert it to a `.sif` file:
 
 ```
-singularity pull docker://lorenzobonaguro/cycondor:v030
+singularity pull docker://lorenzobonaguro/cycondor:v032
 ```
 
 This command will save the `Docker` image in the current working directory.

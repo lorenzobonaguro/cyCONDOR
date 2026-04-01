@@ -17,7 +17,7 @@ We developed an easy-to-use computational framework (condor) covering not only a
 
 We recommend using `cyCONDOR` from our pre-build `Docker` container [lorenzobonaguro/cycondor](https://hub.docker.com/r/lorenzobonaguro/cycondor), the latest version of the image can be pulled with:
 ```
-docker pull lorenzobonaguro/cycondor:v030
+docker pull lorenzobonaguro/cycondor:v032
 ```
 
 To run the image you can then follow the following script
@@ -27,7 +27,7 @@ docker run -dp [YOURPORT]:8787 \
 -e USER=[YOURUSERNAME] -e PASSWORD=[YOURPASSWORD] \
 --name condor_analysis \
 -v [PATHTODATA]:/home/[YOURUSERNAME]/data/ \
-lorenzobonaguro/cycondor:v030
+lorenzobonaguro/cycondor:v032
 ```
 You can then access RStudio from your web browser at the address
 
@@ -45,7 +45,7 @@ A detailed guide on how to get started with Docker and how to run cyCONDOR as `S
 
 ## How to install locally
 
-The tools was tested with `R v4.3` or newer, older version should be compatible but were not tested
+The tools was tested with `R v4.5` or newer, older version should be compatible but were not tested
 
 To install `cyCONDOR` you can follow few steps describe here below. 
 
@@ -66,19 +66,17 @@ Install `Bioconductor`, if you are sure `Bioconductor` is already installed in y
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
     
-BiocManager::install(version = "3.20")
+BiocManager::install(version = "3.21")
 ``` 
 
 ### Install cyCONDOR
 
 Now you can install cyCONDOR and all its dependencies
 ```
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+if (!require("pak", quietly = TRUE))
+    install.packages("pak")
 
-devtools::install_github("lorenzobonaguro/cyCONDOR", 
-                        build_vignettes = FALSE, 
-                        repos = BiocManager::repositories())
+pak::pkg_install("lorenzobonaguro/cyCONDOR")
 ```
 
 If you want to have early access to the new feature of `cyCONDOR` you can install the developmental version of `cyCONDOR`. 

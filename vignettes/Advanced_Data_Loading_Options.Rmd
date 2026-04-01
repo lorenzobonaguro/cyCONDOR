@@ -1,0 +1,21 @@
+---
+title: "Advanced Data Loading Options"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Advanced Data Loading Options}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Advanced Data Loading Options
+In this vignette we will describe some advanced options available in the prep_fcd function. These features are meant to solve edge cases and for several we are not reccomeding broad usage to avoid introducing biases in the data
+
+# Session Info
+```{r}
+info <- sessionInfo()
+
+info
+```

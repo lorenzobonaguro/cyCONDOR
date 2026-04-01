@@ -117,6 +117,7 @@ articles:
   - Prepare_data_for_cyCONDOR_analysis
   - How_to_run_cyCONDOR_as_container
   - Data_Loading_and_Transformation
+  - Advanced_Data_Loading_Options
   - Load_a_FlowJo_workspace
   - Dimensionality_Reduction
   - Clustering_and_cell_annotation

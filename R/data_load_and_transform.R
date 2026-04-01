@@ -89,6 +89,22 @@ read_data <- function(data_path,
 
       }
 
+      ## Add here a statement to check if the colnames is the same - this is just a draft code and need to be cheched
+
+      if (FileNum == 1) {
+
+        ref_colnames <- flow_frame_single@parameters@data$desc
+
+      } else {
+
+        if (identical(flow_frame_single@parameters@data$desc, ref_colnames) == FALSE) {
+
+          stop(paste0("File: ", data_files[FileNum], " has different column names or order, please check to avoid inconsistencies in the condor object"))
+
+        }
+
+      }
+
       ## Downsample if needed
       if (reset_seed_every_sample == TRUE) {
         
