@@ -50,7 +50,10 @@ read_data <- function(data_path,
                       separator_anno,
                       filename_col,
                       seed,
-                      reset_seed_every_sample){
+                      reset_seed_every_sample,
+                      use_max_cell_table,
+                      max_cell_table,
+                      separator_max_cell){
 
   if(useCSV == FALSE){
 
@@ -65,6 +68,12 @@ read_data <- function(data_path,
       data_files <- data_files[data_files %in% anno_files]
 
     }
+    
+    if (use_max_cell_table == TRUE) {
+      
+      max_cells_table <- read.delim(max_cell_table, sep = separator_max_cell)
+      
+    }
 
     merged_df <- NULL
     for(FileNum in 1:length(data_files)){
@@ -73,6 +82,18 @@ read_data <- function(data_path,
 
         print(paste0("Loading file ", FileNum, " out of ", length(data_files)))
 
+      }
+      
+      if (use_max_cell_table == TRUE) {
+        
+        max_cells <- max_cells_table[max_cells_table$filename == data_files[FileNum],]$max_cells
+        
+        if (verbose == TRUE) {
+          
+          print(paste0("Selecting ", max_cells, " cells from file: ", data_files[FileNum]))
+          
+        }
+        
       }
 
       flow_frame_single <- read.FCS(paste0(data_path,"/",data_files[FileNum]),
@@ -152,6 +173,12 @@ read_data <- function(data_path,
       data_files <- data_files[data_files %in% anno_files]
 
     }
+    
+    if (use_max_cell_table == TRUE) {
+      
+      max_cells_table <- read.delim(max_cell_table, sep = separator_max_cell)
+      
+    }
 
     merged_df <- NULL
 
@@ -161,6 +188,18 @@ read_data <- function(data_path,
 
         print(paste0("Loading file ", FileNum, " out of ", length(data_files)))
 
+      }
+      
+      if (use_max_cell_table == TRUE) {
+        
+        max_cells <- max_cells_table[max_cells_table$filename == data_files[FileNum],]$max_cells
+        
+        if (verbose == TRUE) {
+          
+          print(paste0("Selecting ", max_cells, " cells from file: ", data_files[FileNum]))
+          
+        }
+        
       }
 
       single_file_red <- read.delim(paste0(data_path,"/",data_files[FileNum]), check.names = F, sep = separator)
@@ -206,66 +245,161 @@ transform_data <- function(keep,
                            transformation,
                            original_data,
                            verbose,
-                           cofactor = 5){
+                           cofactor = 5,
+                           use_transformation_table, 
+                           transformation_table, 
+                           separator_transformation){
 
   # Save temp df
   transf_data <- original_data
-
-  # Transform the data
-  for(paramName in as.character(keep)){
-
-    if(transformation == "clr" ){
-      dataNum <- which(colnames(original_data)==paramName)
-      temp <- apply(original_data[,dataNum,drop=F],2, clr)
-      transf_data[,dataNum] <- temp
-    }
-
-    if(transformation == "arcsinh" ){
-      dataNum <- which(colnames(original_data)==paramName)
-      temp <- original_data[,dataNum,drop=F] / cofactor
-      temp <- asinh(temp)
-      transf_data[,dataNum] <- temp
-    }
-
-    if(transformation == "auto_logi"){
-      q<-0.05
-      m<-4.5
-      d <- original_data[,paramName]
-      w <- 0
-      t <- max(d)
-      nd <- d[d < 0]
-      nThres <- quantile(nd, 0.25) - 1.5 * IQR(nd)
-      nd <- nd[nd >= nThres]
-      if (length(nd)) {
-        r <- .Machine$double.eps + quantile(nd, q)
-        if (10^m * abs(r) <= t) {
-          w <- 0
-        }
-        else {
-          w <- (m - log10(t/abs(r)))/2
-          if (is.nan(w) || w > 2) {
-            warning(paste0("autoLgcl failed for channel: ",
-                           paramName, "; using default fluor logicle transformation, be carefull with this parameter!"))
-            w <- 0.1
-            t <- 500000
-            m <- 4.5
+  
+  if (use_transformation_table == FALSE) {
+    
+    # Transform the data
+    for(paramName in as.character(keep)){
+      
+      if(transformation == "clr" ){
+        dataNum <- which(colnames(original_data)==paramName)
+        temp <- apply(original_data[,dataNum,drop=F],2, clr)
+        transf_data[,dataNum] <- temp
+      }
+      
+      if(transformation == "arcsinh" ){
+        dataNum <- which(colnames(original_data)==paramName)
+        temp <- original_data[,dataNum,drop=F] / cofactor
+        temp <- asinh(temp)
+        transf_data[,dataNum] <- temp
+      }
+      
+      if(transformation == "auto_logi"){
+        q<-0.05
+        m<-4.5
+        d <- original_data[,paramName]
+        w <- 0
+        t <- max(d)
+        nd <- d[d < 0]
+        nThres <- quantile(nd, 0.25) - 1.5 * IQR(nd)
+        nd <- nd[nd >= nThres]
+        if (length(nd)) {
+          r <- .Machine$double.eps + quantile(nd, q)
+          if (10^m * abs(r) <= t) {
+            w <- 0
+          }
+          else {
+            w <- (m - log10(t/abs(r)))/2
+            if (is.nan(w) || w > 2) {
+              warning(paste0("autoLgcl failed for channel: ",
+                             paramName, "; using default fluor logicle transformation, be carefull with this parameter!"))
+              w <- 0.1
+              t <- 500000
+              m <- 4.5
+            }
           }
         }
+        templgcl <- logicleTransform(w=w, t=t, m=4.5, a=0)
+        dataNum <- which(colnames(original_data)==paramName)
+        temp <- apply(original_data[,dataNum,drop=F],2, templgcl)
+        transf_data[,dataNum] <- temp
+        if (verbose == TRUE) {
+          
+          print(paste0(paramName, " w= ",w," t= ",t))
+          
+        }
+        
       }
-      templgcl <- logicleTransform(w=w, t=t, m=4.5, a=0)
-      dataNum <- which(colnames(original_data)==paramName)
-      temp <- apply(original_data[,dataNum,drop=F],2, templgcl)
-      transf_data[,dataNum] <- temp
-      if (verbose == TRUE) {
-
-        print(paste0(paramName, " w= ",w," t= ",t))
-
-      }
-
+      
     }
-
   }
+  
+  if (use_transformation_table == TRUE) {
+    
+    # Transform the data
+    for(paramName in as.character(keep)){
+      
+      # Grabbing the right transformation from the table
+      transformation_from_table <- trans_table[trans_table$param == paramName,]$transf
+      
+      if (verbose == TRUE) {
+        
+        print(paste0("Using transformation ", transformation_from_table, " for parameter: ", paramName))
+        
+      }
+      
+      
+      if(transformation_from_table == "clr" ){
+        dataNum <- which(colnames(original_data)==paramName)
+        temp <- apply(original_data[,dataNum,drop=F],2, clr)
+        transf_data[,dataNum] <- temp
+      }
+      
+      if(transformation_from_table == "arcsinh" ){
+        dataNum <- which(colnames(original_data)==paramName)
+        
+        # Grab the co-factor value for the selected marker
+        if (is.na(trans_table[trans_table$param == paramName,]$cofactor)) {
+          
+          stop(paste0("Cofactor value not provided for parameter: ", paramName))
+          
+        } else {
+          
+          cofactor_from_table <- trans_table[trans_table$param == paramName,]$cofactor
+          
+        }
+        
+        if (verbose) {
+          
+          print(paste0("With cofactor ", cofactor_from_table))
+          
+        }
+        
+        temp <- original_data[,dataNum,drop=F] / cofactor
+        temp <- asinh(temp)
+        transf_data[,dataNum] <- temp
+      }
+      
+      if(transformation_from_table == "auto_logi"){
+        q<-0.05
+        m<-4.5
+        d <- original_data[,paramName]
+        w <- 0
+        t <- max(d)
+        nd <- d[d < 0]
+        nThres <- quantile(nd, 0.25) - 1.5 * IQR(nd)
+        nd <- nd[nd >= nThres]
+        if (length(nd)) {
+          r <- .Machine$double.eps + quantile(nd, q)
+          if (10^m * abs(r) <= t) {
+            w <- 0
+          }
+          else {
+            w <- (m - log10(t/abs(r)))/2
+            if (is.nan(w) || w > 2) {
+              warning(paste0("autoLgcl failed for channel: ",
+                             paramName, "; using default fluor logicle transformation, be carefull with this parameter!"))
+              w <- 0.1
+              t <- 500000
+              m <- 4.5
+            }
+          }
+        }
+        templgcl <- logicleTransform(w=w, t=t, m=4.5, a=0)
+        dataNum <- which(colnames(original_data)==paramName)
+        temp <- apply(original_data[,dataNum,drop=F],2, templgcl)
+        transf_data[,dataNum] <- temp
+        if (verbose == TRUE) {
+          
+          print(paste0(paramName, " w= ",w," t= ",t))
+          
+        }
+        
+      }
+      
+    }
+    
+  }
+  
   return(transf_data)
+
 }
 
 
@@ -319,7 +453,13 @@ prep_fcd <- function(data_path,
                      condor_id = NULL,
                      cross_path_with_anno = FALSE,
                      cofactor = 5,
-                     reset_seed_every_sample = FALSE) {
+                     reset_seed_every_sample = FALSE,
+                     use_transformation_table = FALSE,
+                     transformation_table,
+                     separator_transformation = ",",
+                     use_max_cell_table = FALSE,
+                     max_cell_table,
+                     separator_max_cell = ",") {
 
   # Set seed for reproducibility
   set.seed(seed)
@@ -345,6 +485,9 @@ prep_fcd <- function(data_path,
                     separator_anno = separator_anno,
                     filename_col = filename_col,
                     reset_seed_every_sample = reset_seed_every_sample,
+                    use_max_cell_table = use_max_cell_table,
+                    max_cell_table = max_cell_table,
+                    separator_max_cell = separator_max_cell,
                     seed = seed)
 
   raw_data <- as.matrix(data$merged_df) # Take the dataframe with the intensity values
@@ -358,13 +501,43 @@ prep_fcd <- function(data_path,
 
   raw_data <- raw_data[,which(colnames(raw_data) %in% keep)]
 
-  ## Check if transformation parameter is provided
-  if(!is.null(transformation)){
-    ## Check if transformation is a valid value
-    if (!transformation %in% c("clr", "arcsinh", "auto_logi", "none")) {
-      stop(paste0(transformation, " is not a valid transformation method"))
+  ## Check if transformation parameter is provided or the transformation table is provided
+  
+  if (use_transformation_table == FALSE) {
+    
+    if(!is.null(transformation)){
+      ## Check if transformation is a valid value
+      if (!transformation %in% c("clr", "arcsinh", "auto_logi", "none")) {
+        stop(paste0(transformation, " is not a valid transformation method"))
+      }
+    }else{stop("transformation parameter needs to be specified to run this function")}
+    
+  }
+  
+  if (use_transformation_table == TRUE) {
+    
+    trans_table <- read.delim(transformation_table, sep = separator_transformation)
+    
+    # Check if a transformation parameter is provided for each or the keep parameters
+    
+    missmatch <- keep[!(keep %in% trans_table$param)]
+    
+    if (length(missmatch) == 0) {
+      
+      if (verbose == TRUE) {
+        
+        print("All transformation parameter were provided")
+        
+      }
+    
+    } else {
+      
+      stop(paste0("Transformation type not provided for: ", missmatch, ". Please correct the transfomration table \n"))
+      
     }
-  }else{stop("transformation parameter needs to be specified to run this function")}
+    
+  }
+  
 
   if (verbose) {
 
@@ -376,7 +549,10 @@ prep_fcd <- function(data_path,
                                transformation = transformation,
                                original_data = raw_data,
                                verbose = verbose,
-                               cofactor = cofactor)
+                               cofactor = cofactor, 
+                               use_transformation_table = use_transformation_table, 
+                               transformation_table = transformation_table, 
+                               separator_transformation = separator_transformation)
 
   ## Clean the dataframe
   df <- cbind(trans_data, expfcs_filename=data$merged_df[,"InFile"])
@@ -411,7 +587,7 @@ prep_fcd <- function(data_path,
                                           prep_function = "prep_fcd",
                                           version = packageDescription("cyCONDOR")$Version)
   
-  if(condor_id != NULL){
+  if(is.null(condor_id)){
 
     fcd[["extras"]][["id"]] <- condor_id
 
