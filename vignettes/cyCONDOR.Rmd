@@ -56,7 +56,7 @@ condor <- prep_fcd(data_path = "../.test_files/fcs/",
                     transformation = "auto_logi", 
                     remove_param = c("FSC-H", "SSC-H", "FSC-W", "SSC-W", "Time"), 
                     anno_table = "../.test_files/metadata.csv", 
-                    filename_col = "filename"
+                    filename_col = "filename", condor_id = "test"
                    )
 
 class(condor)

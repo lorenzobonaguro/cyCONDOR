@@ -67,9 +67,8 @@ Imports:
 Remotes:
     JinmiaoChenLab/Rphenograph,
     stuchly/Rphenoannoy,
-    saeyslab/CytoNorm@362ac08,
-    cran/smoother
-RoxygenNote: 7.3.2
+    saeyslab/CytoNorm@362ac08
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Suggests: 
     rmarkdown,

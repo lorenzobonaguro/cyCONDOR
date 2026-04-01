@@ -17,7 +17,12 @@ read_data(
   cross_path_with_anno,
   anno_table,
   separator_anno,
-  filename_col
+  filename_col,
+  seed,
+  reset_seed_every_sample,
+  use_max_cell_table,
+  max_cell_table,
+  separator_max_cell
 )
 }
 \arguments{
@@ -46,6 +51,10 @@ read_data(
 \item{separator_anno}{Passed from 'prep_fcd'}
 
 \item{filename_col}{Passed from 'prep_fcs'}
+
+\item{seed}{A seed is set for reproducibility.}
+
+\item{reset_seed_every_sample}{TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.}
 }
 \value{
 load flow cytometry dataset

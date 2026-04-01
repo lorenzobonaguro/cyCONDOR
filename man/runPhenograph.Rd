@@ -13,7 +13,8 @@ runPhenograph(
   prefix = NULL,
   nPC = ncol(fcd$pca[[data_slot]]),
   markers = colnames(fcd$expr[[data_slot]]),
-  discard = FALSE
+  discard = FALSE,
+  implementation = "Rphenoannoy"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ runPhenograph(
 \item{markers}{vector of marker names to include or exclude from the calculation according to the discard parameter. See functions used_markers and measured_markers for the extraction of markers directly from the condor object}
 
 \item{discard}{LOGICAL if the markers specified should be included, "F", or excluded, "T", from the calculation. Default = F.}
+
+\item{implementation}{Which implementation to use for Phenograph, either "Rphenograph" or "Rphenoannoy". Rphenoannoy is a faster implementation but might not be compatible with all system configurations.}
 }
 \value{
 The function returns a fcd including a data frame containing the phenograph clustering saved in \code{fcd$clustering}. The name of the output consists of the prefix (if given) and the data slot and the defined \code{k}. If a \code{nPC} is given it will be added to the output name.

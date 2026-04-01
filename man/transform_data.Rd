@@ -4,7 +4,16 @@
 \alias{transform_data}
 \title{transform_data}
 \usage{
-transform_data(keep, transformation, original_data, verbose, cofactor = 5)
+transform_data(
+  keep,
+  transformation,
+  original_data,
+  verbose,
+  cofactor = 5,
+  use_transformation_table,
+  transformation_table,
+  separator_transformation
+)
 }
 \arguments{
 \item{keep}{Vector of the parameter to keep in the analysis.}

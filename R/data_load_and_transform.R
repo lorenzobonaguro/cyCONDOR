@@ -68,11 +68,11 @@ read_data <- function(data_path,
       data_files <- data_files[data_files %in% anno_files]
 
     }
-    
+
     if (use_max_cell_table == TRUE) {
-      
+
       max_cells_table <- read.delim(max_cell_table, sep = separator_max_cell)
-      
+
     }
 
     merged_df <- NULL
@@ -83,17 +83,17 @@ read_data <- function(data_path,
         print(paste0("Loading file ", FileNum, " out of ", length(data_files)))
 
       }
-      
+
       if (use_max_cell_table == TRUE) {
-        
+
         max_cells <- max_cells_table[max_cells_table$filename == data_files[FileNum],]$max_cells
-        
+
         if (verbose == TRUE) {
-          
+
           print(paste0("Selecting ", max_cells, " cells from file: ", data_files[FileNum]))
-          
+
         }
-        
+
       }
 
       flow_frame_single <- read.FCS(paste0(data_path,"/",data_files[FileNum]),
@@ -128,11 +128,11 @@ read_data <- function(data_path,
 
       ## Downsample if needed
       if (reset_seed_every_sample == TRUE) {
-        
+
         set.seed(seed)
-        
+
       }
-      
+
       if (nrow(single_file_red) <= max_cells) {
         single_file_red <- single_file_red
       } else {
@@ -173,11 +173,11 @@ read_data <- function(data_path,
       data_files <- data_files[data_files %in% anno_files]
 
     }
-    
+
     if (use_max_cell_table == TRUE) {
-      
+
       max_cells_table <- read.delim(max_cell_table, sep = separator_max_cell)
-      
+
     }
 
     merged_df <- NULL
@@ -189,17 +189,17 @@ read_data <- function(data_path,
         print(paste0("Loading file ", FileNum, " out of ", length(data_files)))
 
       }
-      
+
       if (use_max_cell_table == TRUE) {
-        
+
         max_cells <- max_cells_table[max_cells_table$filename == data_files[FileNum],]$max_cells
-        
+
         if (verbose == TRUE) {
-          
+
           print(paste0("Selecting ", max_cells, " cells from file: ", data_files[FileNum]))
-          
+
         }
-        
+
       }
 
       single_file_red <- read.delim(paste0(data_path,"/",data_files[FileNum]), check.names = F, sep = separator)
@@ -246,31 +246,31 @@ transform_data <- function(keep,
                            original_data,
                            verbose,
                            cofactor = 5,
-                           use_transformation_table, 
-                           transformation_table, 
+                           use_transformation_table,
+                           transformation_table,
                            separator_transformation){
 
   # Save temp df
   transf_data <- original_data
-  
+
   if (use_transformation_table == FALSE) {
-    
+
     # Transform the data
     for(paramName in as.character(keep)){
-      
+
       if(transformation == "clr" ){
         dataNum <- which(colnames(original_data)==paramName)
         temp <- apply(original_data[,dataNum,drop=F],2, clr)
         transf_data[,dataNum] <- temp
       }
-      
+
       if(transformation == "arcsinh" ){
         dataNum <- which(colnames(original_data)==paramName)
         temp <- original_data[,dataNum,drop=F] / cofactor
         temp <- asinh(temp)
         transf_data[,dataNum] <- temp
       }
-      
+
       if(transformation == "auto_logi"){
         q<-0.05
         m<-4.5
@@ -301,62 +301,62 @@ transform_data <- function(keep,
         temp <- apply(original_data[,dataNum,drop=F],2, templgcl)
         transf_data[,dataNum] <- temp
         if (verbose == TRUE) {
-          
+
           print(paste0(paramName, " w= ",w," t= ",t))
-          
+
         }
-        
+
       }
-      
+
     }
   }
-  
+
   if (use_transformation_table == TRUE) {
-    
+
     # Transform the data
     for(paramName in as.character(keep)){
-      
+
       # Grabbing the right transformation from the table
       transformation_from_table <- trans_table[trans_table$param == paramName,]$transf
-      
+
       if (verbose == TRUE) {
-        
+
         print(paste0("Using transformation ", transformation_from_table, " for parameter: ", paramName))
-        
+
       }
-      
-      
+
+
       if(transformation_from_table == "clr" ){
         dataNum <- which(colnames(original_data)==paramName)
         temp <- apply(original_data[,dataNum,drop=F],2, clr)
         transf_data[,dataNum] <- temp
       }
-      
+
       if(transformation_from_table == "arcsinh" ){
         dataNum <- which(colnames(original_data)==paramName)
-        
+
         # Grab the co-factor value for the selected marker
         if (is.na(trans_table[trans_table$param == paramName,]$cofactor)) {
-          
+
           stop(paste0("Cofactor value not provided for parameter: ", paramName))
-          
+
         } else {
-          
+
           cofactor_from_table <- trans_table[trans_table$param == paramName,]$cofactor
-          
+
         }
-        
+
         if (verbose) {
-          
+
           print(paste0("With cofactor ", cofactor_from_table))
-          
+
         }
-        
+
         temp <- original_data[,dataNum,drop=F] / cofactor
         temp <- asinh(temp)
         transf_data[,dataNum] <- temp
       }
-      
+
       if(transformation_from_table == "auto_logi"){
         q<-0.05
         m<-4.5
@@ -387,17 +387,17 @@ transform_data <- function(keep,
         temp <- apply(original_data[,dataNum,drop=F],2, templgcl)
         transf_data[,dataNum] <- temp
         if (verbose == TRUE) {
-          
+
           print(paste0(paramName, " w= ",w," t= ",t))
-          
+
         }
-        
+
       }
-      
+
     }
-    
+
   }
-  
+
   return(transf_data)
 
 }
@@ -502,42 +502,42 @@ prep_fcd <- function(data_path,
   raw_data <- raw_data[,which(colnames(raw_data) %in% keep)]
 
   ## Check if transformation parameter is provided or the transformation table is provided
-  
+
   if (use_transformation_table == FALSE) {
-    
+
     if(!is.null(transformation)){
       ## Check if transformation is a valid value
       if (!transformation %in% c("clr", "arcsinh", "auto_logi", "none")) {
         stop(paste0(transformation, " is not a valid transformation method"))
       }
     }else{stop("transformation parameter needs to be specified to run this function")}
-    
+
   }
-  
+
   if (use_transformation_table == TRUE) {
-    
+
     trans_table <- read.delim(transformation_table, sep = separator_transformation)
-    
+
     # Check if a transformation parameter is provided for each or the keep parameters
-    
+
     missmatch <- keep[!(keep %in% trans_table$param)]
-    
+
     if (length(missmatch) == 0) {
-      
+
       if (verbose == TRUE) {
-        
+
         print("All transformation parameter were provided")
-        
+
       }
-    
+
     } else {
-      
+
       stop(paste0("Transformation type not provided for: ", missmatch, ". Please correct the transfomration table \n"))
-      
+
     }
-    
+
   }
-  
+
 
   if (verbose) {
 
@@ -549,9 +549,9 @@ prep_fcd <- function(data_path,
                                transformation = transformation,
                                original_data = raw_data,
                                verbose = verbose,
-                               cofactor = cofactor, 
-                               use_transformation_table = use_transformation_table, 
-                               transformation_table = transformation_table, 
+                               cofactor = cofactor,
+                               use_transformation_table = use_transformation_table,
+                               transformation_table = transformation_table,
                                separator_transformation = separator_transformation)
 
   ## Clean the dataframe
@@ -586,8 +586,8 @@ prep_fcd <- function(data_path,
                                           separator_fc_csv = separator_fc_csv,
                                           prep_function = "prep_fcd",
                                           version = packageDescription("cyCONDOR")$Version)
-  
-  if(is.null(condor_id)){
+
+  if(!is.null(condor_id)){
 
     fcd[["extras"]][["id"]] <- condor_id
 

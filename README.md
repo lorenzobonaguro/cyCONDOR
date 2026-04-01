@@ -69,6 +69,16 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install(version = "3.21")
 ``` 
 
+### Install the smoother dependecy
+
+Due to the removal of the 'smoother' package from the CRAN repository several packages are currently having troubles to install. You need to manually install 'smoother' from git.
+```
+if (!require("pak", quietly = TRUE))
+    install.packages("pak")
+    
+pak::pak("cran/smoother")
+```
+
 ### Install cyCONDOR
 
 Now you can install cyCONDOR and all its dependencies
@@ -82,12 +92,10 @@ pak::pkg_install("lorenzobonaguro/cyCONDOR")
 If you want to have early access to the new feature of `cyCONDOR` you can install the developmental version of `cyCONDOR`. 
 
 ```
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+if (!require("pak", quietly = TRUE))
+    install.packages("pak")
 
-devtools::install_github("lorenzobonaguro/cyCONDOR@dev", 
-                        build_vignettes = FALSE, 
-                        repos = BiocManager::repositories())
+pak::pkg_install("lorenzobonaguro/cyCONDOR@dev")
 ```
 
 *NOTE:* Keep in mind the developmental version if `cyCONDOR` is not fully tested, if you find any bug feel free to report it!

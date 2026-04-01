@@ -20,8 +20,16 @@ prep_fcd(
   emptyValue = TRUE,
   ignore.text.offset = FALSE,
   verbose = FALSE,
+  condor_id = NULL,
   cross_path_with_anno = FALSE,
-  cofactor = 5
+  cofactor = 5,
+  reset_seed_every_sample = FALSE,
+  use_transformation_table = FALSE,
+  transformation_table,
+  separator_transformation = ",",
+  use_max_cell_table = FALSE,
+  max_cell_table,
+  separator_max_cell = ","
 )
 }
 \arguments{
@@ -55,9 +63,13 @@ prep_fcd(
 
 \item{verbose}{Default FALSE, if TRUE the at each file loaded something is printed in the screen.}
 
+\item{condor_id}{Default NULL, if set it will asign this values and the id for the condor object saved in the `extras` slot.}
+
 \item{cross_path_with_anno}{Defautl FALSE. If TRUE is the 'data_path' contains more files then the annotation table only the overlap will be loaded.}
 
 \item{cofactor}{cofactor used for 'arcsinh' transformation, default 5, can be set to 150 for HDFC data.}
+
+\item{reset_seed_every_sample}{TRUE or FALSE (default: FALSE). If set to true the selected seed will be restarted before subsetting each sample, this option could be usefull if you plan to change the samples included in the analysis and still be able to transfer the labels. In general we suggest not to use this option if not extremelly necessary to avoid to run into bias due to the seed.}
 }
 \value{
 An object of class 'flow cytometry dataframe' (\code{fcd}) is returned.
