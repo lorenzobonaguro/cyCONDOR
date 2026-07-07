@@ -27,7 +27,7 @@ prep_fcd(
 \arguments{
 \item{data_path}{Folder where the .fcs files or .csv files are stored.}
 
-\item{max_cell}{Number of cells to use for each file (set to a high number if you want to use all available events).}
+\item{max_cell}{Maximum number of cells to use for each file (set to a high number if you want to use all available events). Can be either a single number (that is then used for all files), a numeric vector (needs to be the same length as the number of files) or a string refering to a column in 'anno_table' with cell numbers for each file.}
 
 \item{useCSV}{Flag if the input are .csv files and not .fcs (experimental).}
 
